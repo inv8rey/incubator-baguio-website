@@ -89,3 +89,90 @@ html { scroll-behavior: smooth; }
     transform: none;
   }
 }
+
+img { max-width: 100%; height: auto; }
+
+/* ============================================================
+   Responsive overrides.
+   Pages are authored with inline styles, so we override them
+   here via attribute selectors matching the inline-style strings.
+   ============================================================ */
+
+/* ---- Tablet / small-desktop (<= 900px) ---- */
+@media (max-width: 900px) {
+  /* Multi-column grids collapse to two columns */
+  [style*="grid-template-columns:repeat(3,1fr)"],
+  [style*="grid-template-columns:repeat(4,1fr)"],
+  [style*="grid-template-columns:1.5fr 1fr 1fr 1fr"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* Two-column splits stack */
+  [style*="grid-template-columns:1fr 1fr"],
+  [style*="grid-template-columns:1fr 1.1fr"],
+  [style*="grid-template-columns:1.5fr 1fr"],
+  [style*="grid-template-columns:0.85fr 1.15fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  /* Featured / resource rows stack their columns */
+  [style*="grid-template-columns:auto 1fr auto auto"] {
+    grid-template-columns: 1fr !important;
+    text-align: center;
+  }
+
+  /* Navbar wraps and centers instead of overflowing */
+  main > div:first-child {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 10px 16px !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+  }
+  main > div:first-child > div {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+}
+
+/* ---- Phone (<= 600px) ---- */
+@media (max-width: 600px) {
+  /* Everything goes single column */
+  [style*="grid-template-columns:repeat(3,1fr)"],
+  [style*="grid-template-columns:repeat(2,1fr)"],
+  [style*="grid-template-columns:1.5fr 1fr 1fr 1fr"],
+  [style*="grid-template-columns:auto 1fr auto"] {
+    grid-template-columns: 1fr !important;
+  }
+  /* Stat bands stay 2x2 so the numbers read as a set */
+  [style*="grid-template-columns:repeat(4,1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* Drop the vertical divider borders that look odd when stacked */
+  [style*="grid-template-columns:repeat(4,1fr)"] > div { border-left: 0 !important; }
+
+  /* Tighten the generous 40px side padding on every section */
+  main > div {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+  /* Shrink the big rounded CTA panels' inner padding */
+  [style*="border-radius:28px"],
+  [style*="border-radius:24px"] {
+    padding: 30px 22px !important;
+  }
+
+  /* Scale down oversized type */
+  [style*="font-size:78px"] { font-size: 38px !important; }
+  [style*="font-size:62px"] { font-size: 34px !important; }
+  [style*="font-size:60px"] { font-size: 34px !important; }
+  [style*="font-size:56px"] { font-size: 32px !important; }
+  [style*="font-size:52px"] { font-size: 31px !important; }
+  [style*="font-size:50px"] { font-size: 30px !important; }
+  [style*="font-size:46px"] { font-size: 29px !important; }
+  [style*="font-size:44px"] { font-size: 30px !important; }
+  [style*="font-size:40px"] { font-size: 27px !important; }
+  [style*="font-size:38px"] { font-size: 26px !important; }
+  [style*="font-size:36px"] { font-size: 25px !important; }
+
+  /* Hero paragraphs / CTAs breathe a bit less */
+  main h1, main h2 { word-break: break-word; }
+}
