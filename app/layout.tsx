@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Interactive from "./Interactive";
 
 export const metadata: Metadata = {
   title: "Incubator Baguio — Official Technology Business Incubator of the City of Baguio",
@@ -17,7 +18,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Interactive />
+      </body>
     </html>
   );
 }

@@ -8,8 +8,13 @@ const HOME_HTML = `
     <div style="font-size:16px;font-weight:600;color:#fff;letter-spacing:-0.01em;">Incubator Baguio</div>
   </div>
   <div style="display:flex;align-items:center;gap:30px;">
-    <div style="display:flex;gap:24px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.72);">
-      <span>About</span><span>Programs</span><span>Knowledge Hub</span><span>Ecosystem</span><span>News</span>
+    <div style="display:flex;gap:22px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.72);">
+      <a href="${BP}/about" class="ib-navlink">About</a>
+      <a href="#" class="ib-navlink">Programs</a>
+      <a href="${BP}/challenges" class="ib-navlink">Challenges</a>
+      <a href="${BP}/knowledge" class="ib-navlink">Knowledge Hub</a>
+      <a href="${BP}/ecosystem" class="ib-navlink">Ecosystem</a>
+      <a href="#" class="ib-navlink">News</a>
     </div>
     <a href="#" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:8px;background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:11px 22px;border-radius:9999px;text-decoration:none;">Apply Now <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
   </div>
@@ -238,7 +243,7 @@ const HOME_HTML = `
         <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:38px;width:auto;"><div style="font-size:17px;font-weight:600;color:#fff;">Incubator Baguio</div></div>
         <p style="margin:0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,0.5);max-width:280px;">Baguio City Research and Innovation Alliance. Operationalized under Ordinance No. 63, s.2023 by the CPDSO, City Government of Baguio.</p>
       </div>
-      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Explore</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>Programs</span><span>Knowledge Hub</span><span>Ecosystem</span><span>News &amp; Events</span></div></div>
+      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Explore</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="#">Programs</a><a class="ib-footlink" href="${BP}/challenges">Challenges</a><a class="ib-footlink" href="${BP}/knowledge">Knowledge Hub</a><a class="ib-footlink" href="${BP}/ecosystem">Ecosystem</a><a class="ib-footlink" href="#">News &amp; Events</a></div></div>
       <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Apply</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>Startup Incubation</span><span>Research Submission</span><span>Mentor Registration</span><span>Partner Inquiry</span></div></div>
       <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Contact</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>CPDSO, City Hall, Baguio</span><span>hello@incubatorbaguio.ph</span><span>Facebook &middot; LinkedIn</span></div></div>
     </div>
