@@ -119,18 +119,71 @@ img { max-width: 100%; height: auto; }
     text-align: center;
   }
 
-  /* Navbar wraps and centers instead of overflowing */
-  main > div:first-child {
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    gap: 10px 16px !important;
-    padding-top: 12px !important;
-    padding-bottom: 12px !important;
-  }
-  main > div:first-child > div {
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-  }
+  /* Swap the desktop links for the hamburger */
+  .ib-burger { display: flex !important; }
+  .ib-navlinks { display: none !important; }
+  .ib-desktop-cta { display: none !important; }
+}
+
+/* ---- Hamburger menu (built at runtime by Interactive.tsx) ---- */
+.ib-burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.ib-burger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 2px;
+  transition: transform .28s ease, opacity .2s ease;
+}
+.ib-burger.ib-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.ib-burger.ib-open span:nth-child(2) { opacity: 0; }
+.ib-burger.ib-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.ib-mobile-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  flex-direction: column;
+  background: #0B0B0D;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 14px 22px 22px;
+  z-index: 60;
+  box-shadow: 0 24px 44px rgba(0,0,0,0.45);
+  animation: ibmenu .22s ease;
+}
+.ib-menu-open .ib-mobile-menu { display: flex; }
+
+@keyframes ibmenu {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.ib-mobile-links a {
+  padding: 13px 4px;
+  font-size: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.85) !important;
+}
+.ib-mobile-links a::after { display: none !important; }
+.ib-mobile-cta {
+  margin-top: 16px;
+  justify-content: center;
+  text-align: center;
 }
 
 /* ---- Phone (<= 600px) ---- */

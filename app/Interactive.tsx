@@ -16,6 +16,61 @@ export default function Interactive() {
     const main = document.querySelector("main");
     if (!main) return;
 
+    // --- Mobile hamburger menu ------------------------------------------
+    // Built from the existing nav so no per-page markup is needed.
+    const nav = main.firstElementChild as HTMLElement | null;
+    if (nav && !nav.querySelector(".ib-burger")) {
+      const links = nav.querySelector<HTMLElement>(
+        'div[style*="font-weight:500"]'
+      );
+      const cta = nav.querySelector<HTMLAnchorElement>("a.ib-cta-orange");
+      if (links) {
+        links.classList.add("ib-navlinks");
+        cta?.classList.add("ib-desktop-cta");
+
+        const burger = document.createElement("button");
+        burger.className = "ib-burger";
+        burger.setAttribute("aria-label", "Toggle menu");
+        burger.setAttribute("aria-expanded", "false");
+        burger.innerHTML = "<span></span><span></span><span></span>";
+
+        const panel = document.createElement("div");
+        panel.className = "ib-mobile-menu";
+
+        const linksClone = links.cloneNode(true) as HTMLElement;
+        linksClone.classList.remove("ib-navlinks");
+        linksClone.classList.add("ib-mobile-links");
+        linksClone.setAttribute(
+          "style",
+          "display:flex;flex-direction:column;gap:0;"
+        );
+        panel.appendChild(linksClone);
+
+        if (cta) {
+          const ctaClone = cta.cloneNode(true) as HTMLAnchorElement;
+          ctaClone.classList.remove("ib-desktop-cta");
+          ctaClone.classList.add("ib-mobile-cta");
+          panel.appendChild(ctaClone);
+        }
+
+        nav.appendChild(panel);
+        nav.appendChild(burger);
+
+        const setOpen = (open: boolean) => {
+          nav.classList.toggle("ib-menu-open", open);
+          burger.classList.toggle("ib-open", open);
+          burger.setAttribute("aria-expanded", String(open));
+          document.body.style.overflow = open ? "hidden" : "";
+        };
+        burger.addEventListener("click", () =>
+          setOpen(!nav.classList.contains("ib-menu-open"))
+        );
+        panel
+          .querySelectorAll("a")
+          .forEach((a) => a.addEventListener("click", () => setOpen(false)));
+      }
+    }
+
     const sections = Array.from(main.children).filter(
       (el): el is HTMLElement => el instanceof HTMLElement
     );
