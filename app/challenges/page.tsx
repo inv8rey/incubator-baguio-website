@@ -6,16 +6,18 @@ export const metadata: Metadata = {
     "Real problems posted by LGUs, MSMEs, universities, and NGOs across Baguio. Founders, startups, researchers, and students build the solutions.",
 };
 
+const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 const CHALLENGES_HTML = `
 <!-- NAV -->
 <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:#0E0E10;position:sticky;top:0;z-index:50;">
-  <a href="/" style="display:flex;align-items:center;gap:11px;text-decoration:none;"><img src="/assets/ib-icon.png" alt="Incubator Baguio" style="height:32px;width:auto;"><div style="font-size:16px;font-weight:600;color:#fff;">Incubator Baguio</div></a>
+  <a href="${BP}/" style="display:flex;align-items:center;gap:11px;text-decoration:none;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:32px;width:auto;"><div style="font-size:16px;font-weight:600;color:#fff;">Incubator Baguio</div></a>
   <div style="display:flex;align-items:center;gap:28px;">
     <div style="display:flex;gap:22px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.72);">
       <a href="#" style="text-decoration:none;color:inherit;">About</a>
       <a href="#" style="text-decoration:none;color:inherit;">Programs</a>
-      <a href="/challenges" style="text-decoration:none;color:#fff;border-bottom:2px solid #F26522;padding-bottom:3px;">Challenges</a>
-      <a href="/knowledge" style="text-decoration:none;color:inherit;">Knowledge Hub</a>
+      <a href="${BP}/challenges" style="text-decoration:none;color:#fff;border-bottom:2px solid #F26522;padding-bottom:3px;">Challenges</a>
+      <a href="${BP}/knowledge" style="text-decoration:none;color:inherit;">Knowledge Hub</a>
       <a href="#" style="text-decoration:none;color:inherit;">Ecosystem</a>
     </div>
     <a href="#" class="ib-cta-orange" style="background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;">Post a Challenge</a>
@@ -27,7 +29,7 @@ const CHALLENGES_HTML = `
   <div style="position:absolute;bottom:-120px;left:50%;transform:translateX(-50%);width:600px;height:600px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.32) 0%,transparent 60%);pointer-events:none;"></div>
   <svg style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);opacity:0.15;" width="720" height="410" viewBox="0 0 120 104" fill="none" preserveAspectRatio="none"><polyline points="6,40 60,8 114,40" stroke="#F5A623" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,62 60,30 114,62" stroke="#E23A2E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,84 60,52 114,84" stroke="#9E2A52" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,106 60,74 114,106" stroke="#285E7A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
   <div style="position:relative;max-width:880px;margin:0 auto;">
-    <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:20px;"><a href="/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.8);">Innovation Challenges</span></div>
+    <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:20px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.8);">Innovation Challenges</span></div>
     <div style="display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:9999px;border:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.04);margin-bottom:24px;"><span style="width:7px;height:7px;border-radius:9999px;background:#F26522;"></span><span style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.75);">Open innovation marketplace</span></div>
     <h1 style="margin:0;font-size:62px;line-height:1.0;font-weight:700;letter-spacing:-0.035em;color:#fff;">Real problems, posted by<br>the city. <span style="color:#F26522;">Solved by you.</span></h1>
     <p style="margin:24px auto 0;font-size:18px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:620px;">LGUs, MSMEs, universities, and NGOs post the challenges that matter. Founders, startups, researchers, and students step up to build the solutions.</p>
@@ -150,7 +152,7 @@ const CHALLENGES_HTML = `
   <div style="max-width:1180px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.08);">
       <div>
-        <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px;"><img src="/assets/ib-icon.png" alt="Incubator Baguio" style="height:38px;width:auto;"><div style="font-size:17px;font-weight:600;color:#fff;">Incubator Baguio</div></div>
+        <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:38px;width:auto;"><div style="font-size:17px;font-weight:600;color:#fff;">Incubator Baguio</div></div>
         <p style="margin:0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,0.5);max-width:280px;">Baguio City Research and Innovation Alliance. Operationalized under Ordinance No. 63, s.2023 by the CPDSO, City Government of Baguio.</p>
       </div>
       <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Explore</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>Programs</span><span>Knowledge Hub</span><span>Ecosystem</span><span>News &amp; Events</span></div></div>

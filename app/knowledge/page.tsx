@@ -6,15 +6,17 @@ export const metadata: Metadata = {
     "Search papers, case studies, datasets, and toolkits from Baguio's universities, startups, and forum proceedings.",
 };
 
+const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 const KNOWLEDGE_HTML = `
 <!-- NAV -->
 <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:#0E0E10;position:sticky;top:0;z-index:50;">
-  <a href="/" style="display:flex;align-items:center;gap:11px;text-decoration:none;"><img src="/assets/ib-icon.png" alt="Incubator Baguio" style="height:32px;width:auto;"><div style="font-size:16px;font-weight:600;color:#fff;">Incubator Baguio</div></a>
+  <a href="${BP}/" style="display:flex;align-items:center;gap:11px;text-decoration:none;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:32px;width:auto;"><div style="font-size:16px;font-weight:600;color:#fff;">Incubator Baguio</div></a>
   <div style="display:flex;align-items:center;gap:28px;">
     <div style="display:flex;gap:22px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.72);">
       <a href="#" style="text-decoration:none;color:inherit;">About</a>
       <a href="#" style="text-decoration:none;color:inherit;">Programs</a>
-      <a href="/knowledge" style="text-decoration:none;color:#fff;border-bottom:2px solid #F26522;padding-bottom:3px;">Knowledge Hub</a>
+      <a href="${BP}/knowledge" style="text-decoration:none;color:#fff;border-bottom:2px solid #F26522;padding-bottom:3px;">Knowledge Hub</a>
       <a href="#" style="text-decoration:none;color:inherit;">Ecosystem</a>
       <a href="#" style="text-decoration:none;color:inherit;">News</a>
     </div>
@@ -26,7 +28,7 @@ const KNOWLEDGE_HTML = `
 <div style="position:relative;background:#0B0B0D;padding:56px 40px 60px;overflow:hidden;">
   <div style="position:absolute;top:-120px;right:-80px;width:440px;height:440px;background:radial-gradient(circle,rgba(40,94,122,0.30),transparent 65%);"></div>
   <div style="position:relative;max-width:1080px;margin:0 auto;">
-    <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:18px;"><a href="/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.8);">Knowledge Hub</span></div>
+    <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:18px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.8);">Knowledge Hub</span></div>
     <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#FFB489;margin-bottom:14px;">Research &amp; Innovation Database</div>
     <h1 style="margin:0;font-size:50px;font-weight:700;letter-spacing:-0.03em;color:#fff;line-height:1.04;max-width:720px;">Baguio&rsquo;s open library of research and innovation</h1>
     <p style="margin:18px 0 28px;font-size:17px;line-height:1.6;color:rgba(255,255,255,0.62);max-width:600px;">Search papers, case studies, datasets, and toolkits from the city&rsquo;s universities, startups, and forum proceedings.</p>
@@ -116,7 +118,7 @@ const KNOWLEDGE_HTML = `
   <div style="max-width:1180px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.08);">
       <div>
-        <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px;"><img src="/assets/ib-icon.png" alt="Incubator Baguio" style="height:38px;width:auto;"><div style="font-size:17px;font-weight:600;color:#fff;">Incubator Baguio</div></div>
+        <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:38px;width:auto;"><div style="font-size:17px;font-weight:600;color:#fff;">Incubator Baguio</div></div>
         <p style="margin:0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,0.5);max-width:280px;">Baguio City Research and Innovation Alliance. Operationalized under Ordinance No. 63, s.2023 by the CPDSO, City Government of Baguio.</p>
       </div>
       <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Explore</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>Programs</span><span>Knowledge Hub</span><span>Ecosystem</span><span>News &amp; Events</span></div></div>
