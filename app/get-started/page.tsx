@@ -121,24 +121,16 @@ const HTML = `
 <!-- ROUTER -->
 <div style="background:#0B0B0D;padding:40px;">
   <div style="max-width:1180px;margin:0 auto;">
-    <div class="ib-getstarted-grid" style="display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr 1fr;gap:18px;align-items:start;">
+    <div class="ib-getstarted-grid" style="display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr 1fr;gap:18px;align-items:stretch;">
 
       <!-- HERO PANEL -->
-      <div style="grid-column:1;grid-row:1;position:relative;background:linear-gradient(160deg,#1A0F08 0%,#0B0B0D 70%);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:30px 26px;overflow:hidden;display:flex;flex-direction:column;">
+      <div style="grid-column:1;grid-row:1;position:relative;background:linear-gradient(160deg,#1A0F08 0%,#0B0B0D 70%);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:22px 20px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;">
         <div style="position:absolute;top:-80px;left:-60px;width:280px;height:280px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.32),transparent 65%);pointer-events:none;"></div>
         <div style="position:relative;">
-          <div style="font-size:11px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F26522;margin-bottom:14px;">Welcome to Incubator Baguio</div>
-          <h1 style="margin:0;font-size:30px;line-height:1.2;font-weight:700;letter-spacing:-0.025em;color:#fff;">What are you looking for today?<span style="color:#F26522;">.</span></h1>
-          <div style="width:46px;height:3px;background:#F26522;border-radius:9999px;margin:18px 0;"></div>
-          <p style="margin:0;font-size:14px;line-height:1.6;color:rgba(255,255,255,0.6);">Tell us more so we can guide you to the right support, programs, and ecosystem partners.</p>
+          <div style="font-size:11px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F26522;margin-bottom:10px;">Welcome to Incubator Baguio</div>
+          <h1 style="margin:0;font-size:22px;line-height:1.2;font-weight:700;letter-spacing:-0.02em;color:#fff;">What are you looking for today?<span style="color:#F26522;">.</span></h1>
+          <p style="margin:10px 0 0;font-size:13px;line-height:1.5;color:rgba(255,255,255,0.6);">Tell us more so we can guide you to the right support and partners.</p>
         </div>
-        <svg style="position:relative;margin-top:auto;padding-top:26px;opacity:0.8;" width="100%" height="92" viewBox="0 0 360 110" fill="none" preserveAspectRatio="xMidYMax meet">
-          <path d="M10 100 L40 100 L40 60 L60 60 L60 40 L80 40 L80 100" stroke="rgba(242,101,34,0.55)" stroke-width="1.5" fill="none"></path>
-          <path d="M120 100 L120 50 L135 30 L150 50 L150 100" stroke="rgba(242,101,34,0.4)" stroke-width="1.5" fill="none"></path>
-          <path d="M180 100 Q220 60 260 100" stroke="rgba(242,101,34,0.35)" stroke-width="1.5" fill="none"></path>
-          <path d="M280 100 L300 70 L320 100" stroke="rgba(242,101,34,0.45)" stroke-width="1.5" fill="none"></path>
-          <line x1="0" y1="100" x2="360" y2="100" stroke="rgba(255,255,255,0.12)" stroke-width="1"></line>
-        </svg>
       </div>
 
       <!-- NOT SURE PANEL -->
@@ -163,8 +155,8 @@ const HTML = `
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c.color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${c.icon}</svg>
         </div>
         <div style="font-size:15px;font-weight:600;color:#fff;margin-bottom:6px;">${c.title}</div>
-        <p style="margin:0;font-size:13px;line-height:1.5;color:rgba(255,255,255,0.55);">${c.desc}</p>
-        <div style="margin-top:14px;width:30px;height:30px;border-radius:9999px;border:1.5px solid ${c.color};display:flex;align-items:center;justify-content:center;">
+        <p style="margin:0 0 14px;font-size:13px;line-height:1.5;color:rgba(255,255,255,0.55);">${c.desc}</p>
+        <div style="margin-top:auto;width:30px;height:30px;border-radius:9999px;border:1.5px solid ${c.color};display:flex;align-items:center;justify-content:center;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${c.color}" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
         </div>
       </a>`;
