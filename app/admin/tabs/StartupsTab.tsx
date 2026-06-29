@@ -80,7 +80,7 @@ export default function StartupsTab() {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 720 }}>
           <thead>
             <tr style={{ background: "#F5F4F0" }}>
-              {["Startup", "Sector", "Stage", "TBI", "Funding", "Growth", "Since"].map((h, i) => (
+              {["Startup", "Sector", "Stage", "TBI", "Funding", "Since"].map((h, i) => (
                 <th
                   key={h}
                   style={{
@@ -121,16 +121,13 @@ export default function StartupsTab() {
                   </td>
                   <td style={{ padding: "13px 14px", verticalAlign: "middle", color: "#6B6B73" }}>{s.tbi}</td>
                   <td style={{ padding: "13px 14px", verticalAlign: "middle", fontWeight: 600, color: DARK }}>{s.funding}</td>
-                  <td style={{ padding: "13px 14px", verticalAlign: "middle" }}>
-                    <span style={{ fontSize: 11.5, fontWeight: 600, color: "#22C55E" }}>{s.growth}</span>
-                  </td>
                   <td style={{ padding: "13px 14px", verticalAlign: "middle", color: "#9A958B" }}>{s.since}</td>
                 </tr>
               );
             })}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={7} style={{ padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13 }}>
+                <td colSpan={6} style={{ padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13 }}>
                   No startups match these filters.
                 </td>
               </tr>

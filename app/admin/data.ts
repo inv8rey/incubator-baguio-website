@@ -19,7 +19,7 @@ export const TITLES: Record<TabId, string> = {
 
 export const SUBS: Record<TabId, string> = {
   dashboard: "Baguio City Research and Innovation Alliance · Jun 2026",
-  startups: "82 registered startups across 7 sectors",
+  startups: "82 registered startups across 13 sectors",
   founders: "148 registered founders in the ecosystem",
   challenges: "18 open challenges from government, industry, and academia",
 };
@@ -65,13 +65,19 @@ export const KPIS = [
 ];
 
 export const SECTORS = [
-  { label: "AgriTech", count: 14, pct: 17.1, color: "#1A6B3C" },
-  { label: "FinTech", count: 13, pct: 15.9, color: "#285E7A" },
-  { label: "EdTech", count: 11, pct: 13.4, color: "#9E2A52" },
-  { label: "Tourism", count: 10, pct: 12.2, color: "#F5A623" },
-  { label: "HealthTech", count: 8, pct: 9.8, color: "#E23A2E" },
-  { label: "E-commerce", count: 6, pct: 7.3, color: "#F26522" },
-  { label: "Other", count: 20, pct: 22.3, color: "#9A958B" },
+  { label: "Agriculture & Food", count: 12, pct: 14.6, color: "#1A6B3C" },
+  { label: "Tourism & Hospitality", count: 10, pct: 12.2, color: "#F5A623" },
+  { label: "Education", count: 9, pct: 11.0, color: "#9E2A52" },
+  { label: "Health & Wellness", count: 8, pct: 9.8, color: "#E23A2E" },
+  { label: "Finance", count: 7, pct: 8.5, color: "#285E7A" },
+  { label: "Retail & Commerce", count: 7, pct: 8.5, color: "#F26522" },
+  { label: "Creative Industries", count: 6, pct: 7.3, color: "#6B5BD6" },
+  { label: "Environment & Sustainability", count: 6, pct: 7.3, color: "#2A8A52" },
+  { label: "Artificial Intelligence & Emerging Technologies", count: 5, pct: 6.1, color: "#3A5FA0" },
+  { label: "Manufacturing", count: 4, pct: 4.9, color: "#8B4513" },
+  { label: "Transportation & Logistics", count: 4, pct: 4.9, color: "#0E5C44" },
+  { label: "Government & Public Services", count: 2, pct: 2.4, color: "#009B8D" },
+  { label: "Real Estate & Construction", count: 2, pct: 2.4, color: "#9A958B" },
 ];
 
 export const STAGE_MIX = [
@@ -114,11 +120,19 @@ export const STARTUP_STATS = [
 
 export const STAGE_FILTERS = ["All", "Growth", "Launch", "MVP", "Idea"];
 export const SECTOR_FILTERS = [
-  { label: "AgriTech", color: "#1A6B3C" },
-  { label: "FinTech", color: "#6B6B73" },
-  { label: "EdTech", color: "#6B6B73" },
-  { label: "Tourism", color: "#6B6B73" },
-  { label: "HealthTech", color: "#6B6B73" },
+  { label: "Agriculture & Food", color: "#1A6B3C" },
+  { label: "Health & Wellness", color: "#E23A2E" },
+  { label: "Education", color: "#9E2A52" },
+  { label: "Finance", color: "#285E7A" },
+  { label: "Tourism & Hospitality", color: "#F5A623" },
+  { label: "Retail & Commerce", color: "#F26522" },
+  { label: "Manufacturing", color: "#8B4513" },
+  { label: "Creative Industries", color: "#6B5BD6" },
+  { label: "Transportation & Logistics", color: "#0E5C44" },
+  { label: "Environment & Sustainability", color: "#2A8A52" },
+  { label: "Government & Public Services", color: "#009B8D" },
+  { label: "Real Estate & Construction", color: "#9A958B" },
+  { label: "Artificial Intelligence & Emerging Technologies", color: "#3A5FA0" },
 ];
 
 export const STAGE_BADGE: Record<string, { color: string; bg: string }> = {
@@ -128,14 +142,14 @@ export const STAGE_BADGE: Record<string, { color: string; bg: string }> = {
 };
 
 export const STARTUPS = [
-  { id: "BG-019", initials: "SG", color: ORANGE, name: "Session Groceries", sector: "AgriTech", stage: "Growth", tbi: "Independent", funding: "₱5.0M", growth: "↑ +18%", since: "2016" },
-  { id: "BG-022", initials: "IO", color: "#285E7A", name: "IOL Inc.", sector: "FinTech", stage: "Growth", tbi: "UC InTTO", funding: "₱3.7M", growth: "↑ +12%", since: "2018" },
-  { id: "BG-031", initials: "WB", color: "#F5A623", name: "When In Baguio", sector: "Tourism", stage: "Growth", tbi: "Independent", funding: "₱1.9M", growth: "↑ +22%", since: "2017" },
-  { id: "BG-044", initials: "VP", color: "#9E2A52", name: "VIVITA PH", sector: "EdTech", stage: "Launch", tbi: "UPB SILBI", funding: "₱1.0M", growth: "↑ +8%", since: "2021" },
-  { id: "BG-088", initials: "DT", color: "#2A8A52", name: "Dontog Technofarms", sector: "AgriTech", stage: "Launch", tbi: "BSU-ATBI", funding: "₱840K", growth: "↑ +15%", since: "2023" },
-  { id: "BG-091", initials: "TN", color: "#6B5BD6", name: "theneutral.space", sector: "Community", stage: "Launch", tbi: "Independent", funding: "₱440K", growth: "↑ +10%", since: "2023" },
-  { id: "BG-073", initials: "SS", color: "#0E5C44", name: "Sunshare", sector: "GreenTech", stage: "Idea", tbi: "SLU SIRIB", funding: "₱360K", growth: "↑ +5%", since: "2022" },
-  { id: "BG-138", initials: "DC", color: "#8B4513", name: "Dulche Chocolates", sector: "FoodTech", stage: "Launch", tbi: "Independent", funding: "₱560K", growth: "↑ +9%", since: "2020" },
+  { id: "BG-019", initials: "SG", color: ORANGE, name: "Session Groceries", sector: "Agriculture & Food", stage: "Growth", tbi: "Independent", funding: "₱5.0M", since: "2016" },
+  { id: "BG-022", initials: "IO", color: "#285E7A", name: "IOL Inc.", sector: "Finance", stage: "Growth", tbi: "UC InTTO", funding: "₱3.7M", since: "2018" },
+  { id: "BG-031", initials: "WB", color: "#F5A623", name: "When In Baguio", sector: "Tourism & Hospitality", stage: "Growth", tbi: "Independent", funding: "₱1.9M", since: "2017" },
+  { id: "BG-044", initials: "VP", color: "#9E2A52", name: "VIVITA PH", sector: "Education", stage: "Launch", tbi: "UPB SILBI", funding: "₱1.0M", since: "2021" },
+  { id: "BG-088", initials: "DT", color: "#2A8A52", name: "Dontog Technofarms", sector: "Agriculture & Food", stage: "Launch", tbi: "BSU-ATBI", funding: "₱840K", since: "2023" },
+  { id: "BG-091", initials: "TN", color: "#6B5BD6", name: "theneutral.space", sector: "Creative Industries", stage: "Launch", tbi: "Independent", funding: "₱440K", since: "2023" },
+  { id: "BG-073", initials: "SS", color: "#0E5C44", name: "Sunshare", sector: "Environment & Sustainability", stage: "Idea", tbi: "SLU SIRIB", funding: "₱360K", since: "2022" },
+  { id: "BG-138", initials: "DC", color: "#8B4513", name: "Dulche Chocolates", sector: "Retail & Commerce", stage: "Launch", tbi: "Independent", funding: "₱560K", since: "2020" },
 ];
 
 // ---- Founders ----
@@ -148,14 +162,14 @@ export const FOUNDER_STATS = [
 ];
 
 export const FOUNDERS = [
-  { initials: "ID", color: ORANGE, name: "Iloisa Romaraog Diga", role: "CEO & Co-founder", tags: [{ label: "AgriTech", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }, { label: "Growth", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }], funding: "₱5.0M", programs: 2, startup: "Session Groceries" },
-  { initials: "AC", color: "#1A6B3C", name: "Ana Bettina Cruz", role: "CEO & Founder", tags: [{ label: "FinTech", color: "#285E7A", bg: "rgba(40,94,122,0.10)" }, { label: "Growth", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }], funding: "₱3.7M", programs: 3, startup: "IOL Inc." },
-  { initials: "JB", color: "#F5A623", name: "Jason Balangue", role: "CEO & Co-founder", tags: [{ label: "Tourism", color: "#9E2A52", bg: "rgba(158,42,82,0.10)" }, { label: "Growth", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }], funding: "₱1.9M", programs: 0, startup: "When In Baguio" },
-  { initials: "CM", color: "#9E2A52", name: "Christine Mina", role: "Country Director", tags: [{ label: "EdTech", color: "#9E2A52", bg: "rgba(158,42,82,0.10)" }, { label: "Launch", color: ORANGE, bg: "rgba(242,101,34,0.10)" }], funding: "₱1.0M", programs: 2, startup: "VIVITA PH" },
-  { initials: "RA", color: "#2A8A52", name: "Renato Acosta Jr.", role: "CEO & Founder", tags: [{ label: "AgriTech", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }, { label: "Launch", color: ORANGE, bg: "rgba(242,101,34,0.10)" }], funding: "₱840K", programs: 2, startup: "Dontog Technofarms" },
-  { initials: "BS", color: "#6B5BD6", name: "Bea Santos", role: "Founder", tags: [{ label: "Community", color: "#6B5BD6", bg: "rgba(107,91,214,0.10)" }, { label: "Launch", color: ORANGE, bg: "rgba(242,101,34,0.10)" }], funding: "₱440K", programs: 1, startup: "theneutral.space" },
-  { initials: "LD", color: "#0E5C44", name: "Leo Dangwa", role: "CEO & Co-founder", tags: [{ label: "GreenTech", color: "#0E5C44", bg: "rgba(14,92,68,0.10)" }, { label: "Idea", color: "#F5A623", bg: "rgba(245,166,35,0.12)" }], funding: "₱360K", programs: 2, startup: "Sunshare" },
-  { initials: "MB", color: "#8B4513", name: "Maria Carla Bautista", role: "CEO & Founder", tags: [{ label: "FoodTech", color: "#8B4513", bg: "rgba(139,69,19,0.10)" }, { label: "Launch", color: ORANGE, bg: "rgba(242,101,34,0.10)" }], funding: "₱560K", programs: 1, startup: "Dulche Chocolates" },
+  { initials: "ID", color: ORANGE, name: "Iloisa Romaraog Diga", role: "CEO & Co-founder", tags: [{ label: "Agriculture & Food", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }, { label: "Growth", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }], funding: "₱5.0M", programs: 2, startup: "Session Groceries" },
+  { initials: "AC", color: "#1A6B3C", name: "Ana Bettina Cruz", role: "CEO & Founder", tags: [{ label: "Finance", color: "#285E7A", bg: "rgba(40,94,122,0.10)" }, { label: "Growth", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }], funding: "₱3.7M", programs: 3, startup: "IOL Inc." },
+  { initials: "JB", color: "#F5A623", name: "Jason Balangue", role: "CEO & Co-founder", tags: [{ label: "Tourism & Hospitality", color: "#9E2A52", bg: "rgba(158,42,82,0.10)" }, { label: "Growth", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }], funding: "₱1.9M", programs: 0, startup: "When In Baguio" },
+  { initials: "CM", color: "#9E2A52", name: "Christine Mina", role: "Country Director", tags: [{ label: "Education", color: "#9E2A52", bg: "rgba(158,42,82,0.10)" }, { label: "Launch", color: ORANGE, bg: "rgba(242,101,34,0.10)" }], funding: "₱1.0M", programs: 2, startup: "VIVITA PH" },
+  { initials: "RA", color: "#2A8A52", name: "Renato Acosta Jr.", role: "CEO & Founder", tags: [{ label: "Agriculture & Food", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }, { label: "Launch", color: ORANGE, bg: "rgba(242,101,34,0.10)" }], funding: "₱840K", programs: 2, startup: "Dontog Technofarms" },
+  { initials: "BS", color: "#6B5BD6", name: "Bea Santos", role: "Founder", tags: [{ label: "Creative Industries", color: "#6B5BD6", bg: "rgba(107,91,214,0.10)" }, { label: "Launch", color: ORANGE, bg: "rgba(242,101,34,0.10)" }], funding: "₱440K", programs: 1, startup: "theneutral.space" },
+  { initials: "LD", color: "#0E5C44", name: "Leo Dangwa", role: "CEO & Co-founder", tags: [{ label: "Environment & Sustainability", color: "#0E5C44", bg: "rgba(14,92,68,0.10)" }, { label: "Idea", color: "#F5A623", bg: "rgba(245,166,35,0.12)" }], funding: "₱360K", programs: 2, startup: "Sunshare" },
+  { initials: "MB", color: "#8B4513", name: "Maria Carla Bautista", role: "CEO & Founder", tags: [{ label: "Retail & Commerce", color: "#8B4513", bg: "rgba(139,69,19,0.10)" }, { label: "Launch", color: ORANGE, bg: "rgba(242,101,34,0.10)" }], funding: "₱560K", programs: 1, startup: "Dulche Chocolates" },
 ];
 
 // ---- Challenges ----

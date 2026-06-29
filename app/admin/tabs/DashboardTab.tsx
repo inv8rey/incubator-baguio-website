@@ -52,7 +52,7 @@ export default function DashboardTab() {
       <div className="ib-admin-grid-3-mid" style={{ display: "grid", gridTemplateColumns: "2fr 1.35fr 1.35fr", gap: 16, alignItems: "start" }}>
         <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(20,20,25,0.09)" }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: DARK, marginBottom: 3 }}>Startups by Sector</div>
-          <div style={{ fontSize: 11.5, color: "#9A958B", marginBottom: 18 }}>82 startups across 7 sectors</div>
+          <div style={{ fontSize: 11.5, color: "#9A958B", marginBottom: 18 }}>82 startups across 13 sectors</div>
           <div style={{ display: "flex", flexDirection: "column" }}>
             {SECTORS.map((s, i) => (
               <div
@@ -68,7 +68,7 @@ export default function DashboardTab() {
                 <div style={{ width: 26, height: 26, borderRadius: 7, background: `${s.color}1F`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <span style={{ width: 8, height: 8, borderRadius: "50%", background: s.color, display: "inline-block" }} />
                 </div>
-                <span style={{ fontSize: 12.5, fontWeight: 500, color: "#44444C", width: 110, flexShrink: 0 }}>{s.label}</span>
+                <span style={{ fontSize: 12.5, fontWeight: 500, color: "#44444C", width: 190, flexShrink: 0, lineHeight: 1.3 }}>{s.label}</span>
                 <div style={{ flex: 1, height: 7, background: "rgba(20,20,25,0.06)", borderRadius: 999, overflow: "hidden" }}>
                   <div style={{ width: `${s.pct}%`, height: "100%", background: s.color, borderRadius: 999 }} />
                 </div>
