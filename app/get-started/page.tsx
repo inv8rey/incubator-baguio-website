@@ -121,7 +121,7 @@ const HTML = `
 <!-- ROUTER -->
 <div style="background:#0B0B0D;padding:40px;">
   <div style="max-width:1180px;margin:0 auto;">
-    <div class="ib-getstarted-grid" style="display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr 1fr;gap:18px;">
+    <div class="ib-getstarted-grid" style="display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr 1fr;gap:18px;align-items:start;">
 
       <!-- HERO PANEL -->
       <div style="grid-column:1;grid-row:1;position:relative;background:linear-gradient(160deg,#1A0F08 0%,#0B0B0D 70%);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:30px 26px;overflow:hidden;display:flex;flex-direction:column;">
@@ -158,14 +158,14 @@ const HTML = `
         const col = (i % 4) + 2;
         const row = i < 4 ? 1 : 2;
         return `
-      <a href="${c.href}" class="ib-getstarted-card" style="grid-column:${col};grid-row:${row};text-decoration:none;background:#141417;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:26px 22px;display:flex;flex-direction:column;">
-        <div style="width:52px;height:52px;border-radius:9999px;background:${c.bg};display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="${c.color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${c.icon}</svg>
+      <a href="${c.href}" class="ib-getstarted-card" style="grid-column:${col};grid-row:${row};text-decoration:none;background:#141417;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:22px 20px;display:flex;flex-direction:column;">
+        <div style="width:46px;height:46px;border-radius:9999px;background:${c.bg};display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c.color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${c.icon}</svg>
         </div>
-        <div style="font-size:15.5px;font-weight:600;color:#fff;margin-bottom:8px;">${c.title}</div>
-        <p style="margin:0;font-size:13px;line-height:1.55;color:rgba(255,255,255,0.55);flex:1;">${c.desc}</p>
-        <div style="margin-top:16px;width:34px;height:34px;border-radius:9999px;border:1.5px solid ${c.color};display:flex;align-items:center;justify-content:center;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${c.color}" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        <div style="font-size:15px;font-weight:600;color:#fff;margin-bottom:6px;">${c.title}</div>
+        <p style="margin:0;font-size:13px;line-height:1.5;color:rgba(255,255,255,0.55);">${c.desc}</p>
+        <div style="margin-top:14px;width:30px;height:30px;border-radius:9999px;border:1.5px solid ${c.color};display:flex;align-items:center;justify-content:center;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${c.color}" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
         </div>
       </a>`;
       }).join("")}
