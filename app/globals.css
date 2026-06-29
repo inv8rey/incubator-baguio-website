@@ -113,6 +113,11 @@ img { max-width: 100%; height: auto; }
   [style*="grid-template-columns:0.85fr 1.15fr"] {
     grid-template-columns: 1fr !important;
   }
+  /* Events calendar: agenda panel stacks below the calendar */
+  .ib-events-grid {
+    grid-template-columns: 1fr !important;
+  }
+
   /* Featured / resource rows stack their columns */
   [style*="grid-template-columns:auto 1fr auto auto"] {
     grid-template-columns: 1fr !important;
@@ -192,8 +197,13 @@ img { max-width: 100%; height: auto; }
   [style*="grid-template-columns:repeat(3,1fr)"],
   [style*="grid-template-columns:repeat(2,1fr)"],
   [style*="grid-template-columns:1.5fr 1fr 1fr 1fr"],
-  [style*="grid-template-columns:auto 1fr auto"] {
+  [style*="grid-template-columns:auto 1fr auto"],
+  .ib-events-card {
     grid-template-columns: 1fr !important;
+  }
+  .ib-events-card > a {
+    width: 100%;
+    text-align: center;
   }
   /* Stat bands stay 2x2 so the numbers read as a set */
   [style*="grid-template-columns:repeat(4,1fr)"] {
