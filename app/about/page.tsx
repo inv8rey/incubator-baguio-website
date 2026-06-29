@@ -32,8 +32,8 @@ const ABOUT_HTML = `
   <div style="position:relative;max-width:860px;margin:0 auto;">
     <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:20px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.8);">About</span></div>
     <div style="display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:9999px;border:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.04);margin-bottom:26px;"><span style="width:7px;height:7px;border-radius:9999px;background:#F26522;"></span><span style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.75);">About Incubator Baguio</span></div>
-    <h1 style="margin:0;font-size:60px;line-height:1.02;font-weight:700;letter-spacing:-0.035em;color:#fff;">Baguio&rsquo;s Innovation <span style="color:#F26522;">Alliance</span></h1>
-    <p style="margin:24px auto 0;font-size:18px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:680px;">Incubator Baguio brings together government, academia, industry, entrepreneurs, researchers, and community partners to strengthen innovation, entrepreneurship, and startup development in the city.</p>
+    <h1 style="margin:0;font-size:54px;line-height:1.08;font-weight:700;letter-spacing:-0.035em;color:#fff;">The Gateway to Baguio&rsquo;s <span style="color:#F26522;">Startup &amp; Innovation Ecosystem</span></h1>
+    <p style="margin:24px auto 0;font-size:18px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:680px;">We connect startups, researchers, universities, Technology Business Incubators, government agencies, investors, and industry partners to build a stronger innovation ecosystem for Baguio.</p>
   </div>
 </div>
 
@@ -44,9 +44,8 @@ const ABOUT_HTML = `
       <div>
         <div style="font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:6px;">Our Role</div>
         <div style="width:42px;height:3px;background:#F26522;border-radius:2px;margin-bottom:22px;"></div>
-        <h2 style="margin:0 0 24px;font-size:44px;font-weight:700;letter-spacing:-0.03em;color:#141417;line-height:1.08;">Building Connections Across the Innovation Ecosystem</h2>
-        <p style="margin:0 0 18px;padding-left:20px;border-left:3px solid #F26522;font-size:16px;line-height:1.6;font-weight:500;color:#2A2A30;">Innovation does not happen in isolation. Entrepreneurs need mentors, researchers need industry partners, startups need support networks, and institutions need platforms for collaboration.</p>
-        <p style="margin:0;font-size:16px;line-height:1.65;color:#6B6B73;">Incubator Baguio serves as a shared platform where government agencies, higher education institutions, private organizations, startups, and innovators can work together to develop ideas, strengthen capabilities, and create new opportunities.</p>
+        <h2 style="margin:0 0 24px;font-size:44px;font-weight:700;letter-spacing:-0.03em;color:#141417;line-height:1.08;">Building the Infrastructure for Innovation</h2>
+        <p style="margin:0;font-size:16px;line-height:1.65;color:#6B6B73;">Incubator Baguio is the city&rsquo;s startup and innovation ecosystem platform, connecting founders, researchers, universities, Technology Business Incubators, government agencies, investors, industry, and the community to create opportunities, strengthen collaboration, and accelerate innovation across Baguio.</p>
       </div>
       <div style="position:relative;border-radius:20px;overflow:hidden;aspect-ratio:16/11;background:repeating-linear-gradient(135deg,#E9E6DE,#E9E6DE 13px,#E2DFD6 13px,#E2DFD6 26px);display:flex;align-items:center;justify-content:center;">
         <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.5;" width="320" height="300" viewBox="0 0 120 104" fill="none"><polyline points="18,38 60,8 102,38" stroke="#F26522" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="18,60 60,30 102,60" stroke="#E23A2E" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="18,82 60,52 102,82" stroke="#9E2A52" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="18,104 60,74 102,104" stroke="#285E7A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
@@ -54,30 +53,18 @@ const ABOUT_HTML = `
       </div>
     </div>
 
-    <!-- Featured card -->
-    <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:20px;padding:34px 38px;display:grid;grid-template-columns:auto 1fr auto auto;gap:28px;align-items:center;position:relative;overflow:hidden;margin-bottom:18px;">
-      <svg style="position:absolute;right:120px;top:50%;transform:translateY(-50%);opacity:0.08;" width="180" height="150" viewBox="0 0 120 104" fill="none"><polyline points="18,40 60,12 102,40" stroke="#F26522" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="18,64 60,36 102,64" stroke="#F26522" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="18,88 60,60 102,88" stroke="#F26522" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
-      <div style="width:78px;height:78px;border-radius:18px;background:#FDEEE6;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg></div>
-      <div style="position:relative;">
-        <h3 style="margin:0 0 8px;font-size:24px;font-weight:700;letter-spacing:-0.02em;color:#141417;">Technology Business Incubator</h3>
-        <p style="margin:0;font-size:15px;line-height:1.55;color:#6B6B73;max-width:480px;">Supporting startups and innovators through incubation, mentorship, training, and access to networks and opportunities.</p>
-      </div>
-      <div style="width:1px;height:64px;background:rgba(20,20,25,0.1);"></div>
-      <a href="#" class="ib-cta-orange" style="width:54px;height:54px;border-radius:9999px;background:#F26522;display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-    </div>
-
-    <!-- Three cards -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
+    <!-- Four functions -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
       ${[
-        ["#FEF3E2", `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="2.4"></circle><circle cx="5.5" cy="10" r="2"></circle><circle cx="18.5" cy="10" r="2"></circle><path d="M12 11c-2.5 0-4 1.6-4 4v1h8v-1c0-2.4-1.5-4-4-4zM5.5 14c-1.8 0-3 1.1-3 3v.5M18.5 14c1.8 0 3 1.1 3 3v.5"></path></svg>`, "Innovation Platform", "Providing a space where government, academia, industry, and the community can collaborate on innovation initiatives."],
-        ["#FCE9E7", `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#E23A2E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h6v5l3 8c.4 1.1-.4 2-1.5 2H4.5C3.4 18 2.6 17.1 3 16l3-8V3z"></path><path d="M6 3h6M5 21h14M9 21v-2a2 2 0 0 1 2-2h0"></path></svg>`, "Research and Commercialization", "Helping connect research, technology, and innovation with practical applications and market opportunities."],
-        ["#E8EEF4", `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#285E7A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17 2 2a1 1 0 0 0 3-3"></path><path d="m14 14 2.5 2.5a1 1 0 0 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 0 1-1.42 0l-2-2a1 1 0 0 1 0-1.42l2.62-2.62a3 3 0 0 1 2.13-.88H17l3 3"></path><path d="m21 3-1 1M3 9l4-4 3 3"></path></svg>`, "Ecosystem Development", "Strengthening the relationships, programs, and institutions that support innovation in Baguio."],
+        ["#FDEEE6", `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m15.5 8.5-2.2 5.2-5.2 2.2 2.2-5.2 5.2-2.2Z"></path></svg>`, "Ecosystem Gateway", "Connect founders to the right Technology Business Incubator, mentors, funding opportunities, and ecosystem partners."],
+        ["#E8EEF4", `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#285E7A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="3"></circle><circle cx="17" cy="7" r="3"></circle><circle cx="12" cy="18" r="3"></circle><path d="M7 10v2.5L12 15M17 10v2.5L12 15"></path></svg>`, "Ecosystem Coordination", "Coordinate universities, government agencies, industry, investors, and community partners through shared initiatives and collaborative programs."],
+        ["#EFEAF8", `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7C5CD6" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M6 20v-7m6 7V8m6 12v-4"></path><path d="M3 11l6-5 6 4 6-6"></path></svg>`, "Ecosystem Intelligence", "Maintain the city&rsquo;s startup database, ecosystem dashboard, innovation reports, and research insights to support better decision-making."],
+        ["#E7F3EC", `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A6B3C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V12M12 12C12 7 9 4 5 3c0 5 2 8 7 9ZM12 12c0-5 3-8 7-9 0 5-2 8-7 9Z"></path></svg>`, "Ecosystem Development", "Design initiatives that strengthen collaboration, increase startup activity, and grow Baguio&rsquo;s innovation ecosystem over time."],
       ].map((c) => `
-      <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:20px;padding:30px;display:flex;flex-direction:column;">
-        <div style="width:58px;height:58px;border-radius:9999px;background:${c[0]};display:flex;align-items:center;justify-content:center;margin-bottom:20px;">${c[1]}</div>
-        <h3 style="margin:0 0 10px;font-size:20px;font-weight:700;letter-spacing:-0.01em;color:#141417;">${c[2]}</h3>
-        <p style="margin:0 0 22px;font-size:14.5px;line-height:1.55;color:#6B6B73;">${c[3]}</p>
-        <a href="#" style="margin-top:auto;display:inline-flex;align-items:center;gap:8px;font-size:14.5px;font-weight:700;color:#F26522;text-decoration:none;">Learn more<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:20px;padding:28px;display:flex;flex-direction:column;">
+        <div style="width:54px;height:54px;border-radius:9999px;background:${c[0]};display:flex;align-items:center;justify-content:center;margin-bottom:18px;">${c[1]}</div>
+        <h3 style="margin:0 0 10px;font-size:18px;font-weight:700;letter-spacing:-0.01em;color:#141417;">${c[2]}</h3>
+        <p style="margin:0;font-size:14px;line-height:1.55;color:#6B6B73;">${c[3]}</p>
       </div>`).join("")}
     </div>
   </div>
