@@ -45,6 +45,15 @@ export const KPIS = [
     spark: [18, 28, 42, 62, 88, 112, 132, 148],
   },
   {
+    label: "Funding Raised (YTD)",
+    value: "₱36M",
+    delta: "↑ +13.4%",
+    deltaNote: "vs Apr 2026",
+    color: "#9E2A52",
+    bg: "rgba(158,42,82,0.10)",
+    spark: [4, 7, 10, 15, 20, 26, 31, 36],
+  },
+  {
     label: "Open Challenges",
     value: "18",
     delta: "↑ +6",
@@ -54,13 +63,13 @@ export const KPIS = [
     spark: [3, 5, 7, 9, 11, 14, 16, 18],
   },
   {
-    label: "Funding Raised (YTD)",
-    value: "₱36M",
-    delta: "↑ +13.4%",
-    deltaNote: "vs Apr 2026",
-    color: "#9E2A52",
-    bg: "rgba(158,42,82,0.10)",
-    spark: [4, 7, 10, 15, 20, 26, 31, 36],
+    label: "Mentor Pool",
+    value: "46",
+    delta: "↑ +9.5%",
+    deltaNote: "vs Q1 2026",
+    color: "#3A5FA0",
+    bg: "rgba(58,95,160,0.10)",
+    spark: [22, 26, 30, 34, 38, 41, 44, 46],
   },
 ];
 
@@ -85,6 +94,15 @@ export const STAGE_MIX = [
   { label: "Launch", count: 26, color: ORANGE },
   { label: "MVP", count: 31, color: "#F5A623" },
   { label: "Idea", count: 17, color: "#DEDAD2" },
+];
+
+export const TBI_BREAKDOWN = [
+  { label: "Independent / Non-TBI Affiliated", count: 28, pct: 34.1, color: "#9A958B" },
+  { label: "UC InTTO", count: 14, pct: 17.1, color: "#285E7A" },
+  { label: "SLU SIRIB", count: 13, pct: 15.9, color: "#F5A623" },
+  { label: "UPB SILBI", count: 11, pct: 13.4, color: "#9E2A52" },
+  { label: "BSU-ATBI", count: 10, pct: 12.2, color: "#1A6B3C" },
+  { label: "DOST Regional TBI", count: 6, pct: 7.3, color: "#3A5FA0" },
 ];
 
 export const MATURITY_AXES = [
