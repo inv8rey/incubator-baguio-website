@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Founders — Baguio Ecosystem</title>
+<meta name="viewport" content="width=1440">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gdk:#14532D; --gmd:#15803D; --glt:#DCFCE7; --g50:#F0FDF4;
+  --orange:#F97149; --orange-lt:#FFF0EB;
+  --green:#22C55E; --green-lt:#DCFCE7;
+  --red:#EF4444; --red-lt:#FEF2F2;
+  --amber:#F6A723; --amber-lt:#FFF8EC;
+  --violet:#8B5CF6; --violet-lt:#F5F3FF;
+  --blue:#2D6BFF; --blue-lt:#EFF6FF;
+  --teal:#0D9488; --teal-lt:#F0FDFA;
+  --bg:#F8FAFC; --card:#fff;
+  --ink:#111827; --ink-2:#1F2937; --ink-3:#6B7280; --ink-4:#9CA3AF;
+  --line:#E5E7EB; --line-2:#F3F4F6;
+  --r:12px; --r-sm:10px; --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --font:"Inter",ui-sans-serif,system-ui,sans-serif;
+  --mono:"ui-monospace","SFMono-Regular",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font-family:var(--font);cursor:pointer;border:none;background:none;color:inherit;padding:0}
+input,select{font-family:var(--font)}
+a{text-decoration:none;color:inherit}
+.stage{width:1440px;transform-origin:top left}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--card);padding:20px 14px 24px;display:flex;flex-direction:column;gap:2px;border-right:1px solid var(--line);min-height:100vh;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:11px;padding:6px 10px 22px}
+.brand-icon{width:38px;height:38px;background:var(--g50);border-radius:10px;display:grid;place-items:center;flex:none;border:1.5px solid var(--glt)}
+.brand-name{font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.15}
+.brand-sub{font-size:10.5px;color:var(--ink-3);margin-top:1px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:13.5px;font-weight:500;color:var(--ink-3);width:100%;transition:background .12s,color .12s;text-align:left}
+.nav-item:hover{background:var(--g50);color:var(--gdk)}
+.nav-item.active{background:var(--g50);color:var(--gdk);font-weight:600}
+.nav-item .nav-cnt{margin-left:auto;font-size:11px;font-weight:600;color:var(--ink-4);background:var(--line);padding:1px 7px;border-radius:999px}
+.nav-item.active .nav-cnt{color:var(--gdk);background:var(--glt)}
+.sidebar-spacer{flex:1}
+.nav-item.logout{color:var(--orange)}
+.nav-item.logout:hover{background:var(--orange-lt)}
+
+/* ── MAIN ── */
+.main{display:flex;flex-direction:column;min-width:0}
+
+/* ── TOP BAR ── */
+.topbar{display:flex;align-items:center;padding:16px 28px;background:var(--card);border-bottom:1.5px solid var(--line);gap:16px}
+.page-title{font-size:30px;font-weight:800;color:var(--ink);letter-spacing:-.025em;flex:none}
+.topbar-sub{font-size:13px;color:var(--ink-3);font-weight:400;flex:1}
+.topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:7px 14px;min-width:220px;transition:border-color .12s}
+.search-box:focus-within{border-color:var(--glt)}
+.search-box input{border:none;outline:none;background:transparent;font-size:13px;color:var(--ink);width:100%}
+.search-box input::placeholder{color:var(--ink-4)}
+.notif-btn{position:relative;width:36px;height:36px;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;display:grid;place-items:center}
+.notif-dot{position:absolute;top:-3px;right:-3px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid var(--card)}
+.user-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#14532D,#16A34A);display:grid;place-items:center;color:#fff;font-size:12px;font-weight:700;cursor:pointer}
+
+/* ── CONTENT ── */
+.content{padding:18px 28px 32px;display:flex;flex-direction:column;gap:18px}
+
+/* ── STAT STRIP ── */
+.stat-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.stat-card{background:var(--card);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh);border:1.5px solid var(--line)}
+.stat-icon{width:38px;height:38px;border-radius:9px;display:grid;place-items:center;margin-bottom:10px}
+.stat-label{font-size:11px;color:var(--ink-3);font-weight:500;margin-bottom:4px}
+.stat-val{font-size:24px;font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1;font-feature-settings:"tnum"}
+.stat-sub{font-size:11px;color:var(--ink-4);margin-top:5px;display:flex;align-items:center;gap:4px}
+.stat-sub .up{color:var(--gmd);font-weight:600} .stat-sub .dn{color:var(--orange);font-weight:600}
+
+/* ── FILTER BAR ── */
+.filter-bar{background:var(--card);border-radius:var(--r);padding:12px 18px;box-shadow:var(--sh);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.stage-tabs{display:flex;background:var(--bg);border-radius:50px;padding:3px;gap:2px}
+.stab{padding:6px 14px;border-radius:50px;font-size:12.5px;font-weight:500;color:var(--ink-3);display:inline-flex;align-items:center;gap:5px;transition:background .12s,color .12s;white-space:nowrap}
+.stab.on{background:var(--gdk);color:#fff;font-weight:600}
+.stab:hover:not(.on){background:var(--line);color:var(--ink-2)}
+.stab .cnt{font-size:10px;background:rgba(255,255,255,.25);padding:1px 5px;border-radius:999px}
+.stab:not(.on) .cnt{background:var(--line);color:var(--ink-3)}
+.filter-divider{width:1px;height:26px;background:var(--line);margin:0 2px}
+.chip-row{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.chip{display:inline-flex;align-items:center;font-size:12px;font-weight:500;padding:5px 11px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--ink-3);transition:all .12s;white-space:nowrap;cursor:pointer}
+.chip:hover{border-color:var(--glt);color:var(--gdk)}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.filter-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+.btn-icon{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:50px;font-size:12.5px;font-weight:600;border:1.5px solid var(--line);background:var(--card);color:var(--ink-3);transition:all .12s;white-space:nowrap;cursor:pointer}
+.btn-icon:hover{border-color:var(--glt);color:var(--gdk)}
+.btn-icon.primary{background:var(--gdk);color:#fff;border-color:var(--gdk)}
+.btn-icon.primary:hover{background:var(--gmd)}
+.results-bar{display:flex;align-items:center;justify-content:space-between;padding:2px 4px}
+.results-bar .count-txt{font-size:13px;color:var(--ink-3)}
+.results-bar .count-txt b{color:var(--ink-2);font-weight:600}
+
+/* ── TAG PILLS ── */
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.tag-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.tag-active{color:#15803D;background:#DCFCE7}
+.tag-inactive{color:#6B7280;background:#F3F4F6}
+.tag-grey{color:var(--ink-3);background:var(--bg)}
+.tag-featured{color:#8B5CF6;background:#F5F3FF}
+.tag-idea{color:#F6A723;background:#FFF8EC}
+.tag-launch{color:#15803D;background:#DCFCE7}
+.tag-growth{color:#22C55E;background:#DCFCE7}
+.tag-female{color:#EC4899;background:#FDF2F8}
+.tag-male{color:#3B82F6;background:#EFF6FF}
+
+/* ── TABLE ── */
+.tbl-card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;border:1.5px solid var(--line)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;color:var(--ink-4);padding:12px 14px;background:var(--bg);border-bottom:1.5px solid var(--line)}
+.tbl thead th:first-child{padding-left:20px}
+.tbl tbody td{padding:13px 14px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:middle}
+.tbl tbody td:first-child{padding-left:20px}
+.tbl tbody tr{cursor:pointer;transition:background .1s}
+.tbl tbody tr:hover{background:var(--g50)}
+.tbl tbody tr:last-child td{border-bottom:none}
+.name-cell{display:flex;align-items:center;gap:10px}
+.f-av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:700;flex:none}
+.f-av-sq{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:700;flex:none}
+.name-main{font-size:13.5px;font-weight:600;color:var(--ink)}
+.name-id{font-size:10.5px;color:var(--ink-4);margin-top:1px}
+
+/* ── CARDS GRID ── */
+.card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.f-card{background:var(--card);border-radius:var(--r);padding:20px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:12px;cursor:pointer;transition:box-shadow .15s,transform .15s;border:1.5px solid var(--line);text-align:center}
+.f-card:hover{box-shadow:0 4px 16px rgba(20,83,45,.10);transform:translateY(-2px);border-color:var(--glt)}
+.f-card-av{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:18px;font-weight:700;margin:0 auto}
+.f-card-name{font-size:14px;font-weight:700;color:var(--ink);margin-top:4px}
+.f-card-role{font-size:11.5px;color:var(--ink-3);margin-top:1px}
+.f-card-tags{display:flex;gap:5px;justify-content:center;flex-wrap:wrap}
+.f-card-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.f-stat{background:var(--bg);border-radius:8px;padding:8px;text-align:center}
+.f-stat-val{font-size:15px;font-weight:700;color:var(--ink);font-feature-settings:"tnum"}
+.f-stat-lbl{font-size:9.5px;color:var(--ink-4);text-transform:uppercase;letter-spacing:.04em;font-weight:600;margin-top:2px}
+.f-card-tbi{font-size:11px;color:var(--ink-4);display:flex;align-items:center;justify-content:center;gap:4px}
+
+/* ── DRAWER ── */
+.drawer-bg{position:fixed;inset:0;z-index:90;background:rgba(27,37,89,.3);opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(2px)}
+.drawer-bg.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:480px;z-index:91;background:var(--card);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;border-radius:20px 0 0 20px;overflow:hidden;box-shadow:-8px 0 40px rgba(27,37,89,.12)}
+.drawer.open{transform:translateX(0)}
+.drawer-head{padding:20px 22px 16px;border-bottom:1.5px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.drawer-body{padding:20px 22px;flex:1;overflow:auto;display:flex;flex-direction:column;gap:20px}
+.drawer-section-title{font-size:10.5px;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:10px}
+.kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px}
+.kv-k{font-size:10.5px;color:var(--ink-4);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.kv-v{font-size:13.5px;color:var(--ink);font-weight:500}
+.close-btn{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--bg);color:var(--ink-3);transition:all .12s}
+.close-btn:hover{background:var(--line);color:var(--ink)}
+.drawer-action-row{display:flex;gap:10px}
+.drawer-action{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:10px;border-radius:12px;font-size:13px;font-weight:600;border:1.5px solid var(--line);color:var(--ink-3);transition:all .12s;cursor:pointer}
+.drawer-action:hover{border-color:var(--glt);color:var(--gdk)}
+.drawer-action.primary{background:var(--gdk);color:#fff;border-color:var(--gdk)}
+.drawer-action.primary:hover{background:var(--gmd)}
+.prog-pill{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px}
+.pp-dot{width:8px;height:8px;border-radius:50%;flex:none}
+.pp-name{font-size:12.5px;font-weight:600;color:var(--ink-2);flex:1}
+.pp-yr{font-size:11px;color:var(--ink-4)}
+
+/* ── MINI CHARTS (analytics strip) ── */
+.mini-charts{display:grid;grid-template-columns:2fr 1.2fr 1.2fr;gap:16px}
+.mc-card{background:var(--card);border-radius:var(--r);padding:20px 22px;box-shadow:var(--sh);border:1.5px solid var(--line)}
+.mc-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.mc-sub{font-size:11.5px;color:var(--ink-4);margin-bottom:16px}
+.h-bars{display:flex;flex-direction:column;gap:10px}
+.h-bar-row{display:flex;flex-direction:column;gap:4px}
+.h-bar-top{display:flex;align-items:center;justify-content:space-between}
+.h-bar-name{font-size:12px;font-weight:500;color:var(--ink-2)}
+.h-bar-val{font-size:12px;font-weight:600;color:var(--ink-3);font-feature-settings:"tnum"}
+.h-bar-track{height:7px;background:var(--line-2);border-radius:999px;overflow:hidden}
+.h-bar-fill{height:100%;border-radius:999px}
+.donut-wrap{display:flex;align-items:center;gap:16px}
+.legend{display:flex;flex-direction:column;gap:7px;flex:1}
+.leg-row{display:flex;align-items:center;gap:8px}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex:none}
+.leg-name{font-size:12px;color:var(--ink-2);font-weight:500;flex:1}
+.leg-val{font-size:12px;font-weight:600;color:var(--ink);font-feature-settings:"tnum"}
+.leg-pct{font-size:10.5px;color:var(--ink-4);margin-left:2px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+function fit(){const s=document.querySelector('.stage');if(!s)return;const w=document.documentElement.clientWidth,sc=Math.min(1,w/1440);s.style.transform=`scale(${sc})`;document.body.style.height=s.getBoundingClientRect().height+'px';}
+addEventListener('resize',fit);addEventListener('load',()=>{fit();setTimeout(fit,100);setTimeout(fit,600);});
+new MutationObserver(fit).observe(document.body,{childList:true,subtree:true});
+</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel">
+const { useState, useMemo } = React;
+
+// ── DATA ──────────────────────────────────────────────────────────
+const FOUNDERS = [
+  { id:"FD-001", name:"Iloisa Romaraog Diga",   initials:"ID", gender:"F", status:"active",   role:"CEO & Co-founder",  startup:"Session Groceries",   startupId:"BG-019", sector:"AgriTech",    tbi:"Independent",  city:"Baguio",      yr:2016, funding:2.40, stage:"growth",  programs:["Gawad Pilipino","Productivity Olympics"], bio:"Pioneer of the farm-to-consumer model in Benguet. Former DTI-CAR trade specialist. Led the franchise expansion of Session Groceries to 3 barangay hubs.", linkedin:"verified", recognitions:["Gawad Pilipino 2019 Finalist","Prod. Olympics Gold 2021","Top 40 Under 40 CAR 2022"], color:"#2A8A52" },
+  { id:"FD-002", name:"Mark Villanueva",         initials:"MV", gender:"M", status:"active",   role:"CTO & Co-founder",  startup:"Session Groceries",   startupId:"BG-019", sector:"AgriTech",    tbi:"Independent",  city:"Baguio",      yr:2016, funding:2.40, stage:"growth",  programs:["DICT SCALE Up"], bio:"Full-stack engineer turned agri-tech builder. Built the farm inventory and logistics platform underpinning Session Groceries.", linkedin:"unverified", recognitions:[], color:"#2A8A52" },
+  { id:"FD-003", name:"Ana Bettina Cruz",        initials:"AC", gender:"F", status:"active",   role:"CEO & Founder",     startup:"IOL Inc.",            startupId:"BG-022", sector:"FinTech",     tbi:"UC InTTO",     city:"Baguio",      yr:2018, funding:1.85, stage:"growth",  programs:["ARISE Plus Ye! Boost","CNN Final Pitch","QBO L5"], bio:"Serial builder focused on cooperative digitization. Former BDO retail operations analyst. IOL's pivot to EdTech was driven by her partnership with three Benguet cooperatives.", linkedin:"verified", recognitions:["CNN Final Pitch Finalist 2019","ARISE Plus Ye! Boost Top 3 2022"], color:"#14532D" },
+  { id:"FD-004", name:"Jason Balangue",          initials:"JB", gender:"M", status:"active",   role:"CEO & Co-founder",  startup:"When In Baguio",      startupId:"BG-031", sector:"Tourism",     tbi:"Independent",  city:"Baguio",      yr:2017, funding:0.95, stage:"growth",  programs:[], bio:"Digital media operator and content strategist. Grew When In Baguio from a Facebook page to the top tourism content platform in Northern Luzon.", linkedin:"verified", recognitions:[], color:"#B5781E" },
+  { id:"FD-005", name:"Christine Mina",          initials:"CM", gender:"F", status:"active",   role:"Country Director",  startup:"VIVITA PH",           startupId:"BG-044", sector:"EdTech",      tbi:"UPB SILBI",    city:"Baguio",      yr:2021, funding:0.52, stage:"launch",  programs:["TARAKI Batch 2","QBO L4"], bio:"Educator and design-thinking facilitator. Leads VIVITA's Philippines operations. Background in Montessori and STEM education curriculum design.", linkedin:"verified", recognitions:[], color:"#6B5BD6" },
+  { id:"FD-006", name:"Renato Acosta Jr.",       initials:"RA", gender:"M", status:"active",   role:"CEO & Founder",     startup:"Dontog Technofarms",  startupId:"BG-088", sector:"AgriTech",    tbi:"BSU-ATBI",     city:"La Trinidad", yr:2023, funding:0.42, stage:"launch",  programs:["BSU AgriTech Hub","WHWise 2024"], bio:"Agricultural engineer and former DOST-CAR researcher. Dontog Technofarms grew from his thesis on IoT soil sensors for Benguet vegetable farms.", linkedin:"verified", recognitions:[], color:"#2A8A52" },
+  { id:"FD-007", name:"Bea Santos",              initials:"BS", gender:"F", status:"active",   role:"Founder",           startup:"theneutral.space",    startupId:"BG-091", sector:"Community",   tbi:"Independent",  city:"Baguio",      yr:2023, funding:0.22, stage:"launch",  programs:["SIGLAT Bootcamp Q1 2023"], bio:"Community organizer and co-working advocate. Opened the first drop-in co-working space in Session Road corridor, now hosting 40+ regular members.", linkedin:"verified", recognitions:[], color:"#475569" },
+  { id:"FD-008", name:"Leo Dangwa",              initials:"LD", gender:"M", status:"active",   role:"CEO & Co-founder",  startup:"Sunshare",            startupId:"BG-073", sector:"GreenTech",   tbi:"SLU SIRIB",    city:"Baguio",      yr:2022, funding:0.18, stage:"idea",    programs:["PSHS-CAR InnoHub","DOST-SETUP 2024"], bio:"Electrical engineering graduate from Saint Louis University. Sunshare's solar-sharing model was first prototyped in the Burnham Park neighborhood pilot.", linkedin:"unverified", recognitions:[], color:"#0E5C44" },
+  { id:"FD-009", name:"Maria Carla Bautista",    initials:"MB", gender:"F", status:"active",   role:"CEO & Founder",     startup:"Dulche Chocolates",   startupId:"BG-138", sector:"FoodTech",    tbi:"Independent",  city:"Baguio",      yr:2020, funding:0.28, stage:"launch",  programs:["DTI Productivity Olympics 2022"], bio:"Pastry chef and Cordillera cacao advocate. Sources 100% of her cacao from Kalinga farmers through a direct-trade model.", linkedin:"verified", recognitions:["DTI Prod. Olympics Silver 2022"], color:"#8B4513" },
+  { id:"FD-010", name:"Renz dela Cruz",          initials:"RC", gender:"M", status:"active",   role:"CTO & Co-founder",  startup:"Sunshare",            startupId:"BG-073", sector:"GreenTech",   tbi:"SLU SIRIB",    city:"Baguio",      yr:2022, funding:0.18, stage:"idea",    programs:["SLU SIRIB Cohort 2022"], bio:"IoT hardware hacker with a background in renewable energy systems. Manages Sunshare's hardware stack and metering infrastructure.", linkedin:"unverified", recognitions:[], color:"#0E5C44" },
+  { id:"FD-011", name:"Patricia Gomez",          initials:"PG", gender:"F", status:"active",   role:"Founder & Lead Dev",startup:"Adda Ngarud",         startupId:"BG-067", sector:"Social",      tbi:"UC InTTO",     city:"Baguio",      yr:2022, funding:0.00, stage:"idea",    programs:["UC InTTO Cohort 6","TARAKI Batch 3"], bio:"Computer science graduate from UC Baguio. Adda Ngarud ('There at the Back') is her third startup attempt, focusing on indigenous community networking.", linkedin:"verified", recognitions:[], color:"#E68A18" },
+  { id:"FD-012", name:"Karl Tapang",             initials:"KT", gender:"M", status:"active",   role:"CEO & Founder",     startup:"GREENSTACKS, INC.",  startupId:"BG-110", sector:"AgriTech",    tbi:"BSU-ATBI",     city:"La Trinidad", yr:2022, funding:0.10, stage:"idea",    programs:["BSU AgriTech Hub Batch 1"], bio:"Agriculture-business graduate focused on vertical farming. Running high-density lettuce trials in La Trinidad with support from BSU research labs.", linkedin:"unverified", recognitions:[], color:"#2A8A52" },
+  { id:"FD-013", name:"Grace Lingbawan",         initials:"GL", gender:"F", status:"active",   role:"CEO & Co-founder",  startup:"HeySuccess VA Svcs", startupId:"BG-142", sector:"Services",    tbi:"Independent",  city:"Baguio",      yr:2021, funding:0.15, stage:"launch",  programs:["DICT STEP-UP Phase 2"], bio:"Former BPO operations manager. Pivoted to remote-work service provision during COVID. HeySuccess now manages 20+ foreign clients and 30 local VAs.", linkedin:"verified", recognitions:[], color:"#7C3AED" },
+  { id:"FD-014", name:"Jared Padua",             initials:"JP", gender:"M", status:"active",   role:"CTO",               startup:"HeySuccess VA Svcs", startupId:"BG-142", sector:"Services",    tbi:"Independent",  city:"Baguio",      yr:2021, funding:0.15, stage:"launch",  programs:["DICT STEP-UP Phase 2"], bio:"Systems architect and automation specialist. Manages HeySuccess's client tools stack and internal operations software.", linkedin:"unverified", recognitions:[], color:"#7C3AED" },
+  { id:"FD-015", name:"Ryan Pascual",            initials:"RP", gender:"M", status:"active",   role:"CEO & Founder",     startup:"WE R Solutions",     startupId:"BG-119", sector:"ICT",         tbi:"Independent",  city:"Baguio",      yr:2019, funding:0.12, stage:"launch",  programs:["QBO L2"], bio:"IT infrastructure consultant turned startup founder. WE R Solutions services 40+ SME clients across the Cordillera.", linkedin:"verified", recognitions:[], color:"#475569" },
+  { id:"FD-016", name:"Kris Aquino-Manzano",    initials:"KA", gender:"F", status:"active",   role:"CEO & Founder",     startup:"PASYA",               startupId:"BG-131", sector:"Social",      tbi:"UPB SILBI",    city:"Baguio",      yr:2022, funding:0.00, stage:"idea",    programs:["UPB SILBI Batch 3","TARAKI Batch 3"], bio:"Political science graduate building civic-tech at UPB. PASYA aims to bridge barangay service requests with LGU response systems digitally.", linkedin:"verified", recognitions:[], color:"#E68A18" },
+  { id:"FD-017", name:"Marcus Bueno",            initials:"MB", gender:"M", status:"active",   role:"CEO & Co-founder",  startup:"Quadrangle",          startupId:"BG-104", sector:"EdTech",      tbi:"SLU SIRIB",    city:"Baguio",      yr:2024, funding:0.00, stage:"idea",    programs:["SLU SIRIB Cohort 3"], bio:"Third-year CS student at SLU. Quadrangle is a student-led academic tooling platform. First cohort of 80 beta users active across 2 SLU colleges.", linkedin:"unverified", recognitions:[], color:"#6B5BD6" },
+  { id:"FD-018", name:"Diane Cordero",           initials:"DC", gender:"F", status:"inactive", role:"Founder",           startup:"Writaroo",            startupId:"BG-115", sector:"CreativeTech",tbi:"UC InTTO",     city:"Baguio",      yr:2022, funding:0.05, stage:"idea",    programs:["UC InTTO Cohort 5"], bio:"Creative writing instructor and solo dev. Writaroo's AI-assisted writing tool gained early traction but has been dormant for 8 months. Status unverified.", linkedin:"unverified", recognitions:[], color:"#C9342B" },
+  { id:"FD-019", name:"Anton Reyes",             initials:"AR", gender:"M", status:"inactive", role:"CEO & Founder",     startup:"Bitshares (BLINC)",   startupId:"BG-051", sector:"FinTech",     tbi:"Independent",  city:"Baguio",      yr:2020, funding:0.31, stage:"launch",  programs:["DOST-SETUP Batch 2"], bio:"Blockchain developer and former Ethereum ecosystem contributor. BLINC's activity has not been confirmed in over 6 months.", linkedin:"unverified", recognitions:[], color:"#14532D" },
+  { id:"FD-020", name:"Paolo Cristobal",         initials:"PC", gender:"M", status:"inactive", role:"CEO & Founder",     startup:"Crimintech",          startupId:"BG-126", sector:"GovTech",     tbi:"UC InTTO",     city:"Baguio",      yr:2022, funding:0.00, stage:"idea",    programs:["UC InTTO Cohort 6"], bio:"Law student turned civic-tech founder. Crimintech is awaiting re-validation after 10 months of inactivity.", linkedin:"unverified", recognitions:[], color:"#163E2E" },
+];
+
+const SECTOR_COLORS = {
+  AgriTech:"#2A8A52",FinTech:"#14532D",Tourism:"#B5781E",EdTech:"#6B5BD6",
+  Social:"#E68A18",GreenTech:"#0E5C44",Community:"#475569",CreativeTech:"#C9342B",
+  ICT:"#475569",GovTech:"#163E2E",FoodTech:"#8B4513",Services:"#7C3AED",
+};
+const TBIS = ["UC InTTO","SLU SIRIB","UPB SILBI","BSU-ATBI","Independent"];
+const SECTORS_LIST = [...new Set(FOUNDERS.map(f=>f.sector))].sort();
+
+// ── MINI SPARKLINE ─────────────────────────────────────────────────
+const Spark = ({ data, color="#2A8A52", w=60, h=20 }) => {
+  if(!data||data.length<2)return null;
+  const mn=Math.min(...data),mx=Math.max(...data,mn+1);
+  const pts=data.map((v,i)=>`${(i/(data.length-1))*(w-4)+2},${(h-4)-((v-mn)/(mx-mn))*(h-4)+2}`).join(" ");
+  const last=data.map((v,i)=>[(i/(data.length-1))*(w-4)+2,(h-4)-((v-mn)/(mx-mn))*(h-4)+2]);
+  return(
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{overflow:"visible"}}>
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx={last[last.length-1][0]} cy={last[last.length-1][1]} r="2.5" fill={color}/>
+    </svg>
+  );
+};
+
+// ── ICONS ─────────────────────────────────────────────────────────
+const Ico = ({ n, s=16, c="currentColor" }) => {
+  const p={width:s,height:s,viewBox:"0 0 24 24",fill:"none",stroke:c,strokeWidth:1.8,strokeLinecap:"round",strokeLinejoin:"round"};
+  const d={
+    dash:   <svg {...p}><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>,
+    rocket: <svg {...p}><path d="M5 13.5 3 21l7.5-2"/><path d="M14.5 5.5C17 3 21 3 21 3s0 4-2.5 6.5L11 17l-4-4z"/><circle cx="15" cy="9" r="1.2"/></svg>,
+    users:  <svg {...p}><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="7" r="2.4"/><path d="M21 18c0-2.4-1.7-4.5-4-5"/></svg>,
+    coins:  <svg {...p}><ellipse cx="9" cy="7" rx="6" ry="3"/><path d="M3 7v5c0 1.7 2.7 3 6 3s6-1.3 6-3V7"/><path d="M3 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-2"/></svg>,
+    cal:    <svg {...p}><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>,
+    spark:  <svg {...p}><path d="m3 17 4-4 4 3 6-7 4 4"/></svg>,
+    chart:  <svg {...p}><rect x="3" y="11" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="17" rx="1"/></svg>,
+    set:    <svg {...p}><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>,
+    srch:   <svg {...p}><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.5-3.5"/></svg>,
+    bell:   <svg {...p}><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2H4.5z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>,
+    out:    <svg {...p}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>,
+    map:    <svg {...p}><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>,
+    rows:   <svg {...p}><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/></svg>,
+    grid:   <svg {...p}><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
+    plus:   <svg {...p}><path d="M12 5v14M5 12h14"/></svg>,
+    dl:     <svg {...p}><path d="M12 3v12M7 10l5 5 5-5M5 19h14"/></svg>,
+    x:      <svg {...p}><path d="M6 6l12 12M6 18 18 6"/></svg>,
+    check:  <svg {...p}><path d="m5 12 5 5L20 7"/></svg>,
+    chk_c:  <svg {...p}><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>,
+    ext:    <svg {...p}><path d="M14 4h6v6M20 4 11 13"/><path d="M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/></svg>,
+    pin:    <svg {...p}><path d="M12 21s-7-7-7-12a7 7 0 1 1 14 0c0 5-7 12-7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>,
+    tphy:   <svg {...p}><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M5 4h3v3a3 3 0 0 1-3-3zM19 4h-3v3a3 3 0 0 0 3-3z"/><path d="M9 14h6l-1 4h-4zM8 21h8"/></svg>,
+    school: <svg {...p}><path d="M2 9 12 4l10 5-10 5z"/><path d="M6 11v5c0 2 3 4 6 4s6-2 6-4v-5"/></svg>,
+    filter: <svg {...p}><path d="M3 5h18l-7 9v6l-4-2v-4z"/></svg>,
+    chev_r: <svg {...p}><path d="m9 6 6 6-6 6"/></svg>,
+    li:     <svg {...p}><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M7 10v7M7 7v.5"/><path d="M12 17v-5a2 2 0 0 1 4 0v5M12 12v5"/></svg>,
+  };
+  return d[n]||null;
+};
+
+// ── NAV ───────────────────────────────────────────────────────────
+const NAV = [
+  { id:"overview",  label:"Overview",  icon:"dash",  href:"Baguio Innovation Dashboard.html" },
+  { id:"startups",  label:"Startups",  icon:"rocket",cnt:82,  href:"Startups.html" },
+  { id:"founders",  label:"Founders",  icon:"users", cnt:148 },
+  { id:"capital",   label:"Capital",   icon:"coins", href:"Capital.html" },
+  { id:"programs",  label:"Programs",  icon:"cal",   cnt:47,  href:"Programs.html" },
+  { id:"analytics", label:"Analytics", icon:"chart", href:"Analytics.html" },
+  { id:"maturity",  label:"Maturity",  icon:"map",  href:"Maturity.html" },
+  { id:"settings",  label:"Settings",  icon:"set",  href:"Settings.html" },
+];
+const Sidebar = () => (
+  <aside className="sidebar">
+    <div className="brand">
+      <div className="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 36 36" fill="none">
+          <path d="M18 4 L10 16 H14 L8 27 H28 L22 16 H26 Z" fill="#14532D"/>
+          <rect x="16" y="27" width="4" height="4" rx="1" fill="#14532D"/>
+        </svg>
+      </div>
+      <div>
+        <div className="brand-name" style={{fontSize:11,fontWeight:800,color:"#14532D",textTransform:"uppercase",letterSpacing:".03em",lineHeight:1.3}}>Baguio City<br/>Startup Ecosystem</div>
+        <div className="brand-sub">Innovate. Build. Elevate.</div>
+      </div>
+    </div>
+    <nav>
+      {NAV.map(n=>(
+        <button key={n.id} className={`nav-item ${n.id==="founders"?"active":""}`}
+                onClick={()=>{if(n.href)window.location.href=n.href;}}>
+          <Ico n={n.icon} s={16} c={n.id==="founders"?"#14532D":"#9CA3AF"}/>
+          <span style={{flex:1}}>{n.label}</span>
+          {n.cnt!=null&&<span className="nav-cnt">{n.cnt}</span>}
+        </button>
+      ))}
+    </nav>
+    <div className="sidebar-spacer"/>
+    <button className="nav-item logout"><Ico n="out" s={16} c="#F97149"/><span>Log out</span></button>
+  </aside>
+);
+
+// ── DRAWER ────────────────────────────────────────────────────────
+const FounderDrawer = ({ founder: f, onClose }) => {
+  if(!f)return null;
+  const femaleCount = FOUNDERS.filter(x=>x.gender==="F").length;
+  return(
+    <>
+      <div className="drawer-bg show" onClick={onClose}/>
+      <aside className="drawer open" role="dialog">
+        <div className="drawer-head">
+          <div style={{display:"flex",alignItems:"center",gap:14}}>
+            <div style={{width:48,height:48,borderRadius:"50%",background:f.color,display:"grid",placeItems:"center",color:"#fff",fontSize:16,fontWeight:700,flexShrink:0}}>{f.initials}</div>
+            <div>
+              <div style={{fontSize:16,fontWeight:700,color:"var(--ink)"}}>{f.name}</div>
+              <div style={{fontSize:11.5,color:"var(--ink-4)",marginTop:2}}>{f.id} · {f.role}</div>
+            </div>
+          </div>
+          <button className="close-btn" onClick={onClose}><Ico n="x" s={15} c="var(--ink-3)"/></button>
+        </div>
+        <div className="drawer-body">
+          <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+            <span className={`tag tag-${f.status}`}><span className="tag-dot"/>{f.status}</span>
+            <span className={`tag tag-${f.gender==="F"?"female":"male"}`}>{f.gender==="F"?"Female founder":"Male founder"}</span>
+            <span className={`tag tag-${f.stage}`}>{f.stage}</span>
+            <span className="tag tag-grey">{f.sector}</span>
+            {f.linkedin==="verified" && <span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:10.5,fontWeight:600,padding:"3px 8px",borderRadius:999,color:"var(--blue)",background:"var(--blue-lt)"}}><Ico n="li" s={10} c="var(--blue)"/>LinkedIn verified</span>}
+          </div>
+
+          <p style={{fontSize:13,color:"var(--ink-3)",lineHeight:1.55}}>{f.bio}</p>
+
+          <div>
+            <div className="drawer-section-title">Details</div>
+            <div className="kv-grid">
+              <div><div className="kv-k">Startup</div><div className="kv-v">{f.startup}</div></div>
+              <div><div className="kv-k">TBI / Incubator</div><div className="kv-v">{f.tbi}</div></div>
+              <div><div className="kv-k">City</div><div className="kv-v">{f.city}</div></div>
+              <div><div className="kv-k">Founded</div><div className="kv-v">{f.yr}</div></div>
+              <div><div className="kv-k">Sector</div><div className="kv-v">{f.sector}</div></div>
+              <div><div className="kv-k">Funding raised</div><div className="kv-v">{f.funding===0?"—":`₱${f.funding.toFixed(2)}M`}</div></div>
+            </div>
+          </div>
+
+          {f.programs.length>0 && (
+            <div>
+              <div className="drawer-section-title">Programs &amp; Support</div>
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {f.programs.map((p,i)=>(
+                  <div key={i} className="prog-pill">
+                    <div className="pp-dot" style={{background:"var(--gmd)"}}/>
+                    <span className="pp-name">{p}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {f.recognitions.length>0 && (
+            <div>
+              <div className="drawer-section-title">Recognition</div>
+              <div style={{display:"flex",flexDirection:"column",gap:7}}>
+                {f.recognitions.map((r,i)=>(
+                  <div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"9px 12px",border:"1.5px solid var(--line)",borderRadius:10,fontSize:12.5,color:"var(--ink-2)"}}>
+                    <Ico n="tphy" s={14} c="var(--amber)"/>{r}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="drawer-action-row">
+            <button className="drawer-action"><Ico n="ext" s={13}/>View profile</button>
+            <button className="drawer-action primary"><Ico n="pin" s={13}/>Add to watchlist</button>
+          </div>
+        </div>
+      </aside>
+    </>
+  );
+};
+
+// ── ANALYTICS STRIP ──────────────────────────────────────────────
+const AnalyticsStrip = () => {
+  const femaleCount = FOUNDERS.filter(f=>f.gender==="F").length;
+  const maleCount   = FOUNDERS.filter(f=>f.gender==="M").length;
+  const tbiCounts   = TBIS.map(t=>({ name:t, n:FOUNDERS.filter(f=>f.tbi===t).length })).sort((a,b)=>b.n-a.n);
+  const sectorMap   = {};
+  FOUNDERS.forEach(f=>{ sectorMap[f.sector]=(sectorMap[f.sector]||0)+1; });
+  const topSectors  = Object.entries(sectorMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const total       = FOUNDERS.length;
+  const maxTbi      = Math.max(...tbiCounts.map(t=>t.n));
+
+  const DonutGender = () => {
+    const r=46,cx=56,cy=56,stroke=18,circ=2*Math.PI*r;
+    const fpct=femaleCount/total, fdash=fpct*circ;
+    return(
+      <svg width={112} height={112} viewBox="0 0 112 112">
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke="#EC4899" strokeWidth={stroke}
+          strokeDasharray={`${fdash} ${circ-fdash}`}
+          style={{transform:"rotate(-90deg)",transformOrigin:"56px 56px"}}/>
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke="#3B82F6" strokeWidth={stroke}
+          strokeDasharray={`${circ-fdash} ${fdash}`}
+          strokeDashoffset={-fdash}
+          style={{transform:"rotate(-90deg)",transformOrigin:"56px 56px"}}/>
+        <text x={cx} y={cy-6} textAnchor="middle" fontSize="18" fontWeight="700" fill="#111827" fontFamily="Inter,sans-serif">{femaleCount}</text>
+        <text x={cx} y={cy+12} textAnchor="middle" fontSize="9.5" fill="#9CA3AF" fontFamily="Inter,sans-serif">female</text>
+      </svg>
+    );
+  };
+
+  return(
+    <div className="mini-charts">
+      <div className="mc-card">
+        <div className="mc-title">Founders by TBI / Affiliation</div>
+        <div className="mc-sub">Counted by incubator or independent status</div>
+        <div className="h-bars">
+          {tbiCounts.map(t=>(
+            <div key={t.name} className="h-bar-row">
+              <div className="h-bar-top">
+                <div className="h-bar-name">{t.name}</div>
+                <div className="h-bar-val">{t.n}</div>
+              </div>
+              <div className="h-bar-track">
+                <div className="h-bar-fill" style={{width:`${(t.n/maxTbi)*100}%`,background:"var(--gmd)"}}/>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mc-card">
+        <div className="mc-title">Gender Split</div>
+        <div className="mc-sub">Among all 20 tracked founders</div>
+        <div className="donut-wrap" style={{marginTop:8}}>
+          <DonutGender/>
+          <div className="legend">
+            <div className="leg-row"><div className="leg-dot" style={{background:"#EC4899"}}/><span className="leg-name">Female</span><span className="leg-val">{femaleCount}</span><span className="leg-pct">{Math.round(femaleCount/total*100)}%</span></div>
+            <div className="leg-row"><div className="leg-dot" style={{background:"#3B82F6"}}/><span className="leg-name">Male</span><span className="leg-val">{maleCount}</span><span className="leg-pct">{Math.round(maleCount/total*100)}%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mc-card">
+        <div className="mc-title">Top Sectors</div>
+        <div className="mc-sub">Founders per sector</div>
+        <div className="h-bars">
+          {topSectors.map(([sec,n])=>(
+            <div key={sec} className="h-bar-row">
+              <div className="h-bar-top">
+                <div className="h-bar-name">{sec}</div>
+                <div className="h-bar-val">{n}</div>
+              </div>
+              <div className="h-bar-track">
+                <div className="h-bar-fill" style={{width:`${(n/topSectors[0][1])*100}%`,background:SECTOR_COLORS[sec]||"var(--gmd)"}}/>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ── APP ───────────────────────────────────────────────────────────
+function App() {
+  const [view, setView]     = useState("table");
+  const [status, setStatus] = useState("all");
+  const [tbi, setTbi]       = useState(null);
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState(null);
+
+  const filtered = useMemo(()=>{
+    let r = FOUNDERS;
+    if(status!=="all") r=r.filter(f=>f.status===status);
+    if(tbi) r=r.filter(f=>f.tbi===tbi);
+    if(search.trim()){
+      const q=search.trim().toLowerCase();
+      r=r.filter(f=>f.name.toLowerCase().includes(q)||f.startup.toLowerCase().includes(q)||f.sector.toLowerCase().includes(q)||f.tbi.toLowerCase().includes(q));
+    }
+    return r;
+  },[status,tbi,search]);
+
+  const active   = FOUNDERS.filter(f=>f.status==="active").length;
+  const inactive = FOUNDERS.filter(f=>f.status==="inactive").length;
+  const female   = FOUNDERS.filter(f=>f.gender==="F").length;
+  const progmed  = FOUNDERS.filter(f=>f.programs.length>0).length;
+
+  return(
+    <div className="stage">
+      <div className="app">
+        <Sidebar/>
+        <main className="main">
+          <div className="topbar">
+            <div>
+              <div className="page-title">Founders</div>
+              <div style={{fontSize:12,color:"var(--ink-3)",marginTop:2}}>Founder directory — Baguio-BLISTT startup ecosystem · 2018–2025</div>
+            </div>
+            <div className="topbar-right">
+              <div className="search-box">
+                <Ico n="srch" s={14} c="var(--ink-4)"/>
+                <input placeholder="Search founders, startups…" value={search} onChange={e=>setSearch(e.target.value)}/>
+                <span style={{fontSize:10,color:"var(--ink-4)",background:"var(--line)",borderRadius:4,padding:"1px 5px",fontWeight:500}}>⌘K</span>
+              </div>
+              <button className="notif-btn">
+                <Ico n="bell" s={14} c="var(--ink-3)"/>
+                <span className="notif-dot"/>
+              </button>
+              <div className="user-av">LG</div>
+            </div>
+          </div>
+
+          <div className="content">
+            {/* Stats */}
+            <div className="stat-strip">
+              {[
+                {icon:"users",  bg:"#DCFCE7", ic:"#14532D", label:"Total Founders",         val:"148",  sub:<><span className="up">+46</span> since 2024</>},
+                {icon:"chk_c",  bg:"#EFF6FF", ic:"#2D6BFF", label:"Active founders",        val:active, sub:"in active startups"},
+                {icon:"users",  bg:"#FDF2F8", ic:"#EC4899", label:"Female founders",        val:female, sub:<><span className="up">{Math.round(female/FOUNDERS.length*100)}%</span> of tracked</>},
+                {icon:"school", bg:"#F5F3FF", ic:"#8B5CF6", label:"Program participants",   val:progmed,sub:"enrolled in ≥1 program"},
+                {icon:"coins",  bg:"#FFF8EC", ic:"#B5781E", label:"Avg. funding raised",    val:"₱0.44M",sub:"among funded founders"},
+              ].map(s=>(
+                <div key={s.label} className="stat-card">
+                  <div className="stat-icon" style={{background:s.bg}}>
+                    <Ico n={s.icon} s={18} c={s.ic}/>
+                  </div>
+                  <div className="stat-label">{s.label}</div>
+                  <div className="stat-val">{s.val}</div>
+                  <div className="stat-sub">{s.sub}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Analytics strip */}
+            <AnalyticsStrip/>
+
+            {/* Filters */}
+            <div className="filter-bar">
+              <div className="stage-tabs">
+                {[["all","All",FOUNDERS.length],["active","Active",active],["inactive","Inactive",inactive]].map(([v,l,n])=>(
+                  <button key={v} className={`stab ${status===v?"on":""}`} onClick={()=>setStatus(v)}>
+                    {l}<span className="cnt">{n}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="filter-divider"/>
+              <div className="chip-row">
+                {TBIS.map(t=>(
+                  <button key={t} className={`chip ${tbi===t?"on":""}`} onClick={()=>setTbi(tbi===t?null:t)}>{t}</button>
+                ))}
+              </div>
+              <div className="filter-actions">
+                <div style={{display:"flex",background:"var(--bg)",border:"1.5px solid var(--line)",borderRadius:10,padding:2,gap:2}}>
+                  <button style={{width:30,height:28,borderRadius:8,display:"grid",placeItems:"center",color:view==="table"?"var(--gdk)":"var(--ink-4)",background:view==="table"?"var(--card)":"transparent",cursor:"pointer",border:"none"}} onClick={()=>setView("table")}><Ico n="rows" s={14}/></button>
+                  <button style={{width:30,height:28,borderRadius:8,display:"grid",placeItems:"center",color:view==="grid"?"var(--gdk)":"var(--ink-4)",background:view==="grid"?"var(--card)":"transparent",cursor:"pointer",border:"none"}} onClick={()=>setView("grid")}><Ico n="grid" s={14}/></button>
+                </div>
+                <button className="btn-icon primary"><Ico n="plus" s={14}/>Add founder</button>
+              </div>
+            </div>
+
+            {/* Results */}
+            <div className="results-bar">
+              <span className="count-txt">Showing <b>{filtered.length}</b> of <b>{FOUNDERS.length}</b> founders</span>
+              <button className="btn-icon"><Ico n="dl" s={13}/>Export</button>
+            </div>
+
+            {/* Views */}
+            {view==="table" ? (
+              <div className="tbl-card">
+                <table className="tbl">
+                  <thead>
+                    <tr>
+                      <th>Founder</th>
+                      <th>Role</th>
+                      <th>Startup</th>
+                      <th>TBI</th>
+                      <th>Sector</th>
+                      <th>Stage</th>
+                      <th>City</th>
+                      <th style={{textAlign:"right"}}>Funding</th>
+                      <th>Programs</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map(f=>(
+                      <tr key={f.id} onClick={()=>setSelected(f)}>
+                        <td>
+                          <div className="name-cell">
+                            <div className="f-av" style={{background:f.color}}>{f.initials}</div>
+                            <div>
+                              <div className="name-main">{f.name}{f.gender==="F"&&<span style={{marginLeft:5,fontSize:10,color:"#EC4899"}}>♀</span>}</div>
+                              <div className="name-id">{f.id}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td style={{fontSize:12,color:"var(--ink-3)"}}>{f.role}</td>
+                        <td style={{fontSize:12.5,fontWeight:500,color:"var(--ink-2)"}}>{f.startup}</td>
+                        <td style={{fontSize:12,color:"var(--ink-3)"}}>{f.tbi}</td>
+                        <td style={{fontSize:12,color:"var(--ink-3)"}}>{f.sector}</td>
+                        <td><span className={`tag tag-${f.stage}`}><span className="tag-dot"/>{f.stage}</span></td>
+                        <td style={{fontSize:12,color:"var(--ink-3)"}}>{f.city}</td>
+                        <td style={{textAlign:"right",fontWeight:600,fontSize:12.5,fontFeatureSettings:'"tnum"'}}>{f.funding===0?"—":`₱${f.funding.toFixed(2)}M`}</td>
+                        <td>
+                          {f.programs.length>0
+                            ? <span style={{fontSize:11.5,color:"var(--gmd)",fontWeight:600}}>{f.programs.length} program{f.programs.length>1?"s":""}</span>
+                            : <span style={{fontSize:11.5,color:"var(--ink-4)"}}>—</span>}
+                        </td>
+                        <td><span className={`tag tag-${f.status}`}><span className="tag-dot"/>{f.status}</span></td>
+                      </tr>
+                    ))}
+                    {filtered.length===0&&(
+                      <tr><td colSpan="10" style={{padding:"40px 20px",textAlign:"center",color:"var(--ink-3)"}}>No founders match your filters.</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="card-grid">
+                {filtered.map(f=>(
+                  <div key={f.id} className="f-card" onClick={()=>setSelected(f)}>
+                    <div className="f-card-av" style={{background:f.color}}>{f.initials}</div>
+                    <div className="f-card-name">{f.name}</div>
+                    <div className="f-card-role">{f.role}</div>
+                    <div className="f-card-tags">
+                      <span className={`tag tag-${f.status}`}><span className="tag-dot"/>{f.status}</span>
+                      <span className={`tag tag-${f.gender==="F"?"female":"male"}`}>{f.gender==="F"?"Female":"Male"}</span>
+                    </div>
+                    <div className="f-card-stats">
+                      <div className="f-stat"><div className="f-stat-val">{f.funding===0?"—":`₱${f.funding.toFixed(1)}M`}</div><div className="f-stat-lbl">Funding</div></div>
+                      <div className="f-stat"><div className="f-stat-val">{f.programs.length}</div><div className="f-stat-lbl">Programs</div></div>
+                    </div>
+                    <div className="f-card-tbi"><Ico n="school" s={11} c="var(--ink-4)"/>{f.tbi}</div>
+                  </div>
+                ))}
+                {filtered.length===0&&(
+                  <div style={{gridColumn:"1/-1",padding:"48px 24px",textAlign:"center",color:"var(--ink-3)"}}>
+                    <div style={{fontSize:14,fontWeight:600,color:"var(--ink-2)",marginBottom:4}}>No founders found</div>
+                    <div style={{fontSize:12}}>Try adjusting your filters.</div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
+      <FounderDrawer founder={selected} onClose={()=>setSelected(null)}/>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App/>);
+</script>
+</body>
+</html>

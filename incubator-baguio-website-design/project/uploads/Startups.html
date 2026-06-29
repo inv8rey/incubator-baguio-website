@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Startups — Baguio Ecosystem</title>
+<meta name="viewport" content="width=1440">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gdk:#14532D; --gmd:#15803D; --glt:#DCFCE7; --g50:#F0FDF4;
+  /* alias old vars to green palette */
+  --blue:var(--gmd); --blue-lt:var(--g50); --blue-mid:var(--glt);
+  --orange:#F97149; --orange-lt:#FFF0EB;
+  --green:#22C55E; --green-lt:#DCFCE7;
+  --red:#EF4444; --red-lt:#FEF2F2;
+  --amber:#F6A723; --amber-lt:#FFF8EC;
+  --violet:#8B5CF6; --violet-lt:#F5F3FF;
+  --bg:#F8FAFC; --card:#fff;
+  --ink:#111827; --ink-2:#1F2937; --ink-3:#6B7280; --ink-4:#9CA3AF;
+  --line:#E5E7EB;
+  --r:12px; --r-sm:10px; --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --font:"Inter",ui-sans-serif,system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font-family:var(--font);cursor:pointer;border:none;background:none;color:inherit;padding:0}
+input,select{font-family:var(--font)}
+a{text-decoration:none;color:inherit}
+
+.stage{width:1440px;transform-origin:top left}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--card);padding:20px 14px 24px;display:flex;flex-direction:column;gap:2px;border-right:1px solid var(--line);min-height:100vh;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:11px;padding:6px 10px 22px}
+.brand-icon{width:38px;height:38px;background:var(--g50);border-radius:10px;display:grid;place-items:center;flex:none;border:1.5px solid var(--glt)}
+.brand-name{font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.15}
+.brand-sub{font-size:10.5px;color:var(--ink-3);margin-top:1px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:13.5px;font-weight:500;color:var(--ink-3);width:100%;transition:background .12s,color .12s;text-align:left}
+.nav-item:hover{background:var(--g50);color:var(--gdk)}
+.nav-item.active{background:var(--g50);color:var(--gdk);font-weight:600}
+.nav-item .nav-cnt{margin-left:auto;font-size:11px;font-weight:600;color:var(--ink-4);background:var(--line);padding:1px 7px;border-radius:999px}
+.nav-item.active .nav-cnt{color:var(--gdk);background:var(--glt)}
+.sidebar-spacer{flex:1}
+.nav-item.logout{color:var(--orange)}
+.nav-item.logout:hover{background:var(--orange-lt)}
+
+/* ── MAIN ── */
+.main{display:flex;flex-direction:column;min-width:0}
+
+/* ── TOP BAR ── */
+.topbar{display:flex;align-items:center;padding:16px 28px;background:var(--card);border-bottom:1.5px solid var(--line);gap:16px}
+.page-title{font-size:30px;font-weight:800;color:var(--ink);letter-spacing:-.025em;flex:none}
+.topbar-sep{color:var(--ink-4);font-size:22px;font-weight:300;margin:0 4px}
+.topbar-sub{font-size:13px;color:var(--ink-3);font-weight:400;flex:1}
+.topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:7px 14px;min-width:210px;transition:border-color .12s}
+.search-box:focus-within{border-color:var(--glt)}
+.search-box input{border:none;outline:none;background:transparent;font-size:13px;color:var(--ink);width:100%}
+.search-box input::placeholder{color:var(--ink-4)}
+.notif-btn{position:relative;width:36px;height:36px;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;display:grid;place-items:center}
+.notif-dot{position:absolute;top:-3px;right:-3px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid var(--card)}
+.user-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#14532D,#16A34A);display:grid;place-items:center;color:#fff;font-size:12px;font-weight:700;cursor:pointer}
+
+/* ── CONTENT ── */
+.content{padding:18px 32px 32px;display:flex;flex-direction:column;gap:18px}
+
+/* ── STAT STRIP ── */
+.stat-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.stat-card{background:var(--card);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh)}
+.stat-label{font-size:11.5px;color:var(--ink-3);font-weight:500;display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.stat-val{font-size:24px;font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1}
+.stat-sub{font-size:11px;color:var(--ink-4);margin-top:5px;display:flex;align-items:center;gap:5px}
+.stat-sub .up{color:var(--green);font-weight:600}
+.stat-sub .dn{color:var(--orange);font-weight:600}
+.stage-chips{display:flex;gap:5px;margin-top:6px}
+
+/* ── TAG PILLS ── */
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px}
+.tag-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.tag-idea{color:var(--amber);background:var(--amber-lt)}
+.tag-launch{color:var(--gmd);background:var(--g50)}
+.tag-growth{color:var(--green);background:var(--green-lt)}
+.tag-alert{color:var(--orange);background:var(--orange-lt)}
+.tag-featured{color:var(--violet);background:var(--violet-lt)}
+.tag-grey{color:var(--ink-3);background:var(--bg)}
+
+/* ── FILTER BAR ── */
+.filter-bar{background:var(--card);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.stage-tabs{display:flex;background:var(--bg);border-radius:50px;padding:3px;gap:2px}
+.stab{padding:6px 14px;border-radius:50px;font-size:12.5px;font-weight:500;color:var(--ink-3);display:inline-flex;align-items:center;gap:5px;transition:background .12s,color .12s;white-space:nowrap}
+.stab.on{background:var(--gdk);color:#fff;font-weight:600}
+.stab:hover:not(.on){background:var(--line);color:var(--ink-2)}
+.stab .cnt{font-size:10px;background:rgba(255,255,255,.25);padding:1px 5px;border-radius:999px}
+.stab:not(.on) .cnt{background:var(--line);color:var(--ink-3)}
+.filter-divider{width:1px;height:28px;background:var(--line);margin:0 2px}
+.sector-chips{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.sector-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:5px 11px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--ink-3);transition:all .12s;white-space:nowrap}
+.sector-chip:hover{border-color:var(--glt);color:var(--gdk)}
+.sector-chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.sector-chip .sdot{width:6px;height:6px;border-radius:50%}
+.filter-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+.sort-sel{appearance:none;-webkit-appearance:none;background:var(--bg) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23707EAE' d='M0 0h10L5 6z'/></svg>") no-repeat right 10px center / 10px;border:1.5px solid var(--line);border-radius:50px;padding:7px 30px 7px 14px;font-size:12.5px;font-weight:500;color:var(--ink-3);cursor:pointer}
+.viewsw{display:flex;background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:2px;gap:2px}
+.vbtn{width:30px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--ink-4);transition:background .1s,color .1s}
+.vbtn.on{background:var(--card);color:var(--gdk);box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.vbtn:hover:not(.on){color:var(--ink-2)}
+.btn-icon{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:50px;font-size:12.5px;font-weight:600;border:1.5px solid var(--line);background:var(--card);color:var(--ink-3);transition:all .12s;white-space:nowrap}
+.btn-icon:hover{border-color:var(--glt);color:var(--gdk)}
+.btn-icon.primary{background:var(--gdk);color:#fff;border-color:var(--gdk)}
+.btn-icon.primary:hover{background:var(--gmd)}
+
+/* ── RESULTS BAR ── */
+.results-bar{display:flex;align-items:center;justify-content:space-between;padding:2px 4px}
+.results-bar .count-txt{font-size:13px;color:var(--ink-3)}
+.results-bar .count-txt b{color:var(--ink-2);font-weight:600}
+
+/* ── SELECT BAR ── */
+.selbar{background:var(--ink);color:#fff;border-radius:var(--r);padding:12px 18px;display:flex;align-items:center;gap:12px;font-size:13px;box-shadow:0 4px 20px rgba(27,37,89,.2)}
+.selbar-cnt{background:rgba(255,255,255,.15);padding:2px 10px;border-radius:999px;font-weight:700;font-family:var(--mono)}
+.selbar-spacer{flex:1}
+.selbar-btn{background:transparent;border:1.5px solid rgba(255,255,255,.2);color:#fff;font-size:12px;font-weight:500;padding:5px 12px;border-radius:8px;display:inline-flex;align-items:center;gap:5px;transition:background .12s}
+.selbar-btn:hover{background:rgba(255,255,255,.1)}
+
+/* ── TABLE ── */
+.tbl-card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;color:var(--ink-4);padding:12px 14px;background:var(--bg);border-bottom:1.5px solid var(--line)}
+.tbl thead th:first-child{padding-left:20px}
+.tbl tbody td{padding:13px 14px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:middle}
+.tbl tbody td:first-child{padding-left:20px}
+.tbl tbody tr{cursor:pointer;transition:background .1s}
+.tbl tbody tr:hover{background:var(--g50)}
+.tbl tbody tr.sel{background:var(--g50)}
+.tbl tbody tr:last-child td{border-bottom:none}
+/* checkbox */
+.cb{width:17px;height:17px;border:1.5px solid var(--line);border-radius:5px;display:inline-grid;place-items:center;background:var(--card);cursor:pointer;flex:none;transition:all .12s}
+.cb svg{display:none}
+.cb.on{background:var(--gdk);border-color:var(--gdk)}
+.cb.on svg{display:block}
+.th-cb,.td-cb{width:36px;padding-right:0!important}
+/* name cell */
+.name-cell{display:flex;align-items:center;gap:10px}
+.name-logo{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:700;flex:none}
+.name-main{font-size:13.5px;font-weight:600;color:var(--ink)}
+.name-id{font-size:10.5px;color:var(--ink-4);margin-top:1px;font-feature-settings:"tnum"}
+/* trend cell */
+.trend-cell{display:flex;align-items:center;gap:8px}
+.delta{font-size:11.5px;font-weight:600}
+.delta.up{color:var(--green)} .delta.dn{color:var(--orange)}
+/* empty */
+.tbl-empty{padding:48px 24px;text-align:center;color:var(--ink-3)}
+.tbl-empty .em-title{font-size:14px;font-weight:600;color:var(--ink-2);margin-bottom:4px}
+
+/* ── CARDS GRID ── */
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.startup-card{background:var(--card);border-radius:var(--r);padding:18px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:12px;cursor:pointer;transition:box-shadow .15s,transform .15s;border:1.5px solid transparent}
+.startup-card:hover{box-shadow:0 4px 16px rgba(20,83,45,.10);transform:translateY(-2px)}
+.startup-card.sel{border-color:var(--glt);background:var(--g50)}
+.sc-head{display:flex;align-items:flex-start;gap:10px}
+.sc-logo{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;color:#fff;font-size:14px;font-weight:700;flex:none}
+.sc-name{font-size:14px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:5px}
+.sc-meta{font-size:11px;color:var(--ink-4);margin-top:2px}
+.sc-desc{font-size:12.5px;color:var(--ink-3);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sc-spark-row{background:var(--bg);border-radius:10px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between}
+.sc-spark-lbl{font-size:9.5px;color:var(--ink-4);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.sc-foot{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1.5px dashed var(--line);font-size:11.5px}
+.sc-foot-l{color:var(--ink-3);display:flex;align-items:center;gap:5px}
+.sc-foot-r{font-weight:700;color:var(--ink);font-feature-settings:"tnum"}
+
+/* ── KANBAN ── */
+.kanban{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start}
+.kan-col{background:var(--bg);border:1.5px solid var(--line);border-radius:var(--r);overflow:hidden}
+.kan-col-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;background:var(--card);border-bottom:1.5px solid var(--line)}
+.kan-col-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink)}
+.kan-col-dot{width:9px;height:9px;border-radius:50%}
+.kan-col-sub{font-size:10.5px;font-weight:400;color:var(--ink-4)}
+.kan-col-cnt{background:var(--card);border:1.5px solid var(--line);border-radius:6px;padding:1px 8px;font-size:11px;color:var(--ink-3);font-weight:600}
+.kan-body{padding:10px;display:flex;flex-direction:column;gap:8px}
+.kan-card{background:var(--card);border-radius:var(--r-sm);padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,.05);cursor:pointer;transition:box-shadow .12s,transform .12s;border:1.5px solid transparent}
+.kan-card:hover{box-shadow:0 4px 16px rgba(20,83,45,.1);transform:translateY(-1px);border-color:var(--glt)}
+.kan-card-top{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+.kan-card-logo{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700;flex:none}
+.kan-card-name{font-size:13px;font-weight:600;color:var(--ink)}
+.kan-card-id{font-size:10px;color:var(--ink-4);margin-top:1px}
+.kan-card-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.kan-card-foot{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--ink-4)}
+.kan-card-foot .fv{font-weight:700;color:var(--ink);font-feature-settings:"tnum"}
+.kan-add-btn{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:9px;border:1.5px dashed var(--line);border-radius:var(--r-sm);font-size:12px;color:var(--ink-4);margin-top:4px;transition:all .12s}
+.kan-add-btn:hover{border-color:var(--glt);color:var(--gdk);background:var(--g50)}
+
+/* ── DRAWER ── */
+.drawer-bg{position:fixed;inset:0;z-index:90;background:rgba(27,37,89,.3);opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(2px)}
+.drawer-bg.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:460px;z-index:91;background:var(--card);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;border-radius:20px 0 0 20px;overflow:hidden;box-shadow:-8px 0 40px rgba(27,37,89,.12)}
+.drawer.open{transform:translateX(0)}
+.drawer-head{padding:20px 22px 16px;border-bottom:1.5px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.drawer-body{padding:20px 22px;flex:1;overflow:auto;display:flex;flex-direction:column;gap:20px}
+.drawer-section-title{font-size:10.5px;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:10px}
+.kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px}
+.kv-k{font-size:10.5px;color:var(--ink-4);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.kv-v{font-size:13.5px;color:var(--ink);font-weight:500}
+.close-btn{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--bg);color:var(--ink-3);transition:all .12s}
+.close-btn:hover{background:var(--line);color:var(--ink)}
+.drawer-action-row{display:flex;gap:10px}
+.drawer-action{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:10px;border-radius:12px;font-size:13px;font-weight:600;border:1.5px solid var(--line);color:var(--ink-3);transition:all .12s}
+.drawer-action:hover{border-color:var(--blue-mid);color:var(--blue)}
+.drawer-action.primary{background:var(--gdk);color:#fff;border-color:var(--gdk)}
+.drawer-action.primary:hover{background:var(--gmd)}
+.recog-item{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:12.5px;color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+function fit(){const s=document.querySelector('.stage');if(!s)return;const w=document.documentElement.clientWidth,sc=Math.min(1,w/1440);s.style.transform=`scale(${sc})`;document.body.style.height=s.getBoundingClientRect().height+'px';}
+addEventListener('resize',fit);addEventListener('load',()=>{fit();setTimeout(fit,100);setTimeout(fit,600);});
+new MutationObserver(fit).observe(document.body,{childList:true,subtree:true});
+</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel">
+const { useState, useEffect, useRef, useMemo } = React;
+
+// ── DATA ──────────────────────────────────────────────────────────
+const STARTUPS = [
+  { id:"BG-019", name:"Session Groceries",  yr:2016, stage:"growth", sector:"AgriTech",    funding:2.40, mrr:0.18, team:11, founder:"Iloisa Romaraog Diga", tbi:"Independent",  city:"Baguio",      verified:true,  badge:"featured", lastSeen:"2 days ago",   desc:"Farm-to-consumer platform connecting Benguet farmers with city buyers.",              recognitions:["Gawad Pilipino 2019","Productivity Olympics 2021"], trend:[12,15,18,22,28,34,42,48] },
+  { id:"BG-022", name:"IOL Inc.",           yr:2018, stage:"growth", sector:"FinTech",     funding:1.85, mrr:0.09, team:8,  founder:"—",                    tbi:"UC InTTO",     city:"Baguio",      verified:true,  badge:"featured", lastSeen:"5 days ago",   desc:"Cooperative digitization & accounting platform with EdTech pivot.",                  recognitions:["CNN Final Pitch","ARISE Plus Ye! Boost"], trend:[8,11,14,18,22,25,30,34] },
+  { id:"BG-031", name:"When In Baguio",     yr:2017, stage:"growth", sector:"Tourism",     funding:0.95, mrr:0.07, team:6,  founder:"—",                    tbi:"Independent",  city:"Baguio",      verified:true,  badge:null,       lastSeen:"1 week ago",   desc:"Digital tourism + local content platform for Northern Luzon visitors.",             recognitions:[], trend:[4,7,12,18,21,24,26,28] },
+  { id:"BG-044", name:"VIVITA PH",          yr:2021, stage:"launch", sector:"EdTech",      funding:0.52, mrr:0.02, team:4,  founder:"—",                    tbi:"UPB SILBI",    city:"Baguio",      verified:true,  badge:null,       lastSeen:"3 days ago",   desc:"Creative tech & maker programs for youth (ages 8–18).",                              recognitions:[], trend:[2,3,5,7,9,11,13,15] },
+  { id:"BG-051", name:"Bitshares (BLINC)",  yr:2020, stage:"launch", sector:"FinTech",     funding:0.31, mrr:0.01, team:3,  founder:"—",                    tbi:"Independent",  city:"Baguio",      verified:false, badge:"alert",    lastSeen:"6 months ago", desc:"Blockchain / digital-asset infrastructure. Activity status unverified.",            recognitions:[], trend:[6,9,11,12,11,10,9,8] },
+  { id:"BG-067", name:"Adda Ngarud",        yr:2022, stage:"idea",   sector:"Social",      funding:0.00, mrr:0,    team:2,  founder:"—",                    tbi:"UC InTTO",     city:"Baguio",      verified:true,  badge:null,       lastSeen:"2 weeks ago",  desc:"Social connectivity application targeting Cordilleran communities.",                 recognitions:[], trend:[0,1,1,2,2,3,3,4] },
+  { id:"BG-073", name:"Sunshare",           yr:2022, stage:"idea",   sector:"GreenTech",   funding:0.18, mrr:0,    team:3,  founder:"—",                    tbi:"SLU SIRIB",    city:"Baguio",      verified:true,  badge:null,       lastSeen:"3 weeks ago",  desc:"Solar energy sharing solution for peri-urban communities.",                          recognitions:[], trend:[0,0,1,1,2,3,4,5] },
+  { id:"BG-088", name:"Dontog Technofarms", yr:2023, stage:"launch", sector:"AgriTech",    funding:0.42, mrr:0.01, team:5,  founder:"—",                    tbi:"BSU-ATBI",     city:"La Trinidad", verified:true,  badge:null,       lastSeen:"1 month ago",  desc:"Technology-enabled smallholder farming in Benguet.",                                 recognitions:[], trend:[0,0,2,4,6,8,10,12] },
+  { id:"BG-091", name:"theneutral.space",   yr:2023, stage:"launch", sector:"Community",   funding:0.22, mrr:0,    team:4,  founder:"—",                    tbi:"Independent",  city:"Baguio",      verified:true,  badge:null,       lastSeen:"5 days ago",   desc:"Community platform for peer mentorship + co-working access.",                        recognitions:[], trend:[0,0,3,5,7,8,9,10] },
+  { id:"BG-104", name:"Quadrangle",         yr:2024, stage:"idea",   sector:"EdTech",      funding:0.00, mrr:0,    team:3,  founder:"Student-led",          tbi:"SLU SIRIB",    city:"Baguio",      verified:true,  badge:null,       lastSeen:"1 week ago",   desc:"Student-built platform for campus academic tooling.",                                recognitions:[], trend:[0,0,0,1,2,3,4,5] },
+  { id:"BG-110", name:"GREENSTACKS, INC.",  yr:2022, stage:"idea",   sector:"AgriTech",    funding:0.10, mrr:0,    team:4,  founder:"—",                    tbi:"BSU-ATBI",     city:"La Trinidad", verified:true,  badge:null,       lastSeen:"2 months ago", desc:"Vertical farming and agri-tech stack for highland crops.",                           recognitions:[], trend:[0,0,1,2,2,3,3,4] },
+  { id:"BG-115", name:"Writaroo",           yr:2022, stage:"idea",   sector:"CreativeTech",funding:0.05, mrr:0,    team:2,  founder:"—",                    tbi:"UC InTTO",     city:"Baguio",      verified:false, badge:null,       lastSeen:"8 months ago", desc:"Writing & ideation tools for students and creators.",                                recognitions:[], trend:[0,0,1,1,1,2,2,2] },
+  { id:"BG-119", name:"WE R Solutions",     yr:2019, stage:"launch", sector:"ICT",         funding:0.12, mrr:0.02, team:5,  founder:"—",                    tbi:"Independent",  city:"Baguio",      verified:true,  badge:null,       lastSeen:"1 month ago",  desc:"IT services and integration provider for SMEs.",                                     recognitions:[], trend:[3,4,5,6,7,8,9,10] },
+  { id:"BG-126", name:"Crimintech",         yr:2022, stage:"idea",   sector:"GovTech",     funding:0.00, mrr:0,    team:3,  founder:"—",                    tbi:"UC InTTO",     city:"Baguio",      verified:false, badge:"alert",    lastSeen:"10 months ago",desc:"Criminal-justice ICT solution. Awaiting re-validation.",                             recognitions:[], trend:[0,0,0,1,1,1,1,1] },
+  { id:"BG-131", name:"PASYA",              yr:2022, stage:"idea",   sector:"Social",      funding:0.00, mrr:0,    team:2,  founder:"—",                    tbi:"UPB SILBI",    city:"Baguio",      verified:true,  badge:null,       lastSeen:"3 weeks ago",  desc:"Social-impact application leveraging local government services.",                    recognitions:[], trend:[0,0,1,1,2,2,2,3] },
+  { id:"BG-138", name:"Dulche Chocolates",  yr:2020, stage:"launch", sector:"FoodTech",    funding:0.28, mrr:0.03, team:4,  founder:"—",                    tbi:"Independent",  city:"Baguio",      verified:true,  badge:null,       lastSeen:"2 weeks ago",  desc:"Artisanal Cordilleran-cacao chocolate brand with online retail.",                    recognitions:[], trend:[1,2,3,4,5,6,7,9] },
+  { id:"BG-142", name:"HeySuccess VA Svcs", yr:2021, stage:"launch", sector:"Services",    funding:0.15, mrr:0.02, team:6,  founder:"—",                    tbi:"Independent",  city:"Baguio",      verified:true,  badge:null,       lastSeen:"1 week ago",   desc:"Virtual-assistance and BPO services for SME clients.",                               recognitions:[], trend:[2,3,4,5,6,7,8,9] },
+];
+
+const LOGO_COLOR = s => ({ AgriTech:"#2A8A52", FinTech:"#14532D", Tourism:"#B5781E", EdTech:"#7B61FF",
+  Social:"#F6A723", GreenTech:"#0E5C44", Community:"#475569", CreativeTech:"#EE5D50",
+  ICT:"#475569", GovTech:"#163E2E", FoodTech:"#8B4513", Services:"#7C3AED" }[s] || "#475569");
+
+const SECTORS = [...new Set(STARTUPS.map(s => s.sector))].sort();
+
+const fmtFund = n => n === 0 ? "—" : `₱${n.toFixed(2)}M`;
+const trendDelta = trend => {
+  const a = trend[0]||0, b = trend[trend.length-1];
+  if (a===0) return { txt: b>0?"new":"0", up:true };
+  const p = Math.round(((b-a)/a)*100);
+  return { txt:(p>0?"+":"")+p+"%", up:p>=0 };
+};
+
+// ── ICONS ─────────────────────────────────────────────────────────
+const Ico = ({ n, s=16, c="currentColor" }) => {
+  const p = { width:s, height:s, viewBox:"0 0 24 24", fill:"none", stroke:c, strokeWidth:1.8, strokeLinecap:"round", strokeLinejoin:"round" };
+  const d = {
+    dash:   <svg {...p}><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>,
+    rocket: <svg {...p}><path d="M5 13.5 3 21l7.5-2"/><path d="M14.5 5.5C17 3 21 3 21 3s0 4-2.5 6.5L11 17l-4-4z"/><circle cx="15" cy="9" r="1.2"/></svg>,
+    users:  <svg {...p}><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="7" r="2.4"/><path d="M21 18c0-2.4-1.7-4.5-4-5"/></svg>,
+    coins:  <svg {...p}><ellipse cx="9" cy="7" rx="6" ry="3"/><path d="M3 7v5c0 1.7 2.7 3 6 3s6-1.3 6-3V7"/><path d="M3 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-2"/></svg>,
+    cal:    <svg {...p}><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>,
+    spark:  <svg {...p}><path d="m3 17 4-4 4 3 6-7 4 4"/></svg>,
+    set:    <svg {...p}><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>,
+    srch:   <svg {...p}><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.5-3.5"/></svg>,
+    bell:   <svg {...p}><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2H4.5z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>,
+    out:    <svg {...p}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>,
+    map:    <svg {...p}><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>,
+    rows:   <svg {...p}><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/></svg>,
+    cols:   <svg {...p}><path d="M3 12h6m12 0h-6M9 12V6M9 12v6M15 12V6M15 12v6"/></svg>,
+    kanban: <svg {...p}><rect x="3" y="3" width="5" height="14" rx="1"/><rect x="10" y="3" width="5" height="10" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>,
+    plus:   <svg {...p}><path d="M12 5v14M5 12h14"/></svg>,
+    dl:     <svg {...p}><path d="M12 3v12M7 10l5 5 5-5M5 19h14"/></svg>,
+    pin:    <svg {...p}><path d="M12 21s-7-7-7-12a7 7 0 1 1 14 0c0 5-7 12-7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>,
+    x:      <svg {...p}><path d="M6 6l12 12M6 18 18 6"/></svg>,
+    check:  <svg {...p}><path d="m5 12 5 5L20 7"/></svg>,
+    chk_c:  <svg {...p}><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>,
+    tphy:   <svg {...p}><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M5 4h3v3a3 3 0 0 1-3-3zM19 4h-3v3a3 3 0 0 0 3-3z"/><path d="M9 14h6l-1 4h-4zM8 21h8"/></svg>,
+    school: <svg {...p}><path d="M2 9 12 4l10 5-10 5z"/><path d="M6 11v5c0 2 3 4 6 4s6-2 6-4v-5"/></svg>,
+    ext:    <svg {...p}><path d="M14 4h6v6M20 4 11 13"/><path d="M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/></svg>,
+    chev_r: <svg {...p}><path d="m9 6 6 6-6 6"/></svg>,
+    alert:  <svg {...p}><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><circle cx="12" cy="17" r=".8" fill="currentColor" stroke="none"/></svg>,
+    filter: <svg {...p}><path d="M3 5h18l-7 9v6l-4-2v-4z"/></svg>,
+    up:     <svg {...p}><path d="M12 19V5M5 12l7-7 7 7"/></svg>,
+  };
+  return d[n] || null;
+};
+
+// ── MINI SPARKLINE ────────────────────────────────────────────────
+const Spark = ({ data, color, w=60, h=20, fill=false }) => {
+  if (!data||data.length<2) return null;
+  const mn=Math.min(...data), mx=Math.max(...data,mn+1);
+  const pts = data.map((v,i)=>[(i/(data.length-1))*(w-4)+2, (h-4)-((v-mn)/(mx-mn))*(h-4)+2]);
+  const ps = data.map((v,i)=>`${(i/(data.length-1))*(w-4)+2},${(h-4)-((v-mn)/(mx-mn))*(h-4)+2}`).join(" ");
+  const last = data.map((v,i)=>[(i/(data.length-1))*(w-4)+2, (h-4)-((v-mn)/(mx-mn))*(h-4)+2]);
+  const area = ps + ` ${last[last.length-1][0]},${h} 2,${h}`;
+  return (
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{overflow:"visible"}}>
+      {fill && <polygon points={area} fill={color} opacity=".12"/>}
+      <polyline points={ps} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx={last[last.length-1][0]} cy={last[last.length-1][1]} r="2.5" fill={color}/>
+    </svg>
+  );
+};
+
+// ── NAV ───────────────────────────────────────────────────────────
+const NAV = [
+  { id:"overview",  label:"Overview",    icon:"dash",   href:"Baguio Innovation Dashboard.html" },
+  { id:"startups",  label:"Startups",    icon:"rocket", cnt:82 },
+  { id:"founders",  label:"Founders",    icon:"users",  cnt:148, href:"Founders.html" },
+  { id:"capital",   label:"Capital",     icon:"coins",  href:"Capital.html" },
+  { id:"programs",  label:"Programs",    icon:"cal",    cnt:47,  href:"Programs.html" },
+  { id:"analytics", label:"Analytics",   icon:"spark", href:"Analytics.html" },
+  { id:"maturity",  label:"Maturity",    icon:"map",   href:"Maturity.html" },
+  { id:"settings",  label:"Settings",    icon:"set",   href:"Settings.html" },
+];
+
+const Sidebar = () => (
+  <aside className="sidebar">
+    <div className="brand">
+      <div className="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 36 36" fill="none">
+          <path d="M18 4 L10 16 H14 L8 27 H28 L22 16 H26 Z" fill="#14532D"/>
+          <rect x="16" y="27" width="4" height="4" rx="1" fill="#14532D"/>
+        </svg>
+      </div>
+      <div>
+        <div className="brand-name" style={{fontSize:11,fontWeight:800,color:"#14532D",textTransform:"uppercase",letterSpacing:".03em",lineHeight:1.3}}>Baguio City<br/>Startup Ecosystem</div>
+        <div className="brand-sub">Innovate. Build. Elevate.</div>
+      </div>
+    </div>
+    <nav>
+      {NAV.map(n => (
+        <button key={n.id} className={`nav-item ${n.id==="startups"?"active":""}`}
+                onClick={() => { if(n.href) window.location.href=n.href; }}>
+          <Ico n={n.icon} s={16} c={n.id==="startups"?"#14532D":"#9CA3AF"}/>
+          <span style={{flex:1}}>{n.label}</span>
+          {n.cnt!=null && <span className="nav-cnt">{n.cnt}</span>}
+        </button>
+      ))}
+    </nav>
+    <div className="sidebar-spacer"/>
+    <button className="nav-item logout"><Ico n="out" s={16} c="#F97149"/><span>Log out</span></button>
+  </aside>
+);
+
+// ── DRAWER ────────────────────────────────────────────────────────
+const Drawer = ({ startup: s, onClose }) => {
+  if (!s) return null;
+  const td = trendDelta(s.trend);
+  return (
+    <>
+      <div className={`drawer-bg show`} onClick={onClose}/>
+      <aside className="drawer open" role="dialog">
+        <div className="drawer-head">
+          <div style={{display:"flex",alignItems:"center",gap:12}}>
+            <div className="name-logo" style={{background:LOGO_COLOR(s.sector),width:40,height:40,borderRadius:10,fontSize:14}}>{s.name[0]}</div>
+            <div>
+              <div style={{fontSize:15,fontWeight:700,color:"var(--ink)"}}>{s.name}</div>
+              <div style={{fontSize:11.5,color:"var(--ink-4)",marginTop:1}}>{s.id} · est. {s.yr}</div>
+            </div>
+          </div>
+          <button className="close-btn" onClick={onClose}><Ico n="x" s={15} c="var(--ink-3)"/></button>
+        </div>
+        <div className="drawer-body">
+          <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+            <span className={`tag tag-${s.stage}`}><span className="tag-dot"/>  {s.stage}</span>
+            <span className="tag tag-grey">{s.sector}</span>
+            {s.badge==="featured" && <span className="tag tag-featured"><span className="tag-dot"/>Featured</span>}
+            {s.badge==="alert" && <span className="tag tag-alert"><span className="tag-dot"/>Needs validation</span>}
+            {s.verified && <span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:10.5,fontWeight:600,padding:"3px 8px",borderRadius:999,color:"var(--green)",background:"var(--green-lt)"}}><Ico n="chk_c" s={11} c="var(--green)"/>Verified</span>}
+          </div>
+          <p style={{fontSize:13,color:"var(--ink-3)",lineHeight:1.55}}>{s.desc}</p>
+          <div>
+            <div className="drawer-section-title">Details</div>
+            <div className="kv-grid">
+              <div><div className="kv-k">Founder</div><div className="kv-v">{s.founder}</div></div>
+              <div><div className="kv-k">Affiliated TBI</div><div className="kv-v">{s.tbi}</div></div>
+              <div><div className="kv-k">City</div><div className="kv-v">{s.city}</div></div>
+              <div><div className="kv-k">Team size</div><div className="kv-v">{s.team}</div></div>
+              <div><div className="kv-k">Funding raised</div><div className="kv-v">{fmtFund(s.funding)}</div></div>
+              <div><div className="kv-k">Est. MRR</div><div className="kv-v">{s.mrr===0?"—":`₱${(s.mrr*1000).toFixed(0)}K`}</div></div>
+            </div>
+          </div>
+          <div>
+            <div className="drawer-section-title">Growth Trajectory</div>
+            <div style={{background:"var(--bg)",borderRadius:12,padding:16}}>
+              <Spark data={s.trend} color={LOGO_COLOR(s.sector)} w={390} h={70} fill={true}/>
+            </div>
+            <div style={{display:"flex",justifyContent:"space-between",marginTop:8,fontSize:12}}>
+              <span style={{color:"var(--ink-4)"}}>Last activity: {s.lastSeen}</span>
+              <span className={`delta ${td.up?"up":"dn"}`}>{td.txt}</span>
+            </div>
+          </div>
+          {s.recognitions.length>0 && (
+            <div>
+              <div className="drawer-section-title">Recognition</div>
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {s.recognitions.map((r,i) => (
+                  <div key={i} className="recog-item"><Ico n="tphy" s={14} c="var(--amber)"/> {r}</div>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="drawer-action-row">
+            <button className="drawer-action"><Ico n="ext" s={13}/>Open profile</button>
+            <button className="drawer-action primary"><Ico n="pin" s={13}/>Pin to watchlist</button>
+          </div>
+        </div>
+      </aside>
+    </>
+  );
+};
+
+// ── TABLE VIEW ────────────────────────────────────────────────────
+const TableView = ({ rows, openStartup, selected, toggleSelect, toggleAll }) => {
+  const allSel = rows.length>0 && rows.every(r=>selected.has(r.id));
+  return (
+    <div className="tbl-card">
+      <table className="tbl">
+        <thead>
+          <tr>
+            <th className="th-cb">
+              <span className={`cb ${allSel?"on":""}`} onClick={()=>toggleAll(rows.map(r=>r.id))}>
+                <Ico n="check" s={9} c="#fff"/>
+              </span>
+            </th>
+            <th>Startup</th><th>Stage</th><th>Sector</th><th>TBI</th>
+            <th>Founded</th><th>Funding</th><th>Trajectory</th><th>Last seen</th>
+            <th style={{textAlign:"right",paddingRight:20}}>·</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(r => {
+            const td = trendDelta(r.trend);
+            const sel = selected.has(r.id);
+            return (
+              <tr key={r.id} className={sel?"sel":""} onClick={e=>{if(e.target.closest('.cb'))return;openStartup(r);}}>
+                <td className="td-cb">
+                  <span className={`cb ${sel?"on":""}`} onClick={e=>{e.stopPropagation();toggleSelect(r.id);}}>
+                    <Ico n="check" s={9} c="#fff"/>
+                  </span>
+                </td>
+                <td>
+                  <div className="name-cell">
+                    <div className="name-logo" style={{background:LOGO_COLOR(r.sector)}}>{r.name[0]}</div>
+                    <div>
+                      <div className="name-main">{r.name}{r.badge==="featured"&&<span style={{color:"#F6A723",marginLeft:5}}>★</span>}{r.verified&&<span style={{color:"var(--green)",marginLeft:5,fontSize:11}}><Ico n="chk_c" s={11} c="var(--green)"/></span>}</div>
+                      <div className="name-id">{r.id}</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span className={`tag tag-${r.stage}`}><span className="tag-dot"/>{r.stage}</span></td>
+                <td style={{color:"var(--ink-3)",fontSize:12.5}}>{r.sector}</td>
+                <td style={{color:"var(--ink-3)",fontSize:12.5}}>{r.tbi}</td>
+                <td style={{color:"var(--ink-3)",fontSize:12.5,fontFeatureSettings:'"tnum"'}}>{r.yr}</td>
+                <td style={{fontWeight:600,fontFeatureSettings:'"tnum"',fontSize:12.5}}>{fmtFund(r.funding)}</td>
+                <td>
+                  <div className="trend-cell">
+                    <Spark data={r.trend} color={td.up?"#05CD99":"#F97149"} w={52} h={18}/>
+                    <span className={`delta ${td.up?"up":"dn"}`}>{td.txt}</span>
+                  </div>
+                </td>
+                <td style={{color:"var(--ink-4)",fontSize:11.5}}>{r.lastSeen}</td>
+                <td style={{textAlign:"right",paddingRight:20}}><Ico n="chev_r" s={14} c="var(--ink-4)"/></td>
+              </tr>
+            );
+          })}
+          {rows.length===0 && (
+            <tr><td colSpan="10" className="tbl-empty">
+              <div className="em-title">No startups match your filters</div>
+              <div style={{fontSize:12}}>Try clearing the search or adjusting sector filters.</div>
+            </td></tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+// ── CARDS VIEW ────────────────────────────────────────────────────
+const CardsView = ({ rows, openStartup, selected, toggleSelect }) => {
+  if (rows.length===0) return (
+    <div className="tbl-card" style={{padding:48,textAlign:"center"}}>
+      <div style={{fontWeight:600,color:"var(--ink-2)",marginBottom:4}}>No startups match your filters</div>
+      <div style={{fontSize:12,color:"var(--ink-4)"}}>Try clearing the search or adjusting sector filters.</div>
+    </div>
+  );
+  return (
+    <div className="card-grid">
+      {rows.map(r => {
+        const td = trendDelta(r.trend);
+        const sel = selected.has(r.id);
+        return (
+          <div key={r.id} className={`startup-card ${sel?"sel":""}`} onClick={()=>openStartup(r)}>
+            <div className="sc-head">
+              <div className="sc-logo" style={{background:LOGO_COLOR(r.sector)}}>{r.name[0]}</div>
+              <div style={{flex:1,minWidth:0}}>
+                <div className="sc-name">{r.name}{r.badge==="featured"&&<span style={{color:"#F6A723"}}>★</span>}</div>
+                <div className="sc-meta">{r.id} · est. {r.yr}</div>
+              </div>
+              <span className={`cb ${sel?"on":""}`} onClick={e=>{e.stopPropagation();toggleSelect(r.id);}}>
+                <Ico n="check" s={9} c="#fff"/>
+              </span>
+            </div>
+            <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+              <span className={`tag tag-${r.stage}`}><span className="tag-dot"/>{r.stage}</span>
+              <span className="tag tag-grey">{r.sector}</span>
+            </div>
+            <div className="sc-desc">{r.desc}</div>
+            <div className="sc-spark-row">
+              <div><div className="sc-spark-lbl">Trajectory</div>
+                <span className={`delta ${td.up?"up":"dn"}`} style={{fontSize:12}}>{td.txt}</span>
+              </div>
+              <Spark data={r.trend} color={LOGO_COLOR(r.sector)} w={90} h={26} fill={true}/>
+            </div>
+            <div className="sc-foot">
+              <span className="sc-foot-l"><Ico n="school" s={11} c="var(--ink-4)"/>{r.tbi}</span>
+              <span className="sc-foot-r">{fmtFund(r.funding)}</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+// ── KANBAN VIEW ───────────────────────────────────────────────────
+const KanbanView = ({ rows, openStartup }) => {
+  const cols = [
+    { id:"idea",   label:"Idea",   color:"#F6A723", sub:"Pre-validation" },
+    { id:"launch", label:"Launch", color:"#14532D", sub:"MVP / early traction" },
+    { id:"growth", label:"Growth", color:"#05CD99", sub:"Revenue-generating" },
+  ];
+  return (
+    <div className="kanban">
+      {cols.map(c => {
+        const items = rows.filter(r => r.stage===c.id);
+        return (
+          <div key={c.id} className="kan-col">
+            <div className="kan-col-head">
+              <div className="kan-col-title">
+                <div className="kan-col-dot" style={{background:c.color}}/>
+                {c.label}
+                <span className="kan-col-sub">{c.sub}</span>
+              </div>
+              <span className="kan-col-cnt">{items.length}</span>
+            </div>
+            <div className="kan-body">
+              {items.map(r => {
+                const td = trendDelta(r.trend);
+                return (
+                  <div key={r.id} className="kan-card" onClick={()=>openStartup(r)}>
+                    <div className="kan-card-top">
+                      <div className="kan-card-logo" style={{background:LOGO_COLOR(r.sector)}}>{r.name[0]}</div>
+                      <div>
+                        <div className="kan-card-name">{r.name}{r.badge==="featured"&&<span style={{color:"#F6A723",marginLeft:4}}>★</span>}</div>
+                        <div className="kan-card-id">{r.id} · {r.yr}</div>
+                      </div>
+                    </div>
+                    <div className="kan-card-tags">
+                      <span className="tag tag-grey">{r.sector}</span>
+                      <span className="tag tag-grey" style={{fontSize:10}}><Ico n="school" s={9}/> {r.tbi}</span>
+                    </div>
+                    <div className="kan-card-foot">
+                      <span>{r.lastSeen}</span>
+                      <Spark data={r.trend} color={td.up?"#05CD99":"#F97149"} w={36} h={14}/>
+                      <span className="fv">{fmtFund(r.funding)}</span>
+                    </div>
+                  </div>
+                );
+              })}
+              {items.length===0 && <div style={{padding:20,textAlign:"center",color:"var(--ink-4)",fontSize:12}}>No startups</div>}
+              <button className="kan-add-btn"><Ico n="plus" s={12} c="inherit"/>Add startup</button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+// ── APP ───────────────────────────────────────────────────────────
+function App() {
+  const [view, setView]       = useState("table");
+  const [stage, setStage]     = useState("all");
+  const [sectors, setSectors] = useState([]);
+  const [sort, setSort]       = useState("yr-desc");
+  const [search, setSearch]   = useState("");
+  const [selected, setSelected] = useState(new Set());
+  const [startup, setStartup] = useState(null);
+
+  useEffect(() => {
+    const h = e => { if(e.key==="Escape"){ setStartup(null); setSelected(new Set()); } };
+    addEventListener("keydown", h);
+    return () => removeEventListener("keydown", h);
+  }, []);
+
+  const filtered = useMemo(() => {
+    let r = STARTUPS;
+    if (stage==="featured") r = r.filter(s=>s.badge==="featured");
+    else if (stage==="alert") r = r.filter(s=>!s.verified);
+    else if (stage!=="all") r = r.filter(s=>s.stage===stage);
+    if (sectors.length) r = r.filter(s=>sectors.includes(s.sector));
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      r = r.filter(s=>s.name.toLowerCase().includes(q)||s.sector.toLowerCase().includes(q)||s.tbi.toLowerCase().includes(q)||s.id.toLowerCase().includes(q)||s.desc.toLowerCase().includes(q));
+    }
+    const [k, dir] = sort.split("-");
+    return [...r].sort((a,b)=>{
+      let av=a[k],bv=b[k];
+      if(typeof av==="string") return dir==="asc"?av.localeCompare(bv):bv.localeCompare(av);
+      return dir==="asc"?av-bv:bv-av;
+    });
+  }, [stage,sectors,search,sort]);
+
+  const toggleSelect = id => setSelected(p=>{ const n=new Set(p); n.has(id)?n.delete(id):n.add(id); return n; });
+  const toggleAll = ids => setSelected(p=>{ const all=ids.every(id=>p.has(id)); const n=new Set(p); ids.forEach(id=>all?n.delete(id):n.add(id)); return n; });
+  const toggleSector = s => setSectors(p=>p.includes(s)?p.filter(x=>x!==s):[...p,s]);
+
+  const STAGE_TABS = [
+    { id:"all",      label:"All",              count:STARTUPS.length },
+    { id:"growth",   label:"Growth",           count:STARTUPS.filter(s=>s.stage==="growth").length },
+    { id:"launch",   label:"Launch",           count:STARTUPS.filter(s=>s.stage==="launch").length },
+    { id:"idea",     label:"Idea",             count:STARTUPS.filter(s=>s.stage==="idea").length },
+    { id:"featured", label:"Featured",         count:STARTUPS.filter(s=>s.badge==="featured").length },
+    { id:"alert",    label:"Re-validate",      count:STARTUPS.filter(s=>!s.verified).length },
+  ];
+
+  const STATS = [
+    { label:"Mapped Startups", icon:"rocket", val:STARTUPS.length, sub:<><span className="up">+8</span> since 2022 mapping</> },
+    { label:"By Stage", icon:"spark",  val:null, sub:null },
+    { label:"Featured", icon:"tphy",   val:STARTUPS.filter(s=>s.badge==="featured").length, sub:"Tier-1 nat'l recognition" },
+    { label:"Funded",   icon:"coins",  val:`${STARTUPS.filter(s=>s.funding>0).length}/${STARTUPS.length}`, sub:`${Math.round(STARTUPS.filter(s=>s.funding>0).length/STARTUPS.length*100)}% have raised capital` },
+    { label:"Re-validate", icon:"alert", val:STARTUPS.filter(s=>!s.verified).length, sub:"No activity 6mo+", red:true },
+  ];
+
+  return (
+    <div className="stage">
+      <div className="app">
+        <Sidebar/>
+        <main className="main">
+          {/* TOP BAR */}
+          <div className="topbar">
+            <div className="page-title">Startups</div>
+            <span className="topbar-sep">·</span>
+            <span className="topbar-sub">{STARTUPS.length} mapped startups across BLISTT · last sync 2025</span>
+            <div className="topbar-right">
+              <div className="search-box">
+                <Ico n="srch" s={14} c="#9CA3AF"/>
+                <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search startups, sector, TBI…"/>
+              </div>
+              <button className="notif-btn"><Ico n="bell" s={18} c="var(--ink)"/><span className="notif-dot"/></button>
+              <div className="user-av">LG</div>
+            </div>
+          </div>
+
+          <div className="content">
+            {/* STAT STRIP */}
+            <div className="stat-strip">
+              {STATS.map((s,i) => (
+                <div key={i} className="stat-card">
+                  <div className="stat-label"><Ico n={s.icon} s={12} c="var(--ink-4)"/>{s.label}</div>
+                  {i===1 ? (
+                    <>
+                      <div className="stage-chips">
+                        <span className="tag tag-growth"><span className="tag-dot"/>G {STARTUPS.filter(x=>x.stage==="growth").length}</span>
+                        <span className="tag tag-launch"><span className="tag-dot"/>L {STARTUPS.filter(x=>x.stage==="launch").length}</span>
+                        <span className="tag tag-idea"><span className="tag-dot"/>I {STARTUPS.filter(x=>x.stage==="idea").length}</span>
+                      </div>
+                      <div className="stat-sub">3 stages · {STARTUPS.length} total</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="stat-val" style={s.red&&s.val>0?{color:"var(--orange)"}:{}}>{s.val}</div>
+                      <div className="stat-sub">{s.sub}</div>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* FILTER BAR */}
+            <div className="filter-bar">
+              <div className="stage-tabs">
+                {STAGE_TABS.map(t => (
+                  <button key={t.id} className={`stab ${stage===t.id?"on":""}`} onClick={()=>setStage(t.id)}>
+                    {t.label}<span className="cnt">{t.count}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="filter-divider"/>
+              <div className="sector-chips">
+                {SECTORS.map(s => {
+                  const on = sectors.includes(s);
+                  return (
+                    <button key={s} className={`sector-chip ${on?"on":""}`} onClick={()=>toggleSector(s)}>
+                      <span className="sdot" style={{background:LOGO_COLOR(s)}}/>
+                      {s}
+                      {on && <Ico n="x" s={9} c="currentColor"/>}
+                    </button>
+                  );
+                })}
+                {sectors.length>0 && <button className="sector-chip" style={{color:"var(--ink-4)"}} onClick={()=>setSectors([])}>Clear ({sectors.length})</button>}
+              </div>
+              <div className="filter-actions">
+                <select className="sort-sel" value={sort} onChange={e=>setSort(e.target.value)}>
+                  <option value="yr-desc">Newest first</option>
+                  <option value="yr-asc">Oldest first</option>
+                  <option value="funding-desc">Most funded</option>
+                  <option value="funding-asc">Least funded</option>
+                  <option value="name-asc">Name A→Z</option>
+                  <option value="name-desc">Name Z→A</option>
+                </select>
+                <div className="viewsw">
+                  <button className={`vbtn ${view==="table"?"on":""}`} onClick={()=>setView("table")} title="Table"><Ico n="rows" s={13}/></button>
+                  <button className={`vbtn ${view==="cards"?"on":""}`} onClick={()=>setView("cards")} title="Cards"><Ico n="cols" s={13}/></button>
+                  <button className={`vbtn ${view==="kanban"?"on":""}`} onClick={()=>setView("kanban")} title="Kanban"><Ico n="kanban" s={13}/></button>
+                </div>
+                <button className="btn-icon"><Ico n="dl" s={13}/>Export</button>
+                <button className="btn-icon primary" onClick={()=>alert("Add startup flow")}><Ico n="plus" s={13}/>Add startup</button>
+              </div>
+            </div>
+
+            {/* SELECTION BAR */}
+            {selected.size>0 && (
+              <div className="selbar">
+                <span className="selbar-cnt">{selected.size}</span>
+                <span>selected</span>
+                <div className="selbar-spacer"/>
+                <button className="selbar-btn"><Ico n="pin" s={11}/>Pin to watchlist</button>
+                <button className="selbar-btn"><Ico n="dl" s={11}/>Export</button>
+                <button className="selbar-btn"><Ico n="check" s={11}/>Mark verified</button>
+                <button className="selbar-btn" onClick={()=>setSelected(new Set())}><Ico n="x" s={11}/>Clear</button>
+              </div>
+            )}
+
+            {/* RESULTS COUNT */}
+            <div className="results-bar">
+              <span className="count-txt"><b>{filtered.length}</b> of {STARTUPS.length} startups</span>
+              <span style={{fontSize:12,color:"var(--ink-4)"}}>Showing {view==="kanban"?"by stage":"all matching"}</span>
+            </div>
+
+            {view==="table"  && <TableView  rows={filtered} openStartup={setStartup} selected={selected} toggleSelect={toggleSelect} toggleAll={toggleAll}/>}
+            {view==="cards"  && <CardsView  rows={filtered} openStartup={setStartup} selected={selected} toggleSelect={toggleSelect}/>}
+            {view==="kanban" && <KanbanView rows={filtered} openStartup={setStartup}/>}
+          </div>
+        </main>
+
+        {startup && <Drawer startup={startup} onClose={()=>setStartup(null)}/>}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+.ib-admin-mobile-sidebar {
+  display: none;
+}
+
+@media (max-width: 980px) {
+  .ib-admin {
+    grid-template-columns: 1fr !important;
+  }
+  /* Only hide the desktop sidebar (a direct child of the grid) — the
+     drawer's cloned copy is nested inside .ib-admin-mobile-sidebar and
+     must stay visible. */
+  .ib-admin > .ib-admin-sidebar {
+    display: none !important;
+  }
+  .ib-admin-burger {
+    display: flex !important;
+  }
+  .ib-admin-search {
+    display: none !important;
+  }
+  .ib-admin-pagesub {
+    display: none;
+  }
+  .ib-admin-mobile-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;
+    max-width: 80vw;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.24s ease;
+  }
+  .ib-admin-mobile-sidebar > aside {
+    height: 100%;
+    width: 100%;
+    position: static !important;
+  }
+  .ib-admin-mobile-sidebar.ib-admin-mobile-open {
+    display: block;
+    transform: translateX(0);
+  }
+
+  .ib-admin-grid-4,
+  .ib-admin-grid-5,
+  .ib-admin-grid-3-mid,
+  .ib-admin-grid-2-bottom {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 620px) {
+  .ib-admin-stack {
+    padding: 16px 16px 28px !important;
+  }
+  .ib-admin-grid-4,
+  .ib-admin-grid-5,
+  .ib-admin-grid-3,
+  .ib-admin-grid-3-mid,
+  .ib-admin-grid-2-bottom {
+    grid-template-columns: 1fr !important;
+  }
+}

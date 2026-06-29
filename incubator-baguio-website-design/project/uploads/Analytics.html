@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Analytics — Baguio Ecosystem</title>
+<meta name="viewport" content="width=1440">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gdk:#14532D;--gmd:#15803D;--glt:#DCFCE7;--g50:#F0FDF4;
+  --orange:#F97149;--orange-lt:#FFF0EB;--green:#22C55E;--green-lt:#DCFCE7;
+  --red:#EF4444;--red-lt:#FEF2F2;--amber:#F6A723;--amber-lt:#FFF8EC;
+  --violet:#8B5CF6;--violet-lt:#F5F3FF;--blue:#2D6BFF;--blue-lt:#EFF6FF;
+  --teal:#0D9488;--teal-lt:#F0FDFA;--bg:#F8FAFC;--card:#fff;
+  --ink:#111827;--ink-2:#1F2937;--ink-3:#6B7280;--ink-4:#9CA3AF;
+  --line:#E5E7EB;--line-2:#F3F4F6;--r:12px;--r-sm:10px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --font:"Inter",ui-sans-serif,system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font-family:var(--font);cursor:pointer;border:none;background:none;color:inherit;padding:0}
+input,select{font-family:var(--font)}
+.stage{width:1440px;transform-origin:top left}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+.sidebar{background:var(--card);padding:20px 14px 24px;display:flex;flex-direction:column;gap:2px;border-right:1px solid var(--line);min-height:100vh;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:11px;padding:6px 10px 22px}
+.brand-icon{width:38px;height:38px;background:var(--g50);border-radius:10px;display:grid;place-items:center;flex:none;border:1.5px solid var(--glt)}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:13.5px;font-weight:500;color:var(--ink-3);width:100%;transition:background .12s,color .12s;text-align:left}
+.nav-item:hover{background:var(--g50);color:var(--gdk)}
+.nav-item.active{background:var(--g50);color:var(--gdk);font-weight:600}
+.nav-item .nav-cnt{margin-left:auto;font-size:11px;font-weight:600;color:var(--ink-4);background:var(--line);padding:1px 7px;border-radius:999px}
+.nav-item.active .nav-cnt{color:var(--gdk);background:var(--glt)}
+.sidebar-spacer{flex:1}
+.nav-item.logout{color:var(--orange)}
+.nav-item.logout:hover{background:var(--orange-lt)}
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{display:flex;align-items:center;padding:16px 28px;background:var(--card);border-bottom:1.5px solid var(--line);gap:16px}
+.page-title{font-size:30px;font-weight:800;color:var(--ink);letter-spacing:-.025em;flex:none}
+.topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:7px 14px;min-width:220px}
+.search-box input{border:none;outline:none;background:transparent;font-size:13px;color:var(--ink);width:100%}
+.search-box input::placeholder{color:var(--ink-4)}
+.notif-btn{position:relative;width:36px;height:36px;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;display:grid;place-items:center}
+.notif-dot{position:absolute;top:-3px;right:-3px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid var(--card)}
+.user-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#14532D,#16A34A);display:grid;place-items:center;color:#fff;font-size:12px;font-weight:700;cursor:pointer}
+.page-tabs{display:flex;padding:0 28px;background:var(--card);border-bottom:1.5px solid var(--line)}
+.ptab{padding:14px 18px;font-size:13.5px;font-weight:500;color:var(--ink-3);border-bottom:2.5px solid transparent;transition:color .12s,border-color .12s;display:flex;align-items:center;gap:7px;cursor:pointer;white-space:nowrap}
+.ptab:hover{color:var(--ink-2)}
+.ptab.on{color:var(--gdk);border-bottom-color:var(--gdk);font-weight:600}
+.content{padding:20px 28px 36px;display:flex;flex-direction:column;gap:18px}
+.card{background:var(--card);border-radius:var(--r);padding:22px;box-shadow:var(--sh);border:1.5px solid var(--line)}
+.card-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.card-sub{font-size:11.5px;color:var(--ink-4);margin-bottom:18px}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.kpi{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh);border:1.5px solid var(--line)}
+.kpi-label{font-size:11px;color:var(--ink-3);font-weight:500;margin-bottom:4px}
+.kpi-val{font-size:26px;font-weight:700;color:var(--ink);letter-spacing:-.025em;line-height:1;font-feature-settings:"tnum"}
+.kpi-delta{font-size:11.5px;font-weight:600;margin-top:5px;display:flex;align-items:center;gap:3px}
+.kpi-delta.up{color:var(--gmd)} .kpi-delta.dn{color:var(--red)}
+.kpi-sub2{font-size:10.5px;color:var(--ink-4);margin-top:2px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;align-items:start}
+.grid-32{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;align-items:start}
+.h-bars{display:flex;flex-direction:column;gap:10px}
+.h-bar-row{display:flex;flex-direction:column;gap:4px}
+.h-bar-top{display:flex;align-items:center;justify-content:space-between}
+.h-bar-name{font-size:12.5px;font-weight:500;color:var(--ink-2)}
+.h-bar-val{font-size:12px;font-weight:600;color:var(--ink-3);font-feature-settings:"tnum"}
+.h-bar-track{height:7px;background:var(--line-2);border-radius:999px;overflow:hidden}
+.h-bar-fill{height:100%;border-radius:999px}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.tag-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.tag-green{color:var(--gmd);background:var(--glt)}
+.tag-amber{color:#B5781E;background:#FFF8EC}
+.tag-red{color:var(--red);background:var(--red-lt)}
+.tag-blue{color:var(--blue);background:var(--blue-lt)}
+.tag-grey{color:var(--ink-3);background:var(--bg)}
+/* range toggle */
+.range-tabs{display:flex;background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:2px;gap:1px}
+.rtab{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;color:var(--ink-3);cursor:pointer;transition:.12s}
+.rtab.on{background:var(--card);color:var(--gdk);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+/* line chart */
+.chart-area{position:relative;overflow:visible}
+.chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3);cursor:pointer;font-weight:500}
+.leg-swatch{width:24px;height:3px;border-radius:2px;flex:none}
+/* funnel */
+.funnel{display:flex;flex-direction:column;gap:4px;align-items:center}
+.funnel-step{border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;width:100%;cursor:default;transition:opacity .2s}
+.funnel-step:hover{opacity:.85}
+.fs-label{font-size:13px;font-weight:600;color:#fff}
+.fs-meta{font-size:11px;color:rgba(255,255,255,.75);margin-top:1px}
+.fs-count{font-size:20px;font-weight:700;color:#fff;font-feature-settings:"tnum"}
+.funnel-arrow{color:var(--ink-4);font-size:12px;text-align:center;padding:2px 0}
+/* table */
+.tbl-card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;border:1.5px solid var(--line)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;color:var(--ink-4);padding:11px 14px;background:var(--bg);border-bottom:1.5px solid var(--line)}
+.tbl thead th:first-child{padding-left:20px}
+.tbl tbody td{padding:12px 14px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:middle}
+.tbl tbody td:first-child{padding-left:20px}
+.tbl tbody tr:last-child td{border-bottom:none}
+/* insight cards */
+.insight-card{padding:14px 16px;border-radius:10px;border:1.5px solid;margin-bottom:10px}
+.insight-card:last-child{margin-bottom:0}
+.ic-title{font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:3px}
+.ic-body{font-size:12px;color:var(--ink-3);line-height:1.5}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+function fit(){const s=document.querySelector('.stage');if(!s)return;const w=document.documentElement.clientWidth,sc=Math.min(1,w/1440);s.style.transform=`scale(${sc})`;document.body.style.height=s.getBoundingClientRect().height+'px';}
+addEventListener('resize',fit);addEventListener('load',()=>{fit();setTimeout(fit,100);setTimeout(fit,600);});
+new MutationObserver(fit).observe(document.body,{childList:true,subtree:true});
+</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel">
+const { useState, useMemo, useRef } = React;
+
+// ── DATA ──────────────────────────────────────────────────────────
+const ACTIVITY = [
+  { yr:"2018", startups:6,  founders:14,  programs:3,  capital:0   },
+  { yr:"2019", startups:11, founders:19,  programs:6,  capital:1.2 },
+  { yr:"2020", startups:16, founders:22,  programs:9,  capital:3.4 },
+  { yr:"2021", startups:22, founders:25,  programs:14, capital:6.1 },
+  { yr:"2022", startups:34, founders:28,  programs:22, capital:12  },
+  { yr:"2023", startups:51, founders:64,  programs:31, capital:18.4},
+  { yr:"2024", startups:68, founders:102, programs:38, capital:25.1},
+  { yr:"2025", startups:82, founders:148, programs:47, capital:29.5},
+];
+const SERIES = [
+  { key:"startups",  label:"Startups",   color:"#0E5C44", yMax:100 },
+  { key:"founders",  label:"Founders",   color:"#2D6BFF", yMax:160 },
+  { key:"programs",  label:"Programs",   color:"#B89422", yMax:60  },
+  { key:"capital",   label:"Capital (₱M)",color:"#8B5CF6",yMax:35  },
+];
+const YOY = ACTIVITY.slice(1).map((r,i)=>{
+  const p=ACTIVITY[i];
+  return {
+    yr:r.yr,
+    startups: Math.round(((r.startups-p.startups)/p.startups)*100),
+    founders: Math.round(((r.founders-p.founders)/p.founders)*100),
+    programs: Math.round(((r.programs-p.programs)/p.programs)*100),
+    capital:  p.capital>0?Math.round(((r.capital-p.capital)/p.capital)*100):null,
+  };
+});
+const SECTOR_DATA = [
+  { sector:"AgriTech",    startups:5, founders:6, capital:3.95, color:"#2A8A52" },
+  { sector:"FinTech",     startups:3, founders:3, capital:2.16, color:"#14532D" },
+  { sector:"EdTech",      startups:3, founders:3, capital:0.52, color:"#6B5BD6" },
+  { sector:"Social",      startups:2, founders:3, capital:0,    color:"#E68A18" },
+  { sector:"GreenTech",   startups:2, founders:2, capital:0.18, color:"#0E5C44" },
+  { sector:"Tourism",     startups:1, founders:1, capital:0.95, color:"#B5781E" },
+  { sector:"ICT",         startups:1, founders:2, capital:0.12, color:"#475569" },
+  { sector:"Community",   startups:1, founders:1, capital:0.22, color:"#475569" },
+  { sector:"FoodTech",    startups:1, founders:1, capital:0.28, color:"#8B4513" },
+  { sector:"Services",    startups:1, founders:2, capital:0.15, color:"#7C3AED" },
+  { sector:"CreativeTech",startups:1, founders:1, capital:0.05, color:"#C9342B" },
+  { sector:"GovTech",     startups:1, founders:1, capital:0,    color:"#163E2E" },
+];
+const TBI_DATA = [
+  { tbi:"Independent", startups:6,  founders:9,  verified:5, funding:3.70 },
+  { tbi:"UC InTTO",    startups:4,  founders:4,  verified:2, funding:0.05 },
+  { tbi:"SLU SIRIB",   startups:3,  founders:3,  verified:3, funding:0.23 },
+  { tbi:"BSU-ATBI",    startups:2,  founders:2,  verified:2, funding:0.52 },
+  { tbi:"UPB SILBI",   startups:2,  founders:2,  verified:2, funding:0.52 },
+];
+const COHORT = [
+  { cohort:"2016–17", total:2, active:2, growth:2, launch:0, idea:0, rate:100 },
+  { cohort:"2018–19", total:3, active:3, growth:1, launch:2, idea:0, rate:100 },
+  { cohort:"2020–21", total:4, active:3, growth:0, launch:2, idea:1, rate:75  },
+  { cohort:"2022",    total:7, active:4, growth:0, launch:1, idea:3, rate:57  },
+  { cohort:"2023",    total:3, active:3, growth:0, launch:3, idea:0, rate:100 },
+  { cohort:"2024–25", total:2, active:1, growth:0, launch:0, idea:1, rate:50  },
+];
+
+// ── ICONS ─────────────────────────────────────────────────────────
+const Ico = ({ n, s=16, c="currentColor" }) => {
+  const p={width:s,height:s,viewBox:"0 0 24 24",fill:"none",stroke:c,strokeWidth:1.8,strokeLinecap:"round",strokeLinejoin:"round"};
+  const d={
+    dash:   <svg {...p}><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>,
+    rocket: <svg {...p}><path d="M5 13.5 3 21l7.5-2"/><path d="M14.5 5.5C17 3 21 3 21 3s0 4-2.5 6.5L11 17l-4-4z"/><circle cx="15" cy="9" r="1.2"/></svg>,
+    users:  <svg {...p}><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="7" r="2.4"/><path d="M21 18c0-2.4-1.7-4.5-4-5"/></svg>,
+    coins:  <svg {...p}><ellipse cx="9" cy="7" rx="6" ry="3"/><path d="M3 7v5c0 1.7 2.7 3 6 3s6-1.3 6-3V7"/><path d="M3 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-2"/></svg>,
+    cal:    <svg {...p}><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>,
+    chart:  <svg {...p}><rect x="3" y="11" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="17" rx="1"/></svg>,
+    spark:  <svg {...p}><path d="m3 17 4-4 4 3 6-7 4 4"/></svg>,
+    set:    <svg {...p}><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>,
+    srch:   <svg {...p}><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.5-3.5"/></svg>,
+    bell:   <svg {...p}><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2H4.5z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>,
+    out:    <svg {...p}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>,
+    map:    <svg {...p}><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>,
+    dl:     <svg {...p}><path d="M12 3v12M7 10l5 5 5-5M5 19h14"/></svg>,
+    arr_ur: <svg {...p}><path d="M7 17 17 7M9 7h8v8"/></svg>,
+    arr_dn: <svg {...p}><path d="M12 5v14M6 13l6 6 6-6"/></svg>,
+    info:   <svg {...p}><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16v.5"/></svg>,
+    chev_r: <svg {...p}><path d="m9 6 6 6-6 6"/></svg>,
+  };
+  return d[n]||null;
+};
+
+// ── NAV ───────────────────────────────────────────────────────────
+const NAV = [
+  { id:"overview",  label:"Overview",  icon:"dash",  href:"Baguio Innovation Dashboard.html" },
+  { id:"startups",  label:"Startups",  icon:"rocket",cnt:82,  href:"Startups.html" },
+  { id:"founders",  label:"Founders",  icon:"users", cnt:148, href:"Founders.html" },
+  { id:"capital",   label:"Capital",   icon:"coins", href:"Capital.html" },
+  { id:"programs",  label:"Programs",  icon:"cal",   cnt:47,  href:"Programs.html" },
+  { id:"analytics", label:"Analytics", icon:"chart" },
+  { id:"maturity",  label:"Maturity",  icon:"map",   href:"Maturity.html" },
+  { id:"settings",  label:"Settings",  icon:"set",   href:"Settings.html" },
+];
+const Sidebar = () => (
+  <aside className="sidebar">
+    <div className="brand">
+      <div className="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 36 36" fill="none">
+          <path d="M18 4 L10 16 H14 L8 27 H28 L22 16 H26 Z" fill="#14532D"/>
+          <rect x="16" y="27" width="4" height="4" rx="1" fill="#14532D"/>
+        </svg>
+      </div>
+      <div>
+        <div style={{fontSize:11,fontWeight:800,color:"#14532D",textTransform:"uppercase",letterSpacing:".03em",lineHeight:1.3}}>Baguio City<br/>Startup Ecosystem</div>
+        <div style={{fontSize:10.5,color:"var(--ink-3)",marginTop:1}}>Innovate. Build. Elevate.</div>
+      </div>
+    </div>
+    <nav>
+      {NAV.map(n=>(
+        <button key={n.id} className={`nav-item ${n.id==="analytics"?"active":""}`}
+                onClick={()=>{if(n.href)window.location.href=n.href;}}>
+          <Ico n={n.icon} s={16} c={n.id==="analytics"?"#14532D":"#9CA3AF"}/>
+          <span style={{flex:1}}>{n.label}</span>
+          {n.cnt!=null&&<span className="nav-cnt">{n.cnt}</span>}
+        </button>
+      ))}
+    </nav>
+    <div className="sidebar-spacer"/>
+    <button className="nav-item logout"><Ico n="out" s={16} c="#F97149"/><span>Log out</span></button>
+  </aside>
+);
+
+// ── LINE CHART ────────────────────────────────────────────────────
+const LineChart = ({ data, series, w=680, h=180 }) => {
+  const [hover, setHover] = useState(null);
+  const pad = { t:20, r:20, b:30, l:44 };
+  const cw = w - pad.l - pad.r;
+  const ch = h - pad.t - pad.b;
+  const n = data.length;
+  const allVals = series.flatMap(s => data.map(d => d[s.key]));
+  const yMax = Math.max(...allVals) * 1.12;
+  const x = i => pad.l + (i / (n-1)) * cw;
+  const y = v => pad.t + ch - (v / yMax) * ch;
+  const gridLines = [0, 0.25, 0.5, 0.75, 1].map(p => Math.round(yMax * p));
+
+  return (
+    <svg width={w} height={h} style={{overflow:"visible",width:"100%"}} viewBox={`0 0 ${w} ${h}`}>
+      {/* grid */}
+      {gridLines.map(g => (
+        <g key={g}>
+          <line x1={pad.l} y1={y(g)} x2={pad.l+cw} y2={y(g)} stroke="var(--line)" strokeWidth="1" strokeDasharray="4 3"/>
+          <text x={pad.l-6} y={y(g)+4} textAnchor="end" fontSize="9" fill="var(--ink-4)" fontFamily="Inter,sans-serif">{g}</text>
+        </g>
+      ))}
+      {/* x labels */}
+      {data.map((d,i) => (
+        <text key={d.yr} x={x(i)} y={h-4} textAnchor="middle" fontSize="10" fill="var(--ink-4)" fontFamily="Inter,sans-serif">{d.yr}</text>
+      ))}
+      {/* lines */}
+      {series.map(s => {
+        const pts = data.map((d,i) => `${x(i)},${y(d[s.key])}`).join(" ");
+        return <polyline key={s.key} points={pts} fill="none" stroke={s.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>;
+      })}
+      {/* dots on hover index */}
+      {hover !== null && series.map(s => (
+        <circle key={s.key} cx={x(hover)} cy={y(data[hover][s.key])} r="4" fill={s.color} stroke="#fff" strokeWidth="1.5"/>
+      ))}
+      {/* hover zones */}
+      {data.map((d,i) => (
+        <rect key={i} x={x(i)-18} y={pad.t} width={36} height={ch} fill="transparent"
+          onMouseEnter={()=>setHover(i)} onMouseLeave={()=>setHover(null)}/>
+      ))}
+      {/* tooltip */}
+      {hover !== null && (() => {
+        const tx = x(hover), ty = pad.t + 4;
+        const d = data[hover];
+        const lines = series.map(s => `${s.label}: ${s.key==="capital"?"₱"+d[s.key]+"M":d[s.key]}`);
+        const bw = 130, bh = 16 + lines.length * 16 + 8;
+        const bx = Math.min(tx - bw/2, w - bw - 4);
+        return (
+          <g>
+            <rect x={bx} y={ty} width={bw} height={bh} rx="6" fill="var(--ink-2)"/>
+            <text x={bx+8} y={ty+13} fontSize="10" fontWeight="600" fill="#fff" fontFamily="Inter,sans-serif">{d.yr}</text>
+            {lines.map((l,i)=>(
+              <text key={i} x={bx+8} y={ty+13+14*(i+1)} fontSize="10" fill="rgba(255,255,255,.8)" fontFamily="Inter,sans-serif">{l}</text>
+            ))}
+          </g>
+        );
+      })()}
+    </svg>
+  );
+};
+
+// ── GROWTH TAB ────────────────────────────────────────────────────
+const GrowthTab = () => {
+  const [active, setActive] = useState(new Set(["startups","founders","programs","capital"]));
+  const toggle = k => setActive(prev => { const s=new Set(prev); s.has(k)?s.delete(k):s.add(k); return s; });
+  const visibleSeries = SERIES.filter(s => active.has(s.key));
+
+  const latest = ACTIVITY[ACTIVITY.length-1];
+  const prev   = ACTIVITY[ACTIVITY.length-2];
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:18}}>
+      <div className="kpi-row">
+        {[
+          { label:"Active startups", val:latest.startups, prev:prev.startups, unit:"" },
+          { label:"Founders",        val:latest.founders,  prev:prev.founders,  unit:"" },
+          { label:"Programs",        val:latest.programs,  prev:prev.programs,  unit:"" },
+          { label:"Capital deployed",val:`₱${latest.capital}M`, prev:null, delta:"+₱4.4M", up:true },
+          { label:"YoY growth (avg)",val:"+42%", prev:null, delta:"2018–2025 CAGR", up:true },
+        ].map(k=>{
+          const delta = k.prev!=null ? Math.round(((k.val-k.prev)/k.prev)*100) : null;
+          const up = delta!=null ? delta>=0 : k.up;
+          return (
+            <div key={k.label} className="kpi">
+              <div className="kpi-label">{k.label}</div>
+              <div className="kpi-val">{k.val}</div>
+              <div className={`kpi-delta ${up?"up":"dn"}`}>
+                <Ico n={up?"arr_ur":"arr_dn"} s={11} c={up?"var(--gmd)":"var(--red)"}/>
+                {delta!=null ? `${delta>0?"+":""}${delta}% YoY` : k.delta}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="card">
+        <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:16}}>
+          <div>
+            <div className="card-title">Ecosystem Growth — All Metrics</div>
+            <div style={{fontSize:11.5,color:"var(--ink-4)"}}>2018–2025 · hover for values · click legend to toggle</div>
+          </div>
+          <div style={{display:"flex",gap:8}}>
+            <button style={{display:"inline-flex",alignItems:"center",gap:5,padding:"6px 12px",borderRadius:8,fontSize:12,fontWeight:600,border:"1.5px solid var(--line)",background:"var(--card)",color:"var(--ink-3)",cursor:"pointer"}}>
+              <Ico n="dl" s={13}/>Export SVG
+            </button>
+          </div>
+        </div>
+        <div className="chart-legend">
+          {SERIES.map(s=>(
+            <div key={s.key} className="leg-item" style={{opacity:active.has(s.key)?1:.35}} onClick={()=>toggle(s.key)}>
+              <div className="leg-swatch" style={{background:s.color}}/>
+              {s.label}
+            </div>
+          ))}
+        </div>
+        <div className="chart-area">
+          <LineChart data={ACTIVITY} series={visibleSeries} w={980} h={200}/>
+        </div>
+      </div>
+
+      <div className="grid-2">
+        <div className="card">
+          <div className="card-title">Year-over-Year Growth Rates</div>
+          <div className="card-sub">% change per metric · 2019–2025</div>
+          <table className="tbl" style={{marginTop:-8}}>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th style={{textAlign:"right"}}>Startups</th>
+                <th style={{textAlign:"right"}}>Founders</th>
+                <th style={{textAlign:"right"}}>Programs</th>
+                <th style={{textAlign:"right"}}>Capital</th>
+              </tr>
+            </thead>
+            <tbody>
+              {YOY.map(r=>(
+                <tr key={r.yr}>
+                  <td style={{fontWeight:600}}>{r.yr}</td>
+                  {["startups","founders","programs","capital"].map(k=>{
+                    const v = r[k];
+                    if(v==null) return <td key={k} style={{textAlign:"right",color:"var(--ink-4)"}}>—</td>;
+                    return(
+                      <td key={k} style={{textAlign:"right",fontWeight:600,fontFeatureSettings:'"tnum"',color:v>=0?"var(--gmd)":"var(--red)"}}>
+                        {v>0?"+":""}{v}%
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div style={{display:"flex",flexDirection:"column",gap:16}}>
+          <div className="card">
+            <div className="card-title">Stage Funnel</div>
+            <div className="card-sub">Current startup pipeline by maturity</div>
+            <div className="funnel">
+              {[
+                { label:"Idea / Pre-MVP",  count:7,  pct:100, color:"#F6A723", meta:"7 startups · 41%" },
+                { label:"Launch / MVP",    count:7,  pct:100, color:"#15803D", meta:"7 startups · 41%" },
+                { label:"Growth / Revenue",count:3,  pct:100, color:"#0E5C44", meta:"3 startups · 18%" },
+              ].map((s,i)=>(
+                <React.Fragment key={s.label}>
+                  {i>0 && <div className="funnel-arrow">↓ {Math.round((7/17)*100)}% progressed</div>}
+                  <div className="funnel-step" style={{background:s.color,width:`${100-i*12}%`}}>
+                    <div>
+                      <div className="fs-label">{s.label}</div>
+                      <div className="fs-meta">{s.meta}</div>
+                    </div>
+                    <div className="fs-count">{s.count}</div>
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-title">Key Inflection Points</div>
+            <div className="card-sub">Events that bent the growth curve</div>
+            {[
+              { yr:"2019", evt:"QBO Innovation Hub opens",       impact:"+↑",  color:"var(--gmd)" },
+              { yr:"2021", evt:"ARISE Plus Ye! Boost arrives",   impact:"+↑↑", color:"var(--gmd)" },
+              { yr:"2022", evt:"Founders surge: +128% YoY",      impact:"★",   color:"var(--amber)" },
+              { yr:"2023", evt:"Programs cross 30 active mark",  impact:"+↑",  color:"var(--gmd)" },
+              { yr:"2024", evt:"TARAKI sunsets — gap created",   impact:"⚠",   color:"var(--red)" },
+            ].map((e,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"9px 0",borderBottom:"1px solid var(--line-2)"}}>
+                <span style={{fontSize:11,fontWeight:700,color:"var(--ink-4)",width:32,fontFeatureSettings:'"tnum"'}}>{e.yr}</span>
+                <span style={{fontSize:12.5,color:"var(--ink-2)",flex:1}}>{e.evt}</span>
+                <span style={{fontSize:12,fontWeight:700,color:e.color}}>{e.impact}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ── BREAKDOWN TAB ─────────────────────────────────────────────────
+const BreakdownTab = () => {
+  const [metric, setMetric] = useState("startups");
+  const sorted = [...SECTOR_DATA].sort((a,b)=>b[metric]-a[metric]);
+  const maxVal = sorted[0][metric];
+  const metricLabel = { startups:"Startups", founders:"Founders", capital:"Capital (₱M)" };
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:18}}>
+      <div className="grid-3">
+        <div className="card">
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
+            <div>
+              <div className="card-title">Sector Breakdown</div>
+              <div style={{fontSize:11.5,color:"var(--ink-4)"}}>Across all {SECTOR_DATA.length} tracked sectors</div>
+            </div>
+            <div style={{display:"flex",background:"var(--bg)",border:"1.5px solid var(--line)",borderRadius:8,padding:2,gap:1}}>
+              {Object.entries(metricLabel).map(([k,l])=>(
+                <button key={k} onClick={()=>setMetric(k)} style={{padding:"5px 12px",borderRadius:6,fontSize:12,fontWeight:metric===k?600:500,color:metric===k?"var(--gdk)":"var(--ink-3)",background:metric===k?"var(--card)":"transparent",border:"none",cursor:"pointer"}}>{l}</button>
+              ))}
+            </div>
+          </div>
+          <div className="h-bars">
+            {sorted.map(s=>(
+              <div key={s.sector} className="h-bar-row">
+                <div className="h-bar-top">
+                  <div className="h-bar-name">{s.sector}</div>
+                  <div className="h-bar-val">{metric==="capital"?`₱${s[metric].toFixed(2)}M`:s[metric]}</div>
+                </div>
+                <div className="h-bar-track">
+                  <div className="h-bar-fill" style={{width:`${(s[metric]/maxVal)*100}%`,background:s.color}}/>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="card-title">TBI Performance</div>
+          <div className="card-sub">By startups, founders, and capital</div>
+          {TBI_DATA.map(t=>(
+            <div key={t.tbi} style={{padding:"11px 0",borderBottom:"1px solid var(--line-2)"}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
+                <span style={{fontSize:13,fontWeight:600,color:"var(--ink-2)"}}>{t.tbi}</span>
+                <span style={{fontSize:11,color:"var(--ink-4)"}}>{t.verified}/{t.startups} verified</span>
+              </div>
+              <div style={{display:"flex",gap:8}}>
+                {[["Startups",t.startups,"var(--gmd)"],["Founders",t.founders,"var(--blue)"],["Capital","₱"+t.funding.toFixed(1)+"M","var(--amber)"]].map(([l,v,c])=>(
+                  <div key={l} style={{background:"var(--bg)",borderRadius:7,padding:"5px 10px",flex:1,textAlign:"center"}}>
+                    <div style={{fontSize:14,fontWeight:700,color:c,fontFeatureSettings:'"tnum"'}}>{v}</div>
+                    <div style={{fontSize:9.5,color:"var(--ink-4)",textTransform:"uppercase",letterSpacing:".04em",fontWeight:600,marginTop:2}}>{l}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="card">
+          <div className="card-title">City Distribution</div>
+          <div className="card-sub">Startups by municipality</div>
+          <div className="h-bars">
+            {[
+              { city:"Baguio City",  n:15, color:"#0E5C44" },
+              { city:"La Trinidad", n:2,  color:"#2A8A52" },
+            ].map(c=>(
+              <div key={c.city} className="h-bar-row">
+                <div className="h-bar-top">
+                  <div className="h-bar-name">{c.city}</div>
+                  <div className="h-bar-val">{c.n} startups</div>
+                </div>
+                <div className="h-bar-track">
+                  <div className="h-bar-fill" style={{width:`${(c.n/17)*100}%`,background:c.color}}/>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{marginTop:20,paddingTop:16,borderTop:"1.5px solid var(--line)"}}>
+            <div className="card-title" style={{fontSize:13,marginBottom:12}}>Verification Rate</div>
+            {[
+              { label:"Fully verified",   n:14, color:"var(--gmd)" },
+              { label:"Needs re-validation",n:3, color:"var(--red)" },
+            ].map(v=>(
+              <div key={v.label} className="h-bar-row" style={{marginBottom:8}}>
+                <div className="h-bar-top">
+                  <div className="h-bar-name">{v.label}</div>
+                  <div className="h-bar-val">{v.n}</div>
+                </div>
+                <div className="h-bar-track">
+                  <div className="h-bar-fill" style={{width:`${(v.n/17)*100}%`,background:v.color}}/>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-title">Cohort Survival Analysis</div>
+        <div className="card-sub">Startups grouped by founding year · activity status as of 2025</div>
+        <table className="tbl">
+          <thead>
+            <tr>
+              <th>Cohort</th>
+              <th style={{textAlign:"right"}}>Founded</th>
+              <th style={{textAlign:"right"}}>Active</th>
+              <th style={{textAlign:"right"}}>Growth stage</th>
+              <th style={{textAlign:"right"}}>Launch stage</th>
+              <th style={{textAlign:"right"}}>Idea stage</th>
+              <th style={{textAlign:"right"}}>Survival rate</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {COHORT.map(c=>(
+              <tr key={c.cohort}>
+                <td style={{fontWeight:600}}>{c.cohort}</td>
+                <td style={{textAlign:"right",fontFeatureSettings:'"tnum"'}}>{c.total}</td>
+                <td style={{textAlign:"right",fontWeight:600,color:"var(--gmd)",fontFeatureSettings:'"tnum"'}}>{c.active}</td>
+                <td style={{textAlign:"right",fontFeatureSettings:'"tnum"'}}>{c.growth}</td>
+                <td style={{textAlign:"right",fontFeatureSettings:'"tnum"'}}>{c.launch}</td>
+                <td style={{textAlign:"right",fontFeatureSettings:'"tnum"'}}>{c.idea}</td>
+                <td style={{textAlign:"right",fontWeight:700,fontFeatureSettings:'"tnum"',color:c.rate>=75?"var(--gmd)":c.rate>=50?"var(--amber)":"var(--red)"}}>
+                  {c.rate}%
+                </td>
+                <td>
+                  <span className={`tag ${c.rate>=75?"tag-green":c.rate>=50?"tag-amber":"tag-red"}`}>
+                    <span className="tag-dot"/>
+                    {c.rate>=75?"Healthy":c.rate>=50?"Watch":"At risk"}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+// ── INSIGHTS TAB ─────────────────────────────────────────────────
+const InsightsTab = () => (
+  <div style={{display:"flex",flexDirection:"column",gap:18}}>
+    <div className="grid-2">
+      <div style={{display:"flex",flexDirection:"column",gap:14}}>
+        <div style={{padding:"14px 18px",background:"var(--g50)",borderRadius:10,border:"1.5px solid var(--glt)"}}>
+          <div style={{fontSize:12,fontWeight:700,color:"var(--gdk)",textTransform:"uppercase",letterSpacing:".05em",marginBottom:8}}>🟢 Strengths</div>
+          {["Strong university pipeline — 5 TBIs across 5 institutions","AgriTech is the dominant sector with real commercial traction","DOST grant infrastructure is mature and accessible","Founder count growing 42% CAGR — talent pipeline healthy","Ordinance 063-2023 gives legal framework for LGU support"].map((s,i)=>(
+            <div key={i} style={{fontSize:12.5,color:"var(--ink-2)",padding:"6px 0",borderBottom:"1px solid var(--glt)",display:"flex",gap:8}}>
+              <span style={{color:"var(--gmd)",flexShrink:0}}>✓</span>{s}
+            </div>
+          ))}
+        </div>
+        <div style={{padding:"14px 18px",background:"var(--red-lt)",borderRadius:10,border:"1.5px solid rgba(239,68,68,.2)"}}>
+          <div style={{fontSize:12,fontWeight:700,color:"var(--red)",textTransform:"uppercase",letterSpacing:".05em",marginBottom:8}}>🔴 Critical gaps</div>
+          {["Zero angel investors or private VC present in ecosystem","94% public-sector funding = fragile capital stack","TARAKI youth incubation ended with no successor program","Private sector engagement score: 24% (critically low)","No ecosystem fund or revolving credit facility"].map((s,i)=>(
+            <div key={i} style={{fontSize:12.5,color:"var(--ink-2)",padding:"6px 0",borderBottom:"1px solid rgba(239,68,68,.1)",display:"flex",gap:8}}>
+              <span style={{color:"var(--red)",flexShrink:0}}>✗</span>{s}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{display:"flex",flexDirection:"column",gap:14}}>
+        <div style={{padding:"14px 18px",background:"#FFF8EC",borderRadius:10,border:"1.5px solid rgba(246,167,35,.25)"}}>
+          <div style={{fontSize:12,fontWeight:700,color:"#B5781E",textTransform:"uppercase",letterSpacing:".05em",marginBottom:8}}>🟡 Opportunities</div>
+          {["Cordillera Innovation Summit 2026 — regional visibility moment","WHWise program can double female founder rate to 60%","BSU-ATBI expansion into FoodTech & GreenTech pipeline","Interconnect BLISTT corridor — currently Baguio-centric","Tourism & CreativeTech sectors are under-resourced vs. demand"].map((s,i)=>(
+            <div key={i} style={{fontSize:12.5,color:"var(--ink-2)",padding:"6px 0",borderBottom:"1px solid rgba(246,167,35,.15)",display:"flex",gap:8}}>
+              <span style={{color:"#B5781E",flexShrink:0}}>→</span>{s}
+            </div>
+          ))}
+        </div>
+        <div className="card">
+          <div className="card-title">Benchmarks vs. Philippine Ecosystems</div>
+          <div className="card-sub">Comparison with Davao, Cebu, and Iloilo tech ecosystems</div>
+          {[
+            { metric:"Startups per 100K population", baguio:"4.1", ph:"12.5", status:"below" },
+            { metric:"Female founder rate",          baguio:"45%", ph:"38%",  status:"above" },
+            { metric:"Grant-to-startup ratio",       baguio:"₱0.44M", ph:"₱0.31M", status:"above" },
+            { metric:"Active TBIs",                  baguio:"5",    ph:"3.2 avg", status:"above" },
+            { metric:"Private capital share",        baguio:"1.4%", ph:"34%",   status:"below" },
+          ].map(r=>(
+            <div key={r.metric} style={{display:"flex",alignItems:"center",gap:12,padding:"9px 0",borderBottom:"1px solid var(--line-2)"}}>
+              <span style={{flex:1,fontSize:12.5,color:"var(--ink-2)"}}>{r.metric}</span>
+              <span style={{fontSize:13,fontWeight:700,color:"var(--ink)",fontFeatureSettings:'"tnum"',width:60,textAlign:"right"}}>{r.baguio}</span>
+              <span style={{fontSize:11,color:"var(--ink-4)",width:56,textAlign:"right"}}>{r.ph}</span>
+              <span className={`tag ${r.status==="above"?"tag-green":"tag-red"}`}><span className="tag-dot"/>{r.status}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// ── APP ───────────────────────────────────────────────────────────
+function App() {
+  const [tab, setTab] = useState("growth");
+  const tabs = [
+    { id:"growth",    label:"Growth trends" },
+    { id:"breakdown", label:"Sector & TBI breakdown" },
+    { id:"insights",  label:"Insights & benchmarks" },
+  ];
+  return (
+    <div className="stage">
+      <div className="app">
+        <Sidebar/>
+        <main className="main">
+          <div className="topbar">
+            <div>
+              <div className="page-title">Analytics</div>
+              <div style={{fontSize:12,color:"var(--ink-3)",marginTop:2}}>Ecosystem data · 2018–2025 · Baguio-BLISTT corridor</div>
+            </div>
+            <div className="topbar-right">
+              <div className="search-box">
+                <Ico n="srch" s={14} c="var(--ink-4)"/>
+                <input placeholder="Search metrics…"/>
+                <span style={{fontSize:10,color:"var(--ink-4)",background:"var(--line)",borderRadius:4,padding:"1px 5px",fontWeight:500}}>⌘K</span>
+              </div>
+              <button className="notif-btn"><Ico n="bell" s={14} c="var(--ink-3)"/><span className="notif-dot"/></button>
+              <div className="user-av">LG</div>
+            </div>
+          </div>
+          <div className="page-tabs">
+            {tabs.map(t=>(
+              <button key={t.id} className={`ptab ${tab===t.id?"on":""}`} onClick={()=>setTab(t.id)}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <div className="content">
+            {tab==="growth"    && <GrowthTab/>}
+            {tab==="breakdown" && <BreakdownTab/>}
+            {tab==="insights"  && <InsightsTab/>}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App/>);
+</script>
+</body>
+</html>

@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dashboard — Baguio Ecosystem</title>
+<meta name="viewport" content="width=1440">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gdk:#14532D; --gmd:#15803D; --glt:#DCFCE7; --g50:#F0FDF4;
+  --orange:#F97149; --orange-lt:#FFF0EB;
+  --amber:#F6A723; --amber-lt:#FFF8EC;
+  --red:#EF4444; --red-lt:#FEF2F2;
+  --blue:#3B82F6; --blue-lt:#EFF6FF;
+  --purple:#8B5CF6;
+  --teal:#0D9488;
+  --bg:#F8FAFC; --card:#FFFFFF;
+  --ink:#111827; --ink-2:#1F2937; --ink-3:#6B7280; --ink-4:#9CA3AF;
+  --line:#E5E7EB; --line-2:#F3F4F6;
+  --r:12px; --r-lg:16px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08);
+  --font:"Inter",ui-sans-serif,system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font-family:var(--font);cursor:pointer;border:none;background:none;color:inherit;padding:0}
+input{font-family:var(--font)}
+
+.stage{width:1440px;transform-origin:top left}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--card);padding:0;display:flex;flex-direction:column;border-right:1.5px solid var(--line);min-height:100vh;position:sticky;top:0;height:100vh;overflow:hidden}
+.brand{padding:22px 20px 18px;border-bottom:1px solid var(--line-2)}
+.brand-logo-wrap{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.brand-icon{width:36px;height:36px;flex:none}
+.brand-name{font-size:11px;font-weight:800;color:var(--gdk);line-height:1.3;text-transform:uppercase;letter-spacing:.03em}
+.brand-sub{font-size:10px;color:var(--ink-4);margin-top:2px;font-weight:400}
+.nav-section{padding:14px 12px 8px}
+.nav-section-label{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:var(--ink-4);padding:0 8px;margin-bottom:4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13px;font-weight:500;color:var(--ink-3);width:100%;transition:background .1s,color .1s;text-align:left}
+.nav-item:hover{background:var(--g50);color:var(--gdk)}
+.nav-item.active{background:var(--g50);color:var(--gdk);font-weight:600}
+.nav-cnt{margin-left:auto;font-size:11px;font-weight:600;color:var(--ink-4);background:var(--line-2);padding:1px 7px;border-radius:999px}
+.nav-item.active .nav-cnt{color:var(--gdk);background:var(--glt)}
+.sidebar-spacer{flex:1}
+.sidebar-foot{padding:14px 20px 20px;border-top:1px solid var(--line-2)}
+.foot-user{display:flex;align-items:center;gap:10px}
+.foot-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#14532D,#16A34A);display:grid;place-items:center;color:#fff;font-size:12px;font-weight:700;flex:none}
+.foot-name{font-size:12.5px;font-weight:600;color:var(--ink)}
+.foot-role{font-size:10.5px;color:var(--ink-4);margin-top:1px}
+
+/* ── MAIN ── */
+.main{display:flex;flex-direction:column;min-width:0;background:var(--bg)}
+
+/* ── TOP BAR ── */
+.topbar{background:var(--card);border-bottom:1.5px solid var(--line);padding:16px 28px;display:flex;align-items:center;gap:16px}
+.topbar-left{flex:1}
+.page-title{font-size:22px;font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1}
+.topbar-sub{font-size:12px;color:var(--ink-4);margin-top:2px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.topbar-date{font-size:12px;color:var(--ink-3);display:flex;align-items:center;gap:5px;background:var(--line-2);padding:6px 12px;border-radius:8px;font-weight:500}
+.search-box{display:flex;align-items:center;gap:7px;background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:7px 14px;min-width:200px}
+.search-box input{border:none;outline:none;background:transparent;font-size:12.5px;color:var(--ink);width:100%}
+.search-box input::placeholder{color:var(--ink-4)}
+.kbd-hint{font-size:10px;color:var(--ink-4);background:var(--line);border-radius:4px;padding:1px 5px;font-weight:500;white-space:nowrap}
+.notif-btn{position:relative;width:36px;height:36px;border-radius:9px;display:grid;place-items:center;background:var(--bg);border:1.5px solid var(--line)}
+.notif-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:999px;padding:1px 5px;min-width:18px;text-align:center;border:2px solid var(--card)}
+.user-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#14532D,#16A34A);display:grid;place-items:center;color:#fff;font-size:12px;font-weight:700;cursor:pointer}
+
+/* ── CONTENT ── */
+.content{padding:24px 28px 32px;display:flex;flex-direction:column;gap:20px}
+
+/* ── KPI ROW ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.kpi-card{background:var(--card);border-radius:var(--r-lg);padding:18px 20px;border:1.5px solid var(--line);display:flex;gap:14px;align-items:flex-start}
+.kpi-icon-wrap{width:44px;height:44px;border-radius:50%;background:var(--glt);display:grid;place-items:center;flex:none}
+.kpi-body{flex:1;min-width:0}
+.kpi-label{font-size:11.5px;color:var(--ink-3);font-weight:500;margin-bottom:4px}
+.kpi-val{font-size:26px;font-weight:700;color:var(--ink);letter-spacing:-.025em;line-height:1.1}
+.kpi-footer{display:flex;align-items:center;gap:6px;margin-top:6px}
+.kpi-delta{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:600}
+.kpi-delta.up{color:var(--gmd)} .kpi-delta.dn{color:var(--red)}
+.kpi-sub{font-size:11px;color:var(--ink-4)}
+.kpi-spark{margin-top:4px}
+
+/* ── 3-COL ROW ── */
+.tri-row{display:grid;grid-template-columns:2fr 1.3fr 1.3fr;gap:16px;align-items:start}
+
+/* ── INDUSTRY BARS ── */
+.ind-card{background:var(--card);border-radius:var(--r-lg);padding:20px 22px;border:1.5px solid var(--line)}
+.card-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.card-sub{font-size:11.5px;color:var(--ink-4);margin-bottom:16px}
+.ind-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-2)}
+.ind-row:last-of-type{border-bottom:none}
+.ind-icon{width:26px;height:26px;border-radius:7px;background:var(--glt);display:grid;place-items:center;flex:none}
+.ind-name{font-size:12.5px;font-weight:500;color:var(--ink-2);width:108px;flex:none}
+.ind-bar-wrap{flex:1;height:7px;background:var(--line-2);border-radius:999px;overflow:hidden}
+.ind-bar{height:100%;background:var(--gdk);border-radius:999px}
+.ind-count{font-size:12px;font-weight:600;color:var(--ink);width:28px;text-align:right;flex:none}
+.ind-pct{font-size:11px;color:var(--ink-4);width:40px;text-align:right;flex:none}
+.view-all-btn{display:flex;align-items:center;justify-content:center;width:100%;margin-top:14px;padding:9px;border:1.5px solid var(--line);border-radius:9px;font-size:12.5px;font-weight:500;color:var(--ink-3);transition:all .12s}
+.view-all-btn:hover{border-color:var(--gmd);color:var(--gmd);background:var(--g50)}
+
+/* ── STAGE DONUT ── */
+.donut-card{background:var(--card);border-radius:var(--r-lg);padding:20px 22px;border:1.5px solid var(--line)}
+.donut-wrap{position:relative;width:160px;height:160px;margin:16px auto}
+.donut-wrap svg{position:absolute;inset:0;width:100%;height:100%}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.donut-center-num{font-size:26px;font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1}
+.donut-center-lbl{font-size:10px;color:var(--ink-4);font-weight:500;margin-top:2px}
+.donut-legend{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.donut-leg{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.donut-leg-dot{width:8px;height:8px;border-radius:50%;flex:none}
+.donut-leg-lbl{color:var(--ink-3);flex:1}
+.donut-leg-val{font-weight:600;color:var(--ink)}
+.donut-leg-pct{font-size:11px;color:var(--ink-4);margin-left:2px}
+
+/* ── SCMM RADAR ── */
+.scmm-card{background:var(--card);border-radius:var(--r-lg);padding:20px 22px;border:1.5px solid var(--line)}
+.scmm-score-row{display:flex;align-items:baseline;gap:6px;margin-bottom:4px}
+.scmm-score{font-size:32px;font-weight:700;color:var(--ink);letter-spacing:-.03em;line-height:1}
+.scmm-max{font-size:16px;color:var(--ink-4);font-weight:400}
+.scmm-level{font-size:12px;font-weight:600;color:var(--gmd);margin-bottom:14px}
+.radar-wrap{display:flex;justify-content:center}
+
+/* ── 2-COL BOT ROW ── */
+.bot-row{display:grid;grid-template-columns:1.1fr 1fr;gap:16px;align-items:start}
+
+/* ── FUNDING ── */
+.fund-card{background:var(--card);border-radius:var(--r-lg);padding:20px 22px;border:1.5px solid var(--line)}
+.fund-main{font-size:30px;font-weight:800;color:var(--ink);letter-spacing:-.03em;line-height:1;margin:10px 0 4px}
+.fund-delta{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--gmd)}
+.fund-body{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;margin-top:14px}
+.fund-breakdown{display:flex;flex-direction:column;gap:10px}
+.fund-row{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.fund-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.fund-lbl{color:var(--ink-3);flex:1}
+.fund-amt{font-weight:600;color:var(--ink)}
+.fund-pct{font-size:11px;color:var(--ink-4);margin-left:2px}
+
+/* ── ACTIVITY FEED ── */
+.act-card{background:var(--card);border-radius:var(--r-lg);padding:20px 22px;border:1.5px solid var(--line)}
+.act-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.act-view-all{font-size:12px;font-weight:600;color:var(--gmd)}
+.act-list{display:flex;flex-direction:column;gap:2px}
+.act-item{display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-bottom:1px solid var(--line-2)}
+.act-item:last-child{border-bottom:none}
+.act-av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700;flex:none}
+.act-info{flex:1;min-width:0}
+.act-name{font-size:13px;font-weight:600;color:var(--ink);line-height:1.2}
+.act-desc{font-size:11.5px;color:var(--ink-3);margin-top:2px;line-height:1.4}
+.act-time{font-size:11px;color:var(--ink-4);white-space:nowrap;margin-top:2px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+function fit(){const s=document.querySelector('.stage');if(!s)return;const w=document.documentElement.clientWidth,sc=Math.min(1,w/1440);s.style.transform=`scale(${sc})`;document.body.style.height=s.getBoundingClientRect().height+'px';}
+addEventListener('resize',fit);addEventListener('load',()=>{fit();setTimeout(fit,100);setTimeout(fit,600);});
+new MutationObserver(fit).observe(document.body,{childList:true,subtree:true});
+</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel">
+const { useState, useMemo } = React;
+
+// ── ICONS ─────────────────────────────────────────────────────────
+const Ico = ({ n, s=16, c="currentColor" }) => {
+  const p = { width:s, height:s, viewBox:"0 0 24 24", fill:"none", stroke:c, strokeWidth:1.8, strokeLinecap:"round", strokeLinejoin:"round" };
+  const d = {
+    dash:    <svg {...p}><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>,
+    rocket:  <svg {...p}><path d="M5 13.5 3 21l7.5-2"/><path d="M14.5 5.5C17 3 21 3 21 3s0 4-2.5 6.5L11 17l-4-4z"/><circle cx="15" cy="9" r="1.2"/></svg>,
+    users:   <svg {...p}><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="7" r="2.4"/><path d="M21 18c0-2.4-1.7-4.5-4-5"/></svg>,
+    coins:   <svg {...p}><ellipse cx="9" cy="7" rx="6" ry="3"/><path d="M3 7v5c0 1.7 2.7 3 6 3s6-1.3 6-3V7"/><path d="M3 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-2"/></svg>,
+    cal:     <svg {...p}><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>,
+    spark:   <svg {...p}><path d="m3 17 4-4 4 3 6-7 4 4"/></svg>,
+    set:     <svg {...p}><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>,
+    map:     <svg {...p}><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>,
+    srch:    <svg {...p}><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.5-3.5"/></svg>,
+    bell:    <svg {...p}><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2H4.5z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>,
+    info:    <svg {...p}><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01" strokeWidth="2"/></svg>,
+    up:      <svg {...p}><path d="M12 19V5M5 12l7-7 7 7"/></svg>,
+    dn:      <svg {...p}><path d="M12 5v14M5 12l7 7 7-7"/></svg>,
+    agri:    <svg {...p}><path d="M12 22V12M12 12C12 7 7 4 4 4c0 3 2 8 8 8zM12 12c0-5 5-8 8-8 0 3-2 8-8 8z"/></svg>,
+    fintech: <svg {...p}><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
+    edu:     <svg {...p}><path d="M2 9 12 4l10 5-10 5z"/><path d="M6 11v5c0 2 3 4 6 4s6-2 6-4v-5"/></svg>,
+    tour:    <svg {...p}><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5 8 12 8 12s8-7 8-12a8 8 0 0 0-8-8z"/></svg>,
+    health:  <svg {...p}><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
+    ecom:    <svg {...p}><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>,
+    media:   <svg {...p}><path d="M15 10l4.553-2.07A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.894L15 14v-4z"/><rect x="3" y="6" width="12" height="12" rx="2"/></svg>,
+    other:   <svg {...p}><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="6" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="18" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>,
+    chev_r:  <svg {...p}><path d="m9 6 6 6-6 6"/></svg>,
+    out:     <svg {...p}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>,
+  };
+  return d[n] || null;
+};
+
+// ── SPARKLINE ─────────────────────────────────────────────────────
+const Spark = ({ data, color="#15803D", w=80, h=30 }) => {
+  if (!data || data.length < 2) return null;
+  const mn = Math.min(...data), mx = Math.max(...data, mn+1);
+  const pts = data.map((v,i) => `${(i/(data.length-1))*w},${h-2-((v-mn)/(mx-mn))*(h-5)}`).join(" ");
+  const last = data.map((v,i) => [(i/(data.length-1))*w, h-2-((v-mn)/(mx-mn))*(h-5)]);
+  const [lx,ly] = last[last.length-1];
+  return (
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{overflow:"visible",display:"block"}}>
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx={lx} cy={ly} r="2.5" fill={color}/>
+    </svg>
+  );
+};
+
+// ── DATA ──────────────────────────────────────────────────────────
+const KPI_DATA = [
+  { label:"Active Startups",    val:"82",    delta:"+20.6%", sub:"vs Apr 2026", up:true, icon:"rocket", color:"#15803D", trend:[14,22,35,48,58,68,75,82] },
+  { label:"Registered Founders",val:"148",   delta:"+45.1%", sub:"vs May 2025", up:true, icon:"users",  color:"#15803D", trend:[18,28,42,62,88,112,132,148] },
+  { label:"Active Enablers",    val:"22",    delta:"+10.0%", sub:"vs Apr 2026", up:true, icon:"cal",    color:"#15803D", trend:[10,12,14,16,18,19,21,22] },
+  { label:"Funding Raised (YTD)",val:"₱36M", delta:"+13.4%", sub:"vs Apr 2026", up:true, icon:"coins",  color:"#8B5CF6", trend:[4,7,10,15,20,26,31,36] },
+];
+
+const INDUSTRIES = [
+  { name:"AgriTech",       icon:"agri",    count:14, pct:17.1, color:"#14532D" },
+  { name:"FinTech",        icon:"fintech", count:13, pct:15.9, color:"#14532D" },
+  { name:"EdTech",         icon:"edu",     count:11, pct:13.4, color:"#14532D" },
+  { name:"Tourism",        icon:"tour",    count:10, pct:12.2, color:"#14532D" },
+  { name:"HealthTech",     icon:"health",  count: 8, pct: 9.8, color:"#14532D" },
+  { name:"E-commerce",     icon:"ecom",    count: 6, pct: 7.3, color:"#14532D" },
+  { name:"Creative/Media", icon:"media",   count: 5, pct: 6.1, color:"#14532D" },
+  { name:"Other",          icon:"other",   count:15, pct:18.3, color:"#14532D" },
+];
+
+const STAGES = [
+  { label:"Growth",         count: 8, pct: 9.8, color:"#14532D" },
+  { label:"Launch",         count:26, pct:31.7, color:"#22C55E" },
+  { label:"MVP/Prototype",  count:31, pct:37.8, color:"#F97149" },
+  { label:"Idea",           count:17, pct:20.7, color:"#F6A723" },
+];
+
+const FUNDING_PIE = [
+  { label:"Grants",            amt:"₱30.8M", pct:85.6, color:"#14532D" },
+  { label:"Private Investment", amt:"₱3.9M",  pct:10.7, color:"#22C55E" },
+  { label:"Corporate/Other",   amt:"₱1.3M",  pct: 3.7, color:"#F6A723" },
+];
+
+const ACTIVITY = [
+  { initials:"SG", bg:"#14532D", name:"Session Groceries", desc:"raised ₱5.0M in seed funding",              time:"2h ago" },
+  { initials:"IO", bg:"#15803D", name:"IOL Inc.",           desc:"joined ARISE Accelerator Cohort 2026",       time:"3h ago" },
+  { initials:"WB", bg:"#B5781E", name:"When In Baguio",     desc:"added 3 new team members",                   time:"5h ago" },
+  { initials:"NE", bg:"#3B82F6", name:"New Event Added",    desc:'"Investor Connect: Baguio" on Jun 18',       time:"1d ago" },
+  { initials:"DT", bg:"#0D9488", name:"Dontog Technofarms", desc:"won 2nd place at Regional Pitching Competition", time:"1d ago" },
+];
+
+// SCMM scores
+const SCMM = { score:2.6, max:5, level:"Level 2: Foundational",
+  axes:[
+    { label:"Density",    val:2.0 },
+    { label:"Culture",    val:2.0 },
+    { label:"Capital",    val:1.0 },
+    { label:"Talent",     val:4.0 },
+    { label:"Regulatory", val:3.0 },
+  ]
+};
+
+// ── RADAR CHART ───────────────────────────────────────────────────
+const RadarChart = ({ axes, max=5, size=160 }) => {
+  const cx = size/2, cy = size/2, R = size/2 - 22;
+  const n = axes.length;
+  const angle = (i) => (i * 2*Math.PI/n) - Math.PI/2;
+  const pt = (i, r) => {
+    const a = angle(i);
+    return [cx + r*Math.cos(a), cy + r*Math.sin(a)];
+  };
+  const gridLevels = [1,2,3,4,5];
+  const polyPts = axes.map((a,i) => pt(i, (a.val/max)*R).join(",")).join(" ");
+
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      {/* grid rings */}
+      {gridLevels.map(lv => (
+        <polygon key={lv}
+          points={axes.map((_,i) => pt(i,(lv/max)*R).join(",")).join(" ")}
+          fill="none" stroke="#E5E7EB" strokeWidth="1"/>
+      ))}
+      {/* axes */}
+      {axes.map((_,i) => {
+        const [x,y] = pt(i,R);
+        return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="#E5E7EB" strokeWidth="1"/>;
+      })}
+      {/* data */}
+      <polygon points={polyPts} fill="#DCFCE7" stroke="#15803D" strokeWidth="1.5" fillOpacity="0.7"/>
+      {axes.map((a,i) => {
+        const [x,y] = pt(i,(a.val/max)*R);
+        return <circle key={i} cx={x} cy={y} r="3" fill="#15803D"/>;
+      })}
+      {/* labels */}
+      {axes.map((a,i) => {
+        const [x,y] = pt(i, R+14);
+        return (
+          <text key={i} x={x} y={y} textAnchor="middle" dominantBaseline="middle"
+            fontSize="9" fill="#6B7280" fontFamily="Inter" fontWeight="500">
+            {a.label}
+          </text>
+        );
+      })}
+      {/* value labels */}
+      {axes.map((a,i) => {
+        const [x,y] = pt(i, R+26);
+        return (
+          <text key={i} x={x} y={y} textAnchor="middle" dominantBaseline="middle"
+            fontSize="8.5" fill="#14532D" fontFamily="Inter" fontWeight="700">
+            {a.val}
+          </text>
+        );
+      })}
+    </svg>
+  );
+};
+
+// ── STAGE DONUT ───────────────────────────────────────────────────
+const StageDonut = () => {
+  const total = STAGES.reduce((s,d) => s+d.count, 0);
+  const cx=80, cy=80, r=58, thick=18;
+  const circ = 2*Math.PI*r;
+  let acc = 0;
+  return (
+    <div className="donut-card">
+      <div className="card-title">Startup Stage Mix</div>
+      <div className="card-sub">Total {total} startups</div>
+      <div className="donut-wrap" style={{width:160,height:160}}>
+        <svg viewBox="0 0 160 160" style={{transform:"rotate(-90deg)"}}>
+          <circle cx={cx} cy={cy} r={r} fill="none" stroke="#F3F4F6" strokeWidth={thick}/>
+          {STAGES.map(d => {
+            const frac = d.count/total;
+            const len = frac*circ;
+            const off = -acc*circ;
+            acc += frac;
+            return (
+              <circle key={d.label} cx={cx} cy={cy} r={r} fill="none"
+                stroke={d.color} strokeWidth={thick}
+                strokeDasharray={`${len-1.5} ${circ-len+1.5}`}
+                strokeDashoffset={off}/>
+            );
+          })}
+        </svg>
+        <div className="donut-center">
+          <div className="donut-center-num">{total}</div>
+          <div className="donut-center-lbl">Total</div>
+        </div>
+      </div>
+      <div className="donut-legend">
+        {STAGES.map(d => (
+          <div key={d.label} className="donut-leg">
+            <span className="donut-leg-dot" style={{background:d.color}}/>
+            <span className="donut-leg-lbl">{d.label}</span>
+            <span className="donut-leg-val">{d.count}</span>
+            <span className="donut-leg-pct">({d.pct}%)</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ── FUNDING PIE ───────────────────────────────────────────────────
+const FundingPie = () => {
+  const size = 140, cx=70, cy=70, r=52;
+  const circ = 2*Math.PI*r;
+  let acc = 0;
+  return (
+    <div style={{position:"relative",width:size,height:size}}>
+      <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} style={{transform:"rotate(-90deg)"}}>
+        {FUNDING_PIE.map(d => {
+          const frac = d.pct/100;
+          const len = frac*circ;
+          const off = -acc*circ;
+          acc += frac;
+          return (
+            <circle key={d.label} cx={cx} cy={cy} r={r} fill="none"
+              stroke={d.color} strokeWidth={28}
+              strokeDasharray={`${len-1.5} ${circ-len+1.5}`}
+              strokeDashoffset={off}/>
+          );
+        })}
+      </svg>
+      {/* pct labels inside */}
+      {FUNDING_PIE.map((d,i) => {
+        const angle = (acc => {
+          let a2 = 0;
+          for (let j=0;j<i;j++) a2 += FUNDING_PIE[j].pct/100;
+          return (a2 + d.pct/200) * 2*Math.PI - Math.PI/2;
+        })();
+        const rLbl = r;
+        const x = cx + rLbl*Math.cos(angle);
+        const y = cy + rLbl*Math.sin(angle);
+        if (d.pct < 6) return null;
+        return (
+          <text key={d.label} x={x} y={y}
+            style={{transform:`rotate(90deg)`,transformOrigin:`${x}px ${y}px`}}
+            textAnchor="middle" dominantBaseline="middle"
+            fontSize="9.5" fill="#fff" fontFamily="Inter" fontWeight="700">
+            {d.pct}%
+          </text>
+        );
+      })}
+    </div>
+  );
+};
+
+// ── SIDEBAR NAV ───────────────────────────────────────────────────
+const NAV = [
+  { id:"dashboard", label:"Dashboard",  icon:"dash",   active:true },
+  { id:"startups",  label:"Startups",   icon:"rocket", cnt:82, href:"Startups.html" },
+  { id:"founders",  label:"Founders",   icon:"users",  cnt:148 },
+  { id:"capital",   label:"Capital",    icon:"coins" },
+  { id:"programs",  label:"Programs",   icon:"cal",    cnt:47 },
+  { id:"analytics", label:"Analytics",  icon:"spark" },
+  { id:"maturity",  label:"Maturity",   icon:"map" },
+  { id:"settings",  label:"Settings",   icon:"set" },
+];
+
+const Sidebar = () => {
+  const [act, setAct] = useState("dashboard");
+  return (
+    <aside className="sidebar">
+      <div className="brand">
+        <div className="brand-logo-wrap">
+          {/* Pine tree icon */}
+          <svg className="brand-icon" viewBox="0 0 36 36" fill="none">
+            <rect width="36" height="36" rx="8" fill="#F0FDF4"/>
+            <path d="M18 6 L11 17 H15 L9 27 H27 L21 17 H25 Z" fill="#14532D"/>
+            <rect x="16" y="27" width="4" height="4" rx="1" fill="#14532D"/>
+          </svg>
+          <div>
+            <div className="brand-name">Baguio City<br/>Startup Ecosystem</div>
+            <div className="brand-sub">Innovate. Build. Elevate.</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="nav-section">
+        {NAV.map(n => (
+          <button key={n.id} className={`nav-item ${act===n.id?"active":""}`}
+            onClick={() => { setAct(n.id); if(n.href) window.location.href=n.href; }}>
+            <Ico n={n.icon} s={16} c={act===n.id?"#14532D":"#9CA3AF"}/>
+            <span style={{flex:1}}>{n.label}</span>
+            {n.cnt != null && <span className="nav-cnt">{n.cnt}</span>}
+          </button>
+        ))}
+      </div>
+
+      <div className="sidebar-spacer"/>
+
+      <div className="sidebar-foot">
+        <div className="foot-user">
+          <div className="foot-av">LG</div>
+          <div>
+            <div className="foot-name">Leandro R. Gepila</div>
+            <div className="foot-role">Innovation Operator</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+};
+
+// ── APP ───────────────────────────────────────────────────────────
+function App() {
+  return (
+    <div className="stage">
+      <div className="app">
+        <Sidebar/>
+        <main className="main">
+
+          {/* TOP BAR */}
+          <div className="topbar">
+            <div className="topbar-left">
+              <div className="page-title">Dashboard</div>
+              <div className="topbar-sub">Overview of Baguio City's startup ecosystem</div>
+            </div>
+            <div className="topbar-right">
+              <div className="topbar-date">
+                <Ico n="info" s={13} c="#6B7280"/>
+                Data as of May 29, 2026
+              </div>
+              <div className="search-box">
+                <Ico n="srch" s={13} c="#9CA3AF"/>
+                <input placeholder="Search startups, founders, programs…"/>
+                <span className="kbd-hint">Ctrl K</span>
+              </div>
+              <button className="notif-btn">
+                <Ico n="bell" s={17} c="#374151"/>
+                <span className="notif-badge">4</span>
+              </button>
+              <div className="user-av">LG</div>
+            </div>
+          </div>
+
+          {/* CONTENT */}
+          <div className="content">
+
+            {/* KPI CARDS */}
+            <div className="kpi-row">
+              {KPI_DATA.map((k,i) => (
+                <div key={i} className="kpi-card">
+                  <div className="kpi-icon-wrap">
+                    <Ico n={k.icon} s={20} c="#14532D"/>
+                  </div>
+                  <div className="kpi-body">
+                    <div className="kpi-label">{k.label}</div>
+                    <div className="kpi-val">{k.val}</div>
+                    <div className="kpi-footer">
+                      <span className={`kpi-delta ${k.up?"up":"dn"}`}>
+                        <Ico n={k.up?"up":"dn"} s={11} c={k.up?"#15803D":"#EF4444"}/>
+                        {k.delta}
+                      </span>
+                      <span className="kpi-sub">{k.sub}</span>
+                    </div>
+                    <div className="kpi-spark">
+                      <Spark data={k.trend} color={k.color} w={110} h={28}/>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* 3-COL: INDUSTRY | STAGE | SCMM */}
+            <div className="tri-row">
+              {/* Industry bars */}
+              <div className="ind-card">
+                <div className="card-title">Active Startups by Industry</div>
+                <div className="card-sub">Total 82 startups</div>
+                {INDUSTRIES.map(d => (
+                  <div key={d.name} className="ind-row">
+                    <div className="ind-icon">
+                      <Ico n={d.icon} s={13} c="#14532D"/>
+                    </div>
+                    <div className="ind-name">{d.name}</div>
+                    <div className="ind-bar-wrap">
+                      <div className="ind-bar" style={{width:`${(d.count/15)*100}%`}}/>
+                    </div>
+                    <div className="ind-count">{d.count}</div>
+                    <div className="ind-pct">({d.pct}%)</div>
+                  </div>
+                ))}
+                <button className="view-all-btn">View all industries</button>
+              </div>
+
+              {/* Stage donut */}
+              <StageDonut/>
+
+              {/* SCMM radar */}
+              <div className="scmm-card">
+                <div className="card-title">Ecosystem Health Score (SCMM)</div>
+                <div className="card-sub">Baguio City Overall</div>
+                <div className="scmm-score-row">
+                  <span className="scmm-score">{SCMM.score}</span>
+                  <span className="scmm-max">/ {SCMM.max}</span>
+                </div>
+                <div className="scmm-level">{SCMM.level}</div>
+                <div className="radar-wrap">
+                  <RadarChart axes={SCMM.axes} max={5} size={180}/>
+                </div>
+                <button className="view-all-btn" style={{marginTop:10}}>View SCMM Details</button>
+              </div>
+            </div>
+
+            {/* 2-COL: FUNDING | ACTIVITY */}
+            <div className="bot-row">
+              {/* Funding overview */}
+              <div className="fund-card">
+                <div className="card-title">Funding Overview (YTD)</div>
+                <div className="card-sub">Total funding raised in 2026</div>
+                <div className="fund-main">₱36M</div>
+                <div style={{display:"flex",alignItems:"center",gap:8}}>
+                  <span className="fund-delta"><Ico n="up" s={11} c="#15803D"/>13.4%</span>
+                  <span style={{fontSize:11.5,color:"var(--ink-4)"}}>vs Apr 2026</span>
+                </div>
+                <div className="fund-body">
+                  <div className="fund-breakdown">
+                    {FUNDING_PIE.map(d => (
+                      <div key={d.label} className="fund-row">
+                        <span className="fund-dot" style={{background:d.color}}/>
+                        <span className="fund-lbl">{d.label}</span>
+                        <span className="fund-amt">{d.amt}</span>
+                        <span className="fund-pct">({d.pct}%)</span>
+                      </div>
+                    ))}
+                  </div>
+                  <FundingPie/>
+                </div>
+                <button className="view-all-btn" style={{marginTop:14}}>View Capital Dashboard</button>
+              </div>
+
+              {/* Latest activity */}
+              <div className="act-card">
+                <div className="act-head">
+                  <div className="card-title">Latest Ecosystem Activity</div>
+                  <button className="act-view-all">View all</button>
+                </div>
+                <div className="act-list">
+                  {ACTIVITY.map((a,i) => (
+                    <div key={i} className="act-item">
+                      <div className="act-av" style={{background:a.bg}}>{a.initials}</div>
+                      <div className="act-info">
+                        <div className="act-name">{a.name}</div>
+                        <div className="act-desc">{a.desc}</div>
+                      </div>
+                      <div className="act-time">{a.time}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

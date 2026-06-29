@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#F5F4F0;-webkit-font-smoothing:antialiased}
+    button,input{font-family:inherit;cursor:pointer}
+    input{outline:none}
+    ::-webkit-scrollbar{width:4px;height:4px}
+    ::-webkit-scrollbar-thumb{background:rgba(20,20,25,0.14);border-radius:4px}
+    tbody tr:hover{background:#FAFAF8}
+  </style>
+</helmet>
+
+<div data-stage-root style="width:1440px;transform-origin:top left;font-family:'GeneralSans',ui-sans-serif,system-ui,sans-serif;color:#141417;">
+  <div style="display:grid;grid-template-columns:240px 1fr;min-height:100vh;">
+
+    {{ sidebar }}
+
+    <main style="display:flex;flex-direction:column;min-width:0;background:#F5F4F0;">
+
+      <!-- TOPBAR -->
+      <div style="background:#ffffff;border-bottom:1.5px solid rgba(20,20,25,0.08);padding:15px 28px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:10;">
+        <div style="flex:1;">
+          <div style="font-size:21px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1.1;">{{ pageTitle }}</div>
+          <div style="font-size:12px;color:#9A958B;margin-top:2px;">{{ pageSub }}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="display:flex;align-items:center;gap:7px;background:#F5F4F0;border:1.5px solid rgba(20,20,25,0.09);border-radius:9px;padding:7px 14px;min-width:220px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A958B" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+            <input type="text" placeholder="Search..." style="border:none;background:transparent;font-size:12.5px;color:#141417;width:100%;">
+            <span style="font-size:10px;color:#9A958B;background:rgba(20,20,25,0.07);border-radius:4px;padding:1px 5px;font-weight:500;">⌘K</span>
+          </div>
+          <div style="position:relative;">
+            <button style="width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:#F5F4F0;border:1.5px solid rgba(20,20,25,0.09);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B6B73" stroke-width="1.9" stroke-linecap="round"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2H4.5z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg>
+            </button>
+            <span style="position:absolute;top:-4px;right:-4px;background:#E23A2E;color:#fff;font-size:9px;font-weight:700;border-radius:999px;padding:0 5px;min-width:17px;text-align:center;line-height:17px;border:2px solid #fff;">3</span>
+          </div>
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#F26522,#FF9A6C);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;">LG</div>
+        </div>
+      </div>
+
+      <!-- ══ DASHBOARD ══ -->
+      <sc-if value="{{ isDash }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:24px 28px 36px;display:flex;flex-direction:column;gap:20px;">
+
+          <!-- KPI ROW -->
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+            <div style="background:#fff;border-radius:16px;padding:20px 22px;border:1.5px solid rgba(20,20,25,0.09);display:flex;gap:14px;align-items:flex-start;">
+              <div style="width:44px;height:44px;border-radius:12px;background:rgba(242,101,34,0.10);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13.5L3 21l7.5-2M14.5 5.5C17 3 21 3 21 3s0 4-2.5 6.5L11 17l-4-4z"></path><circle cx="15" cy="9" r="1.2" fill="#F26522" stroke="none"></circle></svg></div>
+              <div style="flex:1;min-width:0;"><div style="font-size:11.5px;color:#9A958B;font-weight:500;margin-bottom:4px;">Active Startups</div><div style="font-size:28px;font-weight:700;color:#141417;letter-spacing:-0.025em;line-height:1.1;">82</div><div style="display:flex;align-items:center;gap:6px;margin-top:6px;"><span style="font-size:11.5px;font-weight:600;color:#22C55E;">↑ +20.6%</span><span style="font-size:11px;color:#9A958B;">vs Apr 2026</span></div><div style="margin-top:8px;">{{ spark0 }}</div></div>
+            </div>
+            <div style="background:#fff;border-radius:16px;padding:20px 22px;border:1.5px solid rgba(20,20,25,0.09);display:flex;gap:14px;align-items:flex-start;">
+              <div style="width:44px;height:44px;border-radius:12px;background:rgba(242,101,34,0.10);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="1.9" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><circle cx="17" cy="7" r="2.5"></circle><path d="M21 19c0-2.4-1.8-4.5-4-5"></path></svg></div>
+              <div style="flex:1;min-width:0;"><div style="font-size:11.5px;color:#9A958B;font-weight:500;margin-bottom:4px;">Registered Founders</div><div style="font-size:28px;font-weight:700;color:#141417;letter-spacing:-0.025em;line-height:1.1;">148</div><div style="display:flex;align-items:center;gap:6px;margin-top:6px;"><span style="font-size:11.5px;font-weight:600;color:#22C55E;">↑ +45.1%</span><span style="font-size:11px;color:#9A958B;">vs May 2025</span></div><div style="margin-top:8px;">{{ spark1 }}</div></div>
+            </div>
+            <div style="background:#fff;border-radius:16px;padding:20px 22px;border:1.5px solid rgba(20,20,25,0.09);display:flex;gap:14px;align-items:flex-start;">
+              <div style="width:44px;height:44px;border-radius:12px;background:rgba(40,94,122,0.10);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#285E7A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg></div>
+              <div style="flex:1;min-width:0;"><div style="font-size:11.5px;color:#9A958B;font-weight:500;margin-bottom:4px;">Open Challenges</div><div style="font-size:28px;font-weight:700;color:#141417;letter-spacing:-0.025em;line-height:1.1;">18</div><div style="display:flex;align-items:center;gap:6px;margin-top:6px;"><span style="font-size:11.5px;font-weight:600;color:#22C55E;">↑ +6</span><span style="font-size:11px;color:#9A958B;">this quarter</span></div><div style="margin-top:8px;">{{ spark2 }}</div></div>
+            </div>
+            <div style="background:#fff;border-radius:16px;padding:20px 22px;border:1.5px solid rgba(20,20,25,0.09);display:flex;gap:14px;align-items:flex-start;">
+              <div style="width:44px;height:44px;border-radius:12px;background:rgba(158,42,82,0.10);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9E2A52" stroke-width="1.9" stroke-linecap="round"><ellipse cx="9" cy="7" rx="6" ry="3"></ellipse><path d="M3 7v5c0 1.7 2.7 3 6 3s6-1.3 6-3V7"></path><path d="M3 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-2"></path></svg></div>
+              <div style="flex:1;min-width:0;"><div style="font-size:11.5px;color:#9A958B;font-weight:500;margin-bottom:4px;">Funding Raised (YTD)</div><div style="font-size:28px;font-weight:700;color:#141417;letter-spacing:-0.025em;line-height:1.1;">₱36M</div><div style="display:flex;align-items:center;gap:6px;margin-top:6px;"><span style="font-size:11.5px;font-weight:600;color:#22C55E;">↑ +13.4%</span><span style="font-size:11px;color:#9A958B;">vs Apr 2026</span></div><div style="margin-top:8px;">{{ spark3 }}</div></div>
+            </div>
+          </div>
+
+          <!-- MIDDLE ROW -->
+          <div style="display:grid;grid-template-columns:2fr 1.35fr 1.35fr;gap:16px;align-items:start;">
+            <div style="background:#fff;border-radius:16px;padding:22px 24px;border:1.5px solid rgba(20,20,25,0.09);">
+              <div style="font-size:15px;font-weight:700;color:#141417;margin-bottom:3px;">Startups by Sector</div>
+              <div style="font-size:11.5px;color:#9A958B;margin-bottom:18px;">82 startups across 7 sectors</div>
+              <div style="display:flex;flex-direction:column;gap:1px;">
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(20,20,25,0.05);"><div style="width:26px;height:26px;border-radius:7px;background:rgba(26,107,60,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1A6B3C" stroke-width="2" stroke-linecap="round"><path d="M12 22V12M12 12C12 7 7 4 4 4c0 3 2 8 8 8zM12 12c0-5 5-8 8-8 0 3-2 8-8 8z"></path></svg></div><span style="font-size:12.5px;font-weight:500;color:#44444C;width:110px;flex-shrink:0;">AgriTech</span><div style="flex:1;height:7px;background:rgba(20,20,25,0.06);border-radius:999px;overflow:hidden;"><div style="width:17.1%;height:100%;background:#1A6B3C;border-radius:999px;"></div></div><span style="font-size:12px;font-weight:600;color:#141417;width:22px;text-align:right;flex-shrink:0;">14</span><span style="font-size:11px;color:#9A958B;width:44px;text-align:right;flex-shrink:0;">17.1%</span></div>
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(20,20,25,0.05);"><div style="width:26px;height:26px;border-radius:7px;background:rgba(40,94,122,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#285E7A" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></div><span style="font-size:12.5px;font-weight:500;color:#44444C;width:110px;flex-shrink:0;">FinTech</span><div style="flex:1;height:7px;background:rgba(20,20,25,0.06);border-radius:999px;overflow:hidden;"><div style="width:15.9%;height:100%;background:#285E7A;border-radius:999px;"></div></div><span style="font-size:12px;font-weight:600;color:#141417;width:22px;text-align:right;flex-shrink:0;">13</span><span style="font-size:11px;color:#9A958B;width:44px;text-align:right;flex-shrink:0;">15.9%</span></div>
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(20,20,25,0.05);"><div style="width:26px;height:26px;border-radius:7px;background:rgba(158,42,82,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9E2A52" stroke-width="2" stroke-linecap="round"><path d="M2 9L12 4l10 5-10 5z"></path><path d="M6 11v5c0 2 3 4 6 4s6-2 6-4v-5"></path></svg></div><span style="font-size:12.5px;font-weight:500;color:#44444C;width:110px;flex-shrink:0;">EdTech</span><div style="flex:1;height:7px;background:rgba(20,20,25,0.06);border-radius:999px;overflow:hidden;"><div style="width:13.4%;height:100%;background:#9E2A52;border-radius:999px;"></div></div><span style="font-size:12px;font-weight:600;color:#141417;width:22px;text-align:right;flex-shrink:0;">11</span><span style="font-size:11px;color:#9A958B;width:44px;text-align:right;flex-shrink:0;">13.4%</span></div>
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(20,20,25,0.05);"><div style="width:26px;height:26px;border-radius:7px;background:rgba(245,166,35,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="10" r="3"></circle><path d="M12 2a8 8 0 0 0-8 8c0 5 8 12 8 12s8-7 8-12a8 8 0 0 0-8-8z"></path></svg></div><span style="font-size:12.5px;font-weight:500;color:#44444C;width:110px;flex-shrink:0;">Tourism</span><div style="flex:1;height:7px;background:rgba(20,20,25,0.06);border-radius:999px;overflow:hidden;"><div style="width:12.2%;height:100%;background:#F5A623;border-radius:999px;"></div></div><span style="font-size:12px;font-weight:600;color:#141417;width:22px;text-align:right;flex-shrink:0;">10</span><span style="font-size:11px;color:#9A958B;width:44px;text-align:right;flex-shrink:0;">12.2%</span></div>
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(20,20,25,0.05);"><div style="width:26px;height:26px;border-radius:7px;background:rgba(226,58,46,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#E23A2E" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></div><span style="font-size:12.5px;font-weight:500;color:#44444C;width:110px;flex-shrink:0;">HealthTech</span><div style="flex:1;height:7px;background:rgba(20,20,25,0.06);border-radius:999px;overflow:hidden;"><div style="width:9.8%;height:100%;background:#E23A2E;border-radius:999px;"></div></div><span style="font-size:12px;font-weight:600;color:#141417;width:22px;text-align:right;flex-shrink:0;">8</span><span style="font-size:11px;color:#9A958B;width:44px;text-align:right;flex-shrink:0;">9.8%</span></div>
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(20,20,25,0.05);"><div style="width:26px;height:26px;border-radius:7px;background:rgba(242,101,34,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></div><span style="font-size:12.5px;font-weight:500;color:#44444C;width:110px;flex-shrink:0;">E-commerce</span><div style="flex:1;height:7px;background:rgba(20,20,25,0.06);border-radius:999px;overflow:hidden;"><div style="width:7.3%;height:100%;background:#F26522;border-radius:999px;"></div></div><span style="font-size:12px;font-weight:600;color:#141417;width:22px;text-align:right;flex-shrink:0;">6</span><span style="font-size:11px;color:#9A958B;width:44px;text-align:right;flex-shrink:0;">7.3%</span></div>
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 0;"><div style="width:26px;height:26px;border-radius:7px;background:rgba(154,149,139,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="1.5" fill="#9A958B"></circle><circle cx="5" cy="12" r="1.5" fill="#9A958B"></circle><circle cx="19" cy="12" r="1.5" fill="#9A958B"></circle></svg></div><span style="font-size:12.5px;font-weight:500;color:#44444C;width:110px;flex-shrink:0;">Other</span><div style="flex:1;height:7px;background:rgba(20,20,25,0.06);border-radius:999px;overflow:hidden;"><div style="width:22.3%;height:100%;background:#9A958B;border-radius:999px;"></div></div><span style="font-size:12px;font-weight:600;color:#141417;width:22px;text-align:right;flex-shrink:0;">20</span><span style="font-size:11px;color:#9A958B;width:44px;text-align:right;flex-shrink:0;">22.3%</span></div>
+              </div>
+              <button style="display:flex;align-items:center;justify-content:center;width:100%;margin-top:14px;padding:9px;border:1.5px solid rgba(20,20,25,0.09);border-radius:9px;font-size:12.5px;font-weight:500;color:#6B6B73;background:#fff;">View all sectors →</button>
+            </div>
+            <div style="background:#fff;border-radius:16px;padding:22px 24px;border:1.5px solid rgba(20,20,25,0.09);">
+              <div style="font-size:15px;font-weight:700;color:#141417;margin-bottom:3px;">Stage Mix</div>
+              <div style="font-size:11.5px;color:#9A958B;margin-bottom:18px;">Distribution by development stage</div>
+              {{ stageDonut }}
+            </div>
+            <div style="background:#fff;border-radius:16px;padding:22px 24px;border:1.5px solid rgba(20,20,25,0.09);">
+              <div style="font-size:15px;font-weight:700;color:#141417;margin-bottom:3px;">Ecosystem Maturity</div>
+              <div style="font-size:11.5px;color:#9A958B;margin-bottom:8px;">SCMM Score</div>
+              <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:16px;"><span style="font-size:30px;font-weight:700;color:#141417;letter-spacing:-0.03em;line-height:1;">2.6</span><span style="font-size:16px;color:#9A958B;">/5</span><span style="font-size:12px;font-weight:600;color:#F26522;margin-left:6px;">Level 2 · Foundational</span></div>
+              <div style="display:flex;justify-content:center;">{{ radarChart }}</div>
+            </div>
+          </div>
+
+          <!-- BOTTOM ROW -->
+          <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:16px;align-items:start;">
+            <div style="background:#fff;border-radius:16px;padding:22px 24px;border:1.5px solid rgba(20,20,25,0.09);">
+              <div style="font-size:15px;font-weight:700;color:#141417;margin-bottom:3px;">Funding Breakdown</div>
+              <div style="font-size:11.5px;color:#9A958B;margin-bottom:10px;">YTD 2026 by source</div>
+              <div style="font-size:30px;font-weight:800;color:#141417;letter-spacing:-0.03em;line-height:1;margin-bottom:4px;">₱36.0M</div>
+              <div style="font-size:12px;font-weight:600;color:#22C55E;margin-bottom:16px;">↑ +13.4% vs 2025</div>
+              <div style="display:flex;align-items:center;gap:20px;">
+                <div style="display:flex;flex-direction:column;gap:10px;flex:1;">
+                  <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;"><span style="width:9px;height:9px;border-radius:50%;background:#141417;flex-shrink:0;display:inline-block;"></span><span style="color:#6B6B73;flex:1;">Grants</span><span style="font-weight:600;color:#141417;">₱30.8M</span><span style="font-size:11px;color:#9A958B;margin-left:2px;">85.6%</span></div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;"><span style="width:9px;height:9px;border-radius:50%;background:#F26522;flex-shrink:0;display:inline-block;"></span><span style="color:#6B6B73;flex:1;">Private Investment</span><span style="font-weight:600;color:#141417;">₱3.9M</span><span style="font-size:11px;color:#9A958B;margin-left:2px;">10.7%</span></div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;"><span style="width:9px;height:9px;border-radius:50%;background:#F5A623;flex-shrink:0;display:inline-block;"></span><span style="color:#6B6B73;flex:1;">Corporate/Other</span><span style="font-weight:600;color:#141417;">₱1.3M</span><span style="font-size:11px;color:#9A958B;margin-left:2px;">3.7%</span></div>
+                </div>
+                {{ fundingPie }}
+              </div>
+            </div>
+            <div style="background:#fff;border-radius:16px;padding:22px 24px;border:1.5px solid rgba(20,20,25,0.09);">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><div style="font-size:15px;font-weight:700;color:#141417;">Recent Activity</div><button style="font-size:12px;font-weight:600;color:#F26522;background:none;border:none;">View all →</button></div>
+              <div style="display:flex;flex-direction:column;">
+                <div style="display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-bottom:1px solid rgba(20,20,25,0.05);"><div style="width:38px;height:38px;border-radius:50%;background:#F26522;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0;">SG</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#141417;">Session Groceries</div><div style="font-size:11.5px;color:#6B6B73;margin-top:2px;line-height:1.4;">raised ₱5.0M in seed funding</div><div style="font-size:11px;color:#9A958B;margin-top:2px;">2h ago</div></div></div>
+                <div style="display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-bottom:1px solid rgba(20,20,25,0.05);"><div style="width:38px;height:38px;border-radius:50%;background:#285E7A;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0;">IO</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#141417;">IOL Inc.</div><div style="font-size:11.5px;color:#6B6B73;margin-top:2px;line-height:1.4;">joined ARISE Accelerator Cohort 2026</div><div style="font-size:11px;color:#9A958B;margin-top:2px;">3h ago</div></div></div>
+                <div style="display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-bottom:1px solid rgba(20,20,25,0.05);"><div style="width:38px;height:38px;border-radius:50%;background:#F5A623;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0;">WB</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#141417;">When In Baguio</div><div style="font-size:11.5px;color:#6B6B73;margin-top:2px;line-height:1.4;">added 3 new team members</div><div style="font-size:11px;color:#9A958B;margin-top:2px;">5h ago</div></div></div>
+                <div style="display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-bottom:1px solid rgba(20,20,25,0.05);"><div style="width:38px;height:38px;border-radius:50%;background:#9E2A52;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0;">NE</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#141417;">New Event Added</div><div style="font-size:11.5px;color:#6B6B73;margin-top:2px;line-height:1.4;">"Investor Connect: Baguio" on Jul 18</div><div style="font-size:11px;color:#9A958B;margin-top:2px;">1d ago</div></div></div>
+                <div style="display:flex;align-items:flex-start;gap:11px;padding:10px 0;"><div style="width:38px;height:38px;border-radius:50%;background:#1A6B3C;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0;">DT</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#141417;">Dontog Technofarms</div><div style="font-size:11.5px;color:#6B6B73;margin-top:2px;line-height:1.4;">won 2nd place at Regional Pitching Competition</div><div style="font-size:11px;color:#9A958B;margin-top:2px;">1d ago</div></div></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </sc-if>
+
+      <!-- ══ STARTUPS ══ -->
+      <sc-if value="{{ isStartups }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:24px 28px 36px;display:flex;flex-direction:column;gap:18px;">
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;">
+            <div style="background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(20,20,25,0.09);"><div style="font-size:11px;color:#9A958B;font-weight:500;margin-bottom:6px;">Total Startups</div><div style="font-size:24px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1;">82</div><div style="font-size:11px;color:#22C55E;font-weight:600;margin-top:5px;">↑ +20.6%</div></div>
+            <div style="background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(20,20,25,0.09);"><div style="font-size:11px;color:#9A958B;font-weight:500;margin-bottom:6px;">Growth Stage</div><div style="font-size:24px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1;">8</div><div style="font-size:11px;color:#9A958B;margin-top:5px;">9.8% of total</div></div>
+            <div style="background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(20,20,25,0.09);"><div style="font-size:11px;color:#9A958B;font-weight:500;margin-bottom:6px;">Launch Stage</div><div style="font-size:24px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1;">26</div><div style="font-size:11px;color:#9A958B;margin-top:5px;">31.7% of total</div></div>
+            <div style="background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(20,20,25,0.09);"><div style="font-size:11px;color:#9A958B;font-weight:500;margin-bottom:6px;">Active This Month</div><div style="font-size:24px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1;">67</div><div style="font-size:11px;color:#9A958B;margin-top:5px;">81.7% of total</div></div>
+            <div style="background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(20,20,25,0.09);"><div style="font-size:11px;color:#9A958B;font-weight:500;margin-bottom:6px;">Total Funding</div><div style="font-size:24px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1;">₱36M</div><div style="font-size:11px;color:#22C55E;font-weight:600;margin-top:5px;">↑ +13.4%</div></div>
+          </div>
+          <div style="background:#fff;border-radius:14px;padding:14px 18px;border:1.5px solid rgba(20,20,25,0.09);display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <div style="display:flex;background:#F5F4F0;border-radius:999px;padding:3px;gap:2px;">
+              <button style="padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:600;color:#fff;background:#0E0E10;border:none;">All <span style="font-size:10px;background:rgba(255,255,255,0.2);padding:1px 5px;border-radius:999px;margin-left:2px;">82</span></button>
+              <button style="padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:500;color:#6B6B73;background:transparent;border:none;">Growth</button>
+              <button style="padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:500;color:#6B6B73;background:transparent;border:none;">Launch</button>
+              <button style="padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:500;color:#6B6B73;background:transparent;border:none;">MVP</button>
+              <button style="padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:500;color:#6B6B73;background:transparent;border:none;">Idea</button>
+            </div>
+            <div style="width:1px;height:26px;background:rgba(20,20,25,0.08);"></div>
+            <div style="display:flex;gap:6px;flex:1;flex-wrap:wrap;">
+              <button style="font-size:12px;font-weight:500;padding:5px 11px;border-radius:999px;border:1.5px solid rgba(26,107,60,0.3);background:rgba(26,107,60,0.08);color:#1A6B3C;">AgriTech</button>
+              <button style="font-size:12px;font-weight:500;padding:5px 11px;border-radius:999px;border:1.5px solid rgba(20,20,25,0.09);color:#6B6B73;background:#fff;">FinTech</button>
+              <button style="font-size:12px;font-weight:500;padding:5px 11px;border-radius:999px;border:1.5px solid rgba(20,20,25,0.09);color:#6B6B73;background:#fff;">EdTech</button>
+              <button style="font-size:12px;font-weight:500;padding:5px 11px;border-radius:999px;border:1.5px solid rgba(20,20,25,0.09);color:#6B6B73;background:#fff;">Tourism</button>
+              <button style="font-size:12px;font-weight:500;padding:5px 11px;border-radius:999px;border:1.5px solid rgba(20,20,25,0.09);color:#6B6B73;background:#fff;">HealthTech</button>
+            </div>
+            <button style="display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:999px;font-size:13px;font-weight:600;border:none;color:#fff;background:#F26522;">+ Add Startup</button>
+          </div>
+          <div style="background:#fff;border-radius:14px;border:1.5px solid rgba(20,20,25,0.09);overflow:hidden;">
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+              <thead><tr style="background:#F5F4F0;"><th style="text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;color:#9A958B;padding:12px 14px 12px 20px;border-bottom:1.5px solid rgba(20,20,25,0.09);">Startup</th><th style="text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;color:#9A958B;padding:12px 14px;border-bottom:1.5px solid rgba(20,20,25,0.09);">Sector</th><th style="text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;color:#9A958B;padding:12px 14px;border-bottom:1.5px solid rgba(20,20,25,0.09);">Stage</th><th style="text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;color:#9A958B;padding:12px 14px;border-bottom:1.5px solid rgba(20,20,25,0.09);">TBI</th><th style="text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;color:#9A958B;padding:12px 14px;border-bottom:1.5px solid rgba(20,20,25,0.09);">Funding</th><th style="text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;color:#9A958B;padding:12px 14px;border-bottom:1.5px solid rgba(20,20,25,0.09);">Growth</th><th style="text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;color:#9A958B;padding:12px 14px;border-bottom:1.5px solid rgba(20,20,25,0.09);">Since</th></tr></thead>
+              <tbody>
+                <tr style="border-bottom:1px solid rgba(20,20,25,0.06);cursor:pointer;"><td style="padding:13px 14px 13px 20px;vertical-align:middle;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:9px;background:#F26522;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;">SG</div><div><div style="font-size:13.5px;font-weight:600;color:#141417;">Session Groceries</div><div style="font-size:10.5px;color:#9A958B;">BG-019</div></div></div></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">AgriTech</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:999px;color:#1A6B3C;background:rgba(26,107,60,0.10);">● Growth</span></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">Independent</td><td style="padding:13px 14px;vertical-align:middle;font-weight:600;color:#141417;">₱5.0M</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:11.5px;font-weight:600;color:#22C55E;">↑ +18%</span></td><td style="padding:13px 14px;vertical-align:middle;color:#9A958B;">2016</td></tr>
+                <tr style="border-bottom:1px solid rgba(20,20,25,0.06);cursor:pointer;"><td style="padding:13px 14px 13px 20px;vertical-align:middle;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:9px;background:#285E7A;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;">IO</div><div><div style="font-size:13.5px;font-weight:600;color:#141417;">IOL Inc.</div><div style="font-size:10.5px;color:#9A958B;">BG-022</div></div></div></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">FinTech</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:999px;color:#1A6B3C;background:rgba(26,107,60,0.10);">● Growth</span></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">UC InTTO</td><td style="padding:13px 14px;vertical-align:middle;font-weight:600;color:#141417;">₱3.7M</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:11.5px;font-weight:600;color:#22C55E;">↑ +12%</span></td><td style="padding:13px 14px;vertical-align:middle;color:#9A958B;">2018</td></tr>
+                <tr style="border-bottom:1px solid rgba(20,20,25,0.06);cursor:pointer;"><td style="padding:13px 14px 13px 20px;vertical-align:middle;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:9px;background:#F5A623;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;">WB</div><div><div style="font-size:13.5px;font-weight:600;color:#141417;">When In Baguio</div><div style="font-size:10.5px;color:#9A958B;">BG-031</div></div></div></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">Tourism</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:999px;color:#1A6B3C;background:rgba(26,107,60,0.10);">● Growth</span></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">Independent</td><td style="padding:13px 14px;vertical-align:middle;font-weight:600;color:#141417;">₱1.9M</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:11.5px;font-weight:600;color:#22C55E;">↑ +22%</span></td><td style="padding:13px 14px;vertical-align:middle;color:#9A958B;">2017</td></tr>
+                <tr style="border-bottom:1px solid rgba(20,20,25,0.06);cursor:pointer;"><td style="padding:13px 14px 13px 20px;vertical-align:middle;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:9px;background:#9E2A52;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;">VP</div><div><div style="font-size:13.5px;font-weight:600;color:#141417;">VIVITA PH</div><div style="font-size:10.5px;color:#9A958B;">BG-044</div></div></div></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">EdTech</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:999px;color:#F26522;background:rgba(242,101,34,0.10);">● Launch</span></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">UPB SILBI</td><td style="padding:13px 14px;vertical-align:middle;font-weight:600;color:#141417;">₱1.0M</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:11.5px;font-weight:600;color:#22C55E;">↑ +8%</span></td><td style="padding:13px 14px;vertical-align:middle;color:#9A958B;">2021</td></tr>
+                <tr style="border-bottom:1px solid rgba(20,20,25,0.06);cursor:pointer;"><td style="padding:13px 14px 13px 20px;vertical-align:middle;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:9px;background:#2A8A52;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;">DT</div><div><div style="font-size:13.5px;font-weight:600;color:#141417;">Dontog Technofarms</div><div style="font-size:10.5px;color:#9A958B;">BG-088</div></div></div></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">AgriTech</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:999px;color:#F26522;background:rgba(242,101,34,0.10);">● Launch</span></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">BSU-ATBI</td><td style="padding:13px 14px;vertical-align:middle;font-weight:600;color:#141417;">₱840K</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:11.5px;font-weight:600;color:#22C55E;">↑ +15%</span></td><td style="padding:13px 14px;vertical-align:middle;color:#9A958B;">2023</td></tr>
+                <tr style="border-bottom:1px solid rgba(20,20,25,0.06);cursor:pointer;"><td style="padding:13px 14px 13px 20px;vertical-align:middle;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:9px;background:#6B5BD6;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;">TN</div><div><div style="font-size:13.5px;font-weight:600;color:#141417;">theneutral.space</div><div style="font-size:10.5px;color:#9A958B;">BG-091</div></div></div></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">Community</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:999px;color:#F26522;background:rgba(242,101,34,0.10);">● Launch</span></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">Independent</td><td style="padding:13px 14px;vertical-align:middle;font-weight:600;color:#141417;">₱440K</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:11.5px;font-weight:600;color:#22C55E;">↑ +10%</span></td><td style="padding:13px 14px;vertical-align:middle;color:#9A958B;">2023</td></tr>
+                <tr style="border-bottom:1px solid rgba(20,20,25,0.06);cursor:pointer;"><td style="padding:13px 14px 13px 20px;vertical-align:middle;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:9px;background:#0E5C44;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;">SS</div><div><div style="font-size:13.5px;font-weight:600;color:#141417;">Sunshare</div><div style="font-size:10.5px;color:#9A958B;">BG-073</div></div></div></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">GreenTech</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:999px;color:#F5A623;background:rgba(245,166,35,0.12);">● Idea</span></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">SLU SIRIB</td><td style="padding:13px 14px;vertical-align:middle;font-weight:600;color:#141417;">₱360K</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:11.5px;font-weight:600;color:#22C55E;">↑ +5%</span></td><td style="padding:13px 14px;vertical-align:middle;color:#9A958B;">2022</td></tr>
+                <tr style="cursor:pointer;"><td style="padding:13px 14px 13px 20px;vertical-align:middle;"><div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:9px;background:#8B4513;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;">DC</div><div><div style="font-size:13.5px;font-weight:600;color:#141417;">Dulche Chocolates</div><div style="font-size:10.5px;color:#9A958B;">BG-138</div></div></div></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">FoodTech</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:999px;color:#F26522;background:rgba(242,101,34,0.10);">● Launch</span></td><td style="padding:13px 14px;vertical-align:middle;color:#6B6B73;">Independent</td><td style="padding:13px 14px;vertical-align:middle;font-weight:600;color:#141417;">₱560K</td><td style="padding:13px 14px;vertical-align:middle;"><span style="font-size:11.5px;font-weight:600;color:#22C55E;">↑ +9%</span></td><td style="padding:13px 14px;vertical-align:middle;color:#9A958B;">2020</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ══ CHALLENGES ══ -->
+      <sc-if value="{{ isChallenges }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:24px 28px 36px;display:flex;flex-direction:column;gap:20px;">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+            <div style="background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(20,20,25,0.09);"><div style="font-size:11px;color:#9A958B;font-weight:500;margin-bottom:6px;">Open Challenges</div><div style="font-size:24px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1;">18</div><div style="font-size:11px;color:#22C55E;font-weight:600;margin-top:5px;">↑ +6 this quarter</div></div>
+            <div style="background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(20,20,25,0.09);"><div style="font-size:11px;color:#9A958B;font-weight:500;margin-bottom:6px;">Sectors Covered</div><div style="font-size:24px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1;">7</div><div style="font-size:11px;color:#9A958B;margin-top:5px;">Across all categories</div></div>
+            <div style="background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(20,20,25,0.09);"><div style="font-size:11px;color:#9A958B;font-weight:500;margin-bottom:6px;">Registered Solvers</div><div style="font-size:24px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1;">143</div><div style="font-size:11px;color:#22C55E;font-weight:600;margin-top:5px;">↑ +28 this month</div></div>
+            <div style="background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(20,20,25,0.09);"><div style="font-size:11px;color:#9A958B;font-weight:500;margin-bottom:6px;">Avg. Submissions</div><div style="font-size:24px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1;">7.9</div><div style="font-size:11px;color:#9A958B;margin-top:5px;">Per challenge</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
+            <div style="background:#fff;border:1.5px solid rgba(20,20,25,0.09);border-radius:18px;padding:24px;display:flex;flex-direction:column;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><span style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#1A6B3C;background:rgba(26,107,60,0.10);padding:5px 12px;border-radius:999px;">Agriculture</span><span style="font-size:13px;font-weight:700;color:#E23A2E;display:inline-flex;align-items:center;gap:6px;"><span style="width:7px;height:7px;border-radius:50%;background:#E23A2E;display:inline-block;"></span>9 days left</span></div><h3 style="font-size:18px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1.2;margin-bottom:10px;">Cut post-harvest loss for highland vegetable farmers</h3><p style="font-size:13.5px;line-height:1.55;color:#6B6B73;margin-bottom:18px;flex:1;">Build a cold-chain or logistics solution that keeps Benguet produce fresh to market.</p><div style="display:flex;align-items:center;gap:10px;padding-top:16px;border-top:1px solid rgba(20,20,25,0.08);"><div style="width:38px;height:38px;border-radius:10px;background:#1A6B3C;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">DA</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#141417;">Dept of Agriculture, CAR</div><div style="font-size:11px;color:#9A958B;margin-top:1px;">12 submissions</div></div><button style="background:#141417;color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:999px;border:none;">View</button></div></div>
+            <div style="background:#fff;border:1.5px solid rgba(20,20,25,0.09);border-radius:18px;padding:24px;display:flex;flex-direction:column;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><span style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#285E7A;background:rgba(40,94,122,0.10);padding:5px 12px;border-radius:999px;">Environment</span><span style="font-size:13px;font-weight:700;color:#F5A623;display:inline-flex;align-items:center;gap:6px;"><span style="width:7px;height:7px;border-radius:50%;background:#F5A623;display:inline-block;"></span>21 days left</span></div><h3 style="font-size:18px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1.2;margin-bottom:10px;">Smart waste segregation for Baguio public markets</h3><p style="font-size:13.5px;line-height:1.55;color:#6B6B73;margin-bottom:18px;flex:1;">Design a system that improves sorting and diversion at high-traffic market sites.</p><div style="display:flex;align-items:center;gap:10px;padding-top:16px;border-top:1px solid rgba(20,20,25,0.08);"><div style="width:38px;height:38px;border-radius:10px;background:#F26522;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">CEPMO</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#141417;">City Environment Office</div><div style="font-size:11px;color:#9A958B;margin-top:1px;">7 submissions</div></div><button style="background:#141417;color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:999px;border:none;">View</button></div></div>
+            <div style="background:#fff;border:1.5px solid rgba(20,20,25,0.09);border-radius:18px;padding:24px;display:flex;flex-direction:column;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><span style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#9E2A52;background:rgba(158,42,82,0.10);padding:5px 12px;border-radius:999px;">Tourism</span><span style="font-size:13px;font-weight:700;color:#F5A623;display:inline-flex;align-items:center;gap:6px;"><span style="width:7px;height:7px;border-radius:50%;background:#F5A623;display:inline-block;"></span>16 days left</span></div><h3 style="font-size:18px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1.2;margin-bottom:10px;">Spread tourism beyond peak-season rush</h3><p style="font-size:13.5px;line-height:1.55;color:#6B6B73;margin-bottom:18px;flex:1;">Create a platform that promotes off-peak travel and local creative experiences.</p><div style="display:flex;align-items:center;gap:10px;padding-top:16px;border-top:1px solid rgba(20,20,25,0.08);"><div style="width:38px;height:38px;border-radius:10px;background:#9E2A52;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">DOT</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#141417;">Baguio Tourism Office</div><div style="font-size:11px;color:#9A958B;margin-top:1px;">5 submissions</div></div><button style="background:#141417;color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:999px;border:none;">View</button></div></div>
+            <div style="background:#fff;border:1.5px solid rgba(20,20,25,0.09);border-radius:18px;padding:24px;display:flex;flex-direction:column;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><span style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#F26522;background:rgba(242,101,34,0.10);padding:5px 12px;border-radius:999px;">Industry</span><span style="font-size:13px;font-weight:700;color:#F5A623;display:inline-flex;align-items:center;gap:6px;"><span style="width:7px;height:7px;border-radius:50%;background:#F5A623;display:inline-block;"></span>21 days left</span></div><h3 style="font-size:18px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1.2;margin-bottom:10px;">Digital storefronts for public market vendors</h3><p style="font-size:13.5px;line-height:1.55;color:#6B6B73;margin-bottom:18px;flex:1;">Help Baguio's market vendors reach customers online with an affordable platform.</p><div style="display:flex;align-items:center;gap:10px;padding-top:16px;border-top:1px solid rgba(20,20,25,0.08);"><div style="width:38px;height:38px;border-radius:10px;background:#285E7A;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">MSME</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#141417;">Baguio MSME Council</div><div style="font-size:11px;color:#9A958B;margin-top:1px;">9 submissions</div></div><button style="background:#141417;color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:999px;border:none;">View</button></div></div>
+            <div style="background:#fff;border:1.5px solid rgba(20,20,25,0.09);border-radius:18px;padding:24px;display:flex;flex-direction:column;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><span style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#3A5FA0;background:rgba(58,95,160,0.10);padding:5px 12px;border-radius:999px;">Academia</span><span style="font-size:13px;font-weight:700;color:#F5A623;display:inline-flex;align-items:center;gap:6px;"><span style="width:7px;height:7px;border-radius:50%;background:#F5A623;display:inline-block;"></span>44 days left</span></div><h3 style="font-size:18px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1.2;margin-bottom:10px;">Commercializing highland crop preservation research</h3><p style="font-size:13.5px;line-height:1.55;color:#6B6B73;margin-bottom:18px;flex:1;">Partner with BSU to bring crop preservation research to commercial applications.</p><div style="display:flex;align-items:center;gap:10px;padding-top:16px;border-top:1px solid rgba(20,20,25,0.08);"><div style="width:38px;height:38px;border-radius:10px;background:#3A5FA0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">BSU</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#141417;">Benguet State University</div><div style="font-size:11px;color:#9A958B;margin-top:1px;">3 submissions</div></div><button style="background:#141417;color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:999px;border:none;">View</button></div></div>
+            <div style="background:#F5F4F0;border:1.5px dashed rgba(20,20,25,0.16);border-radius:18px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:200px;"><div style="width:48px;height:48px;border-radius:999px;background:#EDEAE5;display:flex;align-items:center;justify-content:center;margin-bottom:14px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9A958B" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></div><div style="font-size:15px;font-weight:600;color:#44444C;margin-bottom:6px;">Post a new challenge</div><p style="font-size:13.5px;color:#9A958B;margin-bottom:18px;line-height:1.4;max-width:200px;">For government, industry, and academic institutions.</p><button style="background:#F26522;color:#fff;font-size:13.5px;font-weight:600;padding:10px 22px;border-radius:999px;border:none;">Post Challenge →</button></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ══ FOUNDERS ══ -->
+      <sc-if value="{{ isFounders }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:24px 28px 36px;display:flex;flex-direction:column;gap:18px;">
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;">
+            <div style="background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(20,20,25,0.09);"><div style="font-size:11px;color:#9A958B;font-weight:500;margin-bottom:6px;">Total Founders</div><div style="font-size:24px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1;">148</div><div style="font-size:11px;color:#22C55E;font-weight:600;margin-top:5px;">↑ +45.1% YoY</div></div>
+            <div style="background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(20,20,25,0.09);"><div style="font-size:11px;color:#9A958B;font-weight:500;margin-bottom:6px;">Female Founders</div><div style="font-size:24px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1;">62</div><div style="font-size:11px;color:#9A958B;margin-top:5px;">41.9% of total</div></div>
+            <div style="background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(20,20,25,0.09);"><div style="font-size:11px;color:#9A958B;font-weight:500;margin-bottom:6px;">First-time Founders</div><div style="font-size:24px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1;">91</div><div style="font-size:11px;color:#9A958B;margin-top:5px;">61.5% of total</div></div>
+            <div style="background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(20,20,25,0.09);"><div style="font-size:11px;color:#9A958B;font-weight:500;margin-bottom:6px;">Avg. Cohorts</div><div style="font-size:24px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1;">2.1</div><div style="font-size:11px;color:#9A958B;margin-top:5px;">Per founder</div></div>
+            <div style="background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(20,20,25,0.09);"><div style="font-size:11px;color:#9A958B;font-weight:500;margin-bottom:6px;">University-linked</div><div style="font-size:24px;font-weight:700;color:#141417;letter-spacing:-0.02em;line-height:1;">74</div><div style="font-size:11px;color:#9A958B;margin-top:5px;">50% of total</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+            <div style="background:#fff;border-radius:14px;padding:20px;border:1.5px solid rgba(20,20,25,0.09);display:flex;flex-direction:column;gap:12px;text-align:center;cursor:pointer;"><div style="width:52px;height:52px;border-radius:50%;background:#F26522;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;margin:0 auto;">ID</div><div><div style="font-size:14px;font-weight:700;color:#141417;margin-bottom:2px;">Iloisa Romaraog Diga</div><div style="font-size:11.5px;color:#6B6B73;">CEO &amp; Co-founder</div></div><div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;"><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#1A6B3C;background:rgba(26,107,60,0.10);">AgriTech</span><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#1A6B3C;background:rgba(26,107,60,0.10);">Growth</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">₱5.0M</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Funding</div></div><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">2</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Programs</div></div></div><div style="font-size:11px;color:#9A958B;">Session Groceries</div></div>
+            <div style="background:#fff;border-radius:14px;padding:20px;border:1.5px solid rgba(20,20,25,0.09);display:flex;flex-direction:column;gap:12px;text-align:center;cursor:pointer;"><div style="width:52px;height:52px;border-radius:50%;background:#1A6B3C;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;margin:0 auto;">AC</div><div><div style="font-size:14px;font-weight:700;color:#141417;margin-bottom:2px;">Ana Bettina Cruz</div><div style="font-size:11.5px;color:#6B6B73;">CEO &amp; Founder</div></div><div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;"><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#285E7A;background:rgba(40,94,122,0.10);">FinTech</span><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#1A6B3C;background:rgba(26,107,60,0.10);">Growth</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">₱3.7M</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Funding</div></div><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">3</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Programs</div></div></div><div style="font-size:11px;color:#9A958B;">IOL Inc.</div></div>
+            <div style="background:#fff;border-radius:14px;padding:20px;border:1.5px solid rgba(20,20,25,0.09);display:flex;flex-direction:column;gap:12px;text-align:center;cursor:pointer;"><div style="width:52px;height:52px;border-radius:50%;background:#F5A623;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;margin:0 auto;">JB</div><div><div style="font-size:14px;font-weight:700;color:#141417;margin-bottom:2px;">Jason Balangue</div><div style="font-size:11.5px;color:#6B6B73;">CEO &amp; Co-founder</div></div><div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;"><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#9E2A52;background:rgba(158,42,82,0.10);">Tourism</span><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#1A6B3C;background:rgba(26,107,60,0.10);">Growth</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">₱1.9M</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Funding</div></div><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">0</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Programs</div></div></div><div style="font-size:11px;color:#9A958B;">When In Baguio</div></div>
+            <div style="background:#fff;border-radius:14px;padding:20px;border:1.5px solid rgba(20,20,25,0.09);display:flex;flex-direction:column;gap:12px;text-align:center;cursor:pointer;"><div style="width:52px;height:52px;border-radius:50%;background:#9E2A52;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;margin:0 auto;">CM</div><div><div style="font-size:14px;font-weight:700;color:#141417;margin-bottom:2px;">Christine Mina</div><div style="font-size:11.5px;color:#6B6B73;">Country Director</div></div><div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;"><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#9E2A52;background:rgba(158,42,82,0.10);">EdTech</span><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#F26522;background:rgba(242,101,34,0.10);">Launch</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">₱1.0M</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Funding</div></div><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">2</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Programs</div></div></div><div style="font-size:11px;color:#9A958B;">VIVITA PH</div></div>
+            <div style="background:#fff;border-radius:14px;padding:20px;border:1.5px solid rgba(20,20,25,0.09);display:flex;flex-direction:column;gap:12px;text-align:center;cursor:pointer;"><div style="width:52px;height:52px;border-radius:50%;background:#2A8A52;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;margin:0 auto;">RA</div><div><div style="font-size:14px;font-weight:700;color:#141417;margin-bottom:2px;">Renato Acosta Jr.</div><div style="font-size:11.5px;color:#6B6B73;">CEO &amp; Founder</div></div><div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;"><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#1A6B3C;background:rgba(26,107,60,0.10);">AgriTech</span><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#F26522;background:rgba(242,101,34,0.10);">Launch</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">₱840K</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Funding</div></div><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">2</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Programs</div></div></div><div style="font-size:11px;color:#9A958B;">Dontog Technofarms</div></div>
+            <div style="background:#fff;border-radius:14px;padding:20px;border:1.5px solid rgba(20,20,25,0.09);display:flex;flex-direction:column;gap:12px;text-align:center;cursor:pointer;"><div style="width:52px;height:52px;border-radius:50%;background:#6B5BD6;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;margin:0 auto;">BS</div><div><div style="font-size:14px;font-weight:700;color:#141417;margin-bottom:2px;">Bea Santos</div><div style="font-size:11.5px;color:#6B6B73;">Founder</div></div><div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;"><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#6B5BD6;background:rgba(107,91,214,0.10);">Community</span><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#F26522;background:rgba(242,101,34,0.10);">Launch</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">₱440K</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Funding</div></div><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">1</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Programs</div></div></div><div style="font-size:11px;color:#9A958B;">theneutral.space</div></div>
+            <div style="background:#fff;border-radius:14px;padding:20px;border:1.5px solid rgba(20,20,25,0.09);display:flex;flex-direction:column;gap:12px;text-align:center;cursor:pointer;"><div style="width:52px;height:52px;border-radius:50%;background:#0E5C44;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;margin:0 auto;">LD</div><div><div style="font-size:14px;font-weight:700;color:#141417;margin-bottom:2px;">Leo Dangwa</div><div style="font-size:11.5px;color:#6B6B73;">CEO &amp; Co-founder</div></div><div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;"><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#0E5C44;background:rgba(14,92,68,0.10);">GreenTech</span><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#F5A623;background:rgba(245,166,35,0.12);">Idea</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">₱360K</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Funding</div></div><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">2</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Programs</div></div></div><div style="font-size:11px;color:#9A958B;">Sunshare</div></div>
+            <div style="background:#fff;border-radius:14px;padding:20px;border:1.5px solid rgba(20,20,25,0.09);display:flex;flex-direction:column;gap:12px;text-align:center;cursor:pointer;"><div style="width:52px;height:52px;border-radius:50%;background:#8B4513;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;margin:0 auto;">MB</div><div><div style="font-size:14px;font-weight:700;color:#141417;margin-bottom:2px;">Maria Carla Bautista</div><div style="font-size:11.5px;color:#6B6B73;">CEO &amp; Founder</div></div><div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;"><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#8B4513;background:rgba(139,69,19,0.10);">FoodTech</span><span style="font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;color:#F26522;background:rgba(242,101,34,0.10);">Launch</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">₱560K</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Funding</div></div><div style="background:#F5F4F0;border-radius:8px;padding:8px;"><div style="font-size:15px;font-weight:700;color:#141417;">1</div><div style="font-size:9.5px;color:#9A958B;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-top:2px;">Programs</div></div></div><div style="font-size:11px;color:#9A958B;">Dulche Chocolates</div></div>
+          </div>
+        </div>
+      </sc-if>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { page: 'dashboard' };
+
+  componentDidMount() {
+    const fit = () => {
+      const stage = document.querySelector('[data-stage-root]');
+      if (!stage) return;
+      const parent = stage.parentElement;
+      const w = parent ? parent.clientWidth : window.innerWidth;
+      const sc = Math.min(1, w / 1440);
+      stage.style.transform = `scale(${sc})`;
+      stage.style.transformOrigin = 'top left';
+      if (parent) parent.style.height = Math.ceil(stage.scrollHeight * sc) + 'px';
+    };
+    this._fit = fit;
+    fit();
+    setTimeout(fit, 200);
+    setTimeout(fit, 800);
+    window.addEventListener('resize', fit);
+    this._mo = new MutationObserver(fit);
+    this._mo.observe(document.body, { childList: true, subtree: true });
+  }
+
+  componentWillUnmount() {
+    if (this._fit) window.removeEventListener('resize', this._fit);
+    if (this._mo) this._mo.disconnect();
+  }
+
+  renderVals() {
+    const { page } = this.state;
+    const go = p => () => this.setState({ page: p });
+    const O = '#F26522', D = '#141417';
+
+    // ── NAV ICONS
+    const ico = (children) => React.createElement('svg', { width:15, height:15, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.8, strokeLinecap:'round', strokeLinejoin:'round' }, ...children);
+    const ICONS = {
+      dashboard: ico([React.createElement('rect',{x:3,y:3,width:7,height:7,rx:1}),React.createElement('rect',{x:14,y:3,width:7,height:7,rx:1}),React.createElement('rect',{x:3,y:14,width:7,height:7,rx:1}),React.createElement('rect',{x:14,y:14,width:7,height:7,rx:1})]),
+      startups:  ico([React.createElement('path',{d:'M5 13.5L3 21l7.5-2M14.5 5.5C17 3 21 3 21 3s0 4-2.5 6.5L11 17l-4-4z'}),React.createElement('circle',{cx:15,cy:9,r:1.2,fill:'currentColor',stroke:'none'})]),
+      founders:  ico([React.createElement('circle',{cx:9,cy:8,r:3.5}),React.createElement('path',{d:'M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6'}),React.createElement('circle',{cx:17,cy:7,r:2.5}),React.createElement('path',{d:'M21 19c0-2.4-1.8-4.5-4-5'})]),
+      challenges:ico([React.createElement('path',{d:'M13 2L3 14h9l-1 8 10-12h-9l1-8z'})]),
+      programs:  ico([React.createElement('line',{x1:8,y1:6,x2:21,y2:6}),React.createElement('line',{x1:8,y1:12,x2:21,y2:12}),React.createElement('line',{x1:8,y1:18,x2:21,y2:18}),React.createElement('circle',{cx:3,cy:6,r:1.5,fill:'currentColor',stroke:'none'}),React.createElement('circle',{cx:3,cy:12,r:1.5,fill:'currentColor',stroke:'none'}),React.createElement('circle',{cx:3,cy:18,r:1.5,fill:'currentColor',stroke:'none'})]),
+      analytics: ico([React.createElement('polyline',{points:'3 3 3 21 21 21'}),React.createElement('polyline',{points:'6 15 10 9 14 13 18 7'})]),
+    };
+
+    // ── SIDEBAR
+    const NAV = [
+      { id:'dashboard',  label:'Dashboard',  cnt:null },
+      { id:'startups',   label:'Startups',   cnt:82 },
+      { id:'founders',   label:'Founders',   cnt:148 },
+      { id:'challenges', label:'Challenges', cnt:18 },
+      { id:'programs',   label:'Programs',   cnt:47 },
+      { id:'analytics',  label:'Analytics',  cnt:null },
+    ];
+
+    const sidebar = React.createElement('aside', {
+      style:{ background:'#0E0E10', display:'flex', flexDirection:'column', borderRight:'1px solid rgba(255,255,255,0.06)', position:'sticky', top:0, height:'100vh', overflow:'hidden', flexShrink:0 }
+    },
+      React.createElement('div', { style:{ padding:'22px 20px 18px', borderBottom:'1px solid rgba(255,255,255,0.06)' } },
+        React.createElement('div', { style:{ display:'flex', alignItems:'center', gap:11 } },
+          React.createElement('img', { src:'assets/ib-icon.png', alt:'IB', style:{ width:36, height:36, borderRadius:9, objectFit:'contain' } }),
+          React.createElement('div', null,
+            React.createElement('div', { style:{ fontSize:14, fontWeight:700, color:'#fff', lineHeight:1.2 } }, 'Incubator Baguio'),
+            React.createElement('div', { style:{ fontSize:10.5, color:'rgba(255,255,255,0.35)', marginTop:2 } }, 'Innovation Dashboard')
+          )
+        )
+      ),
+      React.createElement('div', { style:{ padding:'12px 12px 8px', flex:1, overflowY:'auto', display:'flex', flexDirection:'column', gap:2 } },
+        React.createElement('div', { style:{ fontSize:'9.5px', textTransform:'uppercase', letterSpacing:'0.1em', fontWeight:600, color:'rgba(255,255,255,0.28)', padding:'8px 10px 6px' } }, 'Main'),
+        ...NAV.map(n => {
+          const act = page === n.id;
+          return React.createElement('button', {
+            key: n.id, onClick: go(n.id),
+            style:{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', borderRadius:10, fontSize:13.5, fontWeight:act?600:500, color:act?O:'rgba(255,255,255,0.52)', width:'100%', textAlign:'left', background:act?'rgba(242,101,34,0.12)':'transparent', border:'none', cursor:'pointer', fontFamily:"'GeneralSans',ui-sans-serif", marginBottom:2, transition:'all 0.12s' }
+          },
+            React.createElement('span', { style:{ display:'flex', color:'inherit' } }, ICONS[n.id]),
+            React.createElement('span', { style:{ flex:1 } }, n.label),
+            n.cnt != null ? React.createElement('span', { style:{ fontSize:11, fontWeight:600, padding:'1px 7px', borderRadius:999, background:act?'rgba(242,101,34,0.18)':'rgba(255,255,255,0.08)', color:act?O:'rgba(255,255,255,0.40)' } }, n.cnt) : null
+          );
+        }),
+        React.createElement('div', { style:{ height:1, background:'rgba(255,255,255,0.06)', margin:'12px 10px' } })
+      ),
+      React.createElement('div', { style:{ padding:'14px 20px 20px', borderTop:'1px solid rgba(255,255,255,0.06)' } },
+        React.createElement('div', { style:{ display:'flex', alignItems:'center', gap:10 } },
+          React.createElement('div', { style:{ width:34, height:34, borderRadius:'50%', background:`linear-gradient(135deg,${O},#FF9A6C)`, display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:12, fontWeight:700, flexShrink:0 } }, 'LG'),
+          React.createElement('div', null,
+            React.createElement('div', { style:{ fontSize:12.5, fontWeight:600, color:'#fff' } }, 'Leandro R. Gepila'),
+            React.createElement('div', { style:{ fontSize:10.5, color:'rgba(255,255,255,0.38)', marginTop:1 } }, 'Innovation Operator')
+          )
+        )
+      )
+    );
+
+    // ── SPARKLINES
+    const mk = (data, color, w=72, h=26) => {
+      if (!data || data.length < 2) return null;
+      const mn=Math.min(...data), mx=Math.max(...data, mn+1);
+      const pts=data.map((v,i)=>`${(i/(data.length-1))*w},${h-2-((v-mn)/(mx-mn))*(h-5)}`).join(' ');
+      const lx=w, ly=h-2-((data[data.length-1]-mn)/(mx-mn))*(h-5);
+      return React.createElement('svg',{width:w,height:h,viewBox:`0 0 ${w} ${h}`,style:{display:'block',overflow:'visible'}},
+        React.createElement('polyline',{points:pts,fill:'none',stroke:color,strokeWidth:'1.8',strokeLinecap:'round',strokeLinejoin:'round'}),
+        React.createElement('circle',{cx:lx,cy:ly,r:'2.5',fill:color})
+      );
+    };
+
+    // ── STAGE DONUT
+    const ST=[{label:'Growth',count:8,color:'#1A6B3C'},{label:'Launch',count:26,color:O},{label:'MVP',count:31,color:'#F5A623'},{label:'Idea',count:17,color:'#DEDAD2'}];
+    const tot=82,r=58,thick=18,cx=80,cy=80,circ=2*Math.PI*r;
+    let acc=0;
+    const arcs=ST.map(d=>{const f=d.count/tot,len=f*circ,off=-acc*circ;acc+=f;return React.createElement('circle',{key:d.label,cx,cy,r,fill:'none',stroke:d.color,strokeWidth:thick,strokeDasharray:`${len-1.5} ${circ-len+1.5}`,strokeDashoffset:off});});
+    const stageDonut=React.createElement('div',null,
+      React.createElement('div',{style:{position:'relative',width:160,height:160,margin:'0 auto'}},
+        React.createElement('svg',{viewBox:'0 0 160 160',width:160,height:160,style:{transform:'rotate(-90deg)',display:'block'}},
+          React.createElement('circle',{cx,cy,r,fill:'none',stroke:'#F0EDE5',strokeWidth:thick}),
+          ...arcs
+        ),
+        React.createElement('div',{style:{position:'absolute',inset:0,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}},
+          React.createElement('div',{style:{fontSize:26,fontWeight:700,color:D,letterSpacing:'-0.02em',lineHeight:1}},tot),
+          React.createElement('div',{style:{fontSize:10,color:'#9A958B',fontWeight:500,marginTop:2}},'Total')
+        )
+      ),
+      React.createElement('div',{style:{display:'flex',flexDirection:'column',gap:9,marginTop:16}},
+        ...ST.map(d=>React.createElement('div',{key:d.label,style:{display:'flex',alignItems:'center',gap:8,fontSize:12.5}},
+          React.createElement('span',{style:{width:8,height:8,borderRadius:'50%',background:d.color,flexShrink:0,display:'inline-block'}}),
+          React.createElement('span',{style:{color:'#6B6B73',flex:1}},d.label),
+          React.createElement('span',{style:{fontWeight:600,color:D}},d.count),
+          React.createElement('span',{style:{fontSize:11,color:'#9A958B',marginLeft:2}},'('+((d.count/tot)*100).toFixed(1)+'%)')
+        ))
+      )
+    );
+
+    // ── RADAR
+    const rxes=[{label:'Density',val:2},{label:'Culture',val:2},{label:'Capital',val:1},{label:'Talent',val:4},{label:'Regulatory',val:3}];
+    const rmax=5,rsize=164,rcx=82,rcy=82,rR=58,rn=rxes.length;
+    const rang=i=>(i*2*Math.PI/rn)-Math.PI/2;
+    const rpt=(i,rv)=>[rcx+rv*Math.cos(rang(i)),rcy+rv*Math.sin(rang(i))];
+    const rPolyPts=rxes.map((a,i)=>rpt(i,(a.val/rmax)*rR).join(',')).join(' ');
+    const radarChart=React.createElement('svg',{width:rsize,height:rsize,viewBox:`0 0 ${rsize} ${rsize}`},
+      ...[1,2,3,4,5].map(lv=>React.createElement('polygon',{key:lv,points:rxes.map((_,i)=>rpt(i,(lv/rmax)*rR).join(',')).join(' '),fill:'none',stroke:'#EDEBE3',strokeWidth:1})),
+      ...rxes.map((_,i)=>{const[x,y]=rpt(i,rR);return React.createElement('line',{key:`a${i}`,x1:rcx,y1:rcy,x2:x,y2:y,stroke:'#EDEBE3',strokeWidth:1});}),
+      React.createElement('polygon',{points:rPolyPts,fill:'rgba(242,101,34,0.14)',stroke:O,strokeWidth:1.5}),
+      ...rxes.map((a,i)=>{const[x,y]=rpt(i,(a.val/rmax)*rR);return React.createElement('circle',{key:`d${i}`,cx:x,cy:y,r:3,fill:O});}),
+      ...rxes.map((a,i)=>{const[x,y]=rpt(i,rR+15);return React.createElement('text',{key:`l${i}`,x,y,textAnchor:'middle',dominantBaseline:'middle',fontSize:9,fill:'#9A958B',fontFamily:"'GeneralSans',sans-serif",fontWeight:500},a.label);}),
+      ...rxes.map((a,i)=>{const[x,y]=rpt(i,rR+26);return React.createElement('text',{key:`v${i}`,x,y,textAnchor:'middle',dominantBaseline:'middle',fontSize:9,fill:O,fontFamily:"'GeneralSans',sans-serif",fontWeight:700},a.val);})
+    );
+
+    // ── FUNDING PIE
+    const fS=[{pct:85.6,color:D},{pct:10.7,color:O},{pct:3.7,color:'#F5A623'}];
+    const fSz=130,fC=65,fR=50,fCi=2*Math.PI*fR;
+    let fa=0;
+    const fArcs=fS.map((d,i)=>{const len=d.pct/100*fCi,off=-fa*fCi;fa+=d.pct/100;return React.createElement('circle',{key:i,cx:fC,cy:fC,r:fR,fill:'none',stroke:d.color,strokeWidth:24,strokeDasharray:`${len-1} ${fCi-len+1}`,strokeDashoffset:off});});
+    const fundingPie=React.createElement('svg',{width:fSz,height:fSz,viewBox:`0 0 ${fSz} ${fSz}`,style:{transform:'rotate(-90deg)',display:'block',flexShrink:0}},
+      React.createElement('circle',{cx:fC,cy:fC,r:fR,fill:'none',stroke:'#F0EDE5',strokeWidth:24}),
+      ...fArcs
+    );
+
+    const TITLES = { dashboard:'Dashboard', startups:'Startups', challenges:'Innovation Challenges', founders:'Founders', programs:'Programs', analytics:'Analytics' };
+    const SUBS = { dashboard:'Baguio City Research and Innovation Alliance · Jun 2026', startups:'82 registered startups across 7 sectors', challenges:'18 open challenges from government, industry, and academia', founders:'148 registered founders in the ecosystem', programs:'47 active program cohorts', analytics:'Ecosystem metrics and performance data' };
+
+    return {
+      sidebar,
+      pageTitle: TITLES[page] || 'Dashboard',
+      pageSub:   SUBS[page]   || '',
+      isDash:       page === 'dashboard',
+      isStartups:   page === 'startups',
+      isChallenges: page === 'challenges',
+      isFounders:   page === 'founders',
+      spark0: mk([14,22,35,48,58,68,75,82], O),
+      spark1: mk([18,28,42,62,88,112,132,148], O),
+      spark2: mk([3,5,7,9,11,14,16,18], '#285E7A'),
+      spark3: mk([4,7,10,15,20,26,31,36], '#9E2A52'),
+      stageDonut,
+      radarChart,
+      fundingPie,
+    };
+  }
+}
+</script>
+</body>
+</html>
