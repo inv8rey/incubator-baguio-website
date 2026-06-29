@@ -110,7 +110,8 @@ img { max-width: 100%; height: auto; }
   [style*="grid-template-columns:1fr 1fr"],
   [style*="grid-template-columns:1fr 1.1fr"],
   [style*="grid-template-columns:1.5fr 1fr"],
-  [style*="grid-template-columns:0.85fr 1.15fr"] {
+  [style*="grid-template-columns:0.85fr 1.15fr"],
+  [style*="grid-template-columns:1.6fr 1fr"] {
     grid-template-columns: 1fr !important;
   }
   /* Events calendar: agenda panel stacks below the calendar */
@@ -204,6 +205,13 @@ img { max-width: 100%; height: auto; }
   .ib-events-card > a {
     width: 100%;
     text-align: center;
+  }
+  /* Challenge apply form: swap the cramped horizontal stepper for a compact label */
+  .ib-apply-stepper {
+    display: none !important;
+  }
+  .ib-apply-mobile-step {
+    display: flex !important;
   }
   /* Stat bands stay 2x2 so the numbers read as a set */
   [style*="grid-template-columns:repeat(4,1fr)"] {

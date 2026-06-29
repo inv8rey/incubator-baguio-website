@@ -1,0 +1,144 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { CHALLENGES, getChallenge } from "../data";
+
+const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+export function generateStaticParams() {
+  return CHALLENGES.map((c) => ({ id: c.id }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const c = getChallenge(id);
+  if (!c) return { title: "Challenge not found — Incubator Baguio" };
+  return {
+    title: `${c.title} — Incubator Baguio Challenges`,
+    description: c.summary,
+  };
+}
+
+export default async function ChallengeDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const c = getChallenge(id);
+  if (!c) return notFound();
+
+  const HTML = `
+<!-- NAV -->
+<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:#0E0E10;position:sticky;top:0;z-index:50;">
+  <a href="${BP}/" style="display:flex;align-items:center;gap:11px;text-decoration:none;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:32px;width:auto;"><div style="font-size:16px;font-weight:600;color:#fff;">Incubator Baguio</div></a>
+  <div style="display:flex;align-items:center;gap:28px;">
+    <div style="display:flex;gap:22px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.72);">
+      <a href="${BP}/about" class="ib-navlink">About</a>
+      <a href="${BP}/programs" class="ib-navlink">Programs</a>
+      <a href="${BP}/challenges" class="ib-navlink" style="color:#fff;border-bottom:2px solid #F26522;padding-bottom:3px;">Challenges</a>
+      <a href="${BP}/knowledge" class="ib-navlink">Knowledge Hub</a>
+      <a href="${BP}/ecosystem" class="ib-navlink">Ecosystem</a>
+      <a href="${BP}/events" class="ib-navlink">Events</a>
+    </div>
+    <a href="#" class="ib-cta-orange" style="background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;">Post a Challenge</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div style="position:relative;background:#0B0B0D;padding:48px 40px 56px;overflow:hidden;">
+  <div style="position:absolute;bottom:-160px;right:-100px;width:480px;height:480px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.26) 0%,transparent 60%);pointer-events:none;"></div>
+  <div style="position:relative;max-width:880px;margin:0 auto;">
+    <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:22px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <a href="${BP}/challenges" style="color:inherit;text-decoration:none;">Innovation Challenges</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.8);">${c.title}</span></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;">
+      <span style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${c.sectorColor};background:${c.sectorBg};padding:6px 12px;border-radius:9999px;">${c.sector}</span>
+      <span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:${c.deadlineColor};"><span style="width:6px;height:6px;border-radius:9999px;background:${c.deadlineColor};"></span>${c.deadline}</span>
+    </div>
+    <h1 style="margin:0;font-size:44px;line-height:1.08;font-weight:700;letter-spacing:-0.03em;color:#fff;max-width:760px;">${c.title}</h1>
+    <p style="margin:18px 0 0;font-size:17px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:680px;">${c.summary}</p>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:26px;">
+      <div style="width:34px;height:34px;border-radius:8px;background:${c.orgColor};display:flex;align-items:center;justify-content:center;font-size:${c.orgInitialsFontSize};font-weight:700;color:#fff;">${c.orgInitials}</div>
+      <span style="font-size:14px;color:rgba(255,255,255,0.7);">Posted by <strong style="color:#fff;font-weight:600;">${c.orgName}</strong></span>
+    </div>
+    <div style="display:flex;gap:14px;margin-top:30px;flex-wrap:wrap;">
+      <a href="${BP}/challenges/${c.id}/apply/" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15.5px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 14px 36px rgba(242,101,34,0.4);">Apply to this challenge
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a href="${BP}/challenges" style="display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:15.5px;padding:15px 26px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);">Back to all challenges</a>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div style="background:#FAFAF7;padding:56px 40px 64px;">
+  <div style="max-width:880px;margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr;gap:32px;align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:28px;">
+      <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:28px 30px;">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#F26522;margin-bottom:14px;">The problem</div>
+        ${c.problem.map((p) => `<p style="margin:0 0 14px;font-size:15px;line-height:1.65;color:#44444C;">${p}</p>`).join("")}
+      </div>
+      <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:28px 30px;">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#F26522;margin-bottom:14px;">Scope of the challenge</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          ${c.scope.map((s) => `<div style="display:flex;gap:12px;align-items:flex-start;"><svg style="flex-shrink:0;margin-top:2px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2.6"><path d="M20 6 9 17l-5-5"></path></svg><span style="font-size:14.5px;line-height:1.55;color:#44444C;">${s}</span></div>`).join("")}
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:28px 30px;">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#F26522;margin-bottom:14px;">What you&rsquo;ll get</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          ${c.support.map((s) => `<div style="display:flex;gap:12px;align-items:flex-start;"><svg style="flex-shrink:0;margin-top:2px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A6B3C" stroke-width="2.6"><path d="M20 6 9 17l-5-5"></path></svg><span style="font-size:14.5px;line-height:1.55;color:#44444C;">${s}</span></div>`).join("")}
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:26px;">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#9A958B;margin-bottom:16px;">Timeline</div>
+        <div style="display:flex;flex-direction:column;">
+          ${c.timeline.map((t, i) => `
+          <div style="display:flex;gap:14px;${i < c.timeline.length - 1 ? "padding-bottom:18px;" : ""}">
+            <div style="display:flex;flex-direction:column;align-items:center;">
+              <span style="width:10px;height:10px;border-radius:9999px;background:${i === 0 ? "#F26522" : "#E4E1D8"};flex-shrink:0;"></span>
+              ${i < c.timeline.length - 1 ? `<span style="width:1.5px;flex:1;background:#E4E1D8;margin-top:4px;"></span>` : ""}
+            </div>
+            <div style="padding-bottom:2px;">
+              <div style="font-size:13.5px;font-weight:600;color:#141417;">${t.label}</div>
+              <div style="font-size:12.5px;color:#9A958B;margin-top:2px;">${t.date}</div>
+            </div>
+          </div>`).join("")}
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:26px;">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#9A958B;margin-bottom:16px;">Posted by</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div style="width:34px;height:34px;border-radius:8px;background:${c.orgColor};display:flex;align-items:center;justify-content:center;font-size:${c.orgInitialsFontSize};font-weight:700;color:#fff;">${c.orgInitials}</div><span style="font-size:14px;font-weight:600;color:#141417;">${c.orgName}</span></div>
+        <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:#6B6B73;">${c.orgFull}</p>
+        <a href="mailto:${c.contactEmail}" style="font-size:13px;font-weight:600;color:#F26522;text-decoration:none;">${c.contactEmail}</a>
+      </div>
+
+      <div style="background:#141417;border-radius:18px;padding:26px;">
+        <div style="font-size:15px;font-weight:600;color:#fff;margin-bottom:8px;">Ready to build this?</div>
+        <p style="margin:0 0 18px;font-size:13px;line-height:1.55;color:rgba(255,255,255,0.62);">Submit your team and approach before the deadline.</p>
+        <a href="${BP}/challenges/${c.id}/apply/" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:13px 20px;border-radius:9999px;text-decoration:none;">Start application
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="background:#0B0B0D;padding:56px 40px 36px;">
+  <div style="max-width:1180px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.08);">
+      <div>
+        <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:38px;width:auto;"><div style="font-size:17px;font-weight:600;color:#fff;">Incubator Baguio</div></div>
+        <p style="margin:0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,0.5);max-width:280px;">Baguio City Research and Innovation Alliance. Operationalized under Ordinance No. 63, s.2023 by the CPDSO, City Government of Baguio.</p>
+      </div>
+      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Explore</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/programs">Programs</a><a class="ib-footlink" href="${BP}/challenges">Challenges</a><a class="ib-footlink" href="${BP}/knowledge">Knowledge Hub</a><a class="ib-footlink" href="${BP}/ecosystem">Ecosystem</a><a class="ib-footlink" href="${BP}/events">Events</a></div></div>
+      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Apply</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>Startup Incubation</span><span>Research Submission</span><span>Mentor Registration</span><span>Partner Inquiry</span></div></div>
+      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Contact</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>CPDSO, City Hall, Baguio</span><span>hello@incubatorbaguio.ph</span><span>Facebook &middot; LinkedIn</span></div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-size:12.5px;color:rgba(255,255,255,0.4);flex-wrap:wrap;gap:10px;">
+      <span>&copy; 2026 City Government of Baguio &middot; CPDSO</span>
+      <span>Privacy Policy &middot; IP Policy &middot; Data Privacy Act (RA 10173)</span>
+    </div>
+  </div>
+</div>
+`;
+
+  return <main dangerouslySetInnerHTML={{ __html: HTML }} />;
+}

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CHALLENGES } from "./data";
 
 export const metadata: Metadata = {
   title: "Innovation Challenges — Incubator Baguio",
@@ -94,20 +95,13 @@ const CHALLENGES_HTML = `
     </div>
     <!-- CHALLENGE CARDS GRID -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
-      ${[
-        ["Agriculture", "#3F9E4D", "rgba(126,217,87,0.14)", "#E23A2E", "9 days left", "Cut post-harvest loss for highland vegetable farmers", "Build a cold-chain or logistics solution that keeps Benguet produce fresh to market.", "#1A6B3C", "DA", "Dept of Agriculture, CAR", "10px"],
-        ["Environment", "#285E7A", "rgba(40,94,122,0.1)", "#D88A0A", "21 days left", "Smart waste segregation for Baguio public markets", "Design a system that improves sorting and diversion at high-traffic market sites.", "#F26522", "CEPMO", "City Environment Office", "9px"],
-        ["Tourism", "#9E2A52", "rgba(158,42,82,0.1)", "#3F9E4D", "34 days left", "Spread tourism beyond the peak season rush", "Create a platform that surfaces off-peak experiences and local creative businesses.", "#9E2A52", "DOT", "Baguio Tourism Council", "10px"],
-        ["Education", "#D88A0A", "rgba(245,166,35,0.14)", "#D88A0A", "18 days left", "Reach remote barangay students with learning tools", "Offline-friendly learning for areas with limited connectivity in the Cordillera.", "#0055A5", "SLU", "SLU College of Education", "10px"],
-        ["Govtech", "#285E7A", "rgba(40,94,122,0.1)", "#3F9E4D", "40 days left", "Simplify business permit renewals for MSMEs", "Cut the time and paperwork small businesses spend renewing permits each year.", "#F26522", "BPLO", "Business Permits Office", "9px"],
-        ["Health", "#E23A2E", "rgba(226,58,46,0.1)", "#D88A0A", "15 days left", "Connect senior citizens to barangay health services", "A simple way for elderly residents to book check-ups and track medication.", "#009B8D", "CHSO", "City Health Services Office", "9px"],
-      ].map((c) => `
+      ${CHALLENGES.map((c) => `
       <div class="ib-challenge-hover" style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:24px;display:flex;flex-direction:column;transition:box-shadow .18s ease,transform .18s ease;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><span style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${c[1]};background:${c[2]};padding:5px 11px;border-radius:9999px;">${c[0]}</span><span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:${c[3]};"><span style="width:6px;height:6px;border-radius:9999px;background:${c[3]};"></span>${c[4]}</span></div>
-        <h3 style="margin:0 0 8px;font-size:18px;font-weight:600;color:#141417;line-height:1.3;">${c[5]}</h3>
-        <p style="margin:0 0 18px;font-size:13.5px;line-height:1.55;color:#6B6B73;flex:1;">${c[6]}</p>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;"><div style="width:28px;height:28px;border-radius:7px;background:${c[7]};display:flex;align-items:center;justify-content:center;font-size:${c[10]};font-weight:700;color:#fff;">${c[8]}</div><span style="font-size:12.5px;color:#9A958B;">${c[9]}</span></div>
-        <div style="display:flex;align-items:center;justify-content:flex-end;padding-top:16px;border-top:1px solid rgba(20,20,25,0.08);"><a href="#" style="font-size:13px;font-weight:600;color:#141417;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">View challenge <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#141417" stroke-width="2.3"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><span style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${c.sectorColor};background:${c.sectorBg};padding:5px 11px;border-radius:9999px;">${c.sector}</span><span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:${c.deadlineColor};"><span style="width:6px;height:6px;border-radius:9999px;background:${c.deadlineColor};"></span>${c.deadline}</span></div>
+        <h3 style="margin:0 0 8px;font-size:18px;font-weight:600;color:#141417;line-height:1.3;">${c.title}</h3>
+        <p style="margin:0 0 18px;font-size:13.5px;line-height:1.55;color:#6B6B73;flex:1;">${c.summary}</p>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;"><div style="width:28px;height:28px;border-radius:7px;background:${c.orgColor};display:flex;align-items:center;justify-content:center;font-size:${c.orgInitialsFontSize};font-weight:700;color:#fff;">${c.orgInitials}</div><span style="font-size:12.5px;color:#9A958B;">${c.orgName}</span></div>
+        <div style="display:flex;align-items:center;justify-content:flex-end;padding-top:16px;border-top:1px solid rgba(20,20,25,0.08);"><a href="${BP}/challenges/${c.id}/" style="font-size:13px;font-weight:600;color:#141417;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">View challenge <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#141417" stroke-width="2.3"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
       </div>`).join("")}
     </div>
     <div style="display:flex;justify-content:center;margin-top:30px;"><a href="#" style="font-size:14px;font-weight:600;color:#141417;text-decoration:none;border:1px solid rgba(20,20,25,0.18);padding:13px 28px;border-radius:9999px;">Load more challenges</a></div>
