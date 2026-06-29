@@ -27,14 +27,14 @@ const HOME_HTML = `
   <div style="position:relative;max-width:880px;margin:0 auto;">
     <div style="display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:9999px;border:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.04);margin-bottom:28px;">
       <span style="width:7px;height:7px;border-radius:9999px;background:#F26522;"></span>
-      <span style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.75);">Official Technology Business Incubator of the City of Baguio</span>
+      <span style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.75);">Baguio&rsquo;s Startup &amp; Innovation Ecosystem Gateway</span>
     </div>
     <h1 style="margin:0;font-size:78px;line-height:0.98;font-weight:700;letter-spacing:-0.035em;color:#fff;">Building Baguio&rsquo;s Innovation and&nbsp;<span style="color:#F26522;">Startup Ecosystem.</span></h1>
-    <p style="margin:26px auto 0;font-size:19px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:560px;">Incubator Baguio brings together entrepreneurs, researchers, students, government agencies, businesses, and academic institutions to transform ideas into solutions that create economic, social, and technological impact.</p>
+    <p style="margin:26px auto 0;font-size:19px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:560px;">Incubator Baguio connects startups, universities, Technology Business Incubators, government agencies, investors, and industry partners to accelerate innovation and strengthen the Baguio startup ecosystem.</p>
     <div style="display:flex;gap:14px;justify-content:center;margin-top:36px;flex-wrap:wrap;">
-      <a href="#" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:16px;padding:16px 32px;border-radius:9999px;text-decoration:none;box-shadow:0 14px 36px rgba(242,101,34,0.4);">Start your application
+      <a href="#" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:16px;padding:16px 32px;border-radius:9999px;text-decoration:none;box-shadow:0 14px 36px rgba(242,101,34,0.4);">Find Startup Support
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-      <a href="#" style="display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:16px;padding:16px 28px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);">Explore programs</a>
+      <a href="${BP}/ecosystem" style="display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:16px;padding:16px 28px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);">Explore the Ecosystem</a>
     </div>
   </div>
 </div>
