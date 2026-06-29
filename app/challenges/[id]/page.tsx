@@ -86,7 +86,7 @@ export default async function ChallengeDetail({ params }: { params: Promise<{ id
     </div>
 
     <div style="display:flex;flex-direction:column;gap:20px;">
-      <div style="background:#FAFAF7;border:1px solid rgba(20,20,25,0.08);border-radius:18px;padding:26px;">
+      <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:26px;">
         <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#9A958B;margin-bottom:16px;">Challenge details</div>
         <div style="display:flex;flex-direction:column;">
           ${[
@@ -116,6 +116,51 @@ export default async function ChallengeDetail({ params }: { params: Promise<{ id
         <a href="${BP}/challenges/${c.id}/apply/" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:13px 20px;border-radius:9999px;text-decoration:none;">Start application
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTERED SOLVERS -->
+<div style="background:#FAFAF7;padding:0 40px 64px;border-top:1px solid rgba(20,20,25,0.06);">
+  <div style="max-width:1180px;margin:0 auto;padding-top:56px;">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:10px;">Registered solvers</div>
+        <h2 style="margin:0;font-size:30px;font-weight:700;letter-spacing:-0.02em;color:#141417;">Teams currently working on this</h2>
+      </div>
+      <span style="font-size:14px;color:#9A958B;">${c.totalSolvers} group${c.totalSolvers === 1 ? "" : "s"} registered</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
+      ${c.solvers.map((s) => {
+        const statusGreen = s.status === "Active";
+        return `
+      <div class="ib-challenge-hover" style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:26px;display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:44px;height:44px;border-radius:11px;background:${s.color};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;">${s.initials}</div>
+            <div><div style="font-size:16px;font-weight:700;color:#141417;">${s.name}</div><div style="font-size:12.5px;color:#9A958B;margin-top:2px;">Team &middot; ${s.members} members</div></div>
+          </div>
+          <span style="font-size:11.5px;font-weight:700;color:${statusGreen ? "#1A6B3C" : "#B5670E"};background:${statusGreen ? "rgba(26,107,60,0.12)" : "rgba(216,138,10,0.14)"};padding:5px 13px;border-radius:9999px;white-space:nowrap;">${s.status}</span>
+        </div>
+        <p style="margin:0 0 18px;font-size:13.5px;line-height:1.6;color:#6B6B73;flex:1;">${s.description}</p>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;margin-bottom:18px;">
+          <div style="display:flex;gap:6px;"><span style="color:#9A958B;min-width:74px;">School</span><span style="font-weight:600;color:#141417;">${s.school}</span></div>
+          <div style="display:flex;gap:6px;"><span style="color:#9A958B;min-width:74px;">Track</span><span style="font-weight:600;color:#141417;">${s.track}</span></div>
+          <div style="display:flex;gap:6px;"><span style="color:#9A958B;min-width:74px;">Registered</span><span style="font-weight:600;color:#141417;">${s.registered}</span></div>
+        </div>
+        <a href="${BP}/challenges/${c.id}/apply/" style="display:flex;align-items:center;justify-content:center;gap:7px;font-size:13.5px;font-weight:600;color:#fff;background:#141417;padding:11px 16px;border-radius:9999px;text-decoration:none;">Collaborate
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      </div>`;
+      }).join("")}
+      ${c.totalSolvers > c.solvers.length ? `
+      <div style="border:1.5px dashed rgba(20,20,25,0.18);border-radius:18px;padding:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;">
+        <div style="width:48px;height:48px;border-radius:9999px;background:#F4F2EC;display:flex;align-items:center;justify-content:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9A958B" stroke-width="2.4"><path d="M12 5v14M5 12h14"></path></svg>
+        </div>
+        <div><div style="font-size:15px;font-weight:700;color:#141417;margin-bottom:6px;">${c.totalSolvers - c.solvers.length} more teams registered</div><p style="margin:0;font-size:13px;line-height:1.55;color:#9A958B;">Full solver list visible to challenge poster and Incubator Baguio staff.</p></div>
+        <a href="${BP}/challenges/${c.id}/apply/" style="font-size:13.5px;font-weight:600;color:#F26522;text-decoration:none;">Join as a solver &rarr;</a>
+      </div>` : ""}
     </div>
   </div>
 </div>

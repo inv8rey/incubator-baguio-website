@@ -1,3 +1,15 @@
+export interface Solver {
+  initials: string;
+  color: string;
+  name: string;
+  members: number;
+  status: "Active" | "In review";
+  description: string;
+  school: string;
+  track: string;
+  registered: string;
+}
+
 export interface Challenge {
   id: string;
   sector: string;
@@ -15,6 +27,8 @@ export interface Challenge {
   status: string;
   scopeRegion: string;
   submissions: number;
+  totalSolvers: number;
+  solvers: Solver[];
   orgColor: string;
   orgInitials: string;
   orgInitialsFontSize: string;
@@ -57,6 +71,14 @@ export const CHALLENGES: Challenge[] = [
     status: "Open",
     scopeRegion: "Cordillera Region",
     submissions: 12,
+    totalSolvers: 12,
+    solvers: [
+      { initials: "CT", color: "#D88A0A", name: "ColdTrail", members: 4, status: "Active", description: "Building a low-cost insulated transport crate with IoT temperature monitoring for highland vegetable routes.", school: "University of the Cordilleras", track: "Engineering / Hardware", registered: "July 2, 2026" },
+      { initials: "HV", color: "#285E7A", name: "HarvestLink", members: 3, status: "Active", description: "A mobile-first platform connecting Benguet farmers to direct buyers in Metro Baguio, eliminating spoilage from middlemen delays.", school: "Saint Louis University", track: "Software / Agritech", registered: "July 5, 2026" },
+      { initials: "FP", color: "#E23A2E", name: "FreshPath", members: 5, status: "Active", description: "Researching ethylene-absorbing biodegradable packaging materials sourced from local agricultural by-products to extend shelf life.", school: "Benguet State University", track: "Research / Materials", registered: "July 8, 2026" },
+      { initials: "AG", color: "#9E2A52", name: "AgroGrid", members: 3, status: "In review", description: "A supply-chain visibility dashboard for DA-CAR field officers to track vegetable movement from farm gate to trading posts in real time.", school: "UP Baguio", track: "Data / Logistics", registered: "July 10, 2026" },
+      { initials: "RV", color: "#1A6B3C", name: "RootVault", members: 4, status: "Active", description: "Designing community cold storage co-ops for barangay clusters, powered by solar and managed through a shared app.", school: "University of Baguio", track: "Social Enterprise", registered: "July 11, 2026" },
+    ],
     orgColor: "#1A6B3C",
     orgInitials: "DA",
     orgInitialsFontSize: "10px",
@@ -97,6 +119,12 @@ export const CHALLENGES: Challenge[] = [
     status: "Open",
     scopeRegion: "Baguio City",
     submissions: 8,
+    totalSolvers: 8,
+    solvers: [
+      { initials: "SR", color: "#285E7A", name: "SortRight", members: 4, status: "Active", description: "A color-coded smart bin system with sensor-based fill alerts for vendor stalls at the Baguio City Public Market.", school: "Saint Louis University", track: "Engineering / IoT", registered: "July 6, 2026" },
+      { initials: "WV", color: "#3F9E4D", name: "WasteVision", members: 3, status: "Active", description: "Computer-vision sorting guidance shown on tablets at disposal points to coach vendors in real time.", school: "University of Baguio", track: "Software / Computer Vision", registered: "July 9, 2026" },
+      { initials: "MC", color: "#D88A0A", name: "MarketCycle", members: 3, status: "In review", description: "An incentive and rewards app that tracks vendor segregation compliance and ties it to stall fee discounts.", school: "UP Baguio", track: "Behavioral / Civic Tech", registered: "July 12, 2026" },
+    ],
     orgColor: "#F26522",
     orgInitials: "CEPMO",
     orgInitialsFontSize: "9px",
@@ -137,6 +165,12 @@ export const CHALLENGES: Challenge[] = [
     status: "Open",
     scopeRegion: "Baguio City",
     submissions: 19,
+    totalSolvers: 14,
+    solvers: [
+      { initials: "OF", color: "#9E2A52", name: "OffSeason", members: 5, status: "Active", description: "A discovery app that surfaces local creative businesses and shoulder-season itineraries curated with barangay tourism officers.", school: "University of the Cordilleras", track: "Software / Tourism Tech", registered: "July 14, 2026" },
+      { initials: "LB", color: "#D88A0A", name: "LocalBound", members: 4, status: "Active", description: "A self-serve listing tool that lets small independent operators join official tourism channels without heavy onboarding.", school: "Saint Louis University", track: "Software / Marketplace", registered: "July 16, 2026" },
+      { initials: "TR", color: "#285E7A", name: "TrailRoute", members: 3, status: "In review", description: "A walkable-itinerary generator that routes visitors through off-peak neighborhoods and lesser-known creative spaces.", school: "Benguet State University", track: "Product / UX Research", registered: "July 19, 2026" },
+    ],
     orgColor: "#9E2A52",
     orgInitials: "DOT",
     orgInitialsFontSize: "10px",
@@ -177,6 +211,11 @@ export const CHALLENGES: Challenge[] = [
     status: "Open",
     scopeRegion: "Cordillera Region",
     submissions: 6,
+    totalSolvers: 6,
+    solvers: [
+      { initials: "OL", color: "#0055A5", name: "OfflineLearn", members: 4, status: "Active", description: "A pre-loaded SD-card learning module with weekly teacher-distributed content for areas with no reliable signal.", school: "SLU College of Education", track: "EdTech / Content Design", registered: "July 4, 2026" },
+      { initials: "BB", color: "#D88A0A", name: "BarangayBox", members: 3, status: "In review", description: "A solar-powered local Wi-Fi hotspot device that syncs lesson packets to student phones when in range of the school.", school: "UP Baguio", track: "Engineering / Hardware", registered: "July 9, 2026" },
+    ],
     orgColor: "#0055A5",
     orgInitials: "SLU",
     orgInitialsFontSize: "10px",
@@ -217,6 +256,12 @@ export const CHALLENGES: Challenge[] = [
     status: "Open",
     scopeRegion: "Baguio City",
     submissions: 15,
+    totalSolvers: 11,
+    solvers: [
+      { initials: "PR", color: "#F26522", name: "PermitRunner", members: 5, status: "Active", description: "A pre-fill workflow that reuses data BPLO already has on file so renewing MSMEs skip redundant document submission.", school: "University of Baguio", track: "Software / Govtech", registered: "July 7, 2026" },
+      { initials: "QF", color: "#285E7A", name: "QueueFree", members: 3, status: "Active", description: "A queue-and-status tracking app that lets MSME owners submit renewal documents remotely and get slotted appointment times.", school: "Saint Louis University", track: "Software / Civic Tech", registered: "July 13, 2026" },
+      { initials: "BL", color: "#3F9E4D", name: "BizLink", members: 3, status: "In review", description: "A cross-office data-sharing layer that reconciles requirements between BPLO and other permitting offices automatically.", school: "UP Baguio", track: "Backend / Systems Integration", registered: "July 18, 2026" },
+    ],
     orgColor: "#F26522",
     orgInitials: "BPLO",
     orgInitialsFontSize: "9px",
@@ -257,6 +302,12 @@ export const CHALLENGES: Challenge[] = [
     status: "Open",
     scopeRegion: "Baguio City",
     submissions: 10,
+    totalSolvers: 9,
+    solvers: [
+      { initials: "CC", color: "#009B8D", name: "CareCall", members: 4, status: "Active", description: "A simple voice-call and SMS booking line for senior citizens to schedule barangay health center check-ups without an app.", school: "University of Baguio", track: "Software / Health Tech", registered: "July 8, 2026" },
+      { initials: "MD", color: "#E23A2E", name: "MedDial", members: 3, status: "Active", description: "A caregiver-facing medication reminder and refill tracker that syncs with barangay health worker visit schedules.", school: "Saint Louis University", track: "Software / Mobile Health", registered: "July 12, 2026" },
+      { initials: "SH", color: "#9E2A52", name: "SeniorHub", members: 2, status: "In review", description: "A printed QR-card system that lets elderly residents check in at health centers and auto-logs visit history for health workers.", school: "Benguet State University", track: "Service Design", registered: "July 15, 2026" },
+    ],
     orgColor: "#009B8D",
     orgInitials: "CHSO",
     orgInitialsFontSize: "9px",
