@@ -12,6 +12,9 @@ export interface Challenge {
   scope: string[];
   support: string[];
   timeline: { label: string; date: string }[];
+  status: string;
+  scopeRegion: string;
+  submissions: number;
   orgColor: string;
   orgInitials: string;
   orgInitialsFontSize: string;
@@ -51,6 +54,9 @@ export const CHALLENGES: Challenge[] = [
       { label: "Pitch & selection", date: "July 24, 2026" },
       { label: "Pilot kickoff", date: "August 4, 2026" },
     ],
+    status: "Open",
+    scopeRegion: "Cordillera Region",
+    submissions: 12,
     orgColor: "#1A6B3C",
     orgInitials: "DA",
     orgInitialsFontSize: "10px",
@@ -88,6 +94,9 @@ export const CHALLENGES: Challenge[] = [
       { label: "Pitch & selection", date: "August 5, 2026" },
       { label: "Pilot kickoff", date: "August 18, 2026" },
     ],
+    status: "Open",
+    scopeRegion: "Baguio City",
+    submissions: 8,
     orgColor: "#F26522",
     orgInitials: "CEPMO",
     orgInitialsFontSize: "9px",
@@ -125,6 +134,9 @@ export const CHALLENGES: Challenge[] = [
       { label: "Pitch & selection", date: "August 19, 2026" },
       { label: "Pilot kickoff", date: "September 1, 2026" },
     ],
+    status: "Open",
+    scopeRegion: "Baguio City",
+    submissions: 19,
     orgColor: "#9E2A52",
     orgInitials: "DOT",
     orgInitialsFontSize: "10px",
@@ -162,6 +174,9 @@ export const CHALLENGES: Challenge[] = [
       { label: "Pitch & selection", date: "August 1, 2026" },
       { label: "Pilot kickoff", date: "August 14, 2026" },
     ],
+    status: "Open",
+    scopeRegion: "Cordillera Region",
+    submissions: 6,
     orgColor: "#0055A5",
     orgInitials: "SLU",
     orgInitialsFontSize: "10px",
@@ -199,6 +214,9 @@ export const CHALLENGES: Challenge[] = [
       { label: "Pitch & selection", date: "August 26, 2026" },
       { label: "Pilot kickoff", date: "September 9, 2026" },
     ],
+    status: "Open",
+    scopeRegion: "Baguio City",
+    submissions: 15,
     orgColor: "#F26522",
     orgInitials: "BPLO",
     orgInitialsFontSize: "9px",
@@ -236,6 +254,9 @@ export const CHALLENGES: Challenge[] = [
       { label: "Pitch & selection", date: "July 30, 2026" },
       { label: "Pilot kickoff", date: "August 11, 2026" },
     ],
+    status: "Open",
+    scopeRegion: "Baguio City",
+    submissions: 10,
     orgColor: "#009B8D",
     orgInitials: "CHSO",
     orgInitialsFontSize: "9px",

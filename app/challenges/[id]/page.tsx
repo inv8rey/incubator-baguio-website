@@ -86,19 +86,19 @@ export default async function ChallengeDetail({ params }: { params: Promise<{ id
     </div>
 
     <div style="display:flex;flex-direction:column;gap:20px;">
-      <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:26px;">
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#9A958B;margin-bottom:16px;">Timeline</div>
+      <div style="background:#FAFAF7;border:1px solid rgba(20,20,25,0.08);border-radius:18px;padding:26px;">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#9A958B;margin-bottom:16px;">Challenge details</div>
         <div style="display:flex;flex-direction:column;">
-          ${c.timeline.map((t, i) => `
-          <div style="display:flex;gap:14px;${i < c.timeline.length - 1 ? "padding-bottom:18px;" : ""}">
-            <div style="display:flex;flex-direction:column;align-items:center;">
-              <span style="width:10px;height:10px;border-radius:9999px;background:${i === 0 ? "#F26522" : "#E4E1D8"};flex-shrink:0;"></span>
-              ${i < c.timeline.length - 1 ? `<span style="width:1.5px;flex:1;background:#E4E1D8;margin-top:4px;"></span>` : ""}
-            </div>
-            <div style="padding-bottom:2px;">
-              <div style="font-size:13.5px;font-weight:600;color:#141417;">${t.label}</div>
-              <div style="font-size:12.5px;color:#9A958B;margin-top:2px;">${t.date}</div>
-            </div>
+          ${[
+            ["Status", `<span style="display:inline-flex;align-items:center;font-size:13px;font-weight:700;color:#1A6B3C;background:rgba(26,107,60,0.12);padding:6px 16px;border-radius:9999px;">${c.status}</span>`],
+            ["Deadline", `<span style="font-size:14.5px;font-weight:700;color:#141417;">${c.timeline[0]?.date ?? c.deadline}</span>`],
+            ["Sector", `<span style="font-size:14.5px;font-weight:700;color:#141417;">${c.sector}</span>`],
+            ["Scope", `<span style="font-size:14.5px;font-weight:700;color:#141417;">${c.scopeRegion}</span>`],
+            ["Submissions", `<span style="font-size:14.5px;font-weight:700;color:#141417;">${c.submissions} received</span>`],
+          ].map(([label, value], i, arr) => `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 0;${i < arr.length - 1 ? "border-bottom:1px solid rgba(20,20,25,0.08);" : ""}">
+            <span style="font-size:14.5px;color:#9A958B;">${label}</span>
+            ${value}
           </div>`).join("")}
         </div>
       </div>
