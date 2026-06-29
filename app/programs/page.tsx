@@ -25,19 +25,56 @@ const PROGRAMS_HTML = `
   </div>
 </div>
 
-<!-- HEADER BAND -->
-<div style="position:relative;background:#0B0B0D;padding:56px 40px 60px;overflow:hidden;">
-  <div style="position:absolute;top:-120px;right:-80px;width:440px;height:440px;background:radial-gradient(circle,rgba(242,101,34,0.22),transparent 65%);"></div>
-  <div style="position:relative;max-width:1180px;margin:0 auto;">
-    <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:18px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.8);">Programs</span></div>
-    <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#FFB489;margin-bottom:14px;">Programs &amp; Services</div>
-    <h1 style="margin:0;font-size:52px;font-weight:700;letter-spacing:-0.03em;color:#fff;line-height:1.04;max-width:760px;">Pathways for founders, youth,<br>researchers &amp; partners</h1>
-    <p style="margin:20px 0 0;font-size:17px;line-height:1.6;color:rgba(255,255,255,0.62);max-width:600px;">Mapped to the functions of the Alliance under Ordinance No. 63. Each program answers three questions: what is it, who is it for, and what do you do next.</p>
+<!-- HERO -->
+<div style="position:relative;background:#0B0B0D;overflow:hidden;">
+  <div class="ib-programs-hero" style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:1.3fr 1fr;align-items:stretch;min-height:560px;">
+    <div style="position:relative;padding:64px 40px;display:flex;flex-direction:column;justify-content:center;">
+      <div style="position:absolute;top:-120px;left:-100px;width:420px;height:420px;background:radial-gradient(circle,rgba(242,101,34,0.2),transparent 65%);pointer-events:none;"></div>
+      <div style="position:relative;">
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:18px;">Programs &amp; Opportunities</div>
+        <h1 style="margin:0;font-size:46px;font-weight:800;letter-spacing:-0.03em;color:#fff;line-height:1.12;max-width:560px;">Find the Right Opportunity for Your <span style="color:#F26522;">Innovation Journey.</span></h1>
+        <p style="margin:22px 0 0;font-size:16px;line-height:1.65;color:rgba(255,255,255,0.62);max-width:520px;">Whether you&rsquo;re a founder, student, researcher, mentor, investor, or organization, discover programs, events, funding opportunities, and ecosystem initiatives designed to help you succeed.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(2,auto);gap:18px 36px;margin:34px 0 30px;">
+          ${[
+            ["#F26522", "rgba(242,101,34,0.14)", `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F5A07A" stroke-width="2"><circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="9" r="2.3"></circle><path d="M3 20c0-3 2.5-5 6-5s6 2 6 5M14 20c0-2 .8-3.5 2-4"></path></svg>`, "15+", "Programs &amp; Initiatives"],
+            ["#E23A2E", "rgba(226,58,46,0.14)", `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F0938C" stroke-width="2"><path d="M20.8 4.6a4.7 4.7 0 0 0-6.6 0L12 6.8l-2.2-2.2a4.7 4.7 0 0 0-6.6 6.6L12 20l8.8-8.8a4.7 4.7 0 0 0 0-6.6Z"></path></svg>`, "8", "Ecosystem Partners"],
+            ["#E23A2E", "rgba(226,58,46,0.14)", `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F0938C" stroke-width="2"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"></path></svg>`, "4", "Technology Business Incubators"],
+            ["#285E7A", "rgba(58,123,213,0.16)", `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#7BAEE8" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M3 9h18M8 2v4M16 2v4"></path></svg>`, "Year-round", "Activities &amp; Events"],
+          ].map((s) => `
+          <div style="display:flex;align-items:center;gap:11px;">
+            <div style="width:38px;height:38px;border-radius:9999px;background:${s[1]};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${s[2]}</div>
+            <div><div style="font-size:19px;font-weight:700;color:#fff;letter-spacing:-0.01em;line-height:1.1;">${s[3]}</div><div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;">${s[4]}</div></div>
+          </div>`).join("")}
+        </div>
+
+        <div style="display:flex;gap:14px;flex-wrap:wrap;">
+          <a href="#program-grid" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15px;padding:15px 28px;border-radius:9999px;text-decoration:none;">Explore Opportunities
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          <a href="${BP}/ecosystem" style="display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:15px;padding:15px 26px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);">See How We Support You
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:relative;overflow:hidden;background:radial-gradient(120% 90% at 78% 30%,#F2A24A 0%,#C9591F 28%,#5A1E12 55%,#0B0B0D 80%);">
+      <div style="position:absolute;inset:0;background:linear-gradient(100deg,#0B0B0D 0%,rgba(11,11,13,0.4) 22%,transparent 48%);"></div>
+      <svg style="position:absolute;left:0;top:0;width:100%;height:100%;" viewBox="0 0 600 560" fill="none" preserveAspectRatio="xMidYMid slice">
+        <path d="M40 470 L130 470 L130 380 L190 380 L190 320 L250 320 L250 470" stroke="rgba(20,10,5,0.55)" stroke-width="3" fill="none"></path>
+        <path d="M320 470 L320 300 L360 250 L400 300 L400 470" stroke="rgba(20,10,5,0.5)" stroke-width="3" fill="none"></path>
+        <path d="M430 470 Q480 360 540 470" stroke="rgba(20,10,5,0.45)" stroke-width="3" fill="none"></path>
+        <line x1="0" y1="470" x2="600" y2="470" stroke="rgba(20,10,5,0.5)" stroke-width="2"></line>
+        <g opacity="0.55" stroke-linecap="round" stroke-linejoin="round" fill="none">
+          <polyline points="80,260 300,80 520,260" stroke="#F5A623" stroke-width="14"></polyline>
+          <polyline points="120,330 300,170 480,330" stroke="#E23A2E" stroke-width="14"></polyline>
+        </g>
+      </svg>
+    </div>
   </div>
 </div>
 
 <!-- FILTER CHIPS -->
-<div style="background:#fff;border-bottom:1px solid rgba(20,20,25,0.07);padding:18px 40px;">
+<div id="program-grid" style="background:#fff;border-bottom:1px solid rgba(20,20,25,0.07);padding:18px 40px;">
   <div style="max-width:1180px;margin:0 auto;display:flex;gap:10px;flex-wrap:wrap;">
     ${[
       ["All programs", true],

@@ -121,6 +121,15 @@ img { max-width: 100%; height: auto; }
     grid-template-columns: 1fr !important;
   }
 
+  /* Programs hero: image panel drops below the text column */
+  .ib-programs-hero {
+    grid-template-columns: 1fr !important;
+    min-height: 0 !important;
+  }
+  .ib-programs-hero > div:last-child {
+    min-height: 280px;
+  }
+
   /* Get Started router: hero spans full width, cards become a 2-col grid */
   .ib-getstarted-grid {
     grid-template-columns: repeat(2, 1fr) !important;
