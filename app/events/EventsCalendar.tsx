@@ -26,6 +26,7 @@ function formatDate(iso: string) {
 export default function EventsCalendar() {
   const [cursor, setCursor] = useState(new Date(TODAY.getFullYear(), TODAY.getMonth(), 1));
   const [selectedIso, setSelectedIso] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
 
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
@@ -40,7 +41,11 @@ export default function EventsCalendar() {
     return out;
   }, [year, month]);
 
-  const agenda: CityEvent[] = selectedIso
+  const q = query.trim().toLowerCase();
+
+  const agenda: CityEvent[] = q
+    ? EVENTS.filter((e) => [e.title, e.org, e.venue, e.category].some((f) => f.toLowerCase().includes(q))).sort((a, b) => a.date.localeCompare(b.date))
+    : selectedIso
     ? EVENTS.filter((e) => (e.endDate ? selectedIso >= e.date && selectedIso <= e.endDate : e.date === selectedIso))
     : EVENTS.filter((e) => (e.endDate ? e.endDate >= isoOf(TODAY) : e.date >= isoOf(TODAY))).sort((a, b) => a.date.localeCompare(b.date));
 
@@ -136,19 +141,43 @@ export default function EventsCalendar() {
 
         {/* AGENDA */}
         <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "28px 28px 14px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, gap: 12, flexWrap: "wrap" }}>
             <div style={{ fontSize: 17, fontWeight: 700, color: DARK }}>
-              {selectedIso ? formatDate(selectedIso) : "Upcoming events"}
+              {q ? "Search results" : selectedIso ? formatDate(selectedIso) : "Upcoming events"}
             </div>
-            {selectedIso && (
+            {!q && selectedIso && (
               <button onClick={() => setSelectedIso(null)} style={{ fontSize: 12.5, fontWeight: 600, color: ORANGE, background: "none", border: "none", cursor: "pointer" }}>
                 Show all ✕
               </button>
             )}
           </div>
 
+          <div style={{ position: "relative", marginBottom: 18 }}>
+            <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }}>
+              <circle cx={11} cy={11} r={7} />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+            <input
+              value={query}
+              onChange={(e) => { setQuery(e.target.value); if (e.target.value.trim()) setSelectedIso(null); }}
+              placeholder="Search events by title, organizer, venue, or category"
+              style={{ width: "100%", boxSizing: "border-box", fontSize: 13.5, color: DARK, background: "#FAFAF7", border: "1.5px solid rgba(20,20,25,0.12)", borderRadius: 9999, padding: "11px 14px 11px 38px", outline: "none" }}
+            />
+            {query && (
+              <button
+                onClick={() => setQuery("")}
+                aria-label="Clear search"
+                style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", border: "none", background: "none", cursor: "pointer", color: "#9A958B", fontSize: 14, lineHeight: 1, padding: 4 }}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
           {agenda.length === 0 && (
-            <p style={{ fontSize: 13.5, color: "#9A958B", padding: "12px 0" }}>No events on this date yet.</p>
+            <p style={{ fontSize: 13.5, color: "#9A958B", padding: "12px 0" }}>
+              {q ? <>No events match &ldquo;{query}&rdquo;.</> : "No events on this date yet."}
+            </p>
           )}
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>

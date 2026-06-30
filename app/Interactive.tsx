@@ -24,9 +24,15 @@ export default function Interactive() {
         'div[style*="font-weight:500"]'
       );
       const cta = nav.querySelector<HTMLAnchorElement>("a.ib-cta-orange");
+      // If the CTA sits in a small button group (e.g. alongside a
+      // "Contact Us" link), hide/clone the whole group, not just the
+      // orange button, so the secondary link isn't stranded on mobile.
+      const ctaGroup = cta?.parentElement;
+      const hasSiblingLink =
+        !!ctaGroup && ctaGroup !== nav && ctaGroup.querySelectorAll("a").length > 1;
       if (links) {
         links.classList.add("ib-navlinks");
-        cta?.classList.add("ib-desktop-cta");
+        (hasSiblingLink ? ctaGroup : cta)?.classList.add("ib-desktop-cta");
 
         const burger = document.createElement("button");
         burger.className = "ib-burger";
@@ -47,10 +53,17 @@ export default function Interactive() {
         panel.appendChild(linksClone);
 
         if (cta) {
-          const ctaClone = cta.cloneNode(true) as HTMLAnchorElement;
-          ctaClone.classList.remove("ib-desktop-cta");
-          ctaClone.classList.add("ib-mobile-cta");
-          panel.appendChild(ctaClone);
+          const source = hasSiblingLink ? ctaGroup! : cta;
+          const clone = source.cloneNode(true) as HTMLElement;
+          clone.classList.remove("ib-desktop-cta");
+          clone.classList.add("ib-mobile-cta");
+          clone.setAttribute(
+            "style",
+            hasSiblingLink
+              ? "display:flex;flex-direction:column;gap:10px;margin-top:16px;"
+              : ""
+          );
+          panel.appendChild(clone);
         }
 
         nav.appendChild(panel);

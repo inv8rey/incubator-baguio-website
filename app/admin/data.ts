@@ -1,11 +1,34 @@
 export const ORANGE = "#F26522";
 export const DARK = "#141417";
 
+export interface Partner {
+  name: string;
+  category: string;
+  logo: string | null; // data URL, or null to fall back to initials
+  initials: string;
+  color: string;
+}
+
+export const PARTNER_CATEGORIES = ["Academe", "Government", "Corporate", "Community"];
+
+export const PARTNERS: Partner[] = [
+  { name: "Saint Louis University", category: "Academe", logo: null, initials: "SLU", color: "#F5A623" },
+  { name: "University of Baguio", category: "Academe", logo: null, initials: "UB", color: "#285E7A" },
+  { name: "UP Baguio", category: "Academe", logo: null, initials: "UP", color: "#7E0707" },
+  { name: "University of the Cordilleras", category: "Academe", logo: null, initials: "UC", color: "#1A6B3C" },
+  { name: "Benguet State University", category: "Academe", logo: null, initials: "BSU", color: "#3A5FA0" },
+  { name: "City Government of Baguio", category: "Government", logo: null, initials: "CGB", color: "#F26522" },
+  { name: "Dept of Science & Technology", category: "Government", logo: null, initials: "DOST", color: "#0055A5" },
+  { name: "Dept of Trade & Industry", category: "Government", logo: null, initials: "DTI", color: "#CE1126" },
+  { name: "Baguio Chamber of Commerce", category: "Corporate", logo: null, initials: "BCC", color: "#2D2D2D" },
+];
+
 export const NAV = [
   { id: "dashboard", label: "Dashboard", cnt: null as number | null },
   { id: "startups", label: "Startups", cnt: 82 },
   { id: "founders", label: "Founders", cnt: 148 },
   { id: "challenges", label: "Challenges", cnt: 18 },
+  { id: "partners", label: "Partners", cnt: PARTNERS.length },
 ] as const;
 
 export type TabId = (typeof NAV)[number]["id"];
@@ -15,6 +38,7 @@ export const TITLES: Record<TabId, string> = {
   startups: "Startups",
   founders: "Founders",
   challenges: "Innovation Challenges",
+  partners: "Ecosystem Partners",
 };
 
 export const SUBS: Record<TabId, string> = {
@@ -22,6 +46,7 @@ export const SUBS: Record<TabId, string> = {
   startups: "82 registered startups across 13 sectors",
   founders: "148 registered founders in the ecosystem",
   challenges: "18 open challenges from government, industry, and academia",
+  partners: "Academic, government, corporate, and community partners",
 };
 
 // ---- Dashboard ----

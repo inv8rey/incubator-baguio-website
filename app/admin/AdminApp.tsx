@@ -6,6 +6,7 @@ import DashboardTab from "./tabs/DashboardTab";
 import StartupsTab from "./tabs/StartupsTab";
 import FoundersTab from "./tabs/FoundersTab";
 import ChallengesTab from "./tabs/ChallengesTab";
+import PartnersTab from "./tabs/PartnersTab";
 
 const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
   dashboard: (
@@ -31,6 +32,13 @@ const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
     </>
   ),
   challenges: <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />,
+  partners: (
+    <>
+      <circle cx={7} cy={7} r={3} />
+      <circle cx={17} cy={7} r={3} />
+      <path d="M2 21c0-3.3 2.2-5.5 5-5.5S12 17.7 12 21M12 21c0-3.3 2.2-5.5 5-5.5S22 17.7 22 21" />
+    </>
+  ),
 };
 
 function NavIcon({ id }: { id: TabId }) {
@@ -194,6 +202,7 @@ export default function AdminApp() {
         {page === "startups" && <StartupsTab />}
         {page === "founders" && <FoundersTab />}
         {page === "challenges" && <ChallengesTab />}
+        {page === "partners" && <PartnersTab />}
       </main>
     </div>
   );

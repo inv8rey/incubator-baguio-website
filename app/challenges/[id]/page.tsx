@@ -36,7 +36,10 @@ export default async function ChallengeDetail({ params }: { params: Promise<{ id
       <a href="${BP}/ecosystem" class="ib-navlink">Ecosystem</a>
       <a href="${BP}/events" class="ib-navlink">Events</a>
     </div>
-    <a href="#" class="ib-cta-orange" style="background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;">Post a Challenge</a>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="${BP}/contact" style="color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(255,255,255,0.22);">Contact Us</a>
+      <a href="#" class="ib-cta-orange" style="background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;">Post a Challenge</a>
+    </div>
   </div>
 </div>
 

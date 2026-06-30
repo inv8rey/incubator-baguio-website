@@ -16,7 +16,10 @@ const HOME_HTML = `
       <a href="${BP}/ecosystem" class="ib-navlink">Ecosystem</a>
       <a href="${BP}/events" class="ib-navlink">Events</a>
     </div>
-    <a href="${BP}/get-started" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:8px;background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:11px 22px;border-radius:9999px;text-decoration:none;">Get Started <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="${BP}/contact" style="color:#fff;font-weight:600;font-size:14px;padding:11px 22px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(255,255,255,0.22);">Contact Us</a>
+      <a href="${BP}/get-started" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:8px;background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:11px 22px;border-radius:9999px;text-decoration:none;">Get Started <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+    </div>
   </div>
 </div>
 
@@ -42,10 +45,10 @@ const HOME_HTML = `
 <!-- STAT BAND -->
 <div style="background:#F26522;padding:38px 40px;">
   <div style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
-    <div style="text-align:center;"><div style="font-size:44px;font-weight:700;color:#fff;letter-spacing:-0.02em;">500+</div><div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);margin-top:4px;">Youth in Innovation Camp</div></div>
-    <div style="text-align:center;border-left:1px solid rgba(255,255,255,0.25);"><div style="font-size:44px;font-weight:700;color:#fff;letter-spacing:-0.02em;">10+</div><div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);margin-top:4px;">Startups incubated</div></div>
-    <div style="text-align:center;border-left:1px solid rgba(255,255,255,0.25);"><div style="font-size:44px;font-weight:700;color:#fff;letter-spacing:-0.02em;">10+</div><div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);margin-top:4px;">Formal partnerships</div></div>
-    <div style="text-align:center;border-left:1px solid rgba(255,255,255,0.25);"><div style="font-size:44px;font-weight:700;color:#fff;letter-spacing:-0.02em;">3M</div><div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);margin-top:4px;">Innovation Fund (&#8369;)</div></div>
+    <div style="text-align:center;"><div style="font-size:44px;font-weight:700;color:#fff;letter-spacing:-0.02em;">9+</div><div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);margin-top:4px;">Active Startups</div></div>
+    <div style="text-align:center;border-left:1px solid rgba(255,255,255,0.25);"><div style="font-size:44px;font-weight:700;color:#fff;letter-spacing:-0.02em;">8+</div><div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);margin-top:4px;">Ecosystem Partners</div></div>
+    <div style="text-align:center;border-left:1px solid rgba(255,255,255,0.25);"><div style="font-size:44px;font-weight:700;color:#fff;letter-spacing:-0.02em;">4</div><div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);margin-top:4px;">TBIs</div></div>
+    <div style="text-align:center;border-left:1px solid rgba(255,255,255,0.25);"><div style="font-size:44px;font-weight:700;color:#fff;letter-spacing:-0.02em;">&#8734;</div><div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);margin-top:4px;">Opportunities to Build</div></div>
   </div>
 </div>
 
@@ -176,9 +179,9 @@ const HOME_HTML = `
 </div>
 
 <!-- STARTUP WEEK FEATURE -->
-<div style="background:#0E0E10;padding:0;">
-  <div style="display:grid;grid-template-columns:1fr 1fr;align-items:stretch;">
-    <div style="padding:72px 56px;display:flex;flex-direction:column;justify-content:center;">
+<div style="background:#0E0E10;padding:0 40px;">
+  <div style="max-width:1060px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;align-items:stretch;">
+    <div style="padding:72px 40px 72px 0;display:flex;flex-direction:column;justify-content:center;">
       <span style="display:inline-block;width:fit-content;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#FFB489;padding:6px 12px;border-radius:9999px;border:1px solid rgba(242,101,34,0.4);background:rgba(242,101,34,0.12);margin-bottom:20px;">Flagship event &middot; 3rd week of April</span>
       <h2 style="margin:0 0 14px;font-size:40px;font-weight:700;letter-spacing:-0.025em;color:#fff;line-height:1.08;">Innovation Startup Week 2026</h2>
       <p style="margin:0 0 26px;font-size:16px;line-height:1.6;color:rgba(255,255,255,0.62);max-width:420px;">A full week of pitching, demos, and matchmaking. 10+ startups, investors, mentors, and the public, all in one place.</p>

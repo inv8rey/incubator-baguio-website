@@ -2,13 +2,49 @@
 
 import { useState } from "react";
 import { StatCard } from "../StatCard";
-import { DARK, SECTOR_FILTERS, STAGE_BADGE, STAGE_FILTERS, STARTUPS, STARTUP_STATS } from "../data";
+import { DARK, ORANGE, SECTOR_FILTERS, STAGE_BADGE, STAGE_FILTERS, STARTUPS, STARTUP_STATS } from "../data";
+
+const NEXT_COLORS = ["#F26522", "#285E7A", "#1A6B3C", "#9E2A52", "#D88A0A", "#7C5CD6", "#0E5C44", "#8B4513"];
 
 export default function StartupsTab() {
+  const [startups, setStartups] = useState(STARTUPS);
   const [stage, setStage] = useState("All");
   const [sector, setSector] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const filtered = STARTUPS.filter((s) => (stage === "All" || s.stage === stage) && (!sector || s.sector === sector));
+  const [name, setName] = useState("");
+  const [newSector, setNewSector] = useState(SECTOR_FILTERS[0].label);
+  const [newStage, setNewStage] = useState(STAGE_FILTERS[1]);
+  const [tbi, setTbi] = useState("Independent");
+  const [funding, setFunding] = useState("");
+
+  const filtered = startups.filter((s) => (stage === "All" || s.stage === stage) && (!sector || s.sector === sector));
+
+  function resetForm() {
+    setName("");
+    setNewSector(SECTOR_FILTERS[0].label);
+    setNewStage(STAGE_FILTERS[1]);
+    setTbi("Independent");
+    setFunding("");
+  }
+
+  function addStartup(e: React.FormEvent) {
+    e.preventDefault();
+    if (!name.trim()) return;
+    const initials = name
+      .split(" ")
+      .map((w) => w[0])
+      .join("")
+      .slice(0, 3)
+      .toUpperCase();
+    const id = `BG-${String(100 + startups.length).padStart(3, "0")}`;
+    setStartups((s) => [
+      { id, initials, color: NEXT_COLORS[s.length % NEXT_COLORS.length], name: name.trim(), sector: newSector, stage: newStage, tbi, funding: funding.trim() || "—", since: String(new Date().getFullYear()) },
+      ...s,
+    ]);
+    resetForm();
+    setModalOpen(false);
+  }
 
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
@@ -40,7 +76,7 @@ export default function StartupsTab() {
                 {s}
                 {s === "All" && (
                   <span style={{ fontSize: 10, background: active ? "rgba(255,255,255,0.2)" : "rgba(20,20,25,0.08)", padding: "1px 5px", borderRadius: 999, marginLeft: 4 }}>
-                    {STARTUPS.length}
+                    {startups.length}
                   </span>
                 )}
               </button>
@@ -71,7 +107,10 @@ export default function StartupsTab() {
             );
           })}
         </div>
-        <button style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 999, fontSize: 13, fontWeight: 600, border: "none", color: "#fff", background: "#F26522", cursor: "pointer" }}>
+        <button
+          onClick={() => setModalOpen(true)}
+          style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 999, fontSize: 13, fontWeight: 600, border: "none", color: "#fff", background: "#F26522", cursor: "pointer" }}
+        >
           + Add Startup
         </button>
       </div>
@@ -135,6 +174,92 @@ export default function StartupsTab() {
           </tbody>
         </table>
       </div>
+
+      {modalOpen && (
+        <div
+          onClick={() => setModalOpen(false)}
+          style={{ position: "fixed", inset: 0, background: "rgba(15,15,17,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 20 }}
+        >
+          <form
+            onClick={(e) => e.stopPropagation()}
+            onSubmit={addStartup}
+            style={{ background: "#fff", borderRadius: 18, padding: 26, width: "100%", maxWidth: 440, display: "flex", flexDirection: "column", gap: 16, maxHeight: "90vh", overflowY: "auto" }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ fontSize: 16.5, fontWeight: 700, color: DARK }}>Add startup</div>
+              <button type="button" onClick={() => setModalOpen(false)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#9A958B", lineHeight: 1 }}>
+                ×
+              </button>
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Startup name</label>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. ColdTrail"
+                required
+                style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+              />
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Sector</label>
+                <select
+                  value={newSector}
+                  onChange={(e) => setNewSector(e.target.value)}
+                  style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                >
+                  {SECTOR_FILTERS.map((f) => (
+                    <option key={f.label} value={f.label}>{f.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Stage</label>
+                <select
+                  value={newStage}
+                  onChange={(e) => setNewStage(e.target.value)}
+                  style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                >
+                  {STAGE_FILTERS.filter((s) => s !== "All").map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>TBI</label>
+                <input
+                  value={tbi}
+                  onChange={(e) => setTbi(e.target.value)}
+                  placeholder="Independent"
+                  style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                />
+              </div>
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Funding raised</label>
+                <input
+                  value={funding}
+                  onChange={(e) => setFunding(e.target.value)}
+                  placeholder="₱500K"
+                  style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              style={{ marginTop: 4, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 999, padding: "11px 22px", cursor: "pointer" }}
+            >
+              Add startup
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

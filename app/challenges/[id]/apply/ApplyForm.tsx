@@ -12,10 +12,15 @@ interface FormState {
   email: string;
   phone: string;
   teamSize: string;
+  affiliation: string;
+  role: string;
+  course: string;
   approach: string;
   whyYou: string;
   agree: boolean;
 }
+
+const ROLES = ["Student", "Professional", "Faculty / Researcher", "Entrepreneur", "Other"];
 
 const STEPS = ["Team & contact", "Your approach", "Review & submit"];
 
@@ -49,6 +54,9 @@ export default function ApplyForm({ challenge, bp }: { challenge: Challenge; bp:
     email: "",
     phone: "",
     teamSize: "",
+    affiliation: "",
+    role: "",
+    course: "",
     approach: "",
     whyYou: "",
     agree: false,
@@ -66,6 +74,9 @@ export default function ApplyForm({ challenge, bp }: { challenge: Challenge; bp:
       if (!form.contactName.trim()) errs.contactName = "Contact name is required.";
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "Enter a valid email address.";
       if (!form.teamSize.trim()) errs.teamSize = "Let us know how many people are on your team.";
+      if (!form.affiliation.trim()) errs.affiliation = "Enter your university or organization.";
+      if (!form.role) errs.role = "Select what best describes you.";
+      if (form.role === "Student" && !form.course.trim()) errs.course = "Enter your course or program.";
     }
     if (s === 1) {
       if (!form.approach.trim() || form.approach.trim().length < 30) errs.approach = "Describe your approach in at least a few sentences.";
@@ -183,6 +194,30 @@ export default function ApplyForm({ challenge, bp }: { challenge: Challenge; bp:
               <input style={inputStyle} value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="09xx xxx xxxx" />
             </div>
           </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div>
+              <label style={labelStyle}>University / organization</label>
+              <input style={inputStyle} value={form.affiliation} onChange={(e) => update("affiliation", e.target.value)} placeholder="e.g. Saint Louis University" />
+              {errors.affiliation && <p style={{ color: "#E23A2E", fontSize: 12, margin: "6px 0 0" }}>{errors.affiliation}</p>}
+            </div>
+            <div>
+              <label style={labelStyle}>I am a&hellip;</label>
+              <select style={{ ...inputStyle, appearance: "auto" }} value={form.role} onChange={(e) => update("role", e.target.value)}>
+                <option value="" disabled>Select one</option>
+                {ROLES.map((r) => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+              {errors.role && <p style={{ color: "#E23A2E", fontSize: 12, margin: "6px 0 0" }}>{errors.role}</p>}
+            </div>
+          </div>
+          {form.role === "Student" && (
+            <div>
+              <label style={labelStyle}>Course / program</label>
+              <input style={inputStyle} value={form.course} onChange={(e) => update("course", e.target.value)} placeholder="e.g. BS Computer Science" />
+              {errors.course && <p style={{ color: "#E23A2E", fontSize: 12, margin: "6px 0 0" }}>{errors.course}</p>}
+            </div>
+          )}
         </div>
       )}
 
@@ -211,6 +246,7 @@ export default function ApplyForm({ challenge, bp }: { challenge: Challenge; bp:
               <dt style={{ color: "#9A958B" }}>Challenge</dt><dd style={{ margin: 0, color: DARK, fontWeight: 600 }}>{challenge.title}</dd>
               <dt style={{ color: "#9A958B" }}>Team</dt><dd style={{ margin: 0, color: DARK }}>{form.teamName || "—"} ({form.teamSize || "?"} people)</dd>
               <dt style={{ color: "#9A958B" }}>Contact</dt><dd style={{ margin: 0, color: DARK }}>{form.contactName || "—"} &middot; {form.email || "—"}</dd>
+              <dt style={{ color: "#9A958B" }}>Affiliation</dt><dd style={{ margin: 0, color: DARK }}>{form.affiliation || "—"} &middot; {form.role || "—"}{form.role === "Student" && form.course ? ` (${form.course})` : ""}</dd>
               <dt style={{ color: "#9A958B" }}>Approach</dt><dd style={{ margin: 0, color: "#44444C", lineHeight: 1.5 }}>{form.approach || "—"}</dd>
             </dl>
           </div>

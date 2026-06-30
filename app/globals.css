@@ -220,6 +220,12 @@ img { max-width: 100%; height: auto; }
   justify-content: center;
   text-align: center;
 }
+.ib-mobile-cta > a {
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: center;
+  text-align: center;
+}
 
 /* ---- Phone (<= 600px) ---- */
 @media (max-width: 600px) {
