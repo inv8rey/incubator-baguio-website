@@ -1,4 +1,4 @@
-export type EcosystemCategory = "Startups" | "Mentors" | "TBIs" | "Community";
+export type EcosystemCategory = "Startups" | "Mentors" | "TBIs" | "Corporate" | "Government" | "Community";
 
 export interface StartupEntry {
   name: string;
@@ -33,6 +33,24 @@ export interface TbiEntry {
 }
 
 export interface CommunityEntry {
+  name: string;
+  type: string;
+  description: string;
+  color: string;
+  bg: string;
+  initials: string;
+}
+
+export interface CorporateEntry {
+  name: string;
+  type: string;
+  description: string;
+  color: string;
+  bg: string;
+  initials: string;
+}
+
+export interface GovernmentEntry {
   name: string;
   type: string;
   description: string;
@@ -78,4 +96,20 @@ export const COMMUNITY: CommunityEntry[] = [
   { name: "Barangay Innovation Council Network", type: "Barangay councils", description: "A coalition of barangay officials coordinating local pilots for civic-tech startups.", color: "#D88A0A", bg: "rgba(245,166,35,0.16)", initials: "BIC" },
   { name: "Baguio Maker Society", type: "Civil society / makerspace", description: "Community workshop space offering tools and peer support for hardware prototyping.", color: "#285E7A", bg: "rgba(40,94,122,0.12)", initials: "BMS" },
   { name: "Women in Tech Cordillera", type: "Community group", description: "Mentorship circle and meetup network supporting women founders and engineers.", color: "#7C5CD6", bg: "rgba(124,92,214,0.14)", initials: "WTC" },
+];
+
+export const CORPORATE: CorporateEntry[] = [
+  { name: "Baguio Chamber of Commerce and Industry", type: "Business association", description: "Connects local enterprises with startups for pilots, sourcing, and market access.", color: "#E23A2E", bg: "rgba(226,58,46,0.12)", initials: "BCCI" },
+  { name: "Cordillera Tech Collective", type: "Local tech firms", description: "A coalition of Baguio-based software and IT services firms offering mentorship and hiring pipelines.", color: "#285E7A", bg: "rgba(40,94,122,0.12)", initials: "CTC" },
+  { name: "Pine City Creative Studios", type: "Creative agency", description: "Branding and product design studio supporting early-stage startups with discounted design sprints.", color: "#9E2A52", bg: "rgba(158,42,82,0.12)", initials: "PCS" },
+  { name: "Highland Angels Network", type: "Angel investors", description: "A syndicate of local angel investors providing seed funding and advisory to portfolio startups.", color: "#D88A0A", bg: "rgba(245,166,35,0.16)", initials: "HAN" },
+  { name: "Cordillera Bank Foundation", type: "Corporate foundation / finance", description: "Funds the Innovation Fund and offers preferential business loans to incubated startups.", color: "#1A6B3C", bg: "rgba(26,107,60,0.12)", initials: "CBF" },
+];
+
+export const GOVERNMENT: GovernmentEntry[] = [
+  { name: "City Government of Baguio", type: "Lead institution", description: "Convenes the Alliance through CPDSO and provides policy, funding, and venue support.", color: "#F26522", bg: "rgba(242,101,34,0.14)", initials: "CGB" },
+  { name: "Department of Science and Technology — CAR", type: "National agency", description: "Provides grants-in-aid, technology transfer support, and S&T scholarships to founders and researchers.", color: "#0055A5", bg: "rgba(0,85,165,0.12)", initials: "DOST" },
+  { name: "Department of Trade and Industry — CAR", type: "National agency", description: "Runs MSME development programs and connects startups to trade and export opportunities.", color: "#CE1126", bg: "rgba(206,17,38,0.12)", initials: "DTI" },
+  { name: "Commission on Higher Education — CAR", type: "National agency", description: "Coordinates research grants and curriculum alignment with partner universities.", color: "#5B3A99", bg: "rgba(91,58,153,0.14)", initials: "CHED" },
+  { name: "Department of Information and Communications Technology", type: "National agency", description: "Supports digital infrastructure, e-governance pilots, and tech talent programs.", color: "#009B8D", bg: "rgba(0,155,141,0.14)", initials: "DICT" },
 ];

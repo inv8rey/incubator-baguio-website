@@ -49,30 +49,6 @@ const TOP_HTML = `
     ].map((s) => `<div style="text-align:center;${s[2] ? "border-left:1px solid rgba(255,255,255,0.25);" : ""}"><div style="font-size:38px;font-weight:700;color:#fff;letter-spacing:-0.02em;">${s[0]}</div><div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);margin-top:3px;">${s[1]}</div></div>`).join("")}
   </div>
 </div>
-
-<!-- PARTNERS -->
-<div style="background:#FAFAF7;padding:68px 40px;">
-  <div style="max-width:1080px;margin:0 auto;">
-    <div style="text-align:center;margin-bottom:40px;">
-      <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">Our partners</div>
-      <h2 style="margin:0;font-size:38px;font-weight:700;letter-spacing:-0.025em;color:#141417;">Convened across four sectors</h2>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;">
-      ${[
-        ["#F5A623", "#D88A0A", "Academe", ["Saint Louis University", "University of Baguio", "UP Baguio", "University of the Cordilleras", "BSU"]],
-        ["#F26522", "#F26522", "Government", ["City Government of Baguio", "DOST", "DTI", "CHED", "DICT"]],
-        ["#E23A2E", "#E23A2E", "Industry", ["Baguio Chamber of Commerce", "Local tech firms", "Creative studios", "Angel investors"]],
-        ["#285E7A", "#285E7A", "Community", ["Civil society groups", "Cooperatives", "Youth organizations", "Barangay councils"]],
-      ].map((sec) => `
-      <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:28px;border-top:3px solid ${sec[0]};">
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:${sec[1]};margin-bottom:18px;">${sec[2]}</div>
-        <div style="display:flex;flex-wrap:wrap;gap:10px;">
-          ${(sec[3] as string[]).map((p) => `<span style="font-size:14px;font-weight:500;color:#44444C;background:#F4F2EC;padding:9px 16px;border-radius:9999px;">${p}</span>`).join("")}
-        </div>
-      </div>`).join("")}
-    </div>
-  </div>
-</div>
 `;
 
 const BOTTOM_HTML = `

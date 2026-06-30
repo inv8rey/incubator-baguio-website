@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { COMMUNITY, MENTORS, STARTUPS, TBIS, type EcosystemCategory } from "./data";
+import { COMMUNITY, CORPORATE, GOVERNMENT, MENTORS, STARTUPS, TBIS, type EcosystemCategory } from "./data";
 
 const DARK = "#141417";
 const ORANGE = "#F26522";
@@ -10,6 +10,8 @@ const TABS: { id: EcosystemCategory; label: string; count: number }[] = [
   { id: "Startups", label: "Startups", count: STARTUPS.length },
   { id: "Mentors", label: "Mentors", count: MENTORS.length },
   { id: "TBIs", label: "TBIs", count: TBIS.length },
+  { id: "Corporate", label: "Corporate", count: CORPORATE.length },
+  { id: "Government", label: "Government", count: GOVERNMENT.length },
   { id: "Community", label: "Community", count: COMMUNITY.length },
 ];
 
@@ -27,6 +29,8 @@ export default function EcosystemDirectory() {
     if (tab === "Startups") return STARTUPS.filter((s) => matches([s.name, s.sector, s.description], query));
     if (tab === "Mentors") return MENTORS.filter((m) => matches([m.name, m.expertise, m.bio], query));
     if (tab === "TBIs") return TBIS.filter((t) => matches([t.name, t.host, t.focus], query));
+    if (tab === "Corporate") return CORPORATE.filter((c) => matches([c.name, c.type, c.description], query));
+    if (tab === "Government") return GOVERNMENT.filter((g) => matches([g.name, g.type, g.description], query));
     return COMMUNITY.filter((c) => matches([c.name, c.type, c.description], query));
   }, [tab, query]);
 
@@ -37,7 +41,7 @@ export default function EcosystemDirectory() {
           <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: ORANGE, marginBottom: 12 }}>Ecosystem database</div>
           <h2 style={{ margin: 0, fontSize: 38, fontWeight: 700, letterSpacing: "-0.025em", color: DARK }}>Browse the people and places building Baguio</h2>
           <p style={{ margin: "14px auto 0", fontSize: 15, lineHeight: 1.6, color: "#6B6B73", maxWidth: 560 }}>
-            Search across registered startups, mentors, Technology Business Incubators, and community partners.
+            Search across registered startups, mentors, TBIs, corporate, government, and community partners.
           </p>
         </div>
 
@@ -131,6 +135,40 @@ export default function EcosystemDirectory() {
                   <p style={{ margin: "0 0 10px", fontSize: 12.5, color: "#9A958B" }}>{t.host} &middot; {t.focus}</p>
                   <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>{t.description}</p>
                 </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {tab === "Corporate" && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
+            {(filtered as typeof CORPORATE).map((c) => (
+              <div key={c.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 11, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: c.color, flexShrink: 0 }}>{c.initials}</div>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 600, color: DARK }}>{c.name}</h3>
+                    <span style={{ fontSize: 11.5, color: "#9A958B" }}>{c.type}</span>
+                  </div>
+                </div>
+                <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>{c.description}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {tab === "Government" && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
+            {(filtered as typeof GOVERNMENT).map((g) => (
+              <div key={g.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 11, background: g.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: g.color, flexShrink: 0 }}>{g.initials}</div>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 600, color: DARK }}>{g.name}</h3>
+                    <span style={{ fontSize: 11.5, color: "#9A958B" }}>{g.type}</span>
+                  </div>
+                </div>
+                <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>{g.description}</p>
               </div>
             ))}
           </div>
