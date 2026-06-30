@@ -78,10 +78,13 @@ const PROGRAMS_HTML = `
   <div style="max-width:1180px;margin:0 auto;display:flex;gap:10px;flex-wrap:wrap;">
     ${[
       ["All programs", true],
-      ["For Founders", false],
-      ["For Youth", false],
-      ["For Researchers", false],
-      ["For Industry", false],
+      ["Founder Development", false],
+      ["Innovation Challenges", false],
+      ["Research", false],
+      ["Partnerships", false],
+      ["Capability Building", false],
+      ["Community", false],
+      ["Resources", false],
     ].map((c) => `<span style="font-size:13.5px;font-weight:${c[1] ? 600 : 500};color:${c[1] ? "#fff" : "#44444C"};background:${c[1] ? "#141417" : "#F4F2EC"};padding:9px 18px;border-radius:9999px;cursor:pointer;">${c[0]}</span>`).join("")}
   </div>
 </div>
@@ -90,18 +93,19 @@ const PROGRAMS_HTML = `
 <div style="background:#FAFAF7;padding:56px 40px 72px;">
   <div style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
     ${[
-      ["#F26522", "rgba(242,101,34,0.12)", `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2"><path d="M12 2v6m0 0 3.5 11a3.5 3.5 0 0 1-7 0L12 8Z"></path><circle cx="12" cy="4" r="2"></circle></svg>`, "rgba(242,101,34,0.1)", "Founders", "Startup Incubation", "Pre-incubation to post-incubation support, mentorship, and milestone tracking."],
-      ["#F5A623", "rgba(245,166,35,0.14)", `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D88A0A" stroke-width="2"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"></path></svg>`, "rgba(245,166,35,0.14)", "Youth", "Innovation Camp", "Annual immersion for 500+ youth, with challenge briefs, SDG focus, prototyping, prizes."],
-      ["#E23A2E", "rgba(226,58,46,0.12)", `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E23A2E" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"></path><path d="M14 3v5h5M8 13h8M8 17h5"></path></svg>`, "rgba(226,58,46,0.1)", "Researchers", "City Research Forum", "Annual forum for paper submissions, presentations, and published proceedings."],
-      ["#9E2A52", "rgba(158,42,82,0.12)", `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9E2A52" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6l-8-4Z"></path><path d="m9 12 2 2 4-4"></path></svg>`, "rgba(158,42,82,0.1)", "Everyone", "Innovation Startup Week", "Every 3rd week of April: pitch competition, demo day, investor matching."],
-      ["#285E7A", "rgba(40,94,122,0.12)", `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#285E7A" stroke-width="2"><path d="m8 3 4 8 4-8M4 21l8-10 8 10M2 21h20"></path></svg>`, "rgba(40,94,122,0.1)", "Builders", "Hackathons &amp; Sprints", "Themed design sprints with team formation, judging criteria, and prizes."],
-      ["#F26522", "rgba(242,101,34,0.12)", `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2"><circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="10" r="2.5"></circle><path d="M3 20c0-3 2.5-5 6-5s6 2 6 5M15 20c0-2 .8-3.5 2-4"></path></svg>`, "rgba(242,101,34,0.1)", "Industry", "Workshops &amp; Masterclasses", "Design thinking, lean startup, IP, and fundraising with speaker profiles."],
+      ["#F26522", "rgba(242,101,34,0.12)", `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2"><path d="M12 2v6m0 0 3.5 11a3.5 3.5 0 0 1-7 0L12 8Z"></path><circle cx="12" cy="4" r="2"></circle></svg>`, "rgba(242,101,34,0.1)", "Founders", "Founder Development", "Training, mentorship, founder community, startup readiness.", `${BP}/get-started`],
+      ["#E23A2E", "rgba(226,58,46,0.12)", `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E23A2E" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4.5"></circle><circle cx="12" cy="12" r="1"></circle></svg>`, "rgba(226,58,46,0.1)", "Government &amp; Industry", "Innovation Challenges", "Match real-world problems from government and industry with innovators and startups.", `${BP}/challenges`],
+      ["#285E7A", "rgba(40,94,122,0.12)", `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#285E7A" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"></path><path d="M14 3v5h5M8 13h8M8 17h5"></path></svg>`, "rgba(40,94,122,0.1)", "Researchers", "Research Commercialization", "Help researchers transform technologies, IP, and research into startups and market-ready solutions.", `${BP}/knowledge`],
+      ["#7C5CD6", "rgba(124,92,214,0.14)", `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7C5CD6" stroke-width="2"><circle cx="7" cy="7" r="3"></circle><circle cx="17" cy="7" r="3"></circle><circle cx="12" cy="18" r="3"></circle><path d="M7 10v2.5L12 15M17 10v2.5L12 15"></path></svg>`, "rgba(124,92,214,0.12)", "Partners", "Ecosystem Partnerships", "Coordinate collaboration among government, universities, industry, investors, and startup support organizations.", `${BP}/ecosystem`],
+      ["#F5A623", "rgba(245,166,35,0.14)", `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D88A0A" stroke-width="2"><path d="M22 10 12 5 2 10l10 5 10-5Z"></path><path d="M6 12v5c3 2 9 2 12 0v-5"></path></svg>`, "rgba(245,166,35,0.14)", "Capability Building", "Innovation Academy", "Workshops, bootcamps, masterclasses, and capability-building programs.", `${BP}/events`],
+      ["#9E2A52", "rgba(158,42,82,0.12)", `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9E2A52" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M3 9h18M8 2v4M16 2v4"></path></svg>`, "rgba(158,42,82,0.1)", "Everyone", "Community &amp; Events", "Startup Week, founder meetups, forums, networking events, hackathons, and ecosystem gatherings.", `${BP}/events`],
+      ["#1A6B3C", "rgba(26,107,60,0.12)", `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A6B3C" stroke-width="2"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5V4.5Z"></path><path d="M4 17h16"></path></svg>`, "rgba(26,107,60,0.1)", "Resources", "Knowledge Hub", "Resources, playbooks, templates, research, ecosystem reports, funding directory, and learning materials.", `${BP}/knowledge`],
     ].map((p) => `
     <div class="ib-challenge-hover" style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:28px;border-top:3px solid ${p[0]};transition:box-shadow .22s ease,transform .22s ease;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;"><div style="width:46px;height:46px;border-radius:12px;background:${p[1]};display:flex;align-items:center;justify-content:center;">${p[2]}</div><span style="font-size:10.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:${p[0]};background:${p[3]};padding:5px 10px;border-radius:9999px;">${p[4]}</span></div>
       <h3 style="margin:0 0 8px;font-size:20px;font-weight:600;color:#141417;">${p[5]}</h3>
       <p style="margin:0 0 18px;font-size:14px;line-height:1.55;color:#6B6B73;">${p[6]}</p>
-      <a href="#" style="font-size:13.5px;font-weight:600;color:#141417;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">Learn more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#141417" stroke-width="2.3"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a href="${p[7]}" style="font-size:13.5px;font-weight:600;color:#141417;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">Learn more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#141417" stroke-width="2.3"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
     </div>`).join("")}
   </div>
   <div style="max-width:1180px;margin:36px auto 0;background:#141417;border-radius:20px;padding:36px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
