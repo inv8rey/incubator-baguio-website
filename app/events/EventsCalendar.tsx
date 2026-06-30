@@ -1,10 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CATEGORY_COLORS, DARK, EVENTS, ORANGE, TODAY, type CityEvent } from "./data";
+import { CATEGORY_COLORS, DARK, EVENTS, ORANGE, TODAY, type CityEvent, type EventCategory } from "./data";
 
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const CATEGORIES = Object.keys(CATEGORY_COLORS) as EventCategory[];
+const VIEWS = ["Month", "Week", "Agenda"] as const;
+type View = (typeof VIEWS)[number];
 
 function isoOf(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -12,196 +15,370 @@ function isoOf(d: Date) {
 
 function eventsOnDay(date: Date) {
   const iso = isoOf(date);
-  return EVENTS.filter((e) => {
-    if (!e.endDate) return e.date === iso;
-    return iso >= e.date && iso <= e.endDate;
-  });
+  return EVENTS.filter((e) => (e.endDate ? iso >= e.date && iso <= e.endDate : e.date === iso));
 }
 
-function formatDate(iso: string) {
+function startOfWeek(d: Date) {
+  const out = new Date(d);
+  out.setDate(out.getDate() - out.getDay());
+  return out;
+}
+
+function formatLong(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
-  return `${MONTH_NAMES[m - 1].slice(0, 3)} ${d}, ${y}`;
+  return `${MONTH_NAMES[m - 1]} ${d}, ${y}`;
+}
+
+const selectStyle: React.CSSProperties = {
+  appearance: "none",
+  fontSize: 13,
+  fontWeight: 600,
+  color: "#44444C",
+  background: "#fff",
+  border: "1.5px solid rgba(20,20,25,0.12)",
+  borderRadius: 9999,
+  padding: "10px 30px 10px 16px",
+  cursor: "pointer",
+  outline: "none",
+};
+
+function Select({ value, onChange, options, allLabel }: { value: string | null; onChange: (v: string | null) => void; options: string[]; allLabel: string }) {
+  return (
+    <div style={{ position: "relative" }}>
+      <select
+        value={value ?? ""}
+        onChange={(e) => onChange(e.target.value || null)}
+        style={selectStyle}
+      >
+        <option value="">{allLabel}</option>
+        {options.map((o) => (
+          <option key={o} value={o}>{o}</option>
+        ))}
+      </select>
+      <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2.4} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+    </div>
+  );
+}
+
+function EventChip({ e, compact }: { e: CityEvent; compact?: boolean }) {
+  const cc = CATEGORY_COLORS[e.category];
+  return (
+    <div className="ib-events-chip" style={{ display: "flex", alignItems: "center", gap: 4, fontSize: compact ? 10 : 10.5, fontWeight: 600, color: cc.color, background: cc.bg, borderRadius: 5, padding: "2px 5px", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+      <span style={{ width: 5, height: 5, borderRadius: 9999, background: cc.color, flexShrink: 0 }} />
+      <span className="ib-events-chip-text" style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{e.category} {e.time}</span>
+    </div>
+  );
+}
+
+function EventRow({ e }: { e: CityEvent }) {
+  const cc = CATEGORY_COLORS[e.category];
+  const [, m, d] = e.date.split("-").map(Number);
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: "1px solid rgba(20,20,25,0.06)" }}>
+      <div style={{ textAlign: "center", width: 32, flexShrink: 0 }}>
+        <div style={{ fontSize: 18, fontWeight: 700, color: cc.color, letterSpacing: "-0.02em", lineHeight: 1 }}>{String(d).padStart(2, "0")}</div>
+        <div style={{ fontSize: 9.5, fontWeight: 600, color: "#9A958B", marginTop: 2 }}>{MONTH_NAMES[m - 1].slice(0, 3).toUpperCase()}</div>
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 3, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 7px", borderRadius: 9999 }}>{e.category}</span>
+          <span style={{ fontSize: 11, color: "#9A958B" }}>{e.time}</span>
+        </div>
+        <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{e.title}</div>
+        <div style={{ fontSize: 11, color: "#9A958B", marginTop: 2 }}>{e.venue}</div>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+        <a href="#" style={{ background: DARK, color: "#fff", fontWeight: 600, fontSize: 11.5, padding: "8px 14px", borderRadius: 9999, textDecoration: "none", whiteSpace: "nowrap" }}>{e.cta}</a>
+        <button aria-label="Save event" style={{ width: 28, height: 28, borderRadius: 8, border: "1.5px solid rgba(20,20,25,0.1)", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
+          <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2}><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
+        </button>
+      </div>
+    </div>
+  );
 }
 
 export default function EventsCalendar() {
   const [cursor, setCursor] = useState(new Date(TODAY.getFullYear(), TODAY.getMonth(), 1));
   const [selectedIso, setSelectedIso] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [category, setCategory] = useState<string | null>(null);
+  const [organizer, setOrganizer] = useState<string | null>(null);
+  const [location, setLocation] = useState<string | null>(null);
+  const [view, setView] = useState<View>("Month");
 
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
+  const todayIso = isoOf(TODAY);
 
-  const cells = useMemo(() => {
+  const organizers = useMemo(() => Array.from(new Set(EVENTS.map((e) => e.org))).sort(), []);
+  const locations = useMemo(() => Array.from(new Set(EVENTS.map((e) => e.venue))).sort(), []);
+
+  const q = query.trim().toLowerCase();
+  const matchesFilters = (e: CityEvent) => {
+    if (category && e.category !== category) return false;
+    if (organizer && e.org !== organizer) return false;
+    if (location && e.venue !== location) return false;
+    if (q && ![e.title, e.org, e.venue, e.category].some((f) => f.toLowerCase().includes(q))) return false;
+    return true;
+  };
+
+  const filteredEvents = useMemo(() => EVENTS.filter(matchesFilters), [category, organizer, location, q]);
+
+  const monthCells = useMemo(() => {
     const firstDay = new Date(year, month, 1);
     const startOffset = firstDay.getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const out: { date: Date | null }[] = [];
-    for (let i = 0; i < startOffset; i++) out.push({ date: null });
-    for (let d = 1; d <= daysInMonth; d++) out.push({ date: new Date(year, month, d) });
+    const out: (Date | null)[] = [];
+    for (let i = 0; i < startOffset; i++) out.push(null);
+    for (let d = 1; d <= daysInMonth; d++) out.push(new Date(year, month, d));
     return out;
   }, [year, month]);
 
-  const q = query.trim().toLowerCase();
+  const weekCells = useMemo(() => {
+    const start = startOfWeek(cursor);
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(start);
+      d.setDate(d.getDate() + i);
+      return d;
+    });
+  }, [cursor]);
 
-  const agenda: CityEvent[] = q
-    ? EVENTS.filter((e) => [e.title, e.org, e.venue, e.category].some((f) => f.toLowerCase().includes(q))).sort((a, b) => a.date.localeCompare(b.date))
-    : selectedIso
-    ? EVENTS.filter((e) => (e.endDate ? selectedIso >= e.date && selectedIso <= e.endDate : e.date === selectedIso))
-    : EVENTS.filter((e) => (e.endDate ? e.endDate >= isoOf(TODAY) : e.date >= isoOf(TODAY))).sort((a, b) => a.date.localeCompare(b.date));
+  const cells = view === "Week" ? weekCells : monthCells;
 
-  const todayIso = isoOf(TODAY);
+  function eventsOnDayFiltered(date: Date) {
+    return eventsOnDay(date).filter(matchesFilters);
+  }
+
+  function step(dir: 1 | -1) {
+    if (view === "Week") {
+      const d = new Date(cursor);
+      d.setDate(d.getDate() + dir * 7);
+      setCursor(d);
+    } else {
+      setCursor(new Date(year, month + dir, 1));
+    }
+  }
+
+  // Grouped agenda: Today / This week / This month / Later
+  const grouped = useMemo(() => {
+    const upcoming = filteredEvents
+      .filter((e) => (e.endDate ? e.endDate >= todayIso : e.date >= todayIso))
+      .sort((a, b) => a.date.localeCompare(b.date));
+    const weekEnd = isoOf(new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate() + 7));
+    const monthEnd = isoOf(new Date(TODAY.getFullYear(), TODAY.getMonth() + 1, 0));
+    const today: CityEvent[] = [];
+    const thisWeek: CityEvent[] = [];
+    const thisMonth: CityEvent[] = [];
+    const later: CityEvent[] = [];
+    upcoming.forEach((e) => {
+      if (e.date === todayIso) today.push(e);
+      else if (e.date <= weekEnd) thisWeek.push(e);
+      else if (e.date <= monthEnd) thisMonth.push(e);
+      else later.push(e);
+    });
+    return { today, thisWeek, thisMonth, later };
+  }, [filteredEvents, todayIso]);
+
+  const daySelection: CityEvent[] | null = selectedIso
+    ? filteredEvents.filter((e) => (e.endDate ? selectedIso >= e.date && selectedIso <= e.endDate : e.date === selectedIso))
+    : null;
+
+  const [showLater, setShowLater] = useState(false);
+  const hasActiveFilters = !!(q || category || organizer || location);
 
   return (
-    <div style={{ background: "#FAFAF7", padding: "56px 40px" }}>
-      <div style={{ maxWidth: 1180, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1.05fr", gap: 28, alignItems: "start" }} className="ib-events-grid">
-        {/* CALENDAR */}
-        <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "28px 28px 22px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 22 }}>
-            <div style={{ fontSize: 19, fontWeight: 700, color: DARK, letterSpacing: "-0.01em" }}>
-              {MONTH_NAMES[month]} {year}
+    <div style={{ background: "#FAFAF7", padding: "24px 40px 56px" }}>
+      <div style={{ maxWidth: 1300, margin: "0 auto" }}>
+        {/* FILTER BAR */}
+        <div className="ib-events-filterbar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, marginBottom: 20, flexWrap: "wrap" }}>
+          <div className="ib-events-filters" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", flex: 1, minWidth: 0 }}>
+            <div style={{ position: "relative", minWidth: 220 }}>
+              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }}>
+                <circle cx={11} cy={11} r={7} />
+                <path d="m20 20-3.5-3.5" />
+              </svg>
+              <input
+                value={query}
+                onChange={(e) => { setQuery(e.target.value); setSelectedIso(null); }}
+                placeholder="Search events, topics, or organizers..."
+                style={{ width: "100%", boxSizing: "border-box", fontSize: 13, color: DARK, background: "#fff", border: "1.5px solid rgba(20,20,25,0.12)", borderRadius: 9999, padding: "10px 14px 10px 36px", outline: "none" }}
+              />
             </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button
-                onClick={() => setCursor(new Date(year, month - 1, 1))}
-                aria-label="Previous month"
-                style={{ width: 34, height: 34, borderRadius: 9999, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
-              >
-                <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="#44444C" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
-              </button>
-              <button
-                onClick={() => { setCursor(new Date(TODAY.getFullYear(), TODAY.getMonth(), 1)); setSelectedIso(null); }}
-                style={{ fontSize: 12.5, fontWeight: 600, color: "#6B6B73", border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", borderRadius: 9999, padding: "0 14px", cursor: "pointer" }}
-              >
-                Today
-              </button>
-              <button
-                onClick={() => setCursor(new Date(year, month + 1, 1))}
-                aria-label="Next month"
-                style={{ width: 34, height: 34, borderRadius: 9999, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
-              >
-                <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="#44444C" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-              </button>
-            </div>
+            <Select value={category} onChange={(v) => { setCategory(v); setSelectedIso(null); }} options={CATEGORIES} allLabel="All Categories" />
+            <Select value={organizer} onChange={(v) => { setOrganizer(v); setSelectedIso(null); }} options={organizers} allLabel="All Organizers" />
+            <Select value={location} onChange={(v) => { setLocation(v); setSelectedIso(null); }} options={locations} allLabel="All Locations" />
           </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4, marginBottom: 6 }}>
-            {WEEKDAYS.map((w) => (
-              <div key={w} style={{ textAlign: "center", fontSize: 11, fontWeight: 600, color: "#9A958B", padding: "4px 0" }}>{w}</div>
-            ))}
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4 }}>
-            {cells.map((c, i) => {
-              if (!c.date) return <div key={i} />;
-              const iso = isoOf(c.date);
-              const dayEvents = eventsOnDay(c.date);
-              const isToday = iso === todayIso;
-              const isSelected = iso === selectedIso;
-              return (
-                <button
-                  key={i}
-                  onClick={() => dayEvents.length > 0 && setSelectedIso(isSelected ? null : iso)}
-                  disabled={dayEvents.length === 0}
-                  style={{
-                    aspectRatio: "1",
-                    borderRadius: 11,
-                    border: isSelected ? `1.5px solid ${ORANGE}` : isToday ? "1.5px solid rgba(20,20,25,0.16)" : "1.5px solid transparent",
-                    background: isSelected ? "rgba(242,101,34,0.10)" : isToday ? "rgba(20,20,25,0.04)" : "transparent",
-                    cursor: dayEvents.length > 0 ? "pointer" : "default",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 3,
-                    padding: 0,
-                  }}
-                >
-                  <span style={{ fontSize: 12.5, fontWeight: isToday || isSelected ? 700 : 500, color: dayEvents.length > 0 ? DARK : "#9A958B" }}>{c.date.getDate()}</span>
-                  {dayEvents.length > 0 && (
-                    <div style={{ display: "flex", gap: 2 }}>
-                      {dayEvents.slice(0, 3).map((e) => (
-                        <span key={e.id} style={{ width: 5, height: 5, borderRadius: 9999, background: CATEGORY_COLORS[e.category].color, display: "inline-block" }} />
-                      ))}
-                    </div>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginTop: 22, paddingTop: 18, borderTop: "1px solid rgba(20,20,25,0.07)" }}>
-            {(Object.keys(CATEGORY_COLORS) as (keyof typeof CATEGORY_COLORS)[]).map((cat) => (
-              <div key={cat} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ width: 7, height: 7, borderRadius: 9999, background: CATEGORY_COLORS[cat].color, display: "inline-block" }} />
-                <span style={{ fontSize: 11.5, color: "#6B6B73" }}>{cat}</span>
-              </div>
+          <div className="ib-events-viewtoggle" style={{ display: "flex", background: "#F4F2EC", borderRadius: 9999, padding: 3, gap: 2, flexShrink: 0 }}>
+            {VIEWS.map((v) => (
+              <button
+                key={v}
+                onClick={() => setView(v)}
+                style={{
+                  fontSize: 12.5,
+                  fontWeight: 600,
+                  padding: "8px 16px",
+                  borderRadius: 9999,
+                  border: "none",
+                  cursor: "pointer",
+                  color: view === v ? "#fff" : "#6B6B73",
+                  background: view === v ? ORANGE : "transparent",
+                }}
+              >
+                {v}
+              </button>
             ))}
           </div>
         </div>
 
-        {/* AGENDA */}
-        <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "28px 28px 14px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, gap: 12, flexWrap: "wrap" }}>
-            <div style={{ fontSize: 17, fontWeight: 700, color: DARK }}>
-              {q ? "Search results" : selectedIso ? formatDate(selectedIso) : "Upcoming events"}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 0.55fr", gap: 24, alignItems: "start" }} className="ib-events-grid">
+          {/* CALENDAR / AGENDA */}
+          {view !== "Agenda" ? (
+            <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "24px 24px 18px" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                <div style={{ fontSize: 19, fontWeight: 700, color: DARK, letterSpacing: "-0.01em" }}>
+                  {view === "Week" ? `Week of ${formatLong(isoOf(weekCells[0]))}` : `${MONTH_NAMES[month]} ${year}`}
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button onClick={() => step(-1)} aria-label="Previous" style={{ width: 32, height: 32, borderRadius: 9999, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#44444C" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                  </button>
+                  <button onClick={() => { setCursor(new Date(TODAY.getFullYear(), TODAY.getMonth(), 1)); setSelectedIso(null); }} style={{ fontSize: 12, fontWeight: 600, color: "#6B6B73", border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", borderRadius: 9999, padding: "0 14px", cursor: "pointer" }}>
+                    Today
+                  </button>
+                  <button onClick={() => step(1)} aria-label="Next" style={{ width: 32, height: 32, borderRadius: 9999, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#44444C" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4, marginBottom: 6 }}>
+                {WEEKDAYS.map((w) => (
+                  <div key={w} style={{ textAlign: "center", fontSize: 10.5, fontWeight: 600, color: "#9A958B", padding: "4px 0" }}>{w}</div>
+                ))}
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4 }}>
+                {cells.map((date, i) => {
+                  if (!date) return <div key={i} />;
+                  const iso = isoOf(date);
+                  const dayEvents = eventsOnDayFiltered(date);
+                  const isToday = iso === todayIso;
+                  const isSelected = iso === selectedIso;
+                  const visible = dayEvents.slice(0, view === "Week" ? 6 : 2);
+                  const extra = dayEvents.length - visible.length;
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => dayEvents.length > 0 && setSelectedIso(isSelected ? null : iso)}
+                      disabled={dayEvents.length === 0}
+                      style={{
+                        minHeight: view === "Week" ? 140 : 78,
+                        borderRadius: 11,
+                        border: isSelected ? `1.5px solid ${ORANGE}` : "1.5px solid rgba(20,20,25,0.07)",
+                        background: isSelected ? "rgba(242,101,34,0.06)" : "#fff",
+                        cursor: dayEvents.length > 0 ? "pointer" : "default",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "stretch",
+                        gap: 3,
+                        padding: 5,
+                        textAlign: "left",
+                      }}
+                    >
+                      {isToday ? (
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flex: 1, gap: 3 }}>
+                          <span style={{ width: 24, height: 24, borderRadius: 9999, background: ORANGE, color: "#fff", fontSize: 12.5, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{date.getDate()}</span>
+                          {dayEvents.length > 0 && <span style={{ fontSize: 10.5, fontWeight: 600, color: ORANGE }}>{dayEvents.length} event{dayEvents.length === 1 ? "" : "s"}</span>}
+                        </div>
+                      ) : (
+                        <>
+                          <span style={{ fontSize: 11.5, fontWeight: 500, color: dayEvents.length > 0 ? DARK : "#C9C5BB", padding: "1px 2px" }}>{date.getDate()}</span>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                            {visible.map((e) => <EventChip key={e.id} e={e} compact={view !== "Week"} />)}
+                            {extra > 0 && <span style={{ fontSize: 10, fontWeight: 600, color: "#9A958B", padding: "1px 4px" }}>+{extra} more</span>}
+                          </div>
+                        </>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 18, paddingTop: 16, borderTop: "1px solid rgba(20,20,25,0.07)" }}>
+                {CATEGORIES.map((cat) => (
+                  <div key={cat} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                    <span style={{ width: 7, height: 7, borderRadius: 9999, background: CATEGORY_COLORS[cat].color, display: "inline-block" }} />
+                    <span style={{ fontSize: 11, color: "#6B6B73" }}>{cat}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-            {!q && selectedIso && (
-              <button onClick={() => setSelectedIso(null)} style={{ fontSize: 12.5, fontWeight: 600, color: ORANGE, background: "none", border: "none", cursor: "pointer" }}>
-                Show all ✕
-              </button>
-            )}
-          </div>
-
-          <div style={{ position: "relative", marginBottom: 18 }}>
-            <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }}>
-              <circle cx={11} cy={11} r={7} />
-              <path d="m20 20-3.5-3.5" />
-            </svg>
-            <input
-              value={query}
-              onChange={(e) => { setQuery(e.target.value); if (e.target.value.trim()) setSelectedIso(null); }}
-              placeholder="Search events by title, organizer, venue, or category"
-              style={{ width: "100%", boxSizing: "border-box", fontSize: 13.5, color: DARK, background: "#FAFAF7", border: "1.5px solid rgba(20,20,25,0.12)", borderRadius: 9999, padding: "11px 14px 11px 38px", outline: "none" }}
-            />
-            {query && (
-              <button
-                onClick={() => setQuery("")}
-                aria-label="Clear search"
-                style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", border: "none", background: "none", cursor: "pointer", color: "#9A958B", fontSize: 14, lineHeight: 1, padding: 4 }}
-              >
-                ✕
-              </button>
-            )}
-          </div>
-
-          {agenda.length === 0 && (
-            <p style={{ fontSize: 13.5, color: "#9A958B", padding: "12px 0" }}>
-              {q ? <>No events match &ldquo;{query}&rdquo;.</> : "No events on this date yet."}
-            </p>
+          ) : (
+            <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "24px 28px" }}>
+              <div style={{ fontSize: 17, fontWeight: 700, color: DARK, marginBottom: 14 }}>All upcoming events</div>
+              {filteredEvents.filter((e) => (e.endDate ? e.endDate >= todayIso : e.date >= todayIso)).sort((a, b) => a.date.localeCompare(b.date)).map((e) => <EventRow key={e.id} e={e} />)}
+              {filteredEvents.length === 0 && <p style={{ fontSize: 13.5, color: "#9A958B", padding: "12px 0" }}>No events match your filters.</p>}
+            </div>
           )}
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {agenda.map((e) => {
-              const cc = CATEGORY_COLORS[e.category];
-              const [, m, d] = e.date.split("-").map(Number);
-              return (
-                <div key={e.id} className="ib-events-card" style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.08)", borderRadius: 14, padding: "16px 18px", display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 16, alignItems: "center" }}>
-                  <div style={{ textAlign: "center", width: 48 }}>
-                    <div style={{ fontSize: 22, fontWeight: 700, color: cc.color, letterSpacing: "-0.02em", lineHeight: 1 }}>{String(d).padStart(2, "0")}</div>
-                    <div style={{ fontSize: 10.5, fontWeight: 600, color: "#6B6B73", marginTop: 3 }}>{MONTH_NAMES[m - 1].slice(0, 3).toUpperCase()}</div>
-                  </div>
-                  <div style={{ borderLeft: "1px solid rgba(20,20,25,0.1)", paddingLeft: 16, minWidth: 0 }}>
-                    <div style={{ display: "flex", gap: 7, alignItems: "center", marginBottom: 5, flexWrap: "wrap" }}>
-                      <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "3px 8px", borderRadius: 9999 }}>{e.category}</span>
-                      <span style={{ fontSize: 11.5, color: "#9A958B" }}>{e.time} · {e.venue}</span>
-                    </div>
-                    <div style={{ fontSize: 14.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{e.title}</div>
-                    <div style={{ fontSize: 11.5, color: "#9A958B", marginTop: 3 }}>{e.org}</div>
-                  </div>
-                  <a href="#" style={{ background: DARK, color: "#fff", fontWeight: 600, fontSize: 12, padding: "9px 16px", borderRadius: 9999, textDecoration: "none", whiteSpace: "nowrap" }}>{e.cta}</a>
+          {/* SIDEBAR */}
+          <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "22px 24px" }}>
+            {daySelection ? (
+              <>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                  <div style={{ fontSize: 14.5, fontWeight: 700, color: DARK, textTransform: "uppercase", letterSpacing: "0.04em" }}>{formatLong(selectedIso!)}</div>
+                  <button onClick={() => setSelectedIso(null)} style={{ fontSize: 12, fontWeight: 600, color: ORANGE, background: "none", border: "none", cursor: "pointer" }}>Clear ✕</button>
                 </div>
-              );
-            })}
+                {daySelection.length === 0 && <p style={{ fontSize: 13, color: "#9A958B" }}>No events on this date.</p>}
+                {daySelection.map((e) => <EventRow key={e.id} e={e} />)}
+              </>
+            ) : (
+              <>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                  <div style={{ fontSize: 14.5, fontWeight: 700, color: DARK, textTransform: "uppercase", letterSpacing: "0.04em" }}>{hasActiveFilters ? "Filtered events" : "Upcoming events"}</div>
+                  {!hasActiveFilters && <button onClick={() => setView("Agenda")} style={{ fontSize: 12, fontWeight: 600, color: ORANGE, background: "none", border: "none", cursor: "pointer" }}>View all</button>}
+                </div>
+
+                {grouped.today.length === 0 && grouped.thisWeek.length === 0 && grouped.thisMonth.length === 0 && grouped.later.length === 0 && (
+                  <p style={{ fontSize: 13, color: "#9A958B", padding: "12px 0" }}>No events match your filters.</p>
+                )}
+
+                {grouped.today.length > 0 && (
+                  <div style={{ marginTop: 10 }}>
+                    <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 2 }}>Today &middot; {formatLong(todayIso).split(",")[0]}</div>
+                    {grouped.today.map((e) => <EventRow key={e.id} e={e} />)}
+                  </div>
+                )}
+                {grouped.thisWeek.length > 0 && (
+                  <div style={{ marginTop: 14 }}>
+                    <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 2 }}>This week</div>
+                    {grouped.thisWeek.map((e) => <EventRow key={e.id} e={e} />)}
+                  </div>
+                )}
+                {grouped.thisMonth.length > 0 && (
+                  <div style={{ marginTop: 14 }}>
+                    <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 2 }}>This month</div>
+                    {grouped.thisMonth.map((e) => <EventRow key={e.id} e={e} />)}
+                  </div>
+                )}
+                {grouped.later.length > 0 && (
+                  <div style={{ marginTop: 14 }}>
+                    {!showLater ? (
+                      <button onClick={() => setShowLater(true)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontSize: 12.5, fontWeight: 600, color: "#6B6B73", background: "#FAFAF7", border: "none", borderRadius: 10, padding: "10px 0", cursor: "pointer" }}>
+                        More events coming up <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#6B6B73" strokeWidth={2.4}><path d="m6 9 6 6 6-6" /></svg>
+                      </button>
+                    ) : (
+                      <>
+                        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 2 }}>Later</div>
+                        {grouped.later.map((e) => <EventRow key={e.id} e={e} />)}
+                      </>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -29,18 +29,18 @@ const TOP_HTML = `
   </div>
 </div>
 
-<!-- HERO -->
-<div style="position:relative;background:#0B0B0D;padding:64px 40px 56px;overflow:hidden;text-align:center;">
-  <div style="position:absolute;bottom:-120px;left:50%;transform:translateX(-50%);width:560px;height:560px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.34) 0%,transparent 60%);pointer-events:none;"></div>
-  <div style="position:relative;max-width:760px;margin:0 auto;">
-    <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:20px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.8);">Events</span></div>
-    <div style="display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:9999px;border:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.04);margin-bottom:26px;"><span style="width:7px;height:7px;border-radius:9999px;background:#F26522;"></span><span style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.75);">City-wide calendar</span></div>
-    <h1 style="margin:0;font-size:54px;line-height:1.04;font-weight:700;letter-spacing:-0.035em;color:#fff;">One calendar for every<br>innovation event in Baguio</h1>
-    <p style="margin:22px auto 0;font-size:17px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:600px;">A central repository where universities, government agencies, and startups list research and innovation activities &mdash; so organizers can synchronize dates and the whole ecosystem can plan around them.</p>
-    <div style="display:flex;gap:12px;justify-content:center;margin-top:30px;flex-wrap:wrap;">
-      <a href="#" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;box-shadow:0 14px 36px rgba(242,101,34,0.4);">Submit an event
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-      <a href="#" style="display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:15px;padding:14px 24px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);">Subscribe to calendar</a>
+<!-- PAGE HEADER -->
+<div style="background:#fff;padding:40px 40px 0;border-bottom:1px solid rgba(20,20,25,0.06);">
+  <div style="max-width:1300px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:28px;">
+    <div>
+      <h1 style="margin:0 0 8px;font-size:34px;font-weight:700;letter-spacing:-0.025em;color:#141417;">Events</h1>
+      <p style="margin:0;font-size:14.5px;color:#6B6B73;">One shared calendar for the Baguio startup and innovation ecosystem.</p>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <a href="#" style="display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:#F26522;text-decoration:none;border:1.5px solid rgba(242,101,34,0.4);padding:11px 18px;border-radius:9999px;">+ Submit Event</a>
+      <a href="#" style="display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:#141417;text-decoration:none;border:1.5px solid rgba(20,20,25,0.14);padding:11px 18px;border-radius:9999px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#141417" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        Subscribe</a>
     </div>
   </div>
 </div>

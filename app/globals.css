@@ -242,6 +242,35 @@ img { max-width: 100%; height: auto; }
     width: 100%;
     text-align: center;
   }
+  /* Events filter bar: stack filters and view toggle, full width */
+  .ib-events-filterbar {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  .ib-events-filters {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  .ib-events-filters > * {
+    min-width: 0 !important;
+    width: 100%;
+  }
+  .ib-events-viewtoggle {
+    width: 100%;
+    justify-content: center;
+  }
+  .ib-events-viewtoggle button {
+    flex: 1;
+  }
+  /* Event chips inside calendar day cells: drop the text, keep the dot,
+     so 7 narrow columns don't force the grid wider than the viewport. */
+  .ib-events-chip {
+    padding: 0 !important;
+    background: none !important;
+  }
+  .ib-events-chip-text {
+    display: none;
+  }
   /* Challenge apply form: swap the cramped horizontal stepper for a compact label */
   .ib-apply-stepper {
     display: none !important;
