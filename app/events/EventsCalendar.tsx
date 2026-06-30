@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CATEGORY_COLORS, DARK, EVENTS, ORANGE, TODAY, type CityEvent, type EventCategory } from "./data";
+import { CATEGORY_COLORS, DARK, EVENTS, EVENT_FORMATS, ORANGE, ORGANIZER_TYPES, TODAY, type CityEvent, type EventCategory } from "./data";
 
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -104,27 +104,24 @@ export default function EventsCalendar() {
   const [selectedIso, setSelectedIso] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string | null>(null);
-  const [organizer, setOrganizer] = useState<string | null>(null);
-  const [location, setLocation] = useState<string | null>(null);
+  const [organizerType, setOrganizerType] = useState<string | null>(null);
+  const [format, setFormat] = useState<string | null>(null);
   const [view, setView] = useState<View>("Month");
 
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
   const todayIso = isoOf(TODAY);
 
-  const organizers = useMemo(() => Array.from(new Set(EVENTS.map((e) => e.org))).sort(), []);
-  const locations = useMemo(() => Array.from(new Set(EVENTS.map((e) => e.venue))).sort(), []);
-
   const q = query.trim().toLowerCase();
   const matchesFilters = (e: CityEvent) => {
     if (category && e.category !== category) return false;
-    if (organizer && e.org !== organizer) return false;
-    if (location && e.venue !== location) return false;
+    if (organizerType && e.orgType !== organizerType) return false;
+    if (format && e.format !== format) return false;
     if (q && ![e.title, e.org, e.venue, e.category].some((f) => f.toLowerCase().includes(q))) return false;
     return true;
   };
 
-  const filteredEvents = useMemo(() => EVENTS.filter(matchesFilters), [category, organizer, location, q]);
+  const filteredEvents = useMemo(() => EVENTS.filter(matchesFilters), [category, organizerType, format, q]);
 
   const monthCells = useMemo(() => {
     const firstDay = new Date(year, month, 1);
@@ -186,7 +183,7 @@ export default function EventsCalendar() {
     : null;
 
   const [showLater, setShowLater] = useState(false);
-  const hasActiveFilters = !!(q || category || organizer || location);
+  const hasActiveFilters = !!(q || category || organizerType || format);
 
   return (
     <div style={{ background: "#FAFAF7", padding: "24px 40px 56px" }}>
@@ -207,8 +204,8 @@ export default function EventsCalendar() {
               />
             </div>
             <Select value={category} onChange={(v) => { setCategory(v); setSelectedIso(null); }} options={CATEGORIES} allLabel="All Categories" />
-            <Select value={organizer} onChange={(v) => { setOrganizer(v); setSelectedIso(null); }} options={organizers} allLabel="All Organizers" />
-            <Select value={location} onChange={(v) => { setLocation(v); setSelectedIso(null); }} options={locations} allLabel="All Locations" />
+            <Select value={organizerType} onChange={(v) => { setOrganizerType(v); setSelectedIso(null); }} options={ORGANIZER_TYPES} allLabel="All Organizers" />
+            <Select value={format} onChange={(v) => { setFormat(v); setSelectedIso(null); }} options={EVENT_FORMATS} allLabel="All Formats" />
           </div>
           <div className="ib-events-viewtoggle" style={{ display: "flex", background: "#F4F2EC", borderRadius: 9999, padding: 3, gap: 2, flexShrink: 0 }}>
             {VIEWS.map((v) => (
