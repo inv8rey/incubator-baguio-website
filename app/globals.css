@@ -121,6 +121,11 @@ img { max-width: 100%; height: auto; }
     grid-template-columns: 1fr !important;
   }
 
+  /* Ecosystem database: 3/4-col directory grids collapse to 2 */
+  .ib-ecosystem-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
   /* Programs hero: image panel drops below the text column */
   .ib-programs-hero {
     grid-template-columns: 1fr !important;
@@ -223,7 +228,8 @@ img { max-width: 100%; height: auto; }
   [style*="grid-template-columns:repeat(2,1fr)"],
   [style*="grid-template-columns:1.5fr 1fr 1fr 1fr"],
   [style*="grid-template-columns:auto 1fr auto"],
-  .ib-events-card {
+  .ib-events-card,
+  .ib-ecosystem-grid {
     grid-template-columns: 1fr !important;
   }
   .ib-events-card > a {

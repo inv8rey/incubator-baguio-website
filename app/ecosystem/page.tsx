@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import EcosystemDirectory from "./EcosystemDirectory";
 
 export const metadata: Metadata = {
   title: "Ecosystem — Incubator Baguio",
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
-const ECOSYSTEM_HTML = `
+const TOP_HTML = `
 <!-- NAV -->
 <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:#0E0E10;position:sticky;top:0;z-index:50;">
   <a href="${BP}/" style="display:flex;align-items:center;gap:11px;text-decoration:none;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:32px;width:auto;"><div style="font-size:16px;font-weight:600;color:#fff;">Incubator Baguio</div></a>
@@ -72,55 +73,9 @@ const ECOSYSTEM_HTML = `
     </div>
   </div>
 </div>
+`;
 
-<!-- MENTORS -->
-<div style="background:#0E0E10;padding:72px 40px;position:relative;overflow:hidden;">
-  <div style="position:absolute;top:-120px;left:-80px;width:420px;height:420px;background:radial-gradient(circle,rgba(245,166,35,0.16),transparent 65%);"></div>
-  <div style="position:relative;max-width:1080px;margin:0 auto;">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:16px;">
-      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#FFB489;margin-bottom:12px;">Mentor network</div><h2 style="margin:0;font-size:38px;font-weight:700;letter-spacing:-0.025em;color:#fff;">Guided by people who&rsquo;ve done it</h2></div>
-      <a href="#" style="font-size:14px;font-weight:600;color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;">Browse all mentors <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2.3"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
-      ${[
-        ["rgba(242,101,34,0.5)", "rgba(242,101,34,0.12)", "MA", "Maria Aquino", "Startup &amp; fundraising", "#FFB489", "rgba(242,101,34,0.12)", "Founder, 2 exits"],
-        ["rgba(40,94,122,0.5)", "rgba(40,94,122,0.12)", "RD", "Ramon Dizon", "Product &amp; engineering", "#5B9BC0", "rgba(40,94,122,0.16)", "CTO, fintech"],
-        ["rgba(245,166,35,0.5)", "rgba(245,166,35,0.12)", "LT", "Liza Tan", "Research &amp; IP", "#F5C06B", "rgba(245,166,35,0.16)", "Professor, SLU"],
-        ["rgba(158,42,82,0.5)", "rgba(158,42,82,0.12)", "JB", "Jun Baltazar", "Go-to-market", "#D87BA0", "rgba(158,42,82,0.18)", "Growth lead"],
-      ].map((m) => `
-      <div style="background:#141418;border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:24px;text-align:center;">
-        <div style="width:72px;height:72px;border-radius:9999px;margin:0 auto 16px;background:linear-gradient(150deg,${m[0]},${m[1]});display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,0.1);">${m[2]}</div>
-        <h3 style="margin:0 0 3px;font-size:16px;font-weight:600;color:#fff;">${m[3]}</h3>
-        <p style="margin:0 0 12px;font-size:12.5px;color:rgba(255,255,255,0.5);">${m[4]}</p>
-        <span style="font-size:11px;font-weight:600;color:${m[5]};background:${m[6]};padding:5px 11px;border-radius:9999px;">${m[7]}</span>
-      </div>`).join("")}
-    </div>
-  </div>
-</div>
-
-<!-- STARTUP PORTFOLIO -->
-<div style="background:#fff;padding:72px 40px;">
-  <div style="max-width:1080px;margin:0 auto;">
-    <div style="text-align:center;margin-bottom:40px;">
-      <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">Startup portfolio</div>
-      <h2 style="margin:0;font-size:38px;font-weight:700;letter-spacing:-0.025em;color:#141417;">Ventures born in Baguio</h2>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
-      ${[
-        ["rgba(126,217,87,0.16)", "#3F9E4D", "H", "rgba(126,217,87,0.14)", "Agritech", "HarvestLink", "Connects highland farmers directly to Baguio buyers, cutting spoilage and middlemen.", "Incubation &middot; Cohort 2025"],
-        ["rgba(40,94,122,0.14)", "#285E7A", "P", "rgba(40,94,122,0.1)", "Cleantech", "PineCycle", "Turns the city&rsquo;s pine and food waste into compost and biochar for urban gardens.", "Incubation &middot; Cohort 2025"],
-        ["rgba(158,42,82,0.12)", "#9E2A52", "T", "rgba(158,42,82,0.1)", "Tourism", "TrailMate", "A guide app for Cordillera trails and homegrown experiences beyond peak season.", "Pre-incubation &middot; 2025"],
-      ].map((s) => `
-      <div class="ib-challenge-hover" style="background:#FAFAF7;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:26px;transition:box-shadow .18s ease,transform .18s ease;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div style="width:46px;height:46px;border-radius:12px;background:${s[0]};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:${s[1]};">${s[2]}</div><span style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${s[1]};background:${s[3]};padding:5px 11px;border-radius:9999px;">${s[4]}</span></div>
-        <h3 style="margin:0 0 6px;font-size:18px;font-weight:600;color:#141417;">${s[5]}</h3>
-        <p style="margin:0 0 14px;font-size:13.5px;line-height:1.55;color:#6B6B73;">${s[6]}</p>
-        <span style="font-size:12px;font-weight:600;color:#44444C;">${s[7]}</span>
-      </div>`).join("")}
-    </div>
-  </div>
-</div>
-
+const BOTTOM_HTML = `
 <!-- PARTNER CTA -->
 <div style="background:#FAFAF7;padding:72px 40px;">
   <div style="max-width:1080px;margin:0 auto;background:#F26522;border-radius:28px;padding:56px;position:relative;overflow:hidden;text-align:center;">
@@ -154,5 +109,11 @@ const ECOSYSTEM_HTML = `
 `;
 
 export default function Ecosystem() {
-  return <main dangerouslySetInnerHTML={{ __html: ECOSYSTEM_HTML }} />;
+  return (
+    <main>
+      <div dangerouslySetInnerHTML={{ __html: TOP_HTML }} />
+      <EcosystemDirectory />
+      <div dangerouslySetInnerHTML={{ __html: BOTTOM_HTML }} />
+    </main>
+  );
 }
