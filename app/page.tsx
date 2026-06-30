@@ -58,18 +58,22 @@ const HOME_HTML = `
     </div>
     <div style="display:flex;flex-direction:column;">
       ${[
-        ["01", "#F26522", "Startup Incubation Program", "Structured support from idea validation to venture development, with mentorship, training, and ecosystem connections."],
-        ["02", "#F5A623", "Innovation Challenges", "Challenge-driven programs that connect real-world problems with innovators, researchers, and solution providers."],
-        ["03", "#E23A2E", "Research Commercialization", "Support for transforming research, technology, and intellectual property into practical applications and ventures."],
-        ["04", "#9E2A52", "Innovation Academy", "Workshops, bootcamps, and learning programs covering entrepreneurship, innovation, and startup development."],
-        ["05", "#285E7A", "Ecosystem Events", "Forums, conferences, networking activities, demo days, and community events that strengthen collaboration across the ecosystem."],
-        ["06", "#F26522", "Partnership Programs", "Collaboration opportunities for government, academia, industry, and development organizations."],
+        ["01", "#F26522", "Founder Development", "Training, mentorship, founder community, startup readiness."],
+        ["02", "#E23A2E", "Innovation Challenges", "Match real-world problems from government and industry with innovators and startups."],
+        ["03", "#285E7A", "Research Commercialization", "Help researchers transform technologies, IP, and research into startups and market-ready solutions."],
+        ["04", "#7C5CD6", "Ecosystem Partnerships", "Coordinate collaboration among government, universities, industry, investors, and startup support organizations."],
+        ["05", "#F5A623", "Innovation Academy", "Workshops, bootcamps, masterclasses, and capability-building programs."],
+        ["06", "#9E2A52", "Community &amp; Events", "Startup Week, founder meetups, forums, networking events, hackathons, and ecosystem gatherings."],
+        ["07", "#1A6B3C", "Knowledge Hub", "Resources, playbooks, templates, research, ecosystem reports, funding directory, and learning materials."],
       ].map((p, i, arr) => `
-      <div class="ib-row-hover" style="display:grid;grid-template-columns:64px 1fr auto;gap:28px;align-items:center;padding:26px 8px;border-top:1px solid rgba(20,20,25,0.12);${i === arr.length - 1 ? 'border-bottom:1px solid rgba(20,20,25,0.12);' : ''}">
+      <a href="${BP}/programs" class="ib-row-hover" style="display:grid;grid-template-columns:64px 1fr auto;gap:28px;align-items:center;padding:26px 8px;border-top:1px solid rgba(20,20,25,0.12);text-decoration:none;${i === arr.length - 1 ? 'border-bottom:1px solid rgba(20,20,25,0.12);' : ''}">
         <span style="font-size:30px;font-weight:700;color:${p[1]};letter-spacing:-0.02em;">${p[0]}</span>
         <div><h3 style="margin:0 0 4px;font-size:22px;font-weight:600;color:#141417;">${p[2]}</h3><p style="margin:0;font-size:14.5px;color:#6B6B73;">${p[3]}</p></div>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#141417" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-      </div>`).join("")}
+      </a>`).join("")}
+    </div>
+    <div style="margin-top:32px;text-align:center;">
+      <a href="${BP}/programs" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;">View all programs<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
     </div>
   </div>
 </div>
