@@ -72,24 +72,68 @@ function EventChip({ e, compact }: { e: CityEvent; compact?: boolean }) {
   );
 }
 
+const CATEGORY_COVER_PATTERNS: Record<EventCategory, string> = {
+  Workshop: "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10",
+  Webinar: "M15 10l4.553-2.277A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
+  "Demo Day": "M13 2L3 14h9l-1 8 10-12h-9l1-8z",
+  Conference: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm7 0a3 3 0 0 0 0-6M23 21v-2a4 4 0 0 0-3-3.87",
+  Networking: "M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z",
+  Competition: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+  Government: "M3 21h18M3 7v1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7H3l2-4h14l2 4M5 21V10.85M19 21V10.85M9 21v-4a3 3 0 0 1 6 0v4",
+  Other: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+};
+
 function EventRow({ e }: { e: CityEvent }) {
   const cc = CATEGORY_COLORS[e.category];
+  const [hovered, setHovered] = useState(false);
   const [, m, d] = e.date.split("-").map(Number);
   return (
-    <div style={{ padding: "14px 0", borderBottom: "1px solid rgba(20,20,25,0.06)" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7, flexWrap: "wrap" }}>
-        <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 7px", borderRadius: 9999, flexShrink: 0 }}>{e.category}</span>
-        <span style={{ fontSize: 11, color: "#9A958B" }}>{e.time}</span>
-        <span style={{ fontSize: 11, color: "#C9C5BB", marginLeft: "auto", flexShrink: 0 }}>{MONTH_NAMES[m - 1].slice(0, 3)} {String(d).padStart(2, "0")}</span>
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{ borderBottom: "1px solid rgba(20,20,25,0.06)", overflow: "hidden", borderRadius: hovered ? 12 : 0, margin: hovered ? "6px 0" : "0", transition: "margin 0.18s ease, border-radius 0.18s ease" }}
+    >
+      {/* Cover image — reveals on hover */}
+      <div style={{
+        height: hovered ? 88 : 0,
+        overflow: "hidden",
+        transition: "height 0.22s ease",
+        background: `linear-gradient(135deg, ${cc.color}18 0%, ${cc.color}38 60%, ${cc.color}22 100%)`,
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}>
+        <svg width={52} height={52} viewBox="0 0 24 24" fill="none" stroke={cc.color} strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.35 }}>
+          <path d={CATEGORY_COVER_PATTERNS[e.category]} />
+        </svg>
+        <span style={{ position: "absolute", top: 10, left: 12, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 8px", borderRadius: 9999 }}>{e.category}</span>
+        <span style={{ position: "absolute", top: 10, right: 12, fontSize: 10.5, color: "#9A958B" }}>{MONTH_NAMES[m - 1].slice(0, 3)} {String(d).padStart(2, "0")}</span>
+        <div style={{ position: "absolute", bottom: 10, left: 12, right: 12, fontSize: 13, fontWeight: 700, color: DARK, lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{e.title}</div>
       </div>
-      <div style={{ fontSize: 14, fontWeight: 600, color: DARK, lineHeight: 1.3, marginBottom: 4 }}>{e.title}</div>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-        <span style={{ fontSize: 11.5, color: "#9A958B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{e.venue}</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-          <a href="#" style={{ background: DARK, color: "#fff", fontWeight: 600, fontSize: 11.5, padding: "7px 13px", borderRadius: 9999, textDecoration: "none", whiteSpace: "nowrap" }}>{e.cta}</a>
-          <button aria-label="Save event" style={{ width: 27, height: 27, borderRadius: 8, border: "1.5px solid rgba(20,20,25,0.1)", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
-            <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2}><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
-          </button>
+
+      <div style={{ padding: "13px 0 13px" }}>
+        {!hovered && (
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 7px", borderRadius: 9999, flexShrink: 0 }}>{e.category}</span>
+            <span style={{ fontSize: 11, color: "#9A958B" }}>{e.time}</span>
+            <span style={{ fontSize: 11, color: "#C9C5BB", marginLeft: "auto", flexShrink: 0 }}>{MONTH_NAMES[m - 1].slice(0, 3)} {String(d).padStart(2, "0")}</span>
+          </div>
+        )}
+        {hovered && (
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+            <span style={{ fontSize: 11, color: "#9A958B" }}>{e.time}</span>
+          </div>
+        )}
+        <div style={{ fontSize: 14, fontWeight: 600, color: DARK, lineHeight: 1.3, marginBottom: 5 }}>{e.title}</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <span style={{ fontSize: 11.5, color: "#9A958B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{e.venue}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+            <a href="#" style={{ background: DARK, color: "#fff", fontWeight: 600, fontSize: 11.5, padding: "7px 13px", borderRadius: 9999, textDecoration: "none", whiteSpace: "nowrap" }}>{e.cta}</a>
+            <button aria-label="Save event" style={{ width: 27, height: 27, borderRadius: 8, border: "1.5px solid rgba(20,20,25,0.1)", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
+              <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2}><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -183,8 +227,8 @@ export default function EventsCalendar() {
   const hasActiveFilters = !!(q || category || organizerType || format);
 
   return (
-    <div style={{ background: "#FAFAF7", padding: "24px 40px 56px" }}>
-      <div style={{ maxWidth: 1300, margin: "0 auto" }}>
+    <div style={{ background: "#FAFAF7", padding: "24px 32px 56px" }}>
+      <div style={{ maxWidth: 1440, margin: "0 auto" }}>
         {/* FILTER BAR */}
         <div className="ib-events-filterbar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, marginBottom: 20, flexWrap: "wrap" }}>
           <div className="ib-events-filters" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", flex: 1, minWidth: 0 }}>
@@ -226,7 +270,7 @@ export default function EventsCalendar() {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1.7fr 0.8fr", gap: 24, alignItems: "start" }} className="ib-events-grid">
+        <div style={{ display: "grid", gridTemplateColumns: "2.2fr 0.85fr", gap: 20, alignItems: "start" }} className="ib-events-grid">
           {/* CALENDAR / AGENDA */}
           {view !== "Agenda" ? (
             <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "24px 24px 18px" }}>
@@ -255,7 +299,7 @@ export default function EventsCalendar() {
 
               <div className="ib-events-monthgrid" style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6 }}>
                 {cells.map((date, i) => {
-                  if (!date) return <div key={i} />;
+                  if (!date) return <div key={i} style={{ minHeight: view === "Week" ? 150 : 92, borderRadius: 12, border: "1.5px solid rgba(20,20,25,0.04)", background: "#FAFAF7" }} />;
                   const iso = isoOf(date);
                   const dayEvents = eventsOnDayFiltered(date);
                   const isToday = iso === todayIso;
