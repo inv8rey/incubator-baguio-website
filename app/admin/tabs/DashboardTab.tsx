@@ -1,7 +1,7 @@
 "use client";
 
 import { Sparkline, StageDonut, RadarChart, FundingPie } from "../charts";
-import { DARK, FUNDING_BREAKDOWN, KPIS, MATURITY_AXES, SECTORS, STAGE_MIX, TBI_BREAKDOWN } from "../data";
+import { ACTIVITY, DARK, FUNDING_BREAKDOWN, KPIS, MATURITY_AXES, SECTORS, STAGE_MIX, TBI_BREAKDOWN } from "../data";
 
 const KPI_ICONS = [
   // Active Startups — rocket
@@ -113,6 +113,24 @@ export default function DashboardTab() {
           <div style={{ fontSize: 15, fontWeight: 700, color: DARK, marginBottom: 3 }}>Startups by TBI</div>
           <div style={{ fontSize: 11.5, color: "#9A958B", marginBottom: 18 }}>Including independently operating startups</div>
           <BreakdownBars data={TBI_BREAKDOWN} labelWidth={170} />
+        </div>
+      </div>
+
+      {/* ACTIVITY FEED */}
+      <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(20,20,25,0.09)" }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: DARK, marginBottom: 3 }}>Recent Activity</div>
+        <div style={{ fontSize: 11.5, color: "#9A958B", marginBottom: 16 }}>Latest updates from the ecosystem</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+          {ACTIVITY.map((a, i) => (
+            <div key={a.name} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0", borderBottom: i < ACTIVITY.length - 1 ? "1px solid rgba(20,20,25,0.05)" : "none" }}>
+              <div style={{ width: 36, height: 36, borderRadius: "50%", background: a.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>{a.initials}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: DARK }}>{a.name}</span>
+                <span style={{ fontSize: 13, color: "#6B6B73" }}> {a.note}</span>
+              </div>
+              <span style={{ fontSize: 11.5, color: "#9A958B", flexShrink: 0 }}>{a.time}</span>
+            </div>
+          ))}
         </div>
       </div>
 

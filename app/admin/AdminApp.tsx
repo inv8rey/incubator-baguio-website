@@ -52,6 +52,7 @@ function NavIcon({ id }: { id: TabId }) {
 export default function AdminApp() {
   const [page, setPage] = useState<TabId>("dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const Sidebar = (
     <aside
@@ -178,7 +179,7 @@ export default function AdminApp() {
                 <circle cx={11} cy={11} r={7} />
                 <path d="m20 20-3.5-3.5" />
               </svg>
-              <input type="text" placeholder="Search..." style={{ border: "none", background: "transparent", fontSize: 12.5, color: "#141417", width: "100%", outline: "none" }} />
+              <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} style={{ border: "none", background: "transparent", fontSize: 12.5, color: "#141417", width: "100%", outline: "none" }} />
               <span style={{ fontSize: 10, color: "#9A958B", background: "rgba(20,20,25,0.07)", borderRadius: 4, padding: "1px 5px", fontWeight: 500 }}>⌘K</span>
             </div>
             <div style={{ position: "relative" }}>
@@ -199,10 +200,10 @@ export default function AdminApp() {
         </div>
 
         {page === "dashboard" && <DashboardTab />}
-        {page === "startups" && <StartupsTab />}
-        {page === "founders" && <FoundersTab />}
-        {page === "challenges" && <ChallengesTab />}
-        {page === "partners" && <PartnersTab />}
+        {page === "startups" && <StartupsTab searchQuery={searchQuery} />}
+        {page === "founders" && <FoundersTab searchQuery={searchQuery} />}
+        {page === "challenges" && <ChallengesTab searchQuery={searchQuery} />}
+        {page === "partners" && <PartnersTab searchQuery={searchQuery} />}
       </main>
     </div>
   );

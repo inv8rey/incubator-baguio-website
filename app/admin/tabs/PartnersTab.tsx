@@ -10,7 +10,7 @@ const CATEGORY_COLOR: Record<string, { color: string; bg: string }> = {
   Community: { color: "#9E2A52", bg: "rgba(158,42,82,0.12)" },
 };
 
-export default function PartnersTab() {
+export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string }) {
   const [partners, setPartners] = useState<Partner[]>(PARTNERS);
   const [category, setCategory] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -20,7 +20,8 @@ export default function PartnersTab() {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const filtered = partners.filter((p) => !category || p.category === category);
+  const q = searchQuery.toLowerCase();
+  const filtered = partners.filter((p) => (!category || p.category === category) && (!q || p.name.toLowerCase().includes(q)));
 
   function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];

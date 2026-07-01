@@ -6,7 +6,7 @@ import { DARK, ORANGE, SECTOR_FILTERS, STAGE_BADGE, STAGE_FILTERS, STARTUPS, STA
 
 const NEXT_COLORS = ["#F26522", "#285E7A", "#1A6B3C", "#9E2A52", "#D88A0A", "#7C5CD6", "#0E5C44", "#8B4513"];
 
-export default function StartupsTab() {
+export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string }) {
   const [startups, setStartups] = useState(STARTUPS);
   const [stage, setStage] = useState("All");
   const [sector, setSector] = useState<string | null>(null);
@@ -18,7 +18,8 @@ export default function StartupsTab() {
   const [tbi, setTbi] = useState("Independent");
   const [funding, setFunding] = useState("");
 
-  const filtered = startups.filter((s) => (stage === "All" || s.stage === stage) && (!sector || s.sector === sector));
+  const q = searchQuery.toLowerCase();
+  const filtered = startups.filter((s) => (stage === "All" || s.stage === stage) && (!sector || s.sector === sector) && (!q || s.name.toLowerCase().includes(q) || s.sector.toLowerCase().includes(q)));
 
   function resetForm() {
     setName("");
