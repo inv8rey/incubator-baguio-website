@@ -65,22 +65,77 @@ const CHALLENGES_HTML_TOP = `
     <div style="text-align:center;margin-bottom:40px;"><div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">How the marketplace works</div><h2 style="margin:0;font-size:38px;font-weight:700;letter-spacing:-0.025em;color:#141417;">Two sides, one ecosystem</h2></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
       ${[
-        ["#285E7A", "rgba(40,94,122,0.12)", "Challenge posters", "LGUs, MSMEs, universities, corporations, NGOs, and community groups bring the real problems.", [
-          "Describe the problem, scope, and what success looks like.",
-          "Set a timeline and the support you can offer.",
-          "Review submissions and pick a team to build with.",
-        ]],
-        ["#F26522", "rgba(242,101,34,0.12)", "Solvers", "Founders, startups, innovators, researchers, and students discover and tackle them.", [
-          "Filter challenges by sector and deadline.",
-          "Submit your approach, team, and prototype.",
-          "Get selected and deploy your solution with incubator support.",
-        ]],
+        {
+          accent: "#285E7A",
+          accentSoft: "rgba(40,94,122,0.12)",
+          gradA: "#152F3E",
+          gradB: "#285E7A",
+          icon: '<path d="M3 11l18-5v12L3 14v-3z"></path><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path>',
+          heading: "CHALLENGE POSTERS",
+          subheading: "Bring your problems to the right minds and technologies.",
+          description: "LGUs, MSMEs, universities, corporations, NGOs, and community groups post challenges they need help solving.",
+          steps: [
+            ["Post your challenge", "Describe the problem, scope, and what success looks like."],
+            ["Set the details", "Set a timeline, criteria, and the support you can offer."],
+            ["Review & select", "Review submissions and pick the team you want to build with."],
+          ],
+          calloutIcon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path><path d="m9 12 2 2 4-4"></path>',
+          calloutTitle: "Better solutions. Stronger partnerships.",
+          calloutDesc: "You get innovative solutions tailored to your needs.",
+        },
+        {
+          accent: "#F26522",
+          accentSoft: "rgba(242,101,34,0.12)",
+          gradA: "#8F3512",
+          gradB: "#F26522",
+          icon: '<path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.1 1.5 3.5.6.67 1.23 1.5 1.41 2.5"></path>',
+          heading: "SOLVERS",
+          subheading: "Find meaningful challenges. Build solutions that create impact.",
+          description: "Founders, startups, innovators, researchers, and students discover challenges and submit solutions.",
+          steps: [
+            ["Browse challenges", "Filter by sector, theme, or deadline."],
+            ["Submit your solution", "Submit your approach, team, and prototype to the challenge."],
+            ["Get selected & deploy", "Get chosen and pilot your solution with incubator support."],
+          ],
+          calloutIcon: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>',
+          calloutTitle: "Real impact. Real growth.",
+          calloutDesc: "Turn your ideas into solutions that matter.",
+        },
       ].map((col) => `
-      <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:20px;padding:32px;border-top:3px solid ${col[0]};">
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:${col[0]};margin-bottom:18px;">${col[2]}</div>
-        <p style="margin:0 0 20px;font-size:14.5px;line-height:1.55;color:#6B6B73;">${col[3]}</p>
-        <div style="display:flex;flex-direction:column;gap:12px;">
-          ${(col[4] as string[]).map((step, i) => `<div style="display:flex;gap:12px;align-items:flex-start;"><span style="width:26px;height:26px;border-radius:9999px;background:${col[1]};color:${col[0]};font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${i + 1}</span><span style="font-size:14px;color:#44444C;line-height:1.5;">${step}</span></div>`).join("")}
+      <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:20px;overflow:hidden;">
+        <div style="position:relative;height:180px;background:linear-gradient(135deg,${col.gradA},${col.gradB});overflow:hidden;">
+          <div style="position:absolute;top:0;right:0;width:60%;height:100%;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,0.12) 55%,transparent 70%);"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(0,0,0,0.55) 100%);"></div>
+          <div style="position:absolute;top:18px;left:18px;width:48px;height:48px;border-radius:9999px;background:${col.accent};border:3px solid rgba(255,255,255,0.85);box-shadow:0 6px 16px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${col.icon}</svg>
+          </div>
+          <div style="position:absolute;left:22px;right:22px;bottom:18px;">
+            <div style="font-size:22px;font-weight:800;letter-spacing:-0.01em;color:#fff;margin-bottom:4px;">${col.heading}</div>
+            <div style="font-size:13.5px;color:rgba(255,255,255,0.82);line-height:1.4;">${col.subheading}</div>
+          </div>
+        </div>
+        <div style="padding:26px 28px 28px;">
+          <p style="margin:0 0 22px;font-size:14px;line-height:1.6;color:#6B6B73;">${col.description}</p>
+          <div style="position:relative;">
+            <div style="position:absolute;left:13px;top:13px;bottom:13px;width:1px;background:rgba(20,20,25,0.10);"></div>
+            ${col.steps.map((step, i) => `
+            <div style="position:relative;display:flex;gap:14px;align-items:flex-start;">
+              <span style="position:relative;z-index:1;flex-shrink:0;width:26px;height:26px;border-radius:9999px;background:${col.accentSoft};color:${col.accent};font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center;">${i + 1}</span>
+              <div style="flex:1;min-width:0;padding-bottom:${i < col.steps.length - 1 ? "16px" : "0"};margin-bottom:${i < col.steps.length - 1 ? "16px" : "0"};${i < col.steps.length - 1 ? "border-bottom:1px solid rgba(20,20,25,0.08);" : ""}">
+                <div style="font-size:13.5px;font-weight:700;color:#141417;margin-bottom:3px;">${step[0]}</div>
+                <div style="font-size:13.5px;color:#6B6B73;line-height:1.5;">${step[1]}</div>
+              </div>
+            </div>`).join("")}
+          </div>
+          <div style="margin-top:22px;display:flex;gap:14px;align-items:flex-start;background:${col.accentSoft};border-radius:14px;padding:16px 18px;">
+            <div style="flex-shrink:0;width:36px;height:36px;border-radius:9999px;background:${col.accent};display:flex;align-items:center;justify-content:center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${col.calloutIcon}</svg>
+            </div>
+            <div>
+              <div style="font-size:13.5px;font-weight:700;color:${col.accent};margin-bottom:2px;">${col.calloutTitle}</div>
+              <div style="font-size:13px;color:#6B6B73;line-height:1.45;">${col.calloutDesc}</div>
+            </div>
+          </div>
         </div>
       </div>`).join("")}
     </div>
