@@ -35,11 +35,16 @@ export const metadata: Metadata = {
     siteName: "Incubator Baguio",
     title: TITLE,
     description: DESCRIPTION,
+    // Points directly at the trailing-slash URL (next.config.js sets
+    // trailingSlash: true) so social crawlers that don't follow redirects
+    // still fetch the image on the first request.
+    images: [{ url: "/api/og/", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
+    images: ["/api/og/"],
   },
   robots: {
     index: true,

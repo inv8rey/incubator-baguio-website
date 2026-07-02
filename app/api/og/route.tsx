@@ -1,10 +1,14 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Incubator Baguio — Building Baguio's Innovation and Startup Ecosystem";
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+// A plain Route Handler (not the app/opengraph-image.tsx file convention)
+// so we can reference its exact trailing-slash URL in layout.tsx metadata
+// without Next.js silently overriding openGraph.images with its own
+// auto-detected (non-trailing-slash) URL for the convention-based route.
+export const runtime = "edge";
 
-export default async function Image() {
+const size = { width: 1200, height: 630 };
+
+export async function GET() {
   return new ImageResponse(
     (
       <div
