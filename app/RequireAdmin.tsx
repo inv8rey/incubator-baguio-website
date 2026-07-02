@@ -31,14 +31,12 @@ export default function RequireAdmin({ children }: { children: React.ReactNode }
               ? "Log in with an account that has admin access."
               : "Your account doesn't have admin access yet."}
           </p>
-          {!user && (
-            <a
-              href={`${BP}/login/?redirect=${encodeURIComponent(`${BP}/admin/`)}`}
-              style={{ fontSize: 14, fontWeight: 600, color: "#fff", textDecoration: "none", background: ORANGE, padding: "12px 24px", borderRadius: 9999 }}
-            >
-              Log in
-            </a>
-          )}
+          <a
+            href={`${BP}/admin/login/?redirect=${encodeURIComponent(`${BP}/admin/`)}`}
+            style={{ fontSize: 14, fontWeight: 600, color: "#fff", textDecoration: "none", background: ORANGE, padding: "12px 24px", borderRadius: 9999 }}
+          >
+            {user ? "Log in with a different account" : "Log in"}
+          </a>
         </div>
       </div>
     );
