@@ -1,19 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { COMMUNITY, CORPORATE, GOVERNMENT, MENTORS, STARTUPS, TBIS, type EcosystemCategory } from "./data";
+import { useEffect, useMemo, useState } from "react";
+import { COMMUNITY, CORPORATE, COWORKING, GOVERNMENT, MAKERSPACES, MENTORS, STARTUPS, TBIS, type EcosystemCategory, type StartupEntry, type TbiEntry, type CorporateEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry } from "./data";
+import { fetchDynamicStartups, fetchDynamicMentors, fetchDynamicOrganizations, type DynamicMentorEntry } from "./dynamicData";
+import ConnectMentorButton from "./ConnectMentorButton";
 
 const DARK = "#141417";
 const ORANGE = "#F26522";
-
-const TABS: { id: EcosystemCategory; label: string; count: number }[] = [
-  { id: "Startups", label: "Startups", count: STARTUPS.length },
-  { id: "Mentors", label: "Mentors", count: MENTORS.length },
-  { id: "TBIs", label: "TBIs", count: TBIS.length },
-  { id: "Corporate", label: "Corporate", count: CORPORATE.length },
-  { id: "Government", label: "Government", count: GOVERNMENT.length },
-  { id: "Community", label: "Community", count: COMMUNITY.length },
-];
 
 function matches(haystacks: string[], query: string) {
   const q = query.trim().toLowerCase();
@@ -28,14 +21,53 @@ export default function EcosystemDirectory() {
   const [query, setQuery] = useState("");
   const [view, setView] = useState<ViewMode>("list");
 
+  const [dynStartups, setDynStartups] = useState<StartupEntry[]>([]);
+  const [dynMentors, setDynMentors] = useState<DynamicMentorEntry[]>([]);
+  const [dynOrgs, setDynOrgs] = useState<{
+    TBIs: TbiEntry[];
+    Corporate: CorporateEntry[];
+    Government: GovernmentEntry[];
+    Community: CommunityEntry[];
+    "Coworking Spaces": CoworkingEntry[];
+    "Makerspaces & Labs": MakerspaceEntry[];
+  }>({ TBIs: [], Corporate: [], Government: [], Community: [], "Coworking Spaces": [], "Makerspaces & Labs": [] });
+
+  useEffect(() => {
+    fetchDynamicStartups().then(setDynStartups);
+    fetchDynamicMentors().then(setDynMentors);
+    fetchDynamicOrganizations().then(setDynOrgs);
+  }, []);
+
+  const allStartups = useMemo(() => [...dynStartups, ...STARTUPS], [dynStartups]);
+  const allMentors = useMemo(() => [...dynMentors, ...MENTORS], [dynMentors]);
+  const allTbis = useMemo(() => [...dynOrgs.TBIs, ...TBIS], [dynOrgs]);
+  const allCorporate = useMemo(() => [...dynOrgs.Corporate, ...CORPORATE], [dynOrgs]);
+  const allGovernment = useMemo(() => [...dynOrgs.Government, ...GOVERNMENT], [dynOrgs]);
+  const allCommunity = useMemo(() => [...dynOrgs.Community, ...COMMUNITY], [dynOrgs]);
+  const allCoworking = useMemo(() => [...dynOrgs["Coworking Spaces"], ...COWORKING], [dynOrgs]);
+  const allMakerspaces = useMemo(() => [...dynOrgs["Makerspaces & Labs"], ...MAKERSPACES], [dynOrgs]);
+
+  const TABS: { id: EcosystemCategory; label: string; count: number }[] = [
+    { id: "Startups", label: "Startups", count: allStartups.length },
+    { id: "Mentors", label: "Mentors", count: allMentors.length },
+    { id: "TBIs", label: "TBIs", count: allTbis.length },
+    { id: "Corporate", label: "Corporate", count: allCorporate.length },
+    { id: "Government", label: "Government", count: allGovernment.length },
+    { id: "Community", label: "Community", count: allCommunity.length },
+    { id: "Coworking Spaces", label: "Coworking Spaces", count: allCoworking.length },
+    { id: "Makerspaces & Labs", label: "Makerspaces & Labs", count: allMakerspaces.length },
+  ];
+
   const filtered = useMemo(() => {
-    if (tab === "Startups") return STARTUPS.filter((s) => matches([s.name, s.sector, s.description], query));
-    if (tab === "Mentors") return MENTORS.filter((m) => matches([m.name, m.expertise, m.bio], query));
-    if (tab === "TBIs") return TBIS.filter((t) => matches([t.name, t.host, t.focus], query));
-    if (tab === "Corporate") return CORPORATE.filter((c) => matches([c.name, c.type, c.description], query));
-    if (tab === "Government") return GOVERNMENT.filter((g) => matches([g.name, g.type, g.description], query));
-    return COMMUNITY.filter((c) => matches([c.name, c.type, c.description], query));
-  }, [tab, query]);
+    if (tab === "Startups") return allStartups.filter((s) => matches([s.name, s.sector, s.description], query));
+    if (tab === "Mentors") return allMentors.filter((m) => matches([m.name, m.expertise, m.bio], query));
+    if (tab === "TBIs") return allTbis.filter((t) => matches([t.name, t.host, t.focus], query));
+    if (tab === "Corporate") return allCorporate.filter((c) => matches([c.name, c.type, c.description], query));
+    if (tab === "Government") return allGovernment.filter((g) => matches([g.name, g.type, g.description], query));
+    if (tab === "Coworking Spaces") return allCoworking.filter((c) => matches([c.name, c.type, c.description], query));
+    if (tab === "Makerspaces & Labs") return allMakerspaces.filter((m) => matches([m.name, m.type, m.description], query));
+    return allCommunity.filter((c) => matches([c.name, c.type, c.description], query));
+  }, [tab, query, allStartups, allMentors, allTbis, allCorporate, allGovernment, allCoworking, allMakerspaces, allCommunity]);
 
   // Normalized pin data for the map placeholder — swap this for real coordinates once a map API is wired up.
   const pins = useMemo(
@@ -58,7 +90,7 @@ export default function EcosystemDirectory() {
           <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: ORANGE, marginBottom: 12 }}>Ecosystem database</div>
           <h2 style={{ margin: 0, fontSize: 38, fontWeight: 700, letterSpacing: "-0.025em", color: DARK }}>Browse the people and places building Baguio</h2>
           <p style={{ margin: "14px auto 0", fontSize: 15, lineHeight: 1.6, color: "#6B6B73", maxWidth: 560 }}>
-            Search across registered startups, mentors, TBIs, corporate, government, and community partners.
+            Search across registered startups, mentors, TBIs, corporate, government, community partners, coworking spaces, and makerspaces.
           </p>
         </div>
 
@@ -193,12 +225,13 @@ export default function EcosystemDirectory() {
 
         {view === "list" && tab === "Mentors" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18 }} className="ib-ecosystem-grid">
-            {(filtered as typeof MENTORS).map((m) => (
+            {(filtered as (DynamicMentorEntry | (typeof MENTORS)[number])[]).map((m) => (
               <div key={m.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 24, textAlign: "center" }}>
                 <div style={{ width: 72, height: 72, borderRadius: 9999, margin: "0 auto 16px", background: `linear-gradient(150deg,${m.color},${m.bg})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 700, color: "#fff", border: "1px solid rgba(20,20,25,0.06)" }}>{m.initials}</div>
                 <h3 style={{ margin: "0 0 3px", fontSize: 15.5, fontWeight: 600, color: DARK }}>{m.name}</h3>
                 <p style={{ margin: "0 0 12px", fontSize: 12.5, color: "#9A958B" }}>{m.expertise}</p>
                 <span style={{ fontSize: 11, fontWeight: 600, color: "#44444C", background: "#F4F2EC", padding: "5px 11px", borderRadius: 9999 }}>{m.tag}</span>
+                {"id" in m && <div style={{ marginTop: 14 }}><ConnectMentorButton mentorId={m.id} mentorName={m.name} /></div>}
               </div>
             ))}
           </div>
@@ -265,6 +298,40 @@ export default function EcosystemDirectory() {
                   </div>
                 </div>
                 <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>{c.description}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {view === "list" && tab === "Coworking Spaces" && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
+            {(filtered as typeof COWORKING).map((c) => (
+              <div key={c.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 11, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: c.color, flexShrink: 0 }}>{c.initials}</div>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 600, color: DARK }}>{c.name}</h3>
+                    <span style={{ fontSize: 11.5, color: "#9A958B" }}>{c.type}</span>
+                  </div>
+                </div>
+                <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>{c.description}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {view === "list" && tab === "Makerspaces & Labs" && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
+            {(filtered as typeof MAKERSPACES).map((m) => (
+              <div key={m.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 11, background: m.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: m.color, flexShrink: 0 }}>{m.initials}</div>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 600, color: DARK }}>{m.name}</h3>
+                    <span style={{ fontSize: 11.5, color: "#9A958B" }}>{m.type}</span>
+                  </div>
+                </div>
+                <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>{m.description}</p>
               </div>
             ))}
           </div>

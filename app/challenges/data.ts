@@ -10,11 +10,14 @@ export interface Solver {
   registered: string;
 }
 
+export type ChallengeOrgType = "Government" | "Academe" | "Private Sector" | "Community";
+
 export interface Challenge {
   id: string;
   sector: string;
   sectorColor: string;
   sectorBg: string;
+  orgType: ChallengeOrgType;
   deadlineColor: string;
   deadline: string;
   daysLeft: number;
@@ -43,6 +46,7 @@ export const CHALLENGES: Challenge[] = [
     sector: "Agriculture",
     sectorColor: "#3F9E4D",
     sectorBg: "rgba(126,217,87,0.14)",
+    orgType: "Government",
     deadlineColor: "#E23A2E",
     deadline: "9 days left",
     daysLeft: 9,
@@ -91,6 +95,7 @@ export const CHALLENGES: Challenge[] = [
     sector: "Environment",
     sectorColor: "#285E7A",
     sectorBg: "rgba(40,94,122,0.1)",
+    orgType: "Government",
     deadlineColor: "#D88A0A",
     deadline: "21 days left",
     daysLeft: 21,
@@ -137,6 +142,7 @@ export const CHALLENGES: Challenge[] = [
     sector: "Tourism",
     sectorColor: "#9E2A52",
     sectorBg: "rgba(158,42,82,0.1)",
+    orgType: "Government",
     deadlineColor: "#3F9E4D",
     deadline: "34 days left",
     daysLeft: 34,
@@ -183,6 +189,7 @@ export const CHALLENGES: Challenge[] = [
     sector: "Education",
     sectorColor: "#D88A0A",
     sectorBg: "rgba(245,166,35,0.14)",
+    orgType: "Academe",
     deadlineColor: "#D88A0A",
     deadline: "18 days left",
     daysLeft: 18,
@@ -228,6 +235,7 @@ export const CHALLENGES: Challenge[] = [
     sector: "Govtech",
     sectorColor: "#285E7A",
     sectorBg: "rgba(40,94,122,0.1)",
+    orgType: "Government",
     deadlineColor: "#3F9E4D",
     deadline: "40 days left",
     daysLeft: 40,
@@ -274,6 +282,7 @@ export const CHALLENGES: Challenge[] = [
     sector: "Health",
     sectorColor: "#E23A2E",
     sectorBg: "rgba(226,58,46,0.1)",
+    orgType: "Government",
     deadlineColor: "#D88A0A",
     deadline: "15 days left",
     daysLeft: 15,

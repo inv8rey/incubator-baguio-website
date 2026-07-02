@@ -1,9 +1,14 @@
 node_modules
 .next
 out
+.env
+.env.local
+.env*.local
 .DS_Store
 *.tsbuildinfo
 next-env.d.ts
 .npmcache
 .devserver.log
 .claude/
+.vercel
+.env*

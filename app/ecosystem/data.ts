@@ -1,4 +1,4 @@
-export type EcosystemCategory = "Startups" | "Mentors" | "TBIs" | "Corporate" | "Government" | "Community";
+export type EcosystemCategory = "Startups" | "Mentors" | "TBIs" | "Corporate" | "Government" | "Community" | "Coworking Spaces" | "Makerspaces & Labs";
 
 export interface StartupEntry {
   name: string;
@@ -59,6 +59,24 @@ export interface GovernmentEntry {
   initials: string;
 }
 
+export interface CoworkingEntry {
+  name: string;
+  type: string;
+  description: string;
+  color: string;
+  bg: string;
+  initials: string;
+}
+
+export interface MakerspaceEntry {
+  name: string;
+  type: string;
+  description: string;
+  color: string;
+  bg: string;
+  initials: string;
+}
+
 export const STARTUPS: StartupEntry[] = [
   { name: "HarvestLink", sector: "Agritech", stage: "Incubation · Cohort 2025", description: "Connects highland farmers directly to Baguio buyers, cutting spoilage and middlemen.", initial: "H", color: "#3F9E4D", bg: "rgba(126,217,87,0.16)" },
   { name: "PineCycle", sector: "Cleantech", stage: "Incubation · Cohort 2025", description: "Turns the city's pine and food waste into compost and biochar for urban gardens.", initial: "P", color: "#285E7A", bg: "rgba(40,94,122,0.14)" },
@@ -94,8 +112,19 @@ export const COMMUNITY: CommunityEntry[] = [
   { name: "Cordillera Youth Innovators Network", type: "Youth organization", description: "Connects student innovators across Cordillera campuses to challenges, camps, and mentors.", color: "#F26522", bg: "rgba(242,101,34,0.14)", initials: "CYIN" },
   { name: "Benguet Farmers Cooperative", type: "Cooperative", description: "Represents highland farmer groups piloting agritech solutions from the startup portfolio.", color: "#3F9E4D", bg: "rgba(126,217,87,0.16)", initials: "BFC" },
   { name: "Barangay Innovation Council Network", type: "Barangay councils", description: "A coalition of barangay officials coordinating local pilots for civic-tech startups.", color: "#D88A0A", bg: "rgba(245,166,35,0.16)", initials: "BIC" },
-  { name: "Baguio Maker Society", type: "Civil society / makerspace", description: "Community workshop space offering tools and peer support for hardware prototyping.", color: "#285E7A", bg: "rgba(40,94,122,0.12)", initials: "BMS" },
   { name: "Women in Tech Cordillera", type: "Community group", description: "Mentorship circle and meetup network supporting women founders and engineers.", color: "#7C5CD6", bg: "rgba(124,92,214,0.14)", initials: "WTC" },
+];
+
+export const COWORKING: CoworkingEntry[] = [
+  { name: "Pine Peak Coworking", type: "Coworking space", description: "Hot desks, private pods, and meeting rooms in a converted heritage building near Session Road.", color: "#F26522", bg: "rgba(242,101,34,0.12)", initials: "PPC" },
+  { name: "The Attic Baguio", type: "Coworking & event space", description: "A rooftop coworking loft that doubles as a venue for founder meetups and demo nights.", color: "#9E2A52", bg: "rgba(158,42,82,0.12)", initials: "TAB" },
+  { name: "Grid Workspace", type: "Coworking space", description: "24/7 access coworking with dedicated desks for early-stage teams graduating from incubation.", color: "#285E7A", bg: "rgba(40,94,122,0.12)", initials: "GW" },
+];
+
+export const MAKERSPACES: MakerspaceEntry[] = [
+  { name: "Baguio Maker Society", type: "Community makerspace", description: "Community workshop space offering tools and peer support for hardware prototyping.", color: "#285E7A", bg: "rgba(40,94,122,0.12)", initials: "BMS" },
+  { name: "Cordillera FabLab", type: "Digital fabrication lab", description: "3D printing, laser cutting, and CNC tools for hardware prototyping and product design, open to student and startup teams.", color: "#1A6B3C", bg: "rgba(26,107,60,0.12)", initials: "CFL" },
+  { name: "UB Prototyping Lab", type: "University fabrication lab", description: "Engineering workshop and electronics bench supporting hardware-focused student and alumni ventures.", color: "#0055A5", bg: "rgba(0,85,165,0.12)", initials: "UBP" },
 ];
 
 export const CORPORATE: CorporateEntry[] = [

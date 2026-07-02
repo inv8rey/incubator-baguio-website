@@ -1,10 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import type { Challenge } from "../../data";
+import { useAuth } from "../../../AuthProvider";
+import { supabase } from "../../../../lib/supabaseClient";
 
 const ORANGE = "#F26522";
 const DARK = "#141417";
+
+export interface ApplyChallenge {
+  id: string;
+  title: string;
+  orgName: string;
+  nextDate?: string;
+}
 
 interface FormState {
   teamName: string;
@@ -45,9 +53,11 @@ const labelStyle: React.CSSProperties = {
   marginBottom: 7,
 };
 
-export default function ApplyForm({ challenge, bp }: { challenge: Challenge; bp: string }) {
+export default function ApplyForm({ challenge, bp }: { challenge: ApplyChallenge; bp: string }) {
+  const { user } = useAuth();
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [form, setForm] = useState<FormState>({
     teamName: "",
     contactName: "",
@@ -96,8 +106,30 @@ export default function ApplyForm({ challenge, bp }: { challenge: Challenge; bp:
     setErrors({});
     setStep((s) => Math.max(s - 1, 0));
   }
-  function submit() {
-    if (validateStep(2)) setSubmitted(true);
+  async function submit() {
+    if (!validateStep(2)) return;
+    setSubmitError("");
+    if (supabase && user) {
+      const { error } = await supabase.from("challenge_applications").insert({
+        challenge_id: challenge.id,
+        applicant_id: user.id,
+        team_name: form.teamName,
+        contact_name: form.contactName,
+        email: form.email,
+        phone: form.phone,
+        team_size: form.teamSize,
+        affiliation: form.affiliation,
+        role: form.role,
+        course: form.course,
+        approach: form.approach,
+        why_you: form.whyYou,
+      });
+      if (error) {
+        setSubmitError(error.message);
+        return;
+      }
+    }
+    setSubmitted(true);
   }
 
   if (submitted) {
@@ -108,7 +140,7 @@ export default function ApplyForm({ challenge, bp }: { challenge: Challenge; bp:
         </div>
         <h2 style={{ margin: "0 0 10px", fontSize: 24, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Application submitted</h2>
         <p style={{ margin: "0 auto 28px", fontSize: 14.5, lineHeight: 1.6, color: "#6B6B73", maxWidth: 440 }}>
-          Thanks, {form.contactName.split(" ")[0] || "there"}. {challenge.orgName} will review submissions for &ldquo;{challenge.title}&rdquo; and reach out to shortlisted teams by {challenge.timeline[1]?.date ?? "the announced date"}.
+          Thanks, {form.contactName.split(" ")[0] || "there"}. {challenge.orgName} will review submissions for &ldquo;{challenge.title}&rdquo; and reach out to shortlisted teams by {challenge.nextDate ?? "the announced date"}.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
           <a href={`${bp}/challenges/${challenge.id}/`} style={{ fontSize: 14, fontWeight: 600, color: DARK, textDecoration: "none", border: "1px solid rgba(20,20,25,0.18)", padding: "12px 22px", borderRadius: 9999 }}>
@@ -255,6 +287,7 @@ export default function ApplyForm({ challenge, bp }: { challenge: Challenge; bp:
             I confirm this information is accurate and I&rsquo;m authorized to submit on behalf of my team.
           </label>
           {errors.agree && <p style={{ color: "#E23A2E", fontSize: 12, margin: 0 }}>{errors.agree}</p>}
+          {submitError && <p style={{ color: "#E23A2E", fontSize: 12, margin: 0 }}>{submitError}</p>}
         </div>
       )}
 

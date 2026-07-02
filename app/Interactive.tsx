@@ -57,6 +57,9 @@ export default function Interactive() {
           const clone = source.cloneNode(true) as HTMLElement;
           clone.classList.remove("ib-desktop-cta");
           clone.classList.add("ib-mobile-cta");
+          // AuthNav.tsx portals its own mobile-styled auth widget directly
+          // into the mobile panel, so drop the cloned (inert) slot here.
+          clone.querySelectorAll(".ib-auth-slot").forEach((n) => n.remove());
           clone.setAttribute(
             "style",
             hasSiblingLink

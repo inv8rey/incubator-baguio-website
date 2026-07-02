@@ -271,8 +271,8 @@ export default function EcosystemModel() {
             {/* Illustration */}
             <div style={{ height: "100%", position: "relative", display: "flex", flexDirection: "column" }}>
               <div style={{ flexShrink: 0, marginBottom: 8 }}>
-                <div style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: ORANGE, marginBottom: 10 }}>The 4E Ecosystem Operating Model</div>
-                <h2 style={{ margin: 0, fontSize: 30, fontWeight: 800, letterSpacing: "-0.02em", color: DARK, lineHeight: 1.15 }}>A cycle of action. <span style={{ color: ORANGE }}>Endless possibilities.</span></h2>
+                <div style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: ORANGE, marginBottom: 10 }}>Our Programs</div>
+                <h2 style={{ margin: 0, fontSize: 30, fontWeight: 800, letterSpacing: "-0.02em", color: DARK, lineHeight: 1.15 }}>Programs Built Around the <span style={{ color: ORANGE }}>Startup Journey.</span></h2>
               </div>
               <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
                 <EcosystemIllustration active={active} />
@@ -389,8 +389,8 @@ export default function EcosystemModel() {
       {/* MOBILE fallback: stacked, non-sticky */}
       <section className="ib-4e-mobile" style={{ background: "#fff", padding: "56px 24px", display: "none" }}>
         <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <div style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: ORANGE, marginBottom: 8 }}>The 4E Ecosystem Operating Model</div>
-          <h2 style={{ margin: 0, fontSize: 26, fontWeight: 800, letterSpacing: "-0.02em", color: DARK }}>A cycle of action. <span style={{ color: ORANGE }}>Endless possibilities.</span></h2>
+          <div style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: ORANGE, marginBottom: 8 }}>Our Programs</div>
+          <h2 style={{ margin: 0, fontSize: 26, fontWeight: 800, letterSpacing: "-0.02em", color: DARK }}>Programs Built Around the <span style={{ color: ORANGE }}>Startup Journey.</span></h2>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           {STEPS.map((s) => (

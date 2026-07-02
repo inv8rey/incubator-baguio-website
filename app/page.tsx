@@ -1,6 +1,8 @@
+import EcosystemModel from "./programs/EcosystemModel";
+
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
-const HOME_HTML = `
+const HOME_HTML_TOP = `
 <!-- NAV -->
 <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 40px;background:#0B0B0D;position:sticky;top:0;z-index:50;">
   <div style="display:flex;align-items:center;gap:11px;">
@@ -17,8 +19,9 @@ const HOME_HTML = `
       <a href="${BP}/calendar" class="ib-navlink">Calendar</a>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <a href="${BP}/contact" style="color:#fff;font-weight:600;font-size:14px;padding:11px 22px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(255,255,255,0.22);">Contact Us</a>
       <a href="${BP}/get-started" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:8px;background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:11px 22px;border-radius:9999px;text-decoration:none;">Get Started <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a href="${BP}/contact" style="color:#fff;font-weight:600;font-size:14px;padding:11px 22px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(255,255,255,0.22);">Contact Us</a>
+      <span class="ib-auth-slot"></span>
     </div>
   </div>
 </div>
@@ -35,7 +38,7 @@ const HOME_HTML = `
     <h1 style="margin:0;font-size:78px;line-height:0.98;font-weight:700;letter-spacing:-0.035em;color:#fff;">Building Baguio&rsquo;s Innovation and&nbsp;<span style="color:#F26522;">Startup Ecosystem.</span></h1>
     <p style="margin:26px auto 0;font-size:19px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:560px;">Incubator Baguio connects startups, universities, Technology Business Incubators, government agencies, investors, and industry partners to accelerate innovation and strengthen the Baguio startup ecosystem.</p>
     <div style="display:flex;gap:14px;justify-content:center;margin-top:36px;flex-wrap:wrap;">
-      <a href="#" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:16px;padding:16px 32px;border-radius:9999px;text-decoration:none;box-shadow:0 14px 36px rgba(242,101,34,0.4);">Find Startup Support
+      <a href="${BP}/programs" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:16px;padding:16px 32px;border-radius:9999px;text-decoration:none;box-shadow:0 14px 36px rgba(242,101,34,0.4);">Find Startup Support
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       <a href="${BP}/ecosystem" style="display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:16px;padding:16px 28px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);">Explore the Ecosystem</a>
     </div>
@@ -51,36 +54,9 @@ const HOME_HTML = `
     <div style="text-align:center;border-left:1px solid rgba(255,255,255,0.25);"><div style="font-size:44px;font-weight:700;color:#fff;letter-spacing:-0.02em;">&#8734;</div><div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);margin-top:4px;">Opportunities to Build</div></div>
   </div>
 </div>
+`;
 
-<!-- PROGRAMS -->
-<div style="background:#FAFAF7;padding:80px 40px;">
-  <div style="max-width:1060px;margin:0 auto;">
-    <div style="text-align:center;margin-bottom:48px;">
-      <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">Programs</div>
-      <h2 style="margin:0;font-size:46px;font-weight:700;letter-spacing:-0.03em;color:#141417;">Support for Every Stage of Innovation</h2>
-    </div>
-    <div style="display:flex;flex-direction:column;">
-      ${[
-        ["01", "#F26522", "Founder Development", "Training, mentorship, founder community, startup readiness."],
-        ["02", "#E23A2E", "Innovation Challenges", "Match real-world problems from government and industry with innovators and startups."],
-        ["03", "#285E7A", "Research Commercialization", "Help researchers transform technologies, IP, and research into startups and market-ready solutions."],
-        ["04", "#7C5CD6", "Ecosystem Partnerships", "Coordinate collaboration among government, universities, industry, investors, and startup support organizations."],
-        ["05", "#F5A623", "Innovation Academy", "Workshops, bootcamps, masterclasses, and capability-building programs."],
-        ["06", "#9E2A52", "Community &amp; Events", "Startup Week, founder meetups, forums, networking events, hackathons, and ecosystem gatherings."],
-        ["07", "#1A6B3C", "Knowledge Hub", "Resources, playbooks, templates, research, ecosystem reports, funding directory, and learning materials."],
-      ].map((p, i, arr) => `
-      <a href="${BP}/programs" class="ib-row-hover" style="display:grid;grid-template-columns:64px 1fr auto;gap:28px;align-items:center;padding:26px 8px;border-top:1px solid rgba(20,20,25,0.12);text-decoration:none;${i === arr.length - 1 ? 'border-bottom:1px solid rgba(20,20,25,0.12);' : ''}">
-        <span style="font-size:30px;font-weight:700;color:${p[1]};letter-spacing:-0.02em;">${p[0]}</span>
-        <div><h3 style="margin:0 0 4px;font-size:22px;font-weight:600;color:#141417;">${p[2]}</h3><p style="margin:0;font-size:14.5px;color:#6B6B73;">${p[3]}</p></div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#141417" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-      </a>`).join("")}
-    </div>
-    <div style="margin-top:32px;text-align:center;">
-      <a href="${BP}/programs" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;">View all programs<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-    </div>
-  </div>
-</div>
-
+const HOME_HTML_BOTTOM = `
 <!-- INNOVATION CHALLENGES -->
 <div style="background:#fff;padding:80px 40px;border-top:1px solid rgba(20,20,25,0.06);">
   <div style="max-width:1060px;margin:0 auto;">
@@ -263,5 +239,11 @@ const HOME_HTML = `
 `;
 
 export default function Home() {
-  return <main dangerouslySetInnerHTML={{ __html: HOME_HTML }} />;
+  return (
+    <main>
+      <div dangerouslySetInnerHTML={{ __html: HOME_HTML_TOP }} />
+      <EcosystemModel />
+      <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM }} />
+    </main>
+  );
 }

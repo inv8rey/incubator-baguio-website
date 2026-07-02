@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { CHALLENGES } from "./data";
+import ChallengesBrowser from "./ChallengesBrowser";
+import CommunityChallenges from "./CommunityChallenges";
 
 export const metadata: Metadata = {
   title: "Innovation Challenges — Incubator Baguio",
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
-const CHALLENGES_HTML = `
+const CHALLENGES_HTML_TOP = `
 <!-- NAV -->
 <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:#0E0E10;position:sticky;top:0;z-index:50;">
   <a href="${BP}/" style="display:flex;align-items:center;gap:11px;text-decoration:none;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:32px;width:auto;"><div style="font-size:16px;font-weight:600;color:#fff;">Incubator Baguio</div></a>
@@ -23,8 +24,9 @@ const CHALLENGES_HTML = `
       <a href="${BP}/calendar" class="ib-navlink">Calendar</a>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <a href="${BP}/contact" style="color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(255,255,255,0.22);">Contact Us</a>
       <a href="${BP}/challenges/post" class="ib-cta-orange" style="background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;">Post a Challenge</a>
+      <a href="${BP}/contact" style="color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(255,255,255,0.22);">Contact Us</a>
+      <span class="ib-auth-slot"></span>
     </div>
   </div>
 </div>
@@ -85,32 +87,9 @@ const CHALLENGES_HTML = `
   </div>
 </div>
 
-<!-- FILTER BAR + LISTINGS -->
-<div style="background:#fff;padding:56px 40px 64px;border-top:1px solid rgba(20,20,25,0.06);">
-  <div style="max-width:1180px;margin:0 auto;">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:16px;"><div><div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:10px;">Open now</div><h2 style="margin:0;font-size:34px;font-weight:700;letter-spacing:-0.025em;color:#141417;">Browse challenges</h2></div><div style="height:46px;background:#FAFAF7;border:1px solid rgba(20,20,25,0.14);border-radius:9999px;display:flex;align-items:center;gap:10px;padding:0 18px;min-width:260px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9A958B" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><span style="font-size:14px;color:#9A958B;">Search challenges</span></div></div>
-    <!-- FILTER CHIPS -->
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px;">
-      ${[
-        ["All sectors", true], ["Agriculture", false], ["Environment", false],
-        ["Tourism", false], ["Health", false], ["Education", false], ["Govtech", false],
-      ].map((c) => `<span style="font-size:13.5px;font-weight:${c[1] ? 600 : 500};color:${c[1] ? "#fff" : "#44444C"};background:${c[1] ? "#141417" : "#F4F2EC"};padding:9px 18px;border-radius:9999px;cursor:pointer;">${c[0]}</span>`).join("")}
-    </div>
-    <!-- CHALLENGE CARDS GRID -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
-      ${CHALLENGES.map((c) => `
-      <div class="ib-challenge-hover" style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:24px;display:flex;flex-direction:column;transition:box-shadow .18s ease,transform .18s ease;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><span style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${c.sectorColor};background:${c.sectorBg};padding:5px 11px;border-radius:9999px;">${c.sector}</span><span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:${c.deadlineColor};"><span style="width:6px;height:6px;border-radius:9999px;background:${c.deadlineColor};"></span>${c.deadline}</span></div>
-        <h3 style="margin:0 0 8px;font-size:18px;font-weight:600;color:#141417;line-height:1.3;">${c.title}</h3>
-        <p style="margin:0 0 18px;font-size:13.5px;line-height:1.55;color:#6B6B73;flex:1;">${c.summary}</p>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;"><div style="width:28px;height:28px;border-radius:7px;background:${c.orgColor};display:flex;align-items:center;justify-content:center;font-size:${c.orgInitialsFontSize};font-weight:700;color:#fff;">${c.orgInitials}</div><span style="font-size:12.5px;color:#9A958B;">${c.orgName}</span></div>
-        <div style="display:flex;align-items:center;justify-content:flex-end;padding-top:16px;border-top:1px solid rgba(20,20,25,0.08);"><a href="${BP}/challenges/${c.id}/" style="font-size:13px;font-weight:600;color:#141417;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">View challenge <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#141417" stroke-width="2.3"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
-      </div>`).join("")}
-    </div>
-    <div style="display:flex;justify-content:center;margin-top:30px;"><a href="#" style="font-size:14px;font-weight:600;color:#141417;text-decoration:none;border:1px solid rgba(20,20,25,0.18);padding:13px 28px;border-radius:9999px;">Load more challenges</a></div>
-  </div>
-</div>
+`;
 
+const CHALLENGES_HTML_BOTTOM = `
 <!-- WHO CAN PARTICIPATE -->
 <div style="background:#0E0E10;padding:68px 40px;position:relative;overflow:hidden;">
   <div style="position:absolute;top:-120px;right:-80px;width:420px;height:420px;background:radial-gradient(circle,rgba(242,101,34,0.16),transparent 65%);"></div>
@@ -166,5 +145,12 @@ const CHALLENGES_HTML = `
 `;
 
 export default function Challenges() {
-  return <main dangerouslySetInnerHTML={{ __html: CHALLENGES_HTML }} />;
+  return (
+    <main>
+      <div dangerouslySetInnerHTML={{ __html: CHALLENGES_HTML_TOP }} />
+      <ChallengesBrowser bp={BP} />
+      <CommunityChallenges bp={BP} />
+      <div dangerouslySetInnerHTML={{ __html: CHALLENGES_HTML_BOTTOM }} />
+    </main>
+  );
 }

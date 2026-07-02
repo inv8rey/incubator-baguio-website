@@ -8,7 +8,6 @@ import {
   EVENT_FORMATS,
   MENTOR_EXPERTISE_COLORS,
   MENTOR_FORMATS,
-  MENTOR_NAMES,
   MENTOR_SLOTS,
   ORANGE,
   ORGANIZER_TYPES,
@@ -448,18 +447,22 @@ export default function CalendarClient() {
                 style={{ width: "100%", boxSizing: "border-box", fontSize: 13, color: DARK, background: "#fff", border: "1.5px solid rgba(20,20,25,0.12)", borderRadius: 9999, padding: "10px 14px 10px 36px", outline: "none" }}
               />
             </div>
-            <Select
-              value={category}
-              onChange={(v) => { setCategory(v); setSelectedIso(null); }}
-              options={mode === "events" ? CATEGORIES : MENTOR_EXPERTISE_LIST}
-              allLabel={mode === "events" ? "All Categories" : "All Expertise"}
-            />
-            <Select
-              value={organizerType}
-              onChange={(v) => { setOrganizerType(v); setSelectedIso(null); }}
-              options={mode === "events" ? ORGANIZER_TYPES : MENTOR_NAMES}
-              allLabel={mode === "events" ? "All Organizers" : "All Mentors"}
-            />
+            {mode === "events" && (
+              <>
+                <Select
+                  value={category}
+                  onChange={(v) => { setCategory(v); setSelectedIso(null); }}
+                  options={CATEGORIES}
+                  allLabel="All Categories"
+                />
+                <Select
+                  value={organizerType}
+                  onChange={(v) => { setOrganizerType(v); setSelectedIso(null); }}
+                  options={ORGANIZER_TYPES}
+                  allLabel="All Organizers"
+                />
+              </>
+            )}
             <Select
               value={format}
               onChange={(v) => { setFormat(v); setSelectedIso(null); }}

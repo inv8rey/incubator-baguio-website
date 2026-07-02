@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import ContactForm from "./ContactForm";
+import { Suspense } from "react";
+import SignupForm from "./SignupForm";
 
 export const metadata: Metadata = {
-  title: "Contact — Incubator Baguio",
-  description:
-    "Get in touch with Incubator Baguio — startup incubation, research submission, mentor registration, partner inquiries, and general questions.",
+  title: "Sign Up — Incubator Baguio",
+  description: "Create an Incubator Baguio account to build a startup profile, post or apply to challenges, and connect with mentors.",
 };
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
@@ -23,36 +23,21 @@ const TOP_HTML = `
       <a href="${BP}/calendar" class="ib-navlink">Calendar</a>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <a href="${BP}/get-started" class="ib-cta-orange" style="background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;">Get Started</a>
-      <a href="${BP}/contact" style="color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(242,101,34,0.5);">Contact Us</a>
+      <a href="${BP}/login" class="ib-cta-orange" style="background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;">Log In</a>
+      <a href="${BP}/contact" style="color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(255,255,255,0.22);">Contact Us</a>
       <span class="ib-auth-slot"></span>
     </div>
   </div>
 </div>
 
 <!-- HERO -->
-<div style="position:relative;background:#0B0B0D;padding:56px 40px 60px;overflow:hidden;text-align:center;">
-  <div style="position:absolute;bottom:-120px;left:50%;transform:translateX(-50%);width:540px;height:540px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.30) 0%,transparent 60%);pointer-events:none;"></div>
+<div style="position:relative;background:#0B0B0D;padding:44px 40px 48px;overflow:hidden;text-align:center;">
+  <div style="position:absolute;bottom:-140px;left:50%;transform:translateX(-50%);width:480px;height:480px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.28) 0%,transparent 60%);pointer-events:none;"></div>
   <div style="position:relative;max-width:680px;margin:0 auto;">
-    <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:20px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.8);">Contact</span></div>
-    <div style="display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:9999px;border:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.04);margin-bottom:24px;"><span style="width:7px;height:7px;border-radius:9999px;background:#F26522;"></span><span style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.75);">Get in touch</span></div>
-    <h1 style="margin:0;font-size:50px;line-height:1.05;font-weight:700;letter-spacing:-0.035em;color:#fff;">Let&rsquo;s talk about<br><span style="color:#F26522;">building something.</span></h1>
-    <p style="margin:22px auto 0;font-size:17px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:560px;">Whether you&rsquo;re a founder, researcher, mentor, or organization, the Incubator Baguio team is here to help you find the right path.</p>
-  </div>
-</div>
-
-<!-- CONTACT INFO -->
-<div style="background:#FAFAF7;padding:56px 40px 0;">
-  <div style="max-width:1080px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
-    ${[
-      ["#F26522", "rgba(242,101,34,0.12)", `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2"><path d="M3 8.5 12 13l9-4.5"></path><rect x="3" y="5" width="18" height="14" rx="2"></rect></svg>`, "Email", "hello@incubatorbaguio.ph", "mailto:hello@incubatorbaguio.ph"],
-      ["#285E7A", "rgba(40,94,122,0.12)", `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#285E7A" stroke-width="2"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"></path></svg>`, "Visit", "CPDSO, City Hall, Baguio", "#"],
-      ["#9E2A52", "rgba(158,42,82,0.12)", `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9E2A52" stroke-width="2"><path d="M16.5 7.5c0 5-4.5 9-6.5 11-2-2-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0Z"></path><circle cx="10" cy="7.5" r="2.2"></circle></svg>`, "Follow", "Facebook &middot; LinkedIn", "#"],
-    ].map((c) => `
-    <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:24px;display:flex;align-items:center;gap:14px;">
-      <div style="width:46px;height:46px;border-radius:12px;background:${c[1]};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${c[2]}</div>
-      <div><div style="font-size:11.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#9A958B;margin-bottom:4px;">${c[3]}</div><a href="${c[5]}" style="font-size:14.5px;font-weight:600;color:#141417;text-decoration:none;">${c[4]}</a></div>
-    </div>`).join("")}
+    <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:18px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.8);">Sign Up</span></div>
+    <div style="display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:9999px;border:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.04);margin-bottom:20px;"><span style="width:7px;height:7px;border-radius:9999px;background:#F26522;"></span><span style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.75);">Join the ecosystem</span></div>
+    <h1 style="margin:0;font-size:36px;line-height:1.15;font-weight:700;letter-spacing:-0.03em;color:#fff;">Create your account</h1>
+    <p style="margin:14px auto 0;font-size:15px;line-height:1.6;color:rgba(255,255,255,0.6);max-width:520px;">Build a startup profile, post or apply to challenges, connect with mentors, or publish your organization.</p>
   </div>
 </div>
 `;
@@ -78,13 +63,15 @@ const BOTTOM_HTML = `
 </div>
 `;
 
-export default function Contact() {
+export default function SignupPage() {
   return (
     <main>
       <div dangerouslySetInnerHTML={{ __html: TOP_HTML }} />
-      <div style={{ background: "#FAFAF7", padding: "48px 40px 72px" }}>
-        <div style={{ maxWidth: 720, margin: "0 auto" }}>
-          <ContactForm />
+      <div style={{ background: "#FAFAF7", padding: "48px 40px 64px" }}>
+        <div style={{ maxWidth: 460, margin: "0 auto" }}>
+          <Suspense fallback={null}>
+            <SignupForm bp={BP} />
+          </Suspense>
         </div>
       </div>
       <div dangerouslySetInnerHTML={{ __html: BOTTOM_HTML }} />

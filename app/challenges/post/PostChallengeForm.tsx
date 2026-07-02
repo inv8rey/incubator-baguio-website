@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "../../AuthProvider";
+import { supabase } from "../../../lib/supabaseClient";
 
 const ORANGE = "#F26522";
 const DARK = "#141417";
@@ -47,8 +49,10 @@ const labelStyle: React.CSSProperties = {
 };
 
 export default function PostChallengeForm({ bp }: { bp: string }) {
+  const { user } = useAuth();
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [form, setForm] = useState<FormState>({
     orgName: "",
     orgType: "",
@@ -98,8 +102,30 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
     setErrors({});
     setStep((s) => Math.max(s - 1, 0));
   }
-  function submit() {
-    if (validateStep(2)) setSubmitted(true);
+  async function submit() {
+    if (!validateStep(2)) return;
+    setSubmitError("");
+    if (supabase && user) {
+      const { error } = await supabase.from("challenge_submissions").insert({
+        owner_id: user.id,
+        org_name: form.orgName,
+        org_type: form.orgType,
+        contact_name: form.contactName,
+        email: form.email,
+        phone: form.phone,
+        title: form.title,
+        sector: form.sector,
+        problem: form.problem,
+        scope: form.scope,
+        support: form.support,
+        deadline: form.deadline,
+      });
+      if (error) {
+        setSubmitError(error.message);
+        return;
+      }
+    }
+    setSubmitted(true);
   }
 
   if (submitted) {
@@ -108,9 +134,9 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
         <div style={{ width: 56, height: 56, borderRadius: 9999, background: "rgba(26,107,60,0.12)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 22px" }}>
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A6B3C" strokeWidth={2.6}><path d="M20 6 9 17l-5-5" /></svg>
         </div>
-        <h2 style={{ margin: "0 0 10px", fontSize: 24, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Challenge submitted for review</h2>
+        <h2 style={{ margin: "0 0 10px", fontSize: 24, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Challenge posted</h2>
         <p style={{ margin: "0 auto 28px", fontSize: 14.5, lineHeight: 1.6, color: "#6B6B73", maxWidth: 460 }}>
-          Thanks, {form.contactName.split(" ")[0] || "there"}. The Incubator Baguio team will review &ldquo;{form.title}&rdquo; and follow up at {form.email} within 3&ndash;5 business days before it goes live on the marketplace.
+          Thanks, {form.contactName.split(" ")[0] || "there"}. &ldquo;{form.title}&rdquo; is now live under Community-posted challenges, and the Incubator Baguio team may follow up at {form.email}.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
           <a href={`${bp}/challenges/`} style={{ fontSize: 14, fontWeight: 600, color: DARK, textDecoration: "none", border: "1px solid rgba(20,20,25,0.18)", padding: "12px 22px", borderRadius: 9999 }}>
@@ -265,6 +291,7 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
             I confirm this information is accurate and I&rsquo;m authorized to post this challenge on behalf of {form.orgName || "my organization"}.
           </label>
           {errors.agree && <p style={{ color: "#E23A2E", fontSize: 12, margin: 0 }}>{errors.agree}</p>}
+          {submitError && <p style={{ color: "#E23A2E", fontSize: 12, margin: 0 }}>{submitError}</p>}
         </div>
       )}
 

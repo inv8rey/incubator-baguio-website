@@ -115,8 +115,9 @@ const HTML = `
       <a href="${BP}/calendar" class="ib-navlink">Calendar</a>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <a href="${BP}/contact" style="color:#fff;font-weight:600;font-size:14px;padding:11px 22px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(255,255,255,0.22);">Contact Us</a>
       <a href="${BP}/get-started" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:8px;background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:11px 22px;border-radius:9999px;text-decoration:none;">Get Started <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a href="${BP}/contact" style="color:#fff;font-weight:600;font-size:14px;padding:11px 22px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(255,255,255,0.22);">Contact Us</a>
+      <span class="ib-auth-slot"></span>
     </div>
   </div>
 </div>
