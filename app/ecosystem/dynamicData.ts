@@ -73,10 +73,11 @@ export async function fetchDynamicOrganizations(): Promise<DynamicOrgBuckets> {
     const p = paletteFor(o.name);
     const initials = initialsOf(o.name);
     const logoUrl = o.logo_url || undefined;
+    const website = o.website || undefined;
     if (o.org_type === "TBIs") {
-      empty.TBIs.push({ name: o.name, host: "Published by a member", focus: truncate(o.description, 40), description: o.description, color: p.color, bg: p.bg, initials, logoUrl });
+      empty.TBIs.push({ name: o.name, host: "Published by a member", focus: truncate(o.description, 40), description: o.description, color: p.color, bg: p.bg, initials, logoUrl, website });
     } else if (o.org_type in empty) {
-      (empty as any)[o.org_type].push({ name: o.name, type: "Member-published", description: o.description, color: p.color, bg: p.bg, initials, logoUrl });
+      (empty as any)[o.org_type].push({ name: o.name, type: o.type || "Member-published", description: o.description, color: p.color, bg: p.bg, initials, logoUrl, website });
     }
   }
   return empty;

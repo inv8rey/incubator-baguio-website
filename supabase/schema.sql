@@ -244,12 +244,15 @@ create table if not exists public.organizations (
   website text not null default '',
   contact_email text not null default '',
   logo_url text not null default '',
+  type text not null default '',
   created_at timestamptz not null default now()
 );
 
 -- Migrates tables created before admin-added organizations (no linked founder account) were supported.
 alter table public.organizations alter column owner_id drop not null;
 alter table public.organizations add column if not exists logo_url text not null default '';
+-- A short descriptive label (e.g. "Coworking space", "Business association") shown on its Ecosystem card.
+alter table public.organizations add column if not exists type text not null default '';
 
 alter table public.organizations enable row level security;
 

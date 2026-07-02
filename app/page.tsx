@@ -61,29 +61,38 @@ const HOME_HTML_BOTTOM_A = `
 <!-- INNOVATION CHALLENGES -->
 <div style="background:#fff;padding:80px 40px;border-top:1px solid rgba(20,20,25,0.06);">
   <div style="max-width:1060px;margin:0 auto;">
-    <div style="margin-bottom:40px;max-width:640px;">
-      <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">Innovation Challenges</div>
-      <h2 style="margin:0;font-size:40px;font-weight:700;letter-spacing:-0.03em;color:#141417;line-height:1.08;">Problem statements from government, industry, and academia</h2>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:32px;margin-bottom:44px;flex-wrap:wrap;">
+      <div style="max-width:600px;">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">Innovation Challenges</div>
+        <h2 style="margin:0;font-size:40px;font-weight:700;letter-spacing:-0.03em;color:#141417;line-height:1.08;">Problem statements from government, industry, and academia</h2>
+      </div>
+      <div style="flex-shrink:0;width:118px;height:96px;position:relative;">
+        <svg width="118" height="96" viewBox="0 0 118 96" fill="none"><polyline points="6,40 40,14 74,40" stroke="#F5A623" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="30,52 64,26 98,52" stroke="#F26522" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,72 40,46 74,72" stroke="#9E2A52" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><circle cx="98" cy="20" r="9" fill="rgba(242,101,34,0.16)"></circle></svg>
+      </div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
       ${[
-        ["#285E7A", "Government", "Smarter public services", "LGUs post operational challenges in transport, waste, tourism, and digital governance for the community to solve."],
-        ["#F26522", "Industry", "MSME growth problems", "Local businesses surface bottlenecks in operations, supply chains, and market access that startups can address."],
-        ["#9E2A52", "Academia", "Research to market", "Universities open up applied research questions and technologies seeking commercialization partners."],
+        ["#285E7A", "rgba(40,94,122,0.07)", "Government", "Smarter public services", "LGUs post operational challenges in transport, waste, tourism, and digital governance for the community to solve."],
+        ["#F26522", "rgba(242,101,34,0.07)", "Industry", "MSME growth problems", "Local businesses surface bottlenecks in operations, supply chains, and market access that startups can address."],
+        ["#9E2A52", "rgba(158,42,82,0.07)", "Academia", "Research to market", "Universities open up applied research questions and technologies seeking commercialization partners."],
       ].map((c) => `
-      <div style="background:#FAFAF7;border:1px solid rgba(20,20,25,0.08);border-radius:18px;padding:28px;border-top:3px solid ${c[0]};">
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${c[0]};margin-bottom:12px;">${c[1]}</div>
-        <h3 style="margin:0 0 8px;font-size:19px;font-weight:600;color:#141417;">${c[2]}</h3>
-        <p style="margin:0;font-size:14.5px;line-height:1.55;color:#6B6B73;">${c[3]}</p>
+      <div class="ib-card-hover" style="background:${c[1]};border:1px solid rgba(20,20,25,0.08);border-radius:18px;padding:28px;border-top:3px solid ${c[0]};display:flex;flex-direction:column;">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${c[0]};margin-bottom:12px;">${c[2]}</div>
+        <h3 style="margin:0 0 8px;font-size:19px;font-weight:600;color:#141417;">${c[3]}</h3>
+        <p style="margin:0 0 18px;font-size:14.5px;line-height:1.55;color:#6B6B73;">${c[4]}</p>
+        <a href="${BP}/challenges" style="margin-top:auto;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:${c[0]};text-decoration:none;">Explore challenges<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${c[0]}" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       </div>`).join("")}
     </div>
     <div style="margin-top:36px;">
-      <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#9A958B;margin-bottom:18px;">Open challenges</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#9A958B;">Open challenges</div>
+        <a href="${BP}/challenges" style="display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:#F26522;text-decoration:none;">View all challenges<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
         ${[
-          ["AGRICULTURE", "#1A6B3C", "rgba(26,107,60,0.1)", "#E23A2E", "9 days left", "Cut post-harvest loss for highland vegetable farmers", "Build a cold-chain or logistics solution that keeps Benguet produce fresh to market.", "DA", "Dept of Agriculture, CAR", "13px"],
-          ["ENVIRONMENT", "#285E7A", "rgba(40,94,122,0.1)", "#F5A623", "21 days left", "Smart waste segregation for Baguio public markets", "Design a system that improves sorting and diversion at high-traffic market sites.", "CEPMO", "City Environment Office", "11px"],
-          ["TOURISM", "#9E2A52", "rgba(158,42,82,0.1)", "#F5A623", "16 days left", "Spread tourism beyond peak-season rush", "Create a platform that promotes off-peak travel and local creative experiences.", "DOT", "Baguio Tourism", "13px"],
+          ["AGRICULTURE", "#1A6B3C", "rgba(26,107,60,0.1)", "#E23A2E", "9 days left", "Cut post-harvest loss for highland vegetable farmers", "Build a cold-chain or logistics solution that keeps Benguet produce fresh to market.", "DA", "Dept of Agriculture, CAR", "13px", "agri-cold-chain"],
+          ["ENVIRONMENT", "#285E7A", "rgba(40,94,122,0.1)", "#F5A623", "21 days left", "Smart waste segregation for Baguio public markets", "Design a system that improves sorting and diversion at high-traffic market sites.", "CEPMO", "City Environment Office", "11px", "waste-segregation"],
+          ["TOURISM", "#9E2A52", "rgba(158,42,82,0.1)", "#F5A623", "16 days left", "Spread tourism beyond peak-season rush", "Create a platform that promotes off-peak travel and local creative experiences.", "DOT", "Baguio Tourism", "13px", "tourism-offpeak"],
         ].map((c) => `
         <div class="ib-card-hover" style="background:#fff;border:1px solid rgba(20,20,25,0.12);border-radius:18px;padding:26px;display:flex;flex-direction:column;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
@@ -95,12 +104,12 @@ const HOME_HTML_BOTTOM_A = `
           <div style="display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:20px;border-top:1px solid rgba(20,20,25,0.1);">
             <div style="width:42px;height:42px;border-radius:11px;background:${c[1]};display:flex;align-items:center;justify-content:center;font-size:${c[9]};font-weight:700;color:#fff;flex-shrink:0;">${c[7]}</div>
             <span style="font-size:14px;color:#9A958B;">${c[8]}</span>
-            <a href="#" style="margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:14.5px;font-weight:600;color:#141417;text-decoration:none;white-space:nowrap;">View<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#141417" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+            <a href="${BP}/challenges/${c[10]}" style="margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:14.5px;font-weight:600;color:#141417;text-decoration:none;white-space:nowrap;">View details<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#141417" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
           </div>
         </div>`).join("")}
       </div>
-      <div style="margin-top:32px;">
-        <a href="#" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;">View all challenges<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <div style="margin-top:40px;text-align:center;">
+        <a href="${BP}/challenges" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;">View all challenges<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       </div>
     </div>
   </div>

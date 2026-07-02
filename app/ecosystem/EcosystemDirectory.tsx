@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import { type EcosystemCategory, type StartupEntry, type TbiEntry, type CorporateEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry } from "./data";
+import { MENTOR_SPECIALIZATIONS, type EcosystemCategory, type StartupEntry, type TbiEntry, type CorporateEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry } from "./data";
 import { fetchDynamicStartups, fetchDynamicMentors, fetchDynamicOrganizations, type DynamicMentorEntry } from "./dynamicData";
 import ConnectMentorButton from "./ConnectMentorButton";
 
@@ -34,12 +34,92 @@ function mentorFallbackGradient(name: string): string {
     : "linear-gradient(160deg,#3A3A3E 0%,#0B0B0D 100%)";
 }
 
+interface OrgPhotoCardProps {
+  name: string;
+  type: string;
+  description: string;
+  color: string;
+  bg: string;
+  initials: string;
+  logoUrl?: string;
+  website?: string;
+}
+
+// Shared photo-style card for Coworking Spaces and Makerspaces & Labs —
+// physical locations read better with a cover image than a plain icon row.
+function OrgPhotoCard({ name, type, description, color, bg, initials, logoUrl, website }: OrgPhotoCardProps) {
+  return (
+    <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, overflow: "hidden" }}>
+      <div style={{ position: "relative", height: 150 }}>
+        {logoUrl ? (
+          <img src={logoUrl} alt={`${name} cover`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              background: "repeating-linear-gradient(135deg,#F4F2EC,#F4F2EC 11px,#EDEAE1 11px,#EDEAE1 22px)",
+            }}
+          />
+        )}
+        {type && (
+          <span style={{ position: "absolute", top: 12, right: 12, fontSize: 11, fontWeight: 700, color, background: "#fff", padding: "6px 12px", borderRadius: 9999, boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
+            {type}
+          </span>
+        )}
+        <div style={{ position: "absolute", left: 16, bottom: -18, width: 46, height: 46, borderRadius: 12, background: bg, color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, border: "2px solid #fff" }}>
+          {initials}
+        </div>
+      </div>
+      <div style={{ position: "relative", padding: "30px 22px 22px" }}>
+        <h3 style={{ margin: "0 0 3px", fontSize: 17, fontWeight: 600, color: DARK }}>{name}</h3>
+        {type && <p style={{ margin: "0 0 10px", fontSize: 12.5, color: "#9A958B" }}>{type}</p>}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12, fontSize: 12, color: "#6B6B73" }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2}><path d="M12 22s7-6.5 7-12A7 7 0 0 0 5 10c0 5.5 7 12 7 12Z" /><circle cx="12" cy="10" r="2.5" /></svg>
+            Baguio City
+          </span>
+          <span style={{ color: "rgba(20,20,25,0.15)" }}>|</span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2}><circle cx="9" cy="8" r="3.5" /><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" /><circle cx="17" cy="7" r="2.5" /><path d="M21 19c0-2.4-1.8-4.5-4-5" /></svg>
+            Open to public
+          </span>
+        </div>
+        <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{description}</p>
+        {website && (
+          <a
+            href={website}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Visit ${name}`}
+            style={{ position: "absolute", right: 20, bottom: 20, width: 34, height: 34, borderRadius: 9999, background: bg, color, display: "flex", alignItems: "center", justifyContent: "center" }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
 type ViewMode = "list" | "map";
+
+type SortOrder = "az" | "za";
 
 export default function EcosystemDirectory() {
   const [tab, setTab] = useState<EcosystemCategory>("Startups");
   const [query, setQuery] = useState("");
   const [view, setView] = useState<ViewMode>("list");
+  const [sort, setSort] = useState<SortOrder>("az");
+  const [sectorFilter, setSectorFilter] = useState<string | null>(null);
+  const [specializationFilter, setSpecializationFilter] = useState<string | null>(null);
+
+  function selectTab(next: EcosystemCategory) {
+    setTab(next);
+    setQuery("");
+    setSectorFilter(null);
+    setSpecializationFilter(null);
+  }
 
   const [dynStartups, setDynStartups] = useState<StartupEntry[]>([]);
   const [dynMentors, setDynMentors] = useState<DynamicMentorEntry[]>([]);
@@ -78,16 +158,34 @@ export default function EcosystemDirectory() {
     { id: "Makerspaces & Labs", label: "Makerspaces & Labs", count: allMakerspaces.length },
   ];
 
+  const availableSectors = useMemo(
+    () => Array.from(new Set(allStartups.map((s) => s.sector).filter(Boolean))).sort(),
+    [allStartups]
+  );
+
   const filtered = useMemo(() => {
-    if (tab === "Startups") return allStartups.filter((s) => matches([s.name, s.sector, s.description], query));
-    if (tab === "Mentors") return allMentors.filter((m) => matches([m.name, m.position, m.company, m.bio, ...(m.specializations ?? [])], query));
-    if (tab === "TBIs") return allTbis.filter((t) => matches([t.name, t.host, t.focus], query));
-    if (tab === "Corporate") return allCorporate.filter((c) => matches([c.name, c.type, c.description], query));
-    if (tab === "Government") return allGovernment.filter((g) => matches([g.name, g.type, g.description], query));
-    if (tab === "Coworking Spaces") return allCoworking.filter((c) => matches([c.name, c.type, c.description], query));
-    if (tab === "Makerspaces & Labs") return allMakerspaces.filter((m) => matches([m.name, m.type, m.description], query));
-    return allCommunity.filter((c) => matches([c.name, c.type, c.description], query));
-  }, [tab, query, allStartups, allMentors, allTbis, allCorporate, allGovernment, allCoworking, allMakerspaces, allCommunity]);
+    let list: any[];
+    if (tab === "Startups") {
+      list = allStartups.filter((s) => matches([s.name, s.sector, s.description], query));
+      if (sectorFilter) list = list.filter((s) => s.sector === sectorFilter);
+    } else if (tab === "Mentors") {
+      list = allMentors.filter((m) => matches([m.name, m.position, m.company, m.bio, ...(m.specializations ?? [])], query));
+      if (specializationFilter) list = list.filter((m) => (m.specializations ?? []).includes(specializationFilter));
+    } else if (tab === "TBIs") {
+      list = allTbis.filter((t) => matches([t.name, t.host, t.focus], query));
+    } else if (tab === "Corporate") {
+      list = allCorporate.filter((c) => matches([c.name, c.type, c.description], query));
+    } else if (tab === "Government") {
+      list = allGovernment.filter((g) => matches([g.name, g.type, g.description], query));
+    } else if (tab === "Coworking Spaces") {
+      list = allCoworking.filter((c) => matches([c.name, c.type, c.description], query));
+    } else if (tab === "Makerspaces & Labs") {
+      list = allMakerspaces.filter((m) => matches([m.name, m.type, m.description], query));
+    } else {
+      list = allCommunity.filter((c) => matches([c.name, c.type, c.description], query));
+    }
+    return [...list].sort((a, b) => (sort === "az" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)));
+  }, [tab, query, sort, sectorFilter, specializationFilter, allStartups, allMentors, allTbis, allCorporate, allGovernment, allCoworking, allMakerspaces, allCommunity]);
 
   // Normalized pin data for the map placeholder — swap this for real coordinates once a map API is wired up.
   const pins = useMemo(
@@ -121,7 +219,7 @@ export default function EcosystemDirectory() {
             {TABS.map((t) => (
               <button
                 key={t.id}
-                onClick={() => setTab(t.id)}
+                onClick={() => selectTab(t.id)}
                 style={{
                   fontSize: 13.5,
                   fontWeight: 600,
@@ -153,6 +251,30 @@ export default function EcosystemDirectory() {
             ))}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+            {tab === "Startups" && (
+              <select
+                value={sectorFilter ?? ""}
+                onChange={(e) => setSectorFilter(e.target.value || null)}
+                style={{ height: 44, fontSize: 13.5, fontWeight: 600, color: DARK, background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.14)", borderRadius: 9999, padding: "0 16px", outline: "none", appearance: "auto", cursor: "pointer" }}
+              >
+                <option value="">All sectors</option>
+                {availableSectors.map((sec) => (
+                  <option key={sec} value={sec}>{sec}</option>
+                ))}
+              </select>
+            )}
+            {tab === "Mentors" && (
+              <select
+                value={specializationFilter ?? ""}
+                onChange={(e) => setSpecializationFilter(e.target.value || null)}
+                style={{ height: 44, fontSize: 13.5, fontWeight: 600, color: DARK, background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.14)", borderRadius: 9999, padding: "0 16px", outline: "none", appearance: "auto", cursor: "pointer" }}
+              >
+                <option value="">All specializations</option>
+                {MENTOR_SPECIALIZATIONS.map((sp) => (
+                  <option key={sp} value={sp}>{sp}</option>
+                ))}
+              </select>
+            )}
             <div style={{ height: 44, background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.14)", borderRadius: 9999, display: "flex", alignItems: "center", gap: 10, padding: "0 18px", minWidth: 240 }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2}><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
               <input
@@ -162,6 +284,15 @@ export default function EcosystemDirectory() {
                 style={{ border: "none", outline: "none", background: "transparent", fontSize: 14, color: DARK, width: "100%" }}
               />
             </div>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as SortOrder)}
+              aria-label="Sort"
+              style={{ height: 44, fontSize: 13.5, fontWeight: 600, color: DARK, background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.14)", borderRadius: 9999, padding: "0 16px", outline: "none", appearance: "auto", cursor: "pointer" }}
+            >
+              <option value="az">Sort: A to Z</option>
+              <option value="za">Sort: Z to A</option>
+            </select>
             <div style={{ display: "flex", background: "#F4F2EC", borderRadius: 9999, padding: 3, gap: 2, flexShrink: 0 }}>
               <button
                 onClick={() => setView("list")}
@@ -350,20 +481,7 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Coworking Spaces" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as CoworkingEntry[]).map((c) => (
-              <div key={c.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                  {c.logoUrl ? (
-                    <img src={c.logoUrl} alt={`${c.name} logo`} style={{ width: 44, height: 44, borderRadius: 11, objectFit: "cover", flexShrink: 0 }} />
-                  ) : (
-                    <div style={{ width: 44, height: 44, borderRadius: 11, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: c.color, flexShrink: 0 }}>{c.initials}</div>
-                  )}
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 600, color: DARK }}>{c.name}</h3>
-                    <span style={{ fontSize: 11.5, color: "#9A958B" }}>{c.type}</span>
-                  </div>
-                </div>
-                <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>{c.description}</p>
-              </div>
+              <OrgPhotoCard key={c.name} name={c.name} type={c.type} description={c.description} color={c.color} bg={c.bg} initials={c.initials} logoUrl={c.logoUrl} website={c.website} />
             ))}
           </div>
         )}
@@ -371,20 +489,7 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Makerspaces & Labs" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as MakerspaceEntry[]).map((m) => (
-              <div key={m.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                  {m.logoUrl ? (
-                    <img src={m.logoUrl} alt={`${m.name} logo`} style={{ width: 44, height: 44, borderRadius: 11, objectFit: "cover", flexShrink: 0 }} />
-                  ) : (
-                    <div style={{ width: 44, height: 44, borderRadius: 11, background: m.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: m.color, flexShrink: 0 }}>{m.initials}</div>
-                  )}
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 600, color: DARK }}>{m.name}</h3>
-                    <span style={{ fontSize: 11.5, color: "#9A958B" }}>{m.type}</span>
-                  </div>
-                </div>
-                <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>{m.description}</p>
-              </div>
+              <OrgPhotoCard key={m.name} name={m.name} type={m.type} description={m.description} color={m.color} bg={m.bg} initials={m.initials} logoUrl={m.logoUrl} website={m.website} />
             ))}
           </div>
         )}

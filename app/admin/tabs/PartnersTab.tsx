@@ -38,12 +38,14 @@ interface OrgRow {
   website: string;
   contact_email: string;
   logoUrl: string;
+  type: string;
   initials: string;
   color: string;
 }
 
+const TYPE_MAX = 40;
 const EMPTY_MENTOR = { name: "", position: "", company: "", bio: "", specializations: [] as string[], photoUrl: "" };
-const EMPTY_ORG = { name: "", description: "", website: "", contact_email: "", logoUrl: "" };
+const EMPTY_ORG = { name: "", description: "", website: "", contact_email: "", logoUrl: "", type: "" };
 
 export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string }) {
   const [category, setCategory] = useState<Category>("Mentors");
@@ -75,7 +77,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     setOrgs(
       (orgData ?? []).map((o: any) => {
         const p = paletteFor(o.name);
-        return { id: o.id, name: o.name, org_type: o.org_type, description: o.description, website: o.website, contact_email: o.contact_email, logoUrl: o.logo_url, initials: initialsOf(o.name), color: p.color };
+        return { id: o.id, name: o.name, org_type: o.org_type, description: o.description, website: o.website, contact_email: o.contact_email, logoUrl: o.logo_url, type: o.type, initials: initialsOf(o.name), color: p.color };
       })
     );
     setLoaded(true);
@@ -131,7 +133,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
   function openEditOrg(o: OrgRow) {
     setEditingId(o.id);
-    setOrgForm({ name: o.name, description: o.description, website: o.website, contact_email: o.contact_email, logoUrl: o.logoUrl });
+    setOrgForm({ name: o.name, description: o.description, website: o.website, contact_email: o.contact_email, logoUrl: o.logoUrl, type: o.type });
     setError("");
     setModalOpen(true);
   }
@@ -187,7 +189,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
       if (err) return setError(err.message);
     } else {
       if (!orgForm.name.trim()) return;
-      const payload = { name: orgForm.name.trim(), org_type: category, description: orgForm.description.trim(), website: orgForm.website.trim(), contact_email: orgForm.contact_email.trim(), logo_url: orgForm.logoUrl };
+      const payload = { name: orgForm.name.trim(), org_type: category, description: orgForm.description.trim(), website: orgForm.website.trim(), contact_email: orgForm.contact_email.trim(), logo_url: orgForm.logoUrl, type: orgForm.type.trim() };
       const { error: err } = editingId
         ? await supabase.from("organizations").update(payload).eq("id", editingId)
         : await supabase.from("organizations").insert(payload);
@@ -425,6 +427,19 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                     style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
                   />
                 </div>
+                {category !== "TBIs" && (
+                  <div>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Type</label>
+                    <input
+                      value={orgForm.type}
+                      onChange={(e) => setOrgForm((f) => ({ ...f, type: e.target.value }))}
+                      placeholder={category === "Coworking Spaces" ? "e.g. Coworking space" : category === "Makerspaces & Labs" ? "e.g. Digital fabrication lab" : "e.g. Business association"}
+                      maxLength={TYPE_MAX}
+                      style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                    />
+                    <div style={{ fontSize: 11, color: "#9A958B", marginTop: 4 }}>Short label shown on the card, e.g. &ldquo;Coworking space.&rdquo;</div>
+                  </div>
+                )}
                 <div>
                   <label style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>
                     <span>Description</span>

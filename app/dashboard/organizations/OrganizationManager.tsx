@@ -16,9 +16,10 @@ interface Organization {
   website: string;
   contact_email: string;
   logo_url: string;
+  type: string;
 }
 
-const EMPTY = { name: "", org_type: ORG_TYPES[0] as string, description: "", website: "", contact_email: "", logo_url: "" };
+const EMPTY = { name: "", org_type: ORG_TYPES[0] as string, description: "", website: "", contact_email: "", logo_url: "", type: "" };
 
 export default function OrganizationManager() {
   const { user } = useAuth();
@@ -117,6 +118,12 @@ export default function OrganizationManager() {
               </select>
             </div>
           </div>
+          {form.org_type !== "TBIs" && (
+            <div>
+              <label style={labelStyle}>Type (short label shown on your card)</label>
+              <input style={inputStyle} value={form.type} onChange={(e) => update("type", e.target.value)} placeholder="e.g. Coworking space" />
+            </div>
+          )}
           <div>
             <label style={labelStyle}>Description</label>
             <textarea style={{ ...inputStyle, minHeight: 90, resize: "vertical" }} value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="What does this organization do?" />

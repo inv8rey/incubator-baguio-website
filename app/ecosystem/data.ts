@@ -58,6 +58,7 @@ export interface TbiEntry {
   bg: string;
   initials: string;
   logoUrl?: string;
+  website?: string;
 }
 
 export interface CommunityEntry {
@@ -68,6 +69,7 @@ export interface CommunityEntry {
   bg: string;
   initials: string;
   logoUrl?: string;
+  website?: string;
 }
 
 export interface CorporateEntry {
@@ -78,6 +80,7 @@ export interface CorporateEntry {
   bg: string;
   initials: string;
   logoUrl?: string;
+  website?: string;
 }
 
 export interface GovernmentEntry {
@@ -88,6 +91,7 @@ export interface GovernmentEntry {
   bg: string;
   initials: string;
   logoUrl?: string;
+  website?: string;
 }
 
 export interface CoworkingEntry {
@@ -98,6 +102,7 @@ export interface CoworkingEntry {
   bg: string;
   initials: string;
   logoUrl?: string;
+  website?: string;
 }
 
 export interface MakerspaceEntry {
@@ -108,6 +113,7 @@ export interface MakerspaceEntry {
   bg: string;
   initials: string;
   logoUrl?: string;
+  website?: string;
 }
 
 // Nothing is seeded here anymore — every Ecosystem directory tab (Startups,
