@@ -28,6 +28,7 @@ export const NAV = [
   { id: "startups", label: "Startups", cnt: 82 },
   { id: "founders", label: "Founders", cnt: 148 },
   { id: "challenges", label: "Challenges", cnt: 18 },
+  { id: "events", label: "Events", cnt: null as number | null },
   { id: "partners", label: "Partners", cnt: PARTNERS.length },
 ] as const;
 
@@ -38,6 +39,7 @@ export const TITLES: Record<TabId, string> = {
   startups: "Startups",
   founders: "Founders",
   challenges: "Innovation Challenges",
+  events: "Calendar Events",
   partners: "Ecosystem Partners",
 };
 
@@ -46,6 +48,7 @@ export const SUBS: Record<TabId, string> = {
   startups: "82 registered startups across 13 sectors",
   founders: "148 registered founders in the ecosystem",
   challenges: "18 open challenges from government, industry, and academia",
+  events: "Review and approve events submitted to the public calendar",
   partners: "Academic, government, corporate, and community partners",
 };
 

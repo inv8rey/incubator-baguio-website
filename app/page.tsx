@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import EcosystemModel from "./programs/EcosystemModel";
 import FeaturedStartups from "./FeaturedStartups";
 import EcosystemPartnersMarquee from "./EcosystemPartnersMarquee";
+import NewsletterSignup from "./NewsletterSignup";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -176,23 +177,6 @@ const HOME_HTML_BOTTOM_B1 = `
     </div>
   </div>
 </div>
-
-<!-- GIANT APPLY CTA -->
-<div style="background:#FAFAF7;padding:80px 40px;">
-  <div style="max-width:1180px;margin:0 auto;background:linear-gradient(135deg,#F26522 0%,#E14E12 58%,#C8410C 100%);border-radius:24px;padding:64px 56px;position:relative;overflow:hidden;box-shadow:0 30px 60px -22px rgba(226,78,18,0.55);">
-    <div style="position:absolute;inset:0;background:radial-gradient(90% 120% at 100% 0%,rgba(255,255,255,0.16),transparent 55%);"></div>
-    <svg style="position:absolute;top:-30px;right:-20px;opacity:0.16;" width="340" height="300" viewBox="0 0 120 104" fill="none"><polyline points="12,40 60,12 108,40" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="12,62 60,34 108,62" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="12,84 60,56 108,84" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
-    <div style="position:relative;max-width:580px;">
-      <h2 style="margin:0 0 14px;font-size:44px;font-weight:700;letter-spacing:-0.032em;color:#fff;line-height:1.04;">Ready to build something for Baguio?</h2>
-      <p style="margin:0 0 32px;font-size:17px;line-height:1.55;color:rgba(255,255,255,0.88);">Choose your track and start your application. It takes a few minutes.</p>
-    </div>
-    <div style="position:relative;display:flex;gap:12px;flex-wrap:wrap;">
-      <a href="${BP}/get-started" class="ib-cta-orange" style="background:#0B0B0D;color:#fff;font-weight:600;font-size:15px;padding:14px 26px;border-radius:9999px;text-decoration:none;box-shadow:0 12px 26px -12px rgba(0,0,0,0.6);">I&rsquo;m a Founder</a>
-      <a href="${BP}/get-started" style="background:rgba(255,255,255,0.14);color:#fff;font-weight:600;font-size:15px;padding:14px 26px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.42);backdrop-filter:blur(2px);transition:background .2s ease;">I&rsquo;m a Researcher</a>
-      <a href="${BP}/get-started" style="background:rgba(255,255,255,0.14);color:#fff;font-weight:600;font-size:15px;padding:14px 26px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.42);backdrop-filter:blur(2px);transition:background .2s ease;">I&rsquo;m a Partner</a>
-    </div>
-  </div>
-</div>
 `;
 
 const HOME_HTML_BOTTOM_B2 = `
@@ -245,6 +229,7 @@ export default function Home() {
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_A }} />
       <FeaturedStartups bp={BP} />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_B1 }} />
+      <NewsletterSignup />
       <EcosystemPartnersMarquee />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_B2 }} />
     </main>

@@ -486,4 +486,80 @@ begin
   ) then
     alter publication supabase_realtime add table public.challenge_submissions;
   end if;
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'event_submissions'
+  ) then
+    alter publication supabase_realtime add table public.event_submissions;
+  end if;
 end $$;
+
+-- ---------------------------------------------------------------------------
+-- newsletter_subscribers: homepage + calendar "Subscribe" email capture.
+-- Anyone can subscribe; only admins can read the list (it's PII).
+-- ---------------------------------------------------------------------------
+create table if not exists public.newsletter_subscribers (
+  id uuid primary key default gen_random_uuid(),
+  email text not null,
+  source text not null default '',
+  created_at timestamptz not null default now(),
+  unique (email)
+);
+
+alter table public.newsletter_subscribers enable row level security;
+
+drop policy if exists "anyone can subscribe to the newsletter" on public.newsletter_subscribers;
+create policy "anyone can subscribe to the newsletter" on public.newsletter_subscribers
+  for insert with check (true);
+
+drop policy if exists "admins manage newsletter subscribers" on public.newsletter_subscribers;
+create policy "admins manage newsletter subscribers" on public.newsletter_subscribers
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+-- ---------------------------------------------------------------------------
+-- event_submissions: "Submit an event" on the Calendar page. No login
+-- required (any organizer can submit). Goes live only after an admin
+-- approves it — mirrors the moderation gate the user asked for, unlike
+-- challenge_submissions which publishes immediately.
+-- ---------------------------------------------------------------------------
+create table if not exists public.event_submissions (
+  id uuid primary key default gen_random_uuid(),
+  contact_name text not null default '',
+  email text not null default '',
+  phone text not null default '',
+  org text not null default '',
+  org_type text not null default '',
+  title text not null,
+  category text not null default 'Other',
+  event_date text not null,
+  end_date text not null default '',
+  event_time text not null default '',
+  venue text not null default '',
+  format text not null default 'In-Person',
+  description text not null default '',
+  cta text not null default 'Register',
+  status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
+  created_at timestamptz not null default now()
+);
+
+alter table public.event_submissions enable row level security;
+
+drop policy if exists "anyone can submit an event" on public.event_submissions;
+create policy "anyone can submit an event" on public.event_submissions
+  for insert with check (true);
+
+drop policy if exists "approved events are publicly readable" on public.event_submissions;
+create policy "approved events are publicly readable" on public.event_submissions
+  for select using (status = 'approved');
+
+drop policy if exists "admins manage event submissions" on public.event_submissions;
+create policy "admins manage event submissions" on public.event_submissions
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import EcosystemPartnersMarquee from "../EcosystemPartnersMarquee";
 
 export const metadata: Metadata = {
   title: "About — Incubator Baguio",
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
-const ABOUT_HTML = `
+const ABOUT_HTML_TOP = `
 <!-- NAV -->
 <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:#0E0E10;position:sticky;top:0;z-index:50;">
   <a href="${BP}/" style="display:flex;align-items:center;gap:11px;text-decoration:none;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:32px;width:auto;"><div style="font-size:16px;font-weight:600;color:#fff;">Incubator Baguio</div></a>
@@ -120,30 +121,9 @@ const ABOUT_HTML = `
     </div>
   </div>
 </div>
+`;
 
-<!-- PARTNERS -->
-<div style="background:#FAFAF7;padding:72px 40px;border-top:1px solid rgba(20,20,25,0.06);">
-  <div style="max-width:1080px;margin:0 auto;">
-    <div style="text-align:center;margin-bottom:42px;">
-      <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">Partners</div>
-      <h2 style="margin:0;font-size:40px;font-weight:700;letter-spacing:-0.025em;color:#141417;">Ecosystem partners</h2>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
-      ${[
-        ["#F5A623", "SLU", "Saint Louis University", "12px"],
-        ["#285E7A", "UB", "University of Baguio", "12px"],
-        ["#7E0707", "UP", "UP Baguio", "12px"],
-        ["#1A6B3C", "UC", "University of the Cordilleras", "11px"],
-        ["#3A5FA0", "BSU", "Benguet State University", "11px"],
-        ["#0055A5", "DOST", "Dept of Science &amp; Technology", "10px"],
-        ["#CE1126", "DTI", "Dept of Trade &amp; Industry", "12px"],
-        ["#5B3A99", "CHED", "Comm on Higher Education", "10px"],
-        ["#009B8D", "DICT", "Dept of ICT", "10px"],
-      ].map((p) => `<div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid rgba(20,20,25,0.09);border-radius:14px;padding:16px 20px;"><div style="width:38px;height:38px;border-radius:9px;background:${p[0]};display:flex;align-items:center;justify-content:center;font-size:${p[3]};font-weight:700;color:#fff;flex-shrink:0;">${p[1]}</div><span style="font-size:14.5px;font-weight:600;color:#141417;">${p[2]}</span></div>`).join("")}
-    </div>
-  </div>
-</div>
-
+const ABOUT_HTML_BOTTOM = `
 <!-- CTA -->
 <div style="background:#fff;padding:72px 40px;">
   <div style="max-width:1080px;margin:0 auto;background:linear-gradient(135deg,#F26522 0%,#E14E12 58%,#C8410C 100%);border-radius:24px;padding:60px 56px;position:relative;overflow:hidden;text-align:center;box-shadow:0 30px 60px -22px rgba(226,78,18,0.55);">
@@ -178,5 +158,11 @@ const ABOUT_HTML = `
 `;
 
 export default function About() {
-  return <main dangerouslySetInnerHTML={{ __html: ABOUT_HTML }} />;
+  return (
+    <main>
+      <div dangerouslySetInnerHTML={{ __html: ABOUT_HTML_TOP }} />
+      <EcosystemPartnersMarquee />
+      <div dangerouslySetInnerHTML={{ __html: ABOUT_HTML_BOTTOM }} />
+    </main>
+  );
 }

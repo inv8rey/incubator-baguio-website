@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { supabase } from "../../lib/supabaseClient";
 import {
   CATEGORY_COLORS,
   DARK,
@@ -14,7 +16,9 @@ import {
   TODAY,
   type CityEvent,
   type EventCategory,
+  type EventFormat,
   type MentorSlot,
+  type OrganizerType,
 } from "./data";
 
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -29,9 +33,25 @@ function isoOf(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function eventsOnDay(date: Date) {
+function eventsOnDay(date: Date, list: CityEvent[]) {
   const iso = isoOf(date);
-  return EVENTS.filter((e) => (e.endDate ? iso >= e.date && iso <= e.endDate : e.date === iso));
+  return list.filter((e) => (e.endDate ? iso >= e.date && iso <= e.endDate : e.date === iso));
+}
+
+function mapEventRow(r: any): CityEvent {
+  return {
+    id: r.id,
+    date: r.event_date,
+    endDate: r.end_date || undefined,
+    title: r.title,
+    category: (r.category as EventCategory) || "Other",
+    time: r.event_time,
+    venue: r.venue,
+    org: r.org,
+    orgType: (r.org_type as OrganizerType) || "Community Partners",
+    format: (r.format as EventFormat) || "In-Person",
+    cta: r.cta || "Register",
+  };
 }
 
 function slotsOnDay(date: Date) {
@@ -254,6 +274,222 @@ function BookingModal({ availableSlots, preselected, onClose, onConfirm }: { ava
   );
 }
 
+const EVENT_CATEGORIES = Object.keys(CATEGORY_COLORS) as EventCategory[];
+
+function SubmitEventModal({ onClose }: { onClose: () => void }) {
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState<EventCategory>("Workshop");
+  const [eventDate, setEventDate] = useState("");
+  const [eventTime, setEventTime] = useState("");
+  const [venue, setVenue] = useState("");
+  const [org, setOrg] = useState("");
+  const [orgType, setOrgType] = useState<OrganizerType>(ORGANIZER_TYPES[0]);
+  const [format, setFormat] = useState<EventFormat>("In-Person");
+  const [description, setDescription] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [error, setError] = useState("");
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!title.trim() || !eventDate || !org.trim() || !contactName.trim() || !email.trim()) return;
+    if (!supabase) {
+      setError("Event submissions aren't configured yet.");
+      return;
+    }
+    setError("");
+    setStatus("loading");
+    const { error: err } = await supabase.from("event_submissions").insert({
+      title: title.trim(),
+      category,
+      event_date: eventDate,
+      event_time: eventTime.trim(),
+      venue: venue.trim(),
+      org: org.trim(),
+      org_type: orgType,
+      format,
+      description: description.trim(),
+      contact_name: contactName.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+    });
+    if (err) {
+      setError(err.message);
+      setStatus("error");
+      return;
+    }
+    setStatus("done");
+  }
+
+  if (status === "done") {
+    return (
+      <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+        <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, padding: "40px 36px", width: "100%", maxWidth: 440, textAlign: "center", boxShadow: "0 24px 64px rgba(0,0,0,0.18)" }}>
+          <div style={{ width: 52, height: 52, borderRadius: 9999, background: "rgba(26,107,60,0.12)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 18px" }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A6B3C" strokeWidth={2.6}><path d="M20 6 9 17l-5-5" /></svg>
+          </div>
+          <div style={{ fontSize: 19, fontWeight: 700, color: DARK, marginBottom: 8 }}>Event submitted</div>
+          <p style={{ margin: "0 0 22px", fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>Thanks — your event is pending admin review and will appear on the calendar once approved.</p>
+          <button onClick={onClose} style={{ padding: "10px 24px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer" }}>Done</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, overflowY: "auto" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, padding: "32px 36px", width: "100%", maxWidth: 560, boxShadow: "0 24px 64px rgba(0,0,0,0.18)", display: "flex", flexDirection: "column", gap: 18, maxHeight: "88vh", overflowY: "auto" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Submit an event</div>
+            <div style={{ fontSize: 12.5, color: "#9A958B", marginTop: 3 }}>Reviewed by an admin before it goes live on the calendar.</div>
+          </div>
+          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#6B6B73", flexShrink: 0 }}>&times;</button>
+        </div>
+
+        <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div>
+            <label style={modalLabelStyle}>Event title *</label>
+            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Founder Fundamentals Workshop" style={modalInputStyle} required />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
+              <label style={modalLabelStyle}>Category *</label>
+              <select value={category} onChange={(e) => setCategory(e.target.value as EventCategory)} style={{ ...modalInputStyle, appearance: "none" }}>
+                {EVENT_CATEGORIES.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label style={modalLabelStyle}>Format *</label>
+              <select value={format} onChange={(e) => setFormat(e.target.value as EventFormat)} style={{ ...modalInputStyle, appearance: "none" }}>
+                {EVENT_FORMATS.map((f) => (
+                  <option key={f} value={f}>{f}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
+              <label style={modalLabelStyle}>Date *</label>
+              <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} style={modalInputStyle} required />
+            </div>
+            <div>
+              <label style={modalLabelStyle}>Time</label>
+              <input value={eventTime} onChange={(e) => setEventTime(e.target.value)} placeholder="e.g. 2:00 PM" style={modalInputStyle} />
+            </div>
+          </div>
+          <div>
+            <label style={modalLabelStyle}>Venue</label>
+            <input value={venue} onChange={(e) => setVenue(e.target.value)} placeholder="e.g. Incubator Baguio Hub, or Online" style={modalInputStyle} />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
+              <label style={modalLabelStyle}>Organizer *</label>
+              <input value={org} onChange={(e) => setOrg(e.target.value)} placeholder="e.g. Incubator Baguio" style={modalInputStyle} required />
+            </div>
+            <div>
+              <label style={modalLabelStyle}>Organizer type *</label>
+              <select value={orgType} onChange={(e) => setOrgType(e.target.value as OrganizerType)} style={{ ...modalInputStyle, appearance: "none" }}>
+                {ORGANIZER_TYPES.map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label style={modalLabelStyle}>Description</label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What is this event about?" style={{ ...modalInputStyle, resize: "vertical", minHeight: 70 }} />
+          </div>
+          <div style={{ borderTop: "1px solid rgba(20,20,25,0.08)", paddingTop: 14, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
+              <label style={modalLabelStyle}>Your name *</label>
+              <input value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder="Juan Dela Cruz" style={modalInputStyle} required />
+            </div>
+            <div>
+              <label style={modalLabelStyle}>Email *</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" style={modalInputStyle} required />
+            </div>
+          </div>
+          <div>
+            <label style={modalLabelStyle}>Phone (optional)</label>
+            <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="09XX XXX XXXX" style={modalInputStyle} />
+          </div>
+
+          {error && <p style={{ color: "#E23A2E", fontSize: 12.5, margin: 0 }}>{error}</p>}
+
+          <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", paddingTop: 4 }}>
+            <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
+            <button type="submit" disabled={status === "loading"} style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: status === "loading" ? 0.7 : 1 }}>
+              {status === "loading" ? "Submitting…" : "Submit for review"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function SubscribeModal({ onClose }: { onClose: () => void }) {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [error, setError] = useState("");
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Enter a valid email address.");
+      return;
+    }
+    if (!supabase) {
+      setError("Sign-ups aren't configured yet.");
+      return;
+    }
+    setError("");
+    setStatus("loading");
+    const { error: err } = await supabase.from("newsletter_subscribers").insert({ email: email.trim(), source: "calendar" });
+    if (err) {
+      if (err.code === "23505") {
+        setStatus("done");
+        return;
+      }
+      setError(err.message);
+      setStatus("error");
+      return;
+    }
+    setStatus("done");
+  }
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, padding: "32px 36px", width: "100%", maxWidth: 420, boxShadow: "0 24px 64px rgba(0,0,0,0.18)", display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Subscribe to updates</div>
+          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#6B6B73", flexShrink: 0 }}>&times;</button>
+        </div>
+        {status === "done" ? (
+          <div style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(26,107,60,0.08)", border: "1px solid rgba(26,107,60,0.2)", borderRadius: 12, padding: "14px 16px" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A6B3C" strokeWidth={2.6}><path d="M20 6 9 17l-5-5" /></svg>
+            <span style={{ fontSize: 13.5, fontWeight: 600, color: "#1A6B3C" }}>You&rsquo;re subscribed to new events.</span>
+          </div>
+        ) : (
+          <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>Get notified by email whenever a new event is added to the calendar.</p>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" style={modalInputStyle} required />
+            {error && <p style={{ color: "#E23A2E", fontSize: 12.5, margin: 0 }}>{error}</p>}
+            <button type="submit" disabled={status === "loading"} style={{ padding: "11px 22px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: status === "loading" ? 0.7 : 1 }}>
+              {status === "loading" ? "Subscribing…" : "Subscribe"}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function CalendarClient() {
   const [mode, setMode] = useState<CalMode>("events");
   const [cursor, setCursor] = useState(new Date(TODAY.getFullYear(), TODAY.getMonth(), 1));
@@ -268,6 +504,27 @@ export default function CalendarClient() {
   const [bookedIds, setBookedIds] = useState<Set<string>>(new Set());
   const [bookingOpen, setBookingOpen] = useState(false);
   const [bookingPreselect, setBookingPreselect] = useState<MentorSlot | null>(null);
+
+  const [approvedEvents, setApprovedEvents] = useState<CityEvent[]>([]);
+  const [submitEventOpen, setSubmitEventOpen] = useState(false);
+  const [subscribeOpen, setSubscribeOpen] = useState(false);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("submit") === "1") setSubmitEventOpen(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!supabase) return;
+    supabase
+      .from("event_submissions")
+      .select("*")
+      .eq("status", "approved")
+      .then(({ data }) => setApprovedEvents((data ?? []).map(mapEventRow)));
+  }, []);
+
+  const allEvents = useMemo(() => [...EVENTS, ...approvedEvents], [approvedEvents]);
 
   function switchMode(m: CalMode) {
     setMode(m);
@@ -311,7 +568,7 @@ export default function CalendarClient() {
     return true;
   };
 
-  const filteredEvents = useMemo(() => EVENTS.filter(matchesEventFilters), [category, organizerType, format, q]);
+  const filteredEvents = useMemo(() => allEvents.filter(matchesEventFilters), [allEvents, category, organizerType, format, q]);
   const filteredSlots = useMemo(() => MENTOR_SLOTS.filter(matchesMentorFilters), [category, organizerType, format, q]);
 
   const monthCells = useMemo(() => {
@@ -336,7 +593,7 @@ export default function CalendarClient() {
   const cells = view === "Week" ? weekCells : monthCells;
 
   function eventsOnDayFiltered(date: Date) {
-    return eventsOnDay(date).filter(matchesEventFilters);
+    return eventsOnDay(date, allEvents).filter(matchesEventFilters);
   }
   function slotsOnDayFiltered(date: Date) {
     return slotsOnDay(date).filter(matchesMentorFilters);
@@ -418,11 +675,11 @@ export default function CalendarClient() {
           <div style={{ display: "flex", gap: 10 }}>
             {mode === "events" ? (
               <>
-                <a href="#" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: ORANGE, textDecoration: "none", border: "1.5px solid rgba(242,101,34,0.4)", padding: "11px 18px", borderRadius: 9999 }}>+ Submit Event</a>
-                <a href="#" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: DARK, textDecoration: "none", border: "1.5px solid rgba(20,20,25,0.14)", padding: "11px 18px", borderRadius: 9999 }}>
+                <button onClick={() => setSubmitEventOpen(true)} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: ORANGE, background: "none", textDecoration: "none", border: "1.5px solid rgba(242,101,34,0.4)", padding: "11px 18px", borderRadius: 9999, cursor: "pointer" }}>+ Submit Event</button>
+                <button onClick={() => setSubscribeOpen(true)} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: DARK, background: "none", textDecoration: "none", border: "1.5px solid rgba(20,20,25,0.14)", padding: "11px 18px", borderRadius: 9999, cursor: "pointer" }}>
                   <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={DARK} strokeWidth={2}><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>
                   Subscribe
-                </a>
+                </button>
               </>
             ) : (
               <button onClick={() => openBooking(null)} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", padding: "11px 20px", borderRadius: 9999, cursor: "pointer" }}>
@@ -721,6 +978,8 @@ export default function CalendarClient() {
           onConfirm={confirmBooking}
         />
       )}
+      {submitEventOpen && <SubmitEventModal onClose={() => setSubmitEventOpen(false)} />}
+      {subscribeOpen && <SubscribeModal onClose={() => setSubscribeOpen(false)} />}
     </div>
   );
 }
