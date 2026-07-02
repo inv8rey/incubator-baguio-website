@@ -12,8 +12,12 @@ create table if not exists public.profiles (
   full_name text not null default '',
   email text not null default '',
   is_mentor boolean not null default false,
+  is_admin boolean not null default false,
   created_at timestamptz not null default now()
 );
+
+-- Migrates profiles created before the admin flag existed. No-op on a fresh table.
+alter table public.profiles add column if not exists is_admin boolean not null default false;
 
 alter table public.profiles enable row level security;
 
@@ -34,16 +38,44 @@ create policy "users can update their own profile" on public.profiles
 -- ---------------------------------------------------------------------------
 create table if not exists public.startups (
   id uuid primary key default gen_random_uuid(),
-  owner_id uuid not null references public.profiles (id) on delete cascade,
+  owner_id uuid references public.profiles (id) on delete cascade,
   name text not null,
   tagline text not null default '',
   sector text not null default '',
-  stage text not null default '',
+  tbi_affiliation text not null default '',
   description text not null default '',
   website text not null default '',
   contact_email text not null default '',
+  logo_url text not null default '',
+  lifecycle_stage text not null default 'Idea',
+  funding_raised text not null default '',
+  founded_year text not null default '',
   created_at timestamptz not null default now()
 );
+
+-- Migrates tables created before the stage -> tbi_affiliation rename. No-op on a fresh table.
+alter table public.startups add column if not exists tbi_affiliation text not null default '';
+alter table public.startups drop column if exists stage;
+
+-- Migrates tables created before admin curation (logo, lifecycle, funding) was added.
+-- owner_id becomes optional so admins can add a startup with no linked founder account.
+alter table public.startups alter column owner_id drop not null;
+alter table public.startups add column if not exists logo_url text not null default '';
+alter table public.startups add column if not exists lifecycle_stage text not null default 'Idea';
+alter table public.startups add column if not exists funding_raised text not null default '';
+alter table public.startups add column if not exists founded_year text not null default '';
+
+-- Keeps startup cards visually consistent by capping field lengths at the database level.
+alter table public.startups drop constraint if exists startups_lifecycle_stage_check;
+alter table public.startups add constraint startups_lifecycle_stage_check check (lifecycle_stage in ('Idea', 'MVP', 'Launch', 'Growth'));
+alter table public.startups drop constraint if exists startups_name_length;
+alter table public.startups add constraint startups_name_length check (char_length(name) <= 60);
+alter table public.startups drop constraint if exists startups_tagline_length;
+alter table public.startups add constraint startups_tagline_length check (char_length(tagline) <= 100);
+alter table public.startups drop constraint if exists startups_description_length;
+alter table public.startups add constraint startups_description_length check (char_length(description) <= 280);
+alter table public.startups drop constraint if exists startups_tbi_affiliation_length;
+alter table public.startups add constraint startups_tbi_affiliation_length check (char_length(tbi_affiliation) <= 60);
 
 alter table public.startups enable row level security;
 
@@ -54,6 +86,17 @@ create policy "startups are publicly readable" on public.startups
 drop policy if exists "owners manage their startups" on public.startups;
 create policy "owners manage their startups" on public.startups
   for all using (auth.uid() = owner_id) with check (auth.uid() = owner_id);
+
+-- Admins (profiles.is_admin = true) can add, edit, or remove ANY startup —
+-- this is what makes the admin dashboard the curated source of truth for
+-- what's shown publicly on the Ecosystem directory.
+drop policy if exists "admins manage all startups" on public.startups;
+create policy "admins manage all startups" on public.startups
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
 
 -- ---------------------------------------------------------------------------
 -- mentors: "Be a mentor" — one mentor profile per user
@@ -191,3 +234,26 @@ alter table public.challenge_applications enable row level security;
 drop policy if exists "applicants manage their own applications" on public.challenge_applications;
 create policy "applicants manage their own applications" on public.challenge_applications
   for all using (auth.uid() = applicant_id) with check (auth.uid() = applicant_id);
+
+-- ---------------------------------------------------------------------------
+-- storage: startup-logos bucket for "add a way to add a logo"
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('startup-logos', 'startup-logos', true)
+on conflict (id) do nothing;
+
+drop policy if exists "startup logos are publicly readable" on storage.objects;
+create policy "startup logos are publicly readable" on storage.objects
+  for select using (bucket_id = 'startup-logos');
+
+drop policy if exists "authenticated users can upload startup logos" on storage.objects;
+create policy "authenticated users can upload startup logos" on storage.objects
+  for insert to authenticated with check (bucket_id = 'startup-logos');
+
+drop policy if exists "authenticated users can update startup logos" on storage.objects;
+create policy "authenticated users can update startup logos" on storage.objects
+  for update to authenticated using (bucket_id = 'startup-logos');
+
+drop policy if exists "authenticated users can delete startup logos" on storage.objects;
+create policy "authenticated users can delete startup logos" on storage.objects
+  for delete to authenticated using (bucket_id = 'startup-logos');

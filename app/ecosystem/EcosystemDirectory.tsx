@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { COMMUNITY, CORPORATE, COWORKING, GOVERNMENT, MAKERSPACES, MENTORS, STARTUPS, TBIS, type EcosystemCategory, type StartupEntry, type TbiEntry, type CorporateEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry } from "./data";
+import { COMMUNITY, CORPORATE, COWORKING, GOVERNMENT, MAKERSPACES, MENTORS, TBIS, type EcosystemCategory, type StartupEntry, type TbiEntry, type CorporateEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry } from "./data";
 import { fetchDynamicStartups, fetchDynamicMentors, fetchDynamicOrganizations, type DynamicMentorEntry } from "./dynamicData";
 import ConnectMentorButton from "./ConnectMentorButton";
 
@@ -38,7 +38,7 @@ export default function EcosystemDirectory() {
     fetchDynamicOrganizations().then(setDynOrgs);
   }, []);
 
-  const allStartups = useMemo(() => [...dynStartups, ...STARTUPS], [dynStartups]);
+  const allStartups = dynStartups;
   const allMentors = useMemo(() => [...dynMentors, ...MENTORS], [dynMentors]);
   const allTbis = useMemo(() => [...dynOrgs.TBIs, ...TBIS], [dynOrgs]);
   const allCorporate = useMemo(() => [...dynOrgs.Corporate, ...CORPORATE], [dynOrgs]);
@@ -209,15 +209,19 @@ export default function EcosystemDirectory() {
 
         {view === "list" && tab === "Startups" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
-            {(filtered as typeof STARTUPS).map((s) => (
+            {(filtered as StartupEntry[]).map((s) => (
               <div key={s.name} className="ib-challenge-hover" style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-                  <div style={{ width: 46, height: 46, borderRadius: 12, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 700, color: s.color }}>{s.initial}</div>
+                  {s.logoUrl ? (
+                    <img src={s.logoUrl} alt={`${s.name} logo`} style={{ width: 46, height: 46, borderRadius: 12, objectFit: "cover" }} />
+                  ) : (
+                    <div style={{ width: 46, height: 46, borderRadius: 12, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 700, color: s.color }}>{s.initial}</div>
+                  )}
                   <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: s.color, background: s.bg, padding: "5px 11px", borderRadius: 9999 }}>{s.sector}</span>
                 </div>
                 <h3 style={{ margin: "0 0 6px", fontSize: 18, fontWeight: 600, color: DARK }}>{s.name}</h3>
-                <p style={{ margin: "0 0 14px", fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>{s.description}</p>
-                <span style={{ fontSize: 12, fontWeight: 600, color: "#44444C" }}>{s.stage}</span>
+                <p style={{ margin: "0 0 14px", fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{s.description}</p>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "#44444C" }}>{s.tbiAffiliation}</span>
               </div>
             ))}
           </div>

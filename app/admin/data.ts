@@ -181,19 +181,9 @@ export const SECTOR_FILTERS = [
 export const STAGE_BADGE: Record<string, { color: string; bg: string }> = {
   Growth: { color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" },
   Launch: { color: ORANGE, bg: "rgba(242,101,34,0.10)" },
+  MVP: { color: "#7C5CD6", bg: "rgba(124,92,214,0.12)" },
   Idea: { color: "#F5A623", bg: "rgba(245,166,35,0.12)" },
 };
-
-export const STARTUPS = [
-  { id: "BG-019", initials: "SG", color: ORANGE, name: "Session Groceries", sector: "Agriculture & Food", stage: "Growth", tbi: "Independent", funding: "₱5.0M", since: "2016" },
-  { id: "BG-022", initials: "IO", color: "#285E7A", name: "IOL Inc.", sector: "Finance", stage: "Growth", tbi: "UC InTTO", funding: "₱3.7M", since: "2018" },
-  { id: "BG-031", initials: "WB", color: "#F5A623", name: "When In Baguio", sector: "Tourism & Hospitality", stage: "Growth", tbi: "Independent", funding: "₱1.9M", since: "2017" },
-  { id: "BG-044", initials: "VP", color: "#9E2A52", name: "VIVITA PH", sector: "Education", stage: "Launch", tbi: "UPB SILBI", funding: "₱1.0M", since: "2021" },
-  { id: "BG-088", initials: "DT", color: "#2A8A52", name: "Dontog Technofarms", sector: "Agriculture & Food", stage: "Launch", tbi: "BSU-ATBI", funding: "₱840K", since: "2023" },
-  { id: "BG-091", initials: "TN", color: "#6B5BD6", name: "theneutral.space", sector: "Creative Industries", stage: "Launch", tbi: "Independent", funding: "₱440K", since: "2023" },
-  { id: "BG-073", initials: "SS", color: "#0E5C44", name: "Sunshare", sector: "Environment & Sustainability", stage: "Idea", tbi: "SLU SIRIB", funding: "₱360K", since: "2022" },
-  { id: "BG-138", initials: "DC", color: "#8B4513", name: "Dulche Chocolates", sector: "Retail & Commerce", stage: "Launch", tbi: "Independent", funding: "₱560K", since: "2020" },
-];
 
 // ---- Founders ----
 export const FOUNDER_STATS = [

@@ -3,8 +3,9 @@ export type EcosystemCategory = "Startups" | "Mentors" | "TBIs" | "Corporate" | 
 export interface StartupEntry {
   name: string;
   sector: string;
-  stage: string;
+  tbiAffiliation: string;
   description: string;
+  logoUrl?: string;
   initial: string;
   color: string;
   bg: string;
@@ -77,17 +78,9 @@ export interface MakerspaceEntry {
   initials: string;
 }
 
-export const STARTUPS: StartupEntry[] = [
-  { name: "HarvestLink", sector: "Agritech", stage: "Incubation · Cohort 2025", description: "Connects highland farmers directly to Baguio buyers, cutting spoilage and middlemen.", initial: "H", color: "#3F9E4D", bg: "rgba(126,217,87,0.16)" },
-  { name: "PineCycle", sector: "Cleantech", stage: "Incubation · Cohort 2025", description: "Turns the city's pine and food waste into compost and biochar for urban gardens.", initial: "P", color: "#285E7A", bg: "rgba(40,94,122,0.14)" },
-  { name: "TrailMate", sector: "Tourism", stage: "Pre-incubation · 2025", description: "A guide app for Cordillera trails and homegrown experiences beyond peak season.", initial: "T", color: "#9E2A52", bg: "rgba(158,42,82,0.12)" },
-  { name: "ColdTrail", sector: "Agritech / Hardware", stage: "Incubation · Cohort 2025", description: "Low-cost insulated transport crates with IoT temperature monitoring for highland produce.", initial: "C", color: "#D88A0A", bg: "rgba(245,166,35,0.16)" },
-  { name: "CareCall", sector: "Health Tech", stage: "Pre-incubation · 2026", description: "A simple voice-call and SMS booking line so senior citizens can schedule barangay check-ups.", initial: "C", color: "#E23A2E", bg: "rgba(226,58,46,0.12)" },
-  { name: "OffSeason", sector: "Tourism Tech", stage: "Incubation · Cohort 2025", description: "Discovery app surfacing local creative businesses and shoulder-season itineraries.", initial: "O", color: "#9E2A52", bg: "rgba(158,42,82,0.12)" },
-  { name: "PermitRunner", sector: "Govtech", stage: "Pre-incubation · 2026", description: "Pre-fill workflow that helps MSMEs renew business permits without redundant paperwork.", initial: "P", color: "#F26522", bg: "rgba(242,101,34,0.14)" },
-  { name: "OfflineLearn", sector: "EdTech", stage: "Incubation · Cohort 2025", description: "Pre-loaded learning modules for students in barangays with limited connectivity.", initial: "O", color: "#0055A5", bg: "rgba(0,85,165,0.12)" },
-  { name: "SortRight", sector: "Environment / IoT", stage: "Pre-incubation · 2026", description: "Smart bin system with fill-level alerts for vendor stalls at public markets.", initial: "S", color: "#1A6B3C", bg: "rgba(26,107,60,0.12)" },
-];
+// Startups aren't seeded here — the Ecosystem directory's Startups tab reads
+// live from Supabase only (see dynamicData.ts), sourced from the admin
+// dashboard and self-service founder submissions.
 
 export const MENTORS: MentorEntry[] = [
   { name: "Maria Aquino", expertise: "Startup & fundraising", bio: "Founder, 2 exits", initials: "MA", color: "rgba(242,101,34,0.5)", bg: "rgba(242,101,34,0.12)", tagColor: "#FFB489", tagBg: "rgba(242,101,34,0.12)", tag: "Founder, 2 exits" },

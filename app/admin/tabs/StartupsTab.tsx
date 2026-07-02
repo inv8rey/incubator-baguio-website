@@ -1,50 +1,159 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StatCard } from "../StatCard";
-import { DARK, ORANGE, SECTOR_FILTERS, STAGE_BADGE, STAGE_FILTERS, STARTUPS, STARTUP_STATS } from "../data";
+import { DARK, ORANGE, SECTOR_FILTERS, STAGE_BADGE, STAGE_FILTERS, STARTUP_STATS } from "../data";
+import { supabase } from "../../../lib/supabaseClient";
+import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
+import { uploadStartupLogo } from "../../../lib/uploadLogo";
 
-const NEXT_COLORS = ["#F26522", "#285E7A", "#1A6B3C", "#9E2A52", "#D88A0A", "#7C5CD6", "#0E5C44", "#8B4513"];
+const NAME_MAX = 60;
+const DESCRIPTION_MAX = 280;
+const TBI_MAX = 60;
+
+interface Startup {
+  id: string;
+  name: string;
+  sector: string;
+  stage: string;
+  tbi: string;
+  funding: string;
+  since: string;
+  description: string;
+  logoUrl: string;
+  initials: string;
+  color: string;
+}
+
+const EMPTY_FORM = {
+  name: "",
+  sector: SECTOR_FILTERS[0].label,
+  stage: STAGE_FILTERS[1],
+  tbi: "Independent",
+  funding: "",
+  since: "",
+  description: "",
+  logoUrl: "",
+};
 
 export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string }) {
-  const [startups, setStartups] = useState(STARTUPS);
+  const [startups, setStartups] = useState<Startup[]>([]);
+  const [loaded, setLoaded] = useState(false);
   const [stage, setStage] = useState("All");
   const [sector, setSector] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
 
-  const [name, setName] = useState("");
-  const [newSector, setNewSector] = useState(SECTOR_FILTERS[0].label);
-  const [newStage, setNewStage] = useState(STAGE_FILTERS[1]);
-  const [tbi, setTbi] = useState("Independent");
-  const [funding, setFunding] = useState("");
+  async function load() {
+    if (!supabase) {
+      setLoaded(true);
+      return;
+    }
+    const { data } = await supabase.from("startups").select("*").order("created_at", { ascending: false });
+    setStartups(
+      (data ?? []).map((s: any) => {
+        const p = paletteFor(s.name);
+        return {
+          id: s.id,
+          name: s.name,
+          sector: s.sector,
+          stage: s.lifecycle_stage,
+          tbi: s.tbi_affiliation,
+          funding: s.funding_raised,
+          since: s.founded_year,
+          description: s.description,
+          logoUrl: s.logo_url,
+          initials: initialsOf(s.name),
+          color: p.color,
+        };
+      })
+    );
+    setLoaded(true);
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
 
   const q = searchQuery.toLowerCase();
   const filtered = startups.filter((s) => (stage === "All" || s.stage === stage) && (!sector || s.sector === sector) && (!q || s.name.toLowerCase().includes(q) || s.sector.toLowerCase().includes(q)));
 
-  function resetForm() {
-    setName("");
-    setNewSector(SECTOR_FILTERS[0].label);
-    setNewStage(STAGE_FILTERS[1]);
-    setTbi("Independent");
-    setFunding("");
+  function update<K extends keyof typeof EMPTY_FORM>(key: K, value: string) {
+    setForm((f) => ({ ...f, [key]: value }));
   }
 
-  function addStartup(e: React.FormEvent) {
-    e.preventDefault();
-    if (!name.trim()) return;
-    const initials = name
-      .split(" ")
-      .map((w) => w[0])
-      .join("")
-      .slice(0, 3)
-      .toUpperCase();
-    const id = `BG-${String(100 + startups.length).padStart(3, "0")}`;
-    setStartups((s) => [
-      { id, initials, color: NEXT_COLORS[s.length % NEXT_COLORS.length], name: name.trim(), sector: newSector, stage: newStage, tbi, funding: funding.trim() || "—", since: String(new Date().getFullYear()) },
-      ...s,
-    ]);
-    resetForm();
+  function openAddModal() {
+    setEditingId(null);
+    setForm(EMPTY_FORM);
+    setError("");
+    setModalOpen(true);
+  }
+
+  function openEditModal(s: Startup) {
+    setEditingId(s.id);
+    setForm({ name: s.name, sector: s.sector, stage: s.stage, tbi: s.tbi, funding: s.funding, since: s.since, description: s.description, logoUrl: s.logoUrl });
+    setError("");
+    setModalOpen(true);
+  }
+
+  function closeModal() {
     setModalOpen(false);
+    setEditingId(null);
+  }
+
+  async function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError("");
+    try {
+      const url = await uploadStartupLogo(file);
+      update("logoUrl", url);
+    } catch (err: any) {
+      setError(err.message || "Logo upload failed.");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  async function deleteStartup(id: string) {
+    if (!supabase) return;
+    if (!window.confirm("Delete this startup? This can't be undone.")) return;
+    const { error: err } = await supabase.from("startups").delete().eq("id", id);
+    if (err) {
+      window.alert(err.message);
+      return;
+    }
+    load();
+  }
+
+  async function submitStartup(e: React.FormEvent) {
+    e.preventDefault();
+    if (!supabase || !form.name.trim()) return;
+    setError("");
+    const payload = {
+      name: form.name.trim(),
+      sector: form.sector,
+      lifecycle_stage: form.stage,
+      tbi_affiliation: form.tbi.trim(),
+      funding_raised: form.funding.trim(),
+      founded_year: form.since.trim(),
+      description: form.description.trim(),
+      logo_url: form.logoUrl,
+    };
+    const { error: err } = editingId
+      ? await supabase.from("startups").update(payload).eq("id", editingId)
+      : await supabase.from("startups").insert(payload);
+    if (err) {
+      setError(err.message);
+      return;
+    }
+    closeModal();
+    load();
   }
 
   return (
@@ -109,7 +218,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
           })}
         </div>
         <button
-          onClick={() => setModalOpen(true)}
+          onClick={openAddModal}
           style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 999, fontSize: 13, fontWeight: 600, border: "none", color: "#fff", background: "#F26522", cursor: "pointer" }}
         >
           + Add Startup
@@ -117,10 +226,10 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
       </div>
 
       <div className="ib-admin-table" style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", overflow: "hidden", overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 720 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 760 }}>
           <thead>
             <tr style={{ background: "#F5F4F0" }}>
-              {["Startup", "Sector", "Stage", "TBI", "Funding", "Since"].map((h, i) => (
+              {["Startup", "Sector", "Stage", "TBI", "Funding", "Since", "Actions"].map((h, i) => (
                 <th
                   key={h}
                   style={{
@@ -140,18 +249,21 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
             </tr>
           </thead>
           <tbody>
-            {filtered.map((s, i) => {
-              const badge = STAGE_BADGE[s.stage];
+            {loaded && filtered.map((s, i) => {
+              const badge = STAGE_BADGE[s.stage] ?? STAGE_BADGE.Idea;
               return (
-                <tr key={s.id} style={{ borderBottom: i < filtered.length - 1 ? "1px solid rgba(20,20,25,0.06)" : "none", cursor: "pointer" }}>
+                <tr key={s.id} style={{ borderBottom: i < filtered.length - 1 ? "1px solid rgba(20,20,25,0.06)" : "none" }}>
                   <td style={{ padding: "13px 14px 13px 20px", verticalAlign: "middle" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <div style={{ width: 32, height: 32, borderRadius: 9, background: s.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
-                        {s.initials}
-                      </div>
+                      {s.logoUrl ? (
+                        <img src={s.logoUrl} alt="" style={{ width: 32, height: 32, borderRadius: 9, objectFit: "cover", flexShrink: 0 }} />
+                      ) : (
+                        <div style={{ width: 32, height: 32, borderRadius: 9, background: s.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
+                          {s.initials}
+                        </div>
+                      )}
                       <div>
                         <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK }}>{s.name}</div>
-                        <div style={{ fontSize: 10.5, color: "#9A958B" }}>{s.id}</div>
                       </div>
                     </div>
                   </td>
@@ -160,15 +272,25 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                     <span style={{ fontSize: 10.5, fontWeight: 600, padding: "3px 9px", borderRadius: 999, color: badge.color, background: badge.bg }}>● {s.stage}</span>
                   </td>
                   <td style={{ padding: "13px 14px", verticalAlign: "middle", color: "#6B6B73" }}>{s.tbi}</td>
-                  <td style={{ padding: "13px 14px", verticalAlign: "middle", fontWeight: 600, color: DARK }}>{s.funding}</td>
-                  <td style={{ padding: "13px 14px", verticalAlign: "middle", color: "#9A958B" }}>{s.since}</td>
+                  <td style={{ padding: "13px 14px", verticalAlign: "middle", fontWeight: 600, color: DARK }}>{s.funding || "—"}</td>
+                  <td style={{ padding: "13px 14px", verticalAlign: "middle", color: "#9A958B" }}>{s.since || "—"}</td>
+                  <td style={{ padding: "13px 14px", verticalAlign: "middle" }}>
+                    <div style={{ display: "flex", gap: 12 }}>
+                      <button onClick={() => openEditModal(s)} style={{ fontSize: 12, fontWeight: 600, color: "#285E7A", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                        Edit
+                      </button>
+                      <button onClick={() => deleteStartup(s.id)} style={{ fontSize: 12, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                        Delete
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               );
             })}
-            {filtered.length === 0 && (
+            {loaded && filtered.length === 0 && (
               <tr>
-                <td colSpan={6} style={{ padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13 }}>
-                  No startups match these filters.
+                <td colSpan={7} style={{ padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13 }}>
+                  {startups.length === 0 ? "No startups yet — add the first one." : "No startups match these filters."}
                 </td>
               </tr>
             )}
@@ -178,29 +300,61 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
 
       {modalOpen && (
         <div
-          onClick={() => setModalOpen(false)}
+          onClick={closeModal}
           style={{ position: "fixed", inset: 0, background: "rgba(15,15,17,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 20 }}
         >
           <form
             onClick={(e) => e.stopPropagation()}
-            onSubmit={addStartup}
+            onSubmit={submitStartup}
             style={{ background: "#fff", borderRadius: 18, padding: 26, width: "100%", maxWidth: 440, display: "flex", flexDirection: "column", gap: 16, maxHeight: "90vh", overflowY: "auto" }}
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div style={{ fontSize: 16.5, fontWeight: 700, color: DARK }}>Add startup</div>
-              <button type="button" onClick={() => setModalOpen(false)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#9A958B", lineHeight: 1 }}>
+              <div style={{ fontSize: 16.5, fontWeight: 700, color: DARK }}>{editingId ? "Edit startup" : "Add startup"}</div>
+              <button type="button" onClick={closeModal} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#9A958B", lineHeight: 1 }}>
                 ×
               </button>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              {form.logoUrl ? (
+                <img src={form.logoUrl} alt="" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
+              ) : (
+                <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10.5, textAlign: "center" }}>
+                  No logo
+                </div>
+              )}
+              <div>
+                <label style={{ display: "inline-block", fontSize: 12.5, fontWeight: 600, color: "#285E7A", cursor: "pointer" }}>
+                  {uploading ? "Uploading…" : "Upload logo"}
+                  <input type="file" accept="image/*" onChange={handleLogoChange} disabled={uploading} style={{ display: "none" }} />
+                </label>
+                <div style={{ fontSize: 11, color: "#9A958B", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
+              </div>
             </div>
 
             <div>
               <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Startup name</label>
               <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={form.name}
+                onChange={(e) => update("name", e.target.value)}
                 placeholder="e.g. ColdTrail"
                 required
+                maxLength={NAME_MAX}
                 style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>
+                <span>Description</span>
+                <span style={{ color: "#9A958B", fontWeight: 500 }}>{form.description.length}/{DESCRIPTION_MAX}</span>
+              </label>
+              <textarea
+                value={form.description}
+                onChange={(e) => update("description", e.target.value)}
+                placeholder="One or two sentences for the public card."
+                maxLength={DESCRIPTION_MAX}
+                style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box", minHeight: 74, resize: "vertical", fontFamily: "inherit" }}
               />
             </div>
 
@@ -208,8 +362,8 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
               <div>
                 <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Sector</label>
                 <select
-                  value={newSector}
-                  onChange={(e) => setNewSector(e.target.value)}
+                  value={form.sector}
+                  onChange={(e) => update("sector", e.target.value)}
                   style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
                 >
                   {SECTOR_FILTERS.map((f) => (
@@ -220,8 +374,8 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
               <div>
                 <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Stage</label>
                 <select
-                  value={newStage}
-                  onChange={(e) => setNewStage(e.target.value)}
+                  value={form.stage}
+                  onChange={(e) => update("stage", e.target.value)}
                   style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
                 >
                   {STAGE_FILTERS.filter((s) => s !== "All").map((s) => (
@@ -231,32 +385,47 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
               </div>
             </div>
 
+            <div>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>TBI affiliation</label>
+              <input
+                value={form.tbi}
+                onChange={(e) => update("tbi", e.target.value)}
+                placeholder="Independent"
+                maxLength={TBI_MAX}
+                style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+              />
+            </div>
+
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <div>
-                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>TBI</label>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Funding raised</label>
                 <input
-                  value={tbi}
-                  onChange={(e) => setTbi(e.target.value)}
-                  placeholder="Independent"
+                  value={form.funding}
+                  onChange={(e) => update("funding", e.target.value)}
+                  placeholder="₱500K"
                   style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
                 />
               </div>
               <div>
-                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Funding raised</label>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Since (year)</label>
                 <input
-                  value={funding}
-                  onChange={(e) => setFunding(e.target.value)}
-                  placeholder="₱500K"
+                  value={form.since}
+                  onChange={(e) => update("since", e.target.value)}
+                  placeholder="2024"
+                  maxLength={4}
                   style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
                 />
               </div>
             </div>
 
+            {error && <p style={{ color: "#E23A2E", fontSize: 12.5, margin: 0 }}>{error}</p>}
+
             <button
               type="submit"
-              style={{ marginTop: 4, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 999, padding: "11px 22px", cursor: "pointer" }}
+              disabled={uploading}
+              style={{ marginTop: 4, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 999, padding: "11px 22px", cursor: "pointer", opacity: uploading ? 0.7 : 1 }}
             >
-              Add startup
+              {editingId ? "Save changes" : "Add startup"}
             </button>
           </form>
         </div>

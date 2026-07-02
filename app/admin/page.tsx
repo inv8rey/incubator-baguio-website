@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./admin.css";
 import AdminApp from "./AdminApp";
+import RequireAdmin from "../RequireAdmin";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard — Incubator Baguio",
@@ -9,5 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default function AdminPage() {
-  return <AdminApp />;
+  return (
+    <RequireAdmin>
+      <AdminApp />
+    </RequireAdmin>
+  );
 }

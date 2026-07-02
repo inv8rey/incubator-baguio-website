@@ -9,6 +9,7 @@ export interface Profile {
   full_name: string;
   email: string;
   is_mentor: boolean;
+  is_admin: boolean;
   created_at: string;
 }
 
