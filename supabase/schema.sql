@@ -448,3 +448,42 @@ create policy "authenticated users can update partner logos" on storage.objects
 drop policy if exists "authenticated users can delete partner logos" on storage.objects;
 create policy "authenticated users can delete partner logos" on storage.objects
   for delete to authenticated using (bucket_id = 'partner-logos');
+
+-- ---------------------------------------------------------------------------
+-- realtime: lets the admin Dashboard tab subscribe to live inserts/updates/
+-- deletes on these tables (via supabase.channel().on('postgres_changes', ...))
+-- so its KPIs, charts, and activity feed update without a page reload.
+-- ---------------------------------------------------------------------------
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'startups'
+  ) then
+    alter publication supabase_realtime add table public.startups;
+  end if;
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'mentors'
+  ) then
+    alter publication supabase_realtime add table public.mentors;
+  end if;
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'organizations'
+  ) then
+    alter publication supabase_realtime add table public.organizations;
+  end if;
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'profiles'
+  ) then
+    alter publication supabase_realtime add table public.profiles;
+  end if;
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'challenge_submissions'
+  ) then
+    alter publication supabase_realtime add table public.challenge_submissions;
+  end if;
+end $$;
