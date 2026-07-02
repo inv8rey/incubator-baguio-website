@@ -46,7 +46,19 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       return;
     }
     const { data } = await supabase.from("profiles").select("*").eq("id", u.id).maybeSingle();
-    setProfile((data as Profile) ?? null);
+    if (data) {
+      setProfile(data as Profile);
+      return;
+    }
+    // Self-heal: some accounts (e.g. ones created before email confirmation,
+    // when there was no session yet to satisfy the insert policy) never got
+    // a profiles row. Now that we have an authenticated session, create it.
+    const { data: created } = await supabase
+      .from("profiles")
+      .upsert({ id: u.id, full_name: u.user_metadata?.full_name ?? "", email: u.email ?? "" })
+      .select("*")
+      .maybeSingle();
+    setProfile((created as Profile) ?? null);
   }
 
   useEffect(() => {

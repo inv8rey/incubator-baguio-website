@@ -33,6 +33,38 @@ drop policy if exists "users can update their own profile" on public.profiles;
 create policy "users can update their own profile" on public.profiles
   for update using (auth.uid() = id);
 
+-- Auto-creates a profiles row whenever a new auth user is created. This is
+-- the reliable path — it runs with elevated privileges server-side, so it
+-- can't be skipped by RLS timing issues the way a client-side insert can
+-- (e.g. when email confirmation delays the first authenticated session).
+-- The app's client-side signup insert and AuthProvider self-heal check are
+-- both still in place as a backstop, but this trigger is the source of truth.
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  insert into public.profiles (id, email, full_name)
+  values (new.id, coalesce(new.email, ''), coalesce(new.raw_user_meta_data->>'full_name', ''))
+  on conflict (id) do nothing;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
+
+-- Backfills any existing auth users (like ones created before this trigger
+-- existed) who are still missing a profiles row.
+insert into public.profiles (id, email, full_name)
+select u.id, coalesce(u.email, ''), coalesce(u.raw_user_meta_data->>'full_name', '')
+from auth.users u
+left join public.profiles p on p.id = u.id
+where p.id is null;
+
 -- ---------------------------------------------------------------------------
 -- startups: "Create a startup profile"
 -- ---------------------------------------------------------------------------
