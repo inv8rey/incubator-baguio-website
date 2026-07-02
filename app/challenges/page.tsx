@@ -20,11 +20,11 @@ const CHALLENGES_HTML = `
       <a href="${BP}/challenges" class="ib-navlink" style="color:#fff;border-bottom:2px solid #F26522;padding-bottom:3px;">Challenges</a>
       <a href="${BP}/knowledge" class="ib-navlink">Knowledge Hub</a>
       <a href="${BP}/ecosystem" class="ib-navlink">Ecosystem</a>
-      <a href="${BP}/events" class="ib-navlink">Events</a>
+      <a href="${BP}/calendar" class="ib-navlink">Calendar</a>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
       <a href="${BP}/contact" style="color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(255,255,255,0.22);">Contact Us</a>
-      <a href="#" class="ib-cta-orange" style="background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;">Post a Challenge</a>
+      <a href="${BP}/challenges/post" class="ib-cta-orange" style="background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;">Post a Challenge</a>
     </div>
   </div>
 </div>
@@ -40,7 +40,7 @@ const CHALLENGES_HTML = `
     <p style="margin:24px auto 0;font-size:18px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:620px;">LGUs, MSMEs, universities, and NGOs post the challenges that matter. Founders, startups, researchers, and students step up to build the solutions.</p>
     <div style="display:flex;gap:14px;justify-content:center;margin-top:34px;flex-wrap:wrap;">
       <a href="#" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:16px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 14px 36px rgba(242,101,34,0.4);">Browse challenges <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-      <a href="#" style="display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:16px;padding:15px 28px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);">Post a challenge</a>
+      <a href="${BP}/challenges/post" style="display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:16px;padding:15px 28px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);">Post a challenge</a>
     </div>
   </div>
 </div>
@@ -136,7 +136,7 @@ const CHALLENGES_HTML = `
   <div style="max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:20px;">
     <div style="background:#141417;border-radius:24px;padding:40px;position:relative;overflow:hidden;">
       <div style="position:absolute;top:-60px;right:-40px;width:220px;height:220px;background:radial-gradient(circle,rgba(40,94,122,0.3),transparent 65%);"></div>
-      <div style="position:relative;"><h3 style="margin:0 0 10px;font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.02em;">Have a problem to solve?</h3><p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:rgba(255,255,255,0.62);">Post a challenge and tap into Baguio&rsquo;s full innovation community.</p><a href="#" style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:#141417;font-weight:600;font-size:15px;padding:14px 26px;border-radius:9999px;text-decoration:none;">Post a challenge <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#141417" stroke-width="2.3"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
+      <div style="position:relative;"><h3 style="margin:0 0 10px;font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.02em;">Have a problem to solve?</h3><p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:rgba(255,255,255,0.62);">Post a challenge and tap into Baguio&rsquo;s full innovation community.</p><a href="${BP}/challenges/post" style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:#141417;font-weight:600;font-size:15px;padding:14px 26px;border-radius:9999px;text-decoration:none;">Post a challenge <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#141417" stroke-width="2.3"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
     </div>
     <div style="background:#F26522;border-radius:24px;padding:40px;position:relative;overflow:hidden;">
       <svg style="position:absolute;top:-30px;right:-20px;opacity:0.2;" width="200" height="170" viewBox="0 0 120 104" fill="none"><polyline points="12,40 60,12 108,40" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="12,62 60,34 108,62" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="12,84 60,56 108,84" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
@@ -153,7 +153,7 @@ const CHALLENGES_HTML = `
         <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:38px;width:auto;"><div style="font-size:17px;font-weight:600;color:#fff;">Incubator Baguio</div></div>
         <p style="margin:0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,0.5);max-width:280px;">Baguio City Research and Innovation Alliance. Operationalized under Ordinance No. 63, s.2023 by the CPDSO, City Government of Baguio.</p>
       </div>
-      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Explore</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/programs">Programs</a><a class="ib-footlink" href="${BP}/challenges">Challenges</a><a class="ib-footlink" href="${BP}/knowledge">Knowledge Hub</a><a class="ib-footlink" href="${BP}/ecosystem">Ecosystem</a><a class="ib-footlink" href="${BP}/events">Events</a><a class="ib-footlink" href="${BP}/contact">Contact</a></div></div>
+      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Explore</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/programs">Programs</a><a class="ib-footlink" href="${BP}/challenges">Challenges</a><a class="ib-footlink" href="${BP}/knowledge">Knowledge Hub</a><a class="ib-footlink" href="${BP}/ecosystem">Ecosystem</a><a class="ib-footlink" href="${BP}/calendar">Calendar</a><a class="ib-footlink" href="${BP}/contact">Contact</a></div></div>
       <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Apply</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>Startup Incubation</span><span>Research Submission</span><span>Mentor Registration</span><span>Partner Inquiry</span></div></div>
       <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Contact</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>CPDSO, City Hall, Baguio</span><span>hello@incubatorbaguio.ph</span><span>Facebook &middot; LinkedIn</span></div></div>
     </div>

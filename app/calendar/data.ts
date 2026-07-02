@@ -83,3 +83,63 @@ export const EVENTS: CityEvent[] = [
 ];
 
 export const TODAY = new Date(2026, 5, 17); // 2026-06-17
+
+// ---- Mentoring ----
+export type MentorExpertise =
+  | "Fundraising & Finance"
+  | "Product & Engineering"
+  | "Research & IP"
+  | "Go-to-Market"
+  | "Legal & Compliance"
+  | "Operations & Manufacturing"
+  | "Marketing & Brand"
+  | "Data & AI";
+
+export const MENTOR_EXPERTISE_COLORS: Record<MentorExpertise, { color: string; bg: string }> = {
+  "Fundraising & Finance": { color: ORANGE, bg: "rgba(242,101,34,0.12)" },
+  "Product & Engineering": { color: "#285E7A", bg: "rgba(40,94,122,0.12)" },
+  "Research & IP": { color: "#D88A0A", bg: "rgba(245,166,35,0.16)" },
+  "Go-to-Market": { color: "#9E2A52", bg: "rgba(158,42,82,0.12)" },
+  "Legal & Compliance": { color: "#1A6B3C", bg: "rgba(26,107,60,0.12)" },
+  "Operations & Manufacturing": { color: "#0055A5", bg: "rgba(0,85,165,0.12)" },
+  "Marketing & Brand": { color: "#E23A2E", bg: "rgba(226,58,46,0.12)" },
+  "Data & AI": { color: "#7C5CD6", bg: "rgba(124,92,214,0.14)" },
+};
+
+export type MentorFormat = "Online" | "In-Person";
+export const MENTOR_FORMATS: MentorFormat[] = ["Online", "In-Person"];
+
+export interface MentorSlot {
+  id: string;
+  mentorName: string;
+  initials: string;
+  color: string;
+  expertise: MentorExpertise;
+  date: string; // ISO
+  time: string;
+  duration: string;
+  format: MentorFormat;
+  venue: string;
+}
+
+export const MENTOR_SLOTS: MentorSlot[] = [
+  { id: "ms1", mentorName: "Maria Aquino", initials: "MA", color: ORANGE, expertise: "Fundraising & Finance", date: "2026-06-03", time: "10:00 AM", duration: "30 min", format: "Online", venue: "Online" },
+  { id: "ms2", mentorName: "Maria Aquino", initials: "MA", color: ORANGE, expertise: "Fundraising & Finance", date: "2026-06-17", time: "3:00 PM", duration: "30 min", format: "Online", venue: "Online" },
+  { id: "ms3", mentorName: "Maria Aquino", initials: "MA", color: ORANGE, expertise: "Fundraising & Finance", date: "2026-06-24", time: "11:00 AM", duration: "30 min", format: "In-Person", venue: "Incubator Baguio Hub" },
+  { id: "ms4", mentorName: "Ramon Dizon", initials: "RD", color: "#285E7A", expertise: "Product & Engineering", date: "2026-06-04", time: "3:00 PM", duration: "30 min", format: "Online", venue: "Online" },
+  { id: "ms5", mentorName: "Ramon Dizon", initials: "RD", color: "#285E7A", expertise: "Product & Engineering", date: "2026-06-18", time: "9:00 AM", duration: "30 min", format: "In-Person", venue: "Incubator Baguio Hub" },
+  { id: "ms6", mentorName: "Liza Tan", initials: "LT", color: "#D88A0A", expertise: "Research & IP", date: "2026-06-09", time: "1:00 PM", duration: "30 min", format: "Online", venue: "Online" },
+  { id: "ms7", mentorName: "Liza Tan", initials: "LT", color: "#D88A0A", expertise: "Research & IP", date: "2026-06-23", time: "10:00 AM", duration: "30 min", format: "Online", venue: "Online" },
+  { id: "ms8", mentorName: "Jun Baltazar", initials: "JB", color: "#9E2A52", expertise: "Go-to-Market", date: "2026-06-10", time: "4:00 PM", duration: "30 min", format: "Online", venue: "Online" },
+  { id: "ms9", mentorName: "Jun Baltazar", initials: "JB", color: "#9E2A52", expertise: "Go-to-Market", date: "2026-06-25", time: "2:00 PM", duration: "30 min", format: "In-Person", venue: "Incubator Baguio Hub" },
+  { id: "ms10", mentorName: "Anna Cruz", initials: "AC", color: "#1A6B3C", expertise: "Legal & Compliance", date: "2026-06-05", time: "11:00 AM", duration: "30 min", format: "Online", venue: "Online" },
+  { id: "ms11", mentorName: "Anna Cruz", initials: "AC", color: "#1A6B3C", expertise: "Legal & Compliance", date: "2026-06-19", time: "3:00 PM", duration: "30 min", format: "Online", venue: "Online" },
+  { id: "ms12", mentorName: "Paolo Reyes", initials: "PR", color: "#0055A5", expertise: "Operations & Manufacturing", date: "2026-06-11", time: "9:00 AM", duration: "30 min", format: "In-Person", venue: "Incubator Baguio Hub" },
+  { id: "ms13", mentorName: "Paolo Reyes", initials: "PR", color: "#0055A5", expertise: "Operations & Manufacturing", date: "2026-06-26", time: "1:00 PM", duration: "30 min", format: "Online", venue: "Online" },
+  { id: "ms14", mentorName: "Grace Lim", initials: "GL", color: "#E23A2E", expertise: "Marketing & Brand", date: "2026-06-12", time: "2:00 PM", duration: "30 min", format: "Online", venue: "Online" },
+  { id: "ms15", mentorName: "Grace Lim", initials: "GL", color: "#E23A2E", expertise: "Marketing & Brand", date: "2026-06-22", time: "10:00 AM", duration: "30 min", format: "Online", venue: "Online" },
+  { id: "ms16", mentorName: "Carlo Mendoza", initials: "CM", color: "#7C5CD6", expertise: "Data & AI", date: "2026-06-16", time: "3:00 PM", duration: "30 min", format: "Online", venue: "Online" },
+  { id: "ms17", mentorName: "Carlo Mendoza", initials: "CM", color: "#7C5CD6", expertise: "Data & AI", date: "2026-06-29", time: "11:00 AM", duration: "30 min", format: "In-Person", venue: "Incubator Baguio Hub" },
+];
+
+export const MENTOR_NAMES = Array.from(new Set(MENTOR_SLOTS.map((s) => s.mentorName)));
