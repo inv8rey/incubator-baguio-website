@@ -6,7 +6,7 @@ const ORANGE = "#F26522";
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export default function RequireAdmin({ children }: { children: React.ReactNode }) {
-  const { configured, user, profile, loading } = useAuth();
+  const { configured, user, profile, loading, refreshProfile } = useAuth();
 
   if (loading) {
     return (
@@ -31,12 +31,37 @@ export default function RequireAdmin({ children }: { children: React.ReactNode }
               ? "Log in with an account that has admin access."
               : "Your account doesn't have admin access yet."}
           </p>
-          <a
-            href={`${BP}/admin/login/?redirect=${encodeURIComponent(`${BP}/admin/`)}`}
-            style={{ fontSize: 14, fontWeight: 600, color: "#fff", textDecoration: "none", background: ORANGE, padding: "12px 24px", borderRadius: 9999 }}
-          >
-            {user ? "Log in with a different account" : "Log in"}
-          </a>
+          <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+            <a
+              href={`${BP}/admin/login/?redirect=${encodeURIComponent(`${BP}/admin/`)}`}
+              style={{ fontSize: 14, fontWeight: 600, color: "#fff", textDecoration: "none", background: ORANGE, padding: "12px 24px", borderRadius: 9999 }}
+            >
+              {user ? "Log in with a different account" : "Log in"}
+            </a>
+            {user && (
+              <button
+                onClick={() => refreshProfile()}
+                style={{ fontSize: 14, fontWeight: 600, color: "#fff", background: "none", border: "1px solid rgba(255,255,255,0.2)", padding: "12px 24px", borderRadius: 9999, cursor: "pointer" }}
+              >
+                Re-check access
+              </button>
+            )}
+          </div>
+
+          {user && (
+            <div style={{ marginTop: 24, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.08)", textAlign: "left" }}>
+              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 8 }}>
+                Debug info (send this to support)
+              </div>
+              <pre style={{ margin: 0, fontSize: 11.5, lineHeight: 1.6, color: "rgba(255,255,255,0.55)", whiteSpace: "pre-wrap", wordBreak: "break-all" }}>
+{JSON.stringify(
+  { userId: user.id, userEmail: user.email, profile: profile ?? "null (no profiles row found for this user id)" },
+  null,
+  2
+)}
+              </pre>
+            </div>
+          )}
         </div>
       </div>
     );
