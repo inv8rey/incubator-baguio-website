@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import { COMMUNITY, CORPORATE, COWORKING, GOVERNMENT, MAKERSPACES, MENTORS, TBIS, type EcosystemCategory, type StartupEntry, type TbiEntry, type CorporateEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry } from "./data";
+import { type EcosystemCategory, type StartupEntry, type TbiEntry, type CorporateEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry } from "./data";
 import { fetchDynamicStartups, fetchDynamicMentors, fetchDynamicOrganizations, type DynamicMentorEntry } from "./dynamicData";
 import ConnectMentorButton from "./ConnectMentorButton";
 
@@ -59,13 +59,13 @@ export default function EcosystemDirectory() {
   }, []);
 
   const allStartups = dynStartups;
-  const allMentors = useMemo(() => [...dynMentors, ...MENTORS], [dynMentors]);
-  const allTbis = useMemo(() => [...dynOrgs.TBIs, ...TBIS], [dynOrgs]);
-  const allCorporate = useMemo(() => [...dynOrgs.Corporate, ...CORPORATE], [dynOrgs]);
-  const allGovernment = useMemo(() => [...dynOrgs.Government, ...GOVERNMENT], [dynOrgs]);
-  const allCommunity = useMemo(() => [...dynOrgs.Community, ...COMMUNITY], [dynOrgs]);
-  const allCoworking = useMemo(() => [...dynOrgs["Coworking Spaces"], ...COWORKING], [dynOrgs]);
-  const allMakerspaces = useMemo(() => [...dynOrgs["Makerspaces & Labs"], ...MAKERSPACES], [dynOrgs]);
+  const allMentors = dynMentors;
+  const allTbis = dynOrgs.TBIs;
+  const allCorporate = dynOrgs.Corporate;
+  const allGovernment = dynOrgs.Government;
+  const allCommunity = dynOrgs.Community;
+  const allCoworking = dynOrgs["Coworking Spaces"];
+  const allMakerspaces = dynOrgs["Makerspaces & Labs"];
 
   const TABS: { id: EcosystemCategory; label: string; count: number }[] = [
     { id: "Startups", label: "Startups", count: allStartups.length },
@@ -221,8 +221,8 @@ export default function EcosystemDirectory() {
 
         {view === "list" && tab === "Mentors" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18 }} className="ib-ecosystem-grid">
-            {(filtered as (DynamicMentorEntry | (typeof MENTORS)[number])[]).map((m) => {
-              const photoUrl = (m as DynamicMentorEntry).photoUrl;
+            {(filtered as DynamicMentorEntry[]).map((m) => {
+              const photoUrl = m.photoUrl;
               return (
                 <div
                   key={m.name}
@@ -256,7 +256,7 @@ export default function EcosystemDirectory() {
                           <span key={s} style={{ fontSize: 10.5, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.18)", backdropFilter: "blur(4px)", padding: "4px 9px", borderRadius: 9999 }}>{s}</span>
                         ))}
                       </div>
-                      {"id" in m && <ConnectMentorButton mentorId={m.id} mentorName={m.name} variant="icon" />}
+                      <ConnectMentorButton mentorId={m.id} mentorName={m.name} variant="icon" />
                     </div>
                   </div>
                 </div>
@@ -267,9 +267,13 @@ export default function EcosystemDirectory() {
 
         {view === "list" && tab === "TBIs" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 18 }} className="ib-ecosystem-grid">
-            {(filtered as typeof TBIS).map((t) => (
+            {(filtered as TbiEntry[]).map((t) => (
               <div key={t.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26, display: "flex", gap: 16 }}>
-                <div style={{ width: 50, height: 50, borderRadius: 12, background: t.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: t.color, flexShrink: 0 }}>{t.initials}</div>
+                {t.logoUrl ? (
+                  <img src={t.logoUrl} alt={`${t.name} logo`} style={{ width: 50, height: 50, borderRadius: 12, objectFit: "cover", flexShrink: 0 }} />
+                ) : (
+                  <div style={{ width: 50, height: 50, borderRadius: 12, background: t.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: t.color, flexShrink: 0 }}>{t.initials}</div>
+                )}
                 <div>
                   <h3 style={{ margin: "0 0 4px", fontSize: 17, fontWeight: 600, color: DARK }}>{t.name}</h3>
                   <p style={{ margin: "0 0 10px", fontSize: 12.5, color: "#9A958B" }}>{t.host} &middot; {t.focus}</p>
@@ -282,10 +286,14 @@ export default function EcosystemDirectory() {
 
         {view === "list" && tab === "Corporate" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
-            {(filtered as typeof CORPORATE).map((c) => (
+            {(filtered as CorporateEntry[]).map((c) => (
               <div key={c.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 11, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: c.color, flexShrink: 0 }}>{c.initials}</div>
+                  {c.logoUrl ? (
+                    <img src={c.logoUrl} alt={`${c.name} logo`} style={{ width: 44, height: 44, borderRadius: 11, objectFit: "cover", flexShrink: 0 }} />
+                  ) : (
+                    <div style={{ width: 44, height: 44, borderRadius: 11, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: c.color, flexShrink: 0 }}>{c.initials}</div>
+                  )}
                   <div>
                     <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 600, color: DARK }}>{c.name}</h3>
                     <span style={{ fontSize: 11.5, color: "#9A958B" }}>{c.type}</span>
@@ -299,10 +307,14 @@ export default function EcosystemDirectory() {
 
         {view === "list" && tab === "Government" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
-            {(filtered as typeof GOVERNMENT).map((g) => (
+            {(filtered as GovernmentEntry[]).map((g) => (
               <div key={g.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 11, background: g.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: g.color, flexShrink: 0 }}>{g.initials}</div>
+                  {g.logoUrl ? (
+                    <img src={g.logoUrl} alt={`${g.name} logo`} style={{ width: 44, height: 44, borderRadius: 11, objectFit: "cover", flexShrink: 0 }} />
+                  ) : (
+                    <div style={{ width: 44, height: 44, borderRadius: 11, background: g.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: g.color, flexShrink: 0 }}>{g.initials}</div>
+                  )}
                   <div>
                     <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 600, color: DARK }}>{g.name}</h3>
                     <span style={{ fontSize: 11.5, color: "#9A958B" }}>{g.type}</span>
@@ -316,10 +328,14 @@ export default function EcosystemDirectory() {
 
         {view === "list" && tab === "Community" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
-            {(filtered as typeof COMMUNITY).map((c) => (
+            {(filtered as CommunityEntry[]).map((c) => (
               <div key={c.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 11, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: c.color, flexShrink: 0 }}>{c.initials}</div>
+                  {c.logoUrl ? (
+                    <img src={c.logoUrl} alt={`${c.name} logo`} style={{ width: 44, height: 44, borderRadius: 11, objectFit: "cover", flexShrink: 0 }} />
+                  ) : (
+                    <div style={{ width: 44, height: 44, borderRadius: 11, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: c.color, flexShrink: 0 }}>{c.initials}</div>
+                  )}
                   <div>
                     <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 600, color: DARK }}>{c.name}</h3>
                     <span style={{ fontSize: 11.5, color: "#9A958B" }}>{c.type}</span>
@@ -333,10 +349,14 @@ export default function EcosystemDirectory() {
 
         {view === "list" && tab === "Coworking Spaces" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
-            {(filtered as typeof COWORKING).map((c) => (
+            {(filtered as CoworkingEntry[]).map((c) => (
               <div key={c.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 11, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: c.color, flexShrink: 0 }}>{c.initials}</div>
+                  {c.logoUrl ? (
+                    <img src={c.logoUrl} alt={`${c.name} logo`} style={{ width: 44, height: 44, borderRadius: 11, objectFit: "cover", flexShrink: 0 }} />
+                  ) : (
+                    <div style={{ width: 44, height: 44, borderRadius: 11, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: c.color, flexShrink: 0 }}>{c.initials}</div>
+                  )}
                   <div>
                     <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 600, color: DARK }}>{c.name}</h3>
                     <span style={{ fontSize: 11.5, color: "#9A958B" }}>{c.type}</span>
@@ -350,10 +370,14 @@ export default function EcosystemDirectory() {
 
         {view === "list" && tab === "Makerspaces & Labs" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
-            {(filtered as typeof MAKERSPACES).map((m) => (
+            {(filtered as MakerspaceEntry[]).map((m) => (
               <div key={m.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 11, background: m.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: m.color, flexShrink: 0 }}>{m.initials}</div>
+                  {m.logoUrl ? (
+                    <img src={m.logoUrl} alt={`${m.name} logo`} style={{ width: 44, height: 44, borderRadius: 11, objectFit: "cover", flexShrink: 0 }} />
+                  ) : (
+                    <div style={{ width: 44, height: 44, borderRadius: 11, background: m.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: m.color, flexShrink: 0 }}>{m.initials}</div>
+                  )}
                   <div>
                     <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 600, color: DARK }}>{m.name}</h3>
                     <span style={{ fontSize: 11.5, color: "#9A958B" }}>{m.type}</span>

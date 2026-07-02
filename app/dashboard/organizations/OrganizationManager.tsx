@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../AuthProvider";
 import { supabase } from "../../../lib/supabaseClient";
+import { uploadOrgLogo } from "../../../lib/uploadLogo";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, rowItemStyle, DARK } from "../styles";
 
 const ORG_TYPES = ["TBIs", "Corporate", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
@@ -14,15 +15,17 @@ interface Organization {
   description: string;
   website: string;
   contact_email: string;
+  logo_url: string;
 }
 
-const EMPTY = { name: "", org_type: ORG_TYPES[0] as string, description: "", website: "", contact_email: "" };
+const EMPTY = { name: "", org_type: ORG_TYPES[0] as string, description: "", website: "", contact_email: "", logo_url: "" };
 
 export default function OrganizationManager() {
   const { user } = useAuth();
   const [orgs, setOrgs] = useState<Organization[]>([]);
   const [form, setForm] = useState(EMPTY);
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
   async function load() {
@@ -37,6 +40,22 @@ export default function OrganizationManager() {
 
   function update<K extends keyof typeof EMPTY>(key: K, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  async function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError("");
+    try {
+      const url = await uploadOrgLogo(file);
+      update("logo_url", url);
+    } catch (err: any) {
+      setError(err.message || "Logo upload failed.");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
   }
 
   async function submit(e: React.FormEvent) {
@@ -68,6 +87,22 @@ export default function OrganizationManager() {
           Published immediately to the Ecosystem directory under the matching category.
         </p>
         <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            {form.logo_url ? (
+              <img src={form.logo_url} alt="" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
+            ) : (
+              <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F4F2EC", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10.5, textAlign: "center" }}>
+                No logo
+              </div>
+            )}
+            <div>
+              <label style={{ display: "inline-block", fontSize: 13, fontWeight: 600, color: "#F26522", cursor: "pointer" }}>
+                {uploading ? "Uploading…" : "Upload logo"}
+                <input type="file" accept="image/*" onChange={handleLogoChange} disabled={uploading} style={{ display: "none" }} />
+              </label>
+              <div style={{ fontSize: 11.5, color: "#9A958B", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
+            </div>
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
               <label style={labelStyle}>Organization name</label>
@@ -98,7 +133,7 @@ export default function OrganizationManager() {
           </div>
           {error && <p style={{ color: "#E23A2E", fontSize: 13, margin: 0 }}>{error}</p>}
           <div>
-            <button type="submit" disabled={busy} style={{ ...primaryButtonStyle, opacity: busy ? 0.7 : 1 }}>
+            <button type="submit" disabled={busy || uploading} style={{ ...primaryButtonStyle, opacity: busy || uploading ? 0.7 : 1 }}>
               {busy ? "Publishing…" : "Publish organization"}
             </button>
           </div>
@@ -113,9 +148,16 @@ export default function OrganizationManager() {
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {orgs.map((o) => (
               <div key={o.id} style={rowItemStyle}>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{o.name}</div>
-                  <div style={{ fontSize: 12.5, color: "#9A958B" }}>{o.org_type}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  {o.logo_url ? (
+                    <img src={o.logo_url} alt="" style={{ width: 34, height: 34, borderRadius: 9, objectFit: "cover" }} />
+                  ) : (
+                    <div style={{ width: 34, height: 34, borderRadius: 9, background: "#F4F2EC" }} />
+                  )}
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{o.name}</div>
+                    <div style={{ fontSize: 12.5, color: "#9A958B" }}>{o.org_type}</div>
+                  </div>
                 </div>
                 <button onClick={() => remove(o.id)} style={{ fontSize: 12.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer" }}>
                   Delete

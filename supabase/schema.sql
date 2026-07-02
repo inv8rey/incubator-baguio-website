@@ -243,11 +243,13 @@ create table if not exists public.organizations (
   description text not null default '',
   website text not null default '',
   contact_email text not null default '',
+  logo_url text not null default '',
   created_at timestamptz not null default now()
 );
 
 -- Migrates tables created before admin-added organizations (no linked founder account) were supported.
 alter table public.organizations alter column owner_id drop not null;
+alter table public.organizations add column if not exists logo_url text not null default '';
 
 alter table public.organizations enable row level security;
 
@@ -371,3 +373,26 @@ create policy "authenticated users can update mentor photos" on storage.objects
 drop policy if exists "authenticated users can delete mentor photos" on storage.objects;
 create policy "authenticated users can delete mentor photos" on storage.objects
   for delete to authenticated using (bucket_id = 'mentor-photos');
+
+-- ---------------------------------------------------------------------------
+-- storage: org-logos bucket for TBI/Corporate/Government/Community/Coworking/Makerspace logos
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('org-logos', 'org-logos', true)
+on conflict (id) do nothing;
+
+drop policy if exists "org logos are publicly readable" on storage.objects;
+create policy "org logos are publicly readable" on storage.objects
+  for select using (bucket_id = 'org-logos');
+
+drop policy if exists "authenticated users can upload org logos" on storage.objects;
+create policy "authenticated users can upload org logos" on storage.objects
+  for insert to authenticated with check (bucket_id = 'org-logos');
+
+drop policy if exists "authenticated users can update org logos" on storage.objects;
+create policy "authenticated users can update org logos" on storage.objects
+  for update to authenticated using (bucket_id = 'org-logos');
+
+drop policy if exists "authenticated users can delete org logos" on storage.objects;
+create policy "authenticated users can delete org logos" on storage.objects
+  for delete to authenticated using (bucket_id = 'org-logos');
