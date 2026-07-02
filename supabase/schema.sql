@@ -147,13 +147,16 @@ create policy "admins manage all startups" on public.startups
 -- ---------------------------------------------------------------------------
 create table if not exists public.mentors (
   id uuid primary key default gen_random_uuid(),
-  owner_id uuid not null unique references public.profiles (id) on delete cascade,
+  owner_id uuid unique references public.profiles (id) on delete cascade,
   name text not null,
   expertise text not null default '',
   bio text not null default '',
   tag text not null default '',
   created_at timestamptz not null default now()
 );
+
+-- Migrates tables created before admin-added mentors (no linked founder account) were supported.
+alter table public.mentors alter column owner_id drop not null;
 
 alter table public.mentors enable row level security;
 
@@ -164,6 +167,16 @@ create policy "mentors are publicly readable" on public.mentors
 drop policy if exists "owners manage their mentor profile" on public.mentors;
 create policy "owners manage their mentor profile" on public.mentors
   for all using (auth.uid() = owner_id) with check (auth.uid() = owner_id);
+
+-- Admins can add/edit/remove ANY mentor, same reasoning as startups above —
+-- lets the admin dashboard curate the Ecosystem "Mentors" tab directly.
+drop policy if exists "admins manage all mentors" on public.mentors;
+create policy "admins manage all mentors" on public.mentors
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
 
 -- ---------------------------------------------------------------------------
 -- mentor_connections: "Connect with mentors"
@@ -220,6 +233,15 @@ create policy "organizations are publicly readable" on public.organizations
 drop policy if exists "owners manage their organizations" on public.organizations;
 create policy "owners manage their organizations" on public.organizations
   for all using (auth.uid() = owner_id) with check (auth.uid() = owner_id);
+
+-- Admins can add/edit/remove ANY organization, same reasoning as startups above.
+drop policy if exists "admins manage all organizations" on public.organizations;
+create policy "admins manage all organizations" on public.organizations
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
 
 -- ---------------------------------------------------------------------------
 -- challenge_submissions: "Create ... innovation challenges" (Post a Challenge)

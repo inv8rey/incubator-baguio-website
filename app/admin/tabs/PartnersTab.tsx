@@ -1,198 +1,360 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { DARK, ORANGE, PARTNERS, PARTNER_CATEGORIES, type Partner } from "../data";
+import { useEffect, useState } from "react";
+import { DARK, ORANGE } from "../data";
+import { supabase } from "../../../lib/supabaseClient";
+import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
+import { MENTOR_EXPERTISE_COLORS, type MentorExpertise } from "../../calendar/data";
 
-const CATEGORY_COLOR: Record<string, { color: string; bg: string }> = {
-  Academe: { color: "#D88A0A", bg: "rgba(245,166,35,0.14)" },
-  Government: { color: "#F26522", bg: "rgba(242,101,34,0.12)" },
-  Corporate: { color: "#285E7A", bg: "rgba(40,94,122,0.12)" },
-  Community: { color: "#9E2A52", bg: "rgba(158,42,82,0.12)" },
-};
+const EXPERTISE_LIST = Object.keys(MENTOR_EXPERTISE_COLORS) as MentorExpertise[];
+
+const ORG_TYPES = ["TBIs", "Corporate", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
+type OrgType = (typeof ORG_TYPES)[number];
+const CATEGORIES = ["Mentors", ...ORG_TYPES] as const;
+type Category = (typeof CATEGORIES)[number];
+
+const NAME_MAX = 60;
+const BIO_MAX = 280;
+const TAG_MAX = 40;
+
+interface MentorRow {
+  id: string;
+  name: string;
+  expertise: string;
+  bio: string;
+  tag: string;
+  initials: string;
+  color: string;
+}
+
+interface OrgRow {
+  id: string;
+  name: string;
+  org_type: OrgType;
+  description: string;
+  website: string;
+  contact_email: string;
+  initials: string;
+  color: string;
+}
+
+const EMPTY_MENTOR = { name: "", expertise: EXPERTISE_LIST[0] as string, bio: "", tag: "" };
+const EMPTY_ORG = { name: "", description: "", website: "", contact_email: "" };
 
 export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string }) {
-  const [partners, setPartners] = useState<Partner[]>(PARTNERS);
-  const [category, setCategory] = useState<string | null>(null);
+  const [category, setCategory] = useState<Category>("Mentors");
+  const [mentors, setMentors] = useState<MentorRow[]>([]);
+  const [orgs, setOrgs] = useState<OrgRow[]>([]);
+  const [loaded, setLoaded] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [mentorForm, setMentorForm] = useState(EMPTY_MENTOR);
+  const [orgForm, setOrgForm] = useState(EMPTY_ORG);
+  const [error, setError] = useState("");
 
-  const [name, setName] = useState("");
-  const [newCategory, setNewCategory] = useState(PARTNER_CATEGORIES[0]);
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
+  async function load() {
+    if (!supabase) {
+      setLoaded(true);
+      return;
+    }
+    const [{ data: mentorData }, { data: orgData }] = await Promise.all([
+      supabase.from("mentors").select("*").order("created_at", { ascending: false }),
+      supabase.from("organizations").select("*").order("created_at", { ascending: false }),
+    ]);
+    setMentors(
+      (mentorData ?? []).map((m: any) => {
+        const p = paletteFor(m.name);
+        return { id: m.id, name: m.name, expertise: m.expertise, bio: m.bio, tag: m.tag, initials: initialsOf(m.name), color: p.color };
+      })
+    );
+    setOrgs(
+      (orgData ?? []).map((o: any) => {
+        const p = paletteFor(o.name);
+        return { id: o.id, name: o.name, org_type: o.org_type, description: o.description, website: o.website, contact_email: o.contact_email, initials: initialsOf(o.name), color: p.color };
+      })
+    );
+    setLoaded(true);
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
 
   const q = searchQuery.toLowerCase();
-  const filtered = partners.filter((p) => (!category || p.category === category) && (!q || p.name.toLowerCase().includes(q)));
+  const isMentors = category === "Mentors";
+  const filteredMentors = mentors.filter((m) => !q || m.name.toLowerCase().includes(q) || m.expertise.toLowerCase().includes(q));
+  const filteredOrgs = orgs.filter((o) => o.org_type === category && (!q || o.name.toLowerCase().includes(q) || o.description.toLowerCase().includes(q)));
 
-  function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setLogoPreview(reader.result as string);
-    reader.readAsDataURL(file);
+  function openAddModal() {
+    setEditingId(null);
+    setMentorForm(EMPTY_MENTOR);
+    setOrgForm(EMPTY_ORG);
+    setError("");
+    setModalOpen(true);
   }
 
-  function resetForm() {
-    setName("");
-    setNewCategory(PARTNER_CATEGORIES[0]);
-    setLogoPreview(null);
-    if (fileRef.current) fileRef.current.value = "";
+  function openEditMentor(m: MentorRow) {
+    setEditingId(m.id);
+    setMentorForm({ name: m.name, expertise: m.expertise, bio: m.bio, tag: m.tag });
+    setError("");
+    setModalOpen(true);
   }
 
-  function addPartner(e: React.FormEvent) {
-    e.preventDefault();
-    if (!name.trim()) return;
-    const initials = name
-      .split(" ")
-      .map((w) => w[0])
-      .join("")
-      .slice(0, 4)
-      .toUpperCase();
-    const colors = ["#F26522", "#285E7A", "#1A6B3C", "#9E2A52", "#D88A0A", "#7C5CD6"];
-    const color = colors[partners.length % colors.length];
-    setPartners((p) => [{ name: name.trim(), category: newCategory, logo: logoPreview, initials, color }, ...p]);
-    resetForm();
+  function openEditOrg(o: OrgRow) {
+    setEditingId(o.id);
+    setOrgForm({ name: o.name, description: o.description, website: o.website, contact_email: o.contact_email });
+    setError("");
+    setModalOpen(true);
+  }
+
+  function closeModal() {
     setModalOpen(false);
+    setEditingId(null);
+  }
+
+  async function deleteMentor(id: string) {
+    if (!supabase) return;
+    if (!window.confirm("Delete this mentor? This can't be undone.")) return;
+    const { error: err } = await supabase.from("mentors").delete().eq("id", id);
+    if (err) return window.alert(err.message);
+    load();
+  }
+
+  async function deleteOrg(id: string) {
+    if (!supabase) return;
+    if (!window.confirm("Delete this entry? This can't be undone.")) return;
+    const { error: err } = await supabase.from("organizations").delete().eq("id", id);
+    if (err) return window.alert(err.message);
+    load();
+  }
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!supabase) return;
+    setError("");
+
+    if (isMentors) {
+      if (!mentorForm.name.trim()) return;
+      const payload = { name: mentorForm.name.trim(), expertise: mentorForm.expertise, bio: mentorForm.bio.trim(), tag: mentorForm.tag.trim() };
+      const { error: err } = editingId
+        ? await supabase.from("mentors").update(payload).eq("id", editingId)
+        : await supabase.from("mentors").insert(payload);
+      if (err) return setError(err.message);
+    } else {
+      if (!orgForm.name.trim()) return;
+      const payload = { name: orgForm.name.trim(), org_type: category, description: orgForm.description.trim(), website: orgForm.website.trim(), contact_email: orgForm.contact_email.trim() };
+      const { error: err } = editingId
+        ? await supabase.from("organizations").update(payload).eq("id", editingId)
+        : await supabase.from("organizations").insert(payload);
+      if (err) return setError(err.message);
+    }
+    closeModal();
+    load();
   }
 
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
       <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(20,20,25,0.09)", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <div style={{ display: "flex", gap: 6, flex: 1, flexWrap: "wrap" }}>
-          <button
-            onClick={() => setCategory(null)}
-            style={{
-              fontSize: 12.5,
-              fontWeight: category === null ? 600 : 500,
-              padding: "6px 14px",
-              borderRadius: 999,
-              border: "none",
-              color: category === null ? "#fff" : "#6B6B73",
-              background: category === null ? "#0E0E10" : "#F5F4F0",
-              cursor: "pointer",
-            }}
-          >
-            All <span style={{ fontSize: 10, opacity: 0.7 }}>{partners.length}</span>
-          </button>
-          {PARTNER_CATEGORIES.map((c) => {
+          {CATEGORIES.map((c) => {
             const active = category === c;
-            const cc = CATEGORY_COLOR[c];
+            const count = c === "Mentors" ? mentors.length : orgs.filter((o) => o.org_type === c).length;
             return (
               <button
                 key={c}
-                onClick={() => setCategory(active ? null : c)}
+                onClick={() => setCategory(c)}
                 style={{
-                  fontSize: 12,
-                  fontWeight: 500,
-                  padding: "5px 11px",
+                  fontSize: 12.5,
+                  fontWeight: active ? 600 : 500,
+                  padding: "6px 14px",
                   borderRadius: 999,
-                  border: active ? `1.5px solid ${cc.color}4D` : "1.5px solid rgba(20,20,25,0.09)",
-                  color: active ? cc.color : "#6B6B73",
-                  background: active ? cc.bg : "#fff",
+                  border: "none",
+                  color: active ? "#fff" : "#6B6B73",
+                  background: active ? "#0E0E10" : "#F5F4F0",
                   cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
                 }}
               >
                 {c}
+                <span style={{ fontSize: 10, opacity: 0.7 }}>{count}</span>
               </button>
             );
           })}
         </div>
         <button
-          onClick={() => setModalOpen(true)}
+          onClick={openAddModal}
           style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 999, fontSize: 13, fontWeight: 600, border: "none", color: "#fff", background: ORANGE, cursor: "pointer" }}
         >
-          + Add Partner
+          + Add {isMentors ? "Mentor" : category.replace(/s$/, "")}
         </button>
       </div>
 
       <div className="ib-admin-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 14 }}>
-        {filtered.map((p) => {
-          const cc = CATEGORY_COLOR[p.category] ?? { color: "#6B6B73", bg: "#F5F4F0" };
-          return (
-            <div key={p.name} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18, display: "flex", alignItems: "center", gap: 12 }}>
-              {p.logo ? (
-                <img src={p.logo} alt={p.name} style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", flexShrink: 0, border: "1px solid rgba(20,20,25,0.08)" }} />
-              ) : (
-                <div style={{ width: 44, height: 44, borderRadius: 10, background: p.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
-                  {p.initials}
+        {isMentors &&
+          filteredMentors.map((m) => (
+            <div key={m.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18, display: "flex", gap: 12 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 10, background: m.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{m.initials}</div>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{m.name}</div>
+                <div style={{ fontSize: 11.5, color: "#9A958B", margin: "3px 0 8px" }}>{m.expertise}{m.tag ? ` · ${m.tag}` : ""}</div>
+                <div style={{ display: "flex", gap: 12 }}>
+                  <button onClick={() => openEditMentor(m)} style={{ fontSize: 11.5, fontWeight: 600, color: "#285E7A", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Edit</button>
+                  <button onClick={() => deleteMentor(m.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Delete</button>
                 </div>
-              )}
-              <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{p.name}</div>
-                <span style={{ display: "inline-block", marginTop: 4, fontSize: 10.5, fontWeight: 600, color: cc.color, background: cc.bg, padding: "2px 8px", borderRadius: 999 }}>{p.category}</span>
               </div>
             </div>
-          );
-        })}
-        {filtered.length === 0 && (
+          ))}
+
+        {!isMentors &&
+          filteredOrgs.map((o) => (
+            <div key={o.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18, display: "flex", gap: 12 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 10, background: o.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{o.initials}</div>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{o.name}</div>
+                <div style={{ fontSize: 11.5, color: "#9A958B", margin: "3px 0 8px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{o.description || "No description yet"}</div>
+                <div style={{ display: "flex", gap: 12 }}>
+                  <button onClick={() => openEditOrg(o)} style={{ fontSize: 11.5, fontWeight: 600, color: "#285E7A", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Edit</button>
+                  <button onClick={() => deleteOrg(o.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Delete</button>
+                </div>
+              </div>
+            </div>
+          ))}
+
+        {loaded && ((isMentors && filteredMentors.length === 0) || (!isMentors && filteredOrgs.length === 0)) && (
           <div style={{ gridColumn: "1 / -1", padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)" }}>
-            No partners in this category yet.
+            No {category.toLowerCase()} yet.
           </div>
         )}
       </div>
 
       {modalOpen && (
         <div
-          onClick={() => setModalOpen(false)}
+          onClick={closeModal}
           style={{ position: "fixed", inset: 0, background: "rgba(15,15,17,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 20 }}
         >
           <form
             onClick={(e) => e.stopPropagation()}
-            onSubmit={addPartner}
-            style={{ background: "#fff", borderRadius: 18, padding: 26, width: "100%", maxWidth: 420, display: "flex", flexDirection: "column", gap: 16 }}
+            onSubmit={submit}
+            style={{ background: "#fff", borderRadius: 18, padding: 26, width: "100%", maxWidth: 440, display: "flex", flexDirection: "column", gap: 16, maxHeight: "90vh", overflowY: "auto" }}
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div style={{ fontSize: 16.5, fontWeight: 700, color: DARK }}>Add ecosystem partner</div>
-              <button type="button" onClick={() => setModalOpen(false)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#9A958B", lineHeight: 1 }}>
-                ×
-              </button>
+              <div style={{ fontSize: 16.5, fontWeight: 700, color: DARK }}>
+                {editingId ? "Edit" : "Add"} {isMentors ? "mentor" : category.replace(/s$/, "").toLowerCase()}
+              </div>
+              <button type="button" onClick={closeModal} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#9A958B", lineHeight: 1 }}>×</button>
             </div>
 
-            <div>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Partner name</label>
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Cordillera Bank Foundation"
-                required
-                style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
-              />
-            </div>
-
-            <div>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Category</label>
-              <select
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
-              >
-                {PARTNER_CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Logo</label>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F5F4F0", border: "1.5px dashed rgba(20,20,25,0.15)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", flexShrink: 0 }}>
-                  {logoPreview ? (
-                    <img src={logoPreview} alt="Logo preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  ) : (
-                    <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={1.8}><path d="M4 16l4.5-4.5a2 2 0 0 1 2.8 0L16 16M14 14l1.5-1.5a2 2 0 0 1 2.8 0L20 14M4 6h16v12H4z" /></svg>
-                  )}
+            {isMentors ? (
+              <>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Full name</label>
+                  <input
+                    value={mentorForm.name}
+                    onChange={(e) => setMentorForm((f) => ({ ...f, name: e.target.value }))}
+                    placeholder="e.g. Maria Aquino"
+                    required
+                    maxLength={NAME_MAX}
+                    style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                  />
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Expertise</label>
+                    <select
+                      value={mentorForm.expertise}
+                      onChange={(e) => setMentorForm((f) => ({ ...f, expertise: e.target.value }))}
+                      style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                    >
+                      {EXPERTISE_LIST.map((x) => (
+                        <option key={x} value={x}>{x}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Tag</label>
+                    <input
+                      value={mentorForm.tag}
+                      onChange={(e) => setMentorForm((f) => ({ ...f, tag: e.target.value }))}
+                      placeholder="e.g. Founder, 2 exits"
+                      maxLength={TAG_MAX}
+                      style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                    />
+                  </div>
                 </div>
                 <div>
-                  <input ref={fileRef} type="file" accept="image/*" onChange={handleLogoChange} style={{ fontSize: 12.5 }} />
-                  <div style={{ fontSize: 11, color: "#9A958B", marginTop: 4 }}>PNG, JPG, or SVG. Falls back to initials if skipped.</div>
+                  <label style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>
+                    <span>Bio</span>
+                    <span style={{ color: "#9A958B", fontWeight: 500 }}>{mentorForm.bio.length}/{BIO_MAX}</span>
+                  </label>
+                  <textarea
+                    value={mentorForm.bio}
+                    onChange={(e) => setMentorForm((f) => ({ ...f, bio: e.target.value }))}
+                    placeholder="Background and how they can help founders."
+                    maxLength={BIO_MAX}
+                    style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box", minHeight: 74, resize: "vertical", fontFamily: "inherit" }}
+                  />
                 </div>
-              </div>
-            </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Name</label>
+                  <input
+                    value={orgForm.name}
+                    onChange={(e) => setOrgForm((f) => ({ ...f, name: e.target.value }))}
+                    placeholder={`e.g. ${category === "TBIs" ? "SLU iDEYA" : category === "Government" ? "City Environment Office" : "Organization name"}`}
+                    required
+                    maxLength={NAME_MAX}
+                    style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>
+                    <span>Description</span>
+                    <span style={{ color: "#9A958B", fontWeight: 500 }}>{orgForm.description.length}/{BIO_MAX}</span>
+                  </label>
+                  <textarea
+                    value={orgForm.description}
+                    onChange={(e) => setOrgForm((f) => ({ ...f, description: e.target.value }))}
+                    placeholder="What do they do, and how do they support the ecosystem?"
+                    maxLength={BIO_MAX}
+                    style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box", minHeight: 74, resize: "vertical", fontFamily: "inherit" }}
+                  />
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Website (optional)</label>
+                    <input
+                      type="url"
+                      value={orgForm.website}
+                      onChange={(e) => setOrgForm((f) => ({ ...f, website: e.target.value }))}
+                      placeholder="https://"
+                      style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Contact email (optional)</label>
+                    <input
+                      type="email"
+                      value={orgForm.contact_email}
+                      onChange={(e) => setOrgForm((f) => ({ ...f, contact_email: e.target.value }))}
+                      placeholder="you@example.com"
+                      style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {error && <p style={{ color: "#E23A2E", fontSize: 12.5, margin: 0 }}>{error}</p>}
 
             <button
               type="submit"
               style={{ marginTop: 4, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 999, padding: "11px 22px", cursor: "pointer" }}
             >
-              Add partner
+              {editingId ? "Save changes" : "Add"}
             </button>
           </form>
         </div>
