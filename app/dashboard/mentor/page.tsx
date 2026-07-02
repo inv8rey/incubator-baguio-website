@@ -6,6 +6,7 @@ import { navHtml, footerHtml } from "../chrome";
 export const metadata: Metadata = {
   title: "Mentor Hub — Incubator Baguio",
   description: "Register as a mentor and manage your mentor profile.",
+  robots: { index: false, follow: false },
 };
 
 export default function MentorDashboardPage() {

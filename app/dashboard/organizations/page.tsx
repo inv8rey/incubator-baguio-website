@@ -6,6 +6,7 @@ import { navHtml, footerHtml } from "../chrome";
 export const metadata: Metadata = {
   title: "Organizations — Incubator Baguio",
   description: "Publish your organization to the Incubator Baguio ecosystem directory.",
+  robots: { index: false, follow: false },
 };
 
 export default function OrganizationsDashboardPage() {

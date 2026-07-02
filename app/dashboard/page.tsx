@@ -6,6 +6,7 @@ import { navHtml, footerHtml } from "./chrome";
 export const metadata: Metadata = {
   title: "Dashboard — Incubator Baguio",
   description: "Manage your startup profile, challenges, mentor connections, and organization listings.",
+  robots: { index: false, follow: false },
 };
 
 export default function DashboardPage() {

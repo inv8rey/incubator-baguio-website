@@ -1,6 +1,11 @@
+import type { Metadata } from "next";
 import EcosystemModel from "./programs/EcosystemModel";
 import FeaturedStartups from "./FeaturedStartups";
 import EcosystemPartnersMarquee from "./EcosystemPartnersMarquee";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -211,9 +216,30 @@ const HOME_HTML_BOTTOM_B2 = `
 </div>
 `;
 
+const ORG_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Incubator Baguio",
+  alternateName: "Baguio City Research and Innovation Alliance",
+  url: "https://incubator-baguio.vercel.app/",
+  logo: "https://incubator-baguio.vercel.app/assets/ib-icon.png",
+  description:
+    "Incubator Baguio connects startups, universities, Technology Business Incubators, government agencies, investors, and industry partners to accelerate innovation and strengthen the Baguio startup ecosystem.",
+  email: "hello@incubatorbaguio.ph",
+  sameAs: ["https://www.facebook.com/incubatorbaguio"],
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "CPDSO, City Hall",
+    addressLocality: "Baguio City",
+    addressRegion: "Benguet",
+    addressCountry: "PH",
+  },
+};
+
 export default function Home() {
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }} />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_TOP }} />
       <EcosystemModel />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_A }} />

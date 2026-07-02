@@ -6,6 +6,7 @@ import { navHtml, footerHtml } from "../chrome";
 export const metadata: Metadata = {
   title: "Mentor Connections — Incubator Baguio",
   description: "Manage mentor connection requests you've sent and received.",
+  robots: { index: false, follow: false },
 };
 
 export default function ConnectionsDashboardPage() {
