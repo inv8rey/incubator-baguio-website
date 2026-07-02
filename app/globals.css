@@ -1,17 +1,53 @@
 @import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap');
 
+:root {
+  /* Ink ramp */
+  --ib-ink: #151517;
+  --ib-ink-2: #55555f;
+  --ib-ink-3: #8b8b95;
+  /* Brand */
+  --ib-orange: #f26522;
+  --ib-orange-deep: #d9531a;
+  /* Surfaces */
+  --ib-paper: #f5f3ee;
+  --ib-hair: rgba(20, 20, 25, 0.08);
+  /* Elevation — soft, layered shadows are the premium signal */
+  --ib-shadow-sm: 0 1px 2px rgba(17, 17, 20, 0.04), 0 1px 3px rgba(17, 17, 20, 0.05);
+  --ib-shadow-md: 0 6px 16px rgba(17, 17, 20, 0.05), 0 2px 6px rgba(17, 17, 20, 0.04);
+  --ib-shadow-lg: 0 24px 50px -12px rgba(17, 17, 20, 0.14), 0 8px 20px -8px rgba(17, 17, 20, 0.08);
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
   font-family: 'General Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: #fff;
-  color: #141417;
+  color: #151517;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
+
+/* Refined display rendering: real designers tune tracking + ligatures */
+h1, h2, h3 {
+  font-feature-settings: "ss01", "cv01", "cv03";
+  text-wrap: balance;
+}
+p { text-wrap: pretty; }
 
 a { color: inherit; }
 
+::selection { background: rgba(242, 101, 34, 0.18); color: #151517; }
+
 html { scroll-behavior: smooth; }
+
+/* Accessible, on-brand focus ring (premium sites never ship the default outline) */
+a:focus-visible, button:focus-visible, input:focus-visible,
+textarea:focus-visible, select:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--ib-orange);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
 
 @keyframes ibmarquee {
   from { transform: translateX(0); }
@@ -30,20 +66,20 @@ html { scroll-behavior: smooth; }
 
 /* Hover affordances mirroring the design's style-hover hints */
 .ib-cta-orange {
-  transition: background .18s ease, transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  transition: background .2s cubic-bezier(.22,.61,.36,1), transform .2s cubic-bezier(.22,.61,.36,1), box-shadow .2s ease, filter .2s ease;
 }
-.ib-cta-orange:hover { background: #FF7A2F !important; transform: translateY(-2px); }
+.ib-cta-orange:hover { background: #FF7A2F !important; transform: translateY(-2px); box-shadow: 0 12px 28px -8px rgba(242,101,34,0.55) !important; }
 .ib-cta-orange:active { transform: translateY(0); }
 
 .ib-card-hover, .ib-row-hover, .ib-event-hover, .ib-resource-hover {
-  transition: box-shadow .22s ease, background .22s ease, transform .22s ease;
+  transition: box-shadow .28s cubic-bezier(.22,.61,.36,1), background .28s ease, transform .28s cubic-bezier(.22,.61,.36,1), border-color .28s ease;
 }
-.ib-card-hover:hover { box-shadow: 0 12px 30px rgba(20,20,25,0.08); transform: translateY(-3px); }
+.ib-card-hover:hover { box-shadow: var(--ib-shadow-lg); transform: translateY(-4px); border-color: rgba(20,20,25,0.05); }
 .ib-row-hover:hover { background: #fff; }
 .ib-event-hover:hover { background: #FAFAF7; }
-.ib-resource-hover:hover { box-shadow: 0 14px 32px rgba(0,0,0,0.07); transform: translateY(-2px); }
-.ib-challenge-hover { transition: box-shadow .22s ease, transform .22s ease; }
-.ib-challenge-hover:hover { box-shadow: 0 18px 40px rgba(0,0,0,0.08); transform: translateY(-3px); }
+.ib-resource-hover:hover { box-shadow: var(--ib-shadow-lg); transform: translateY(-3px); }
+.ib-challenge-hover { transition: box-shadow .28s cubic-bezier(.22,.61,.36,1), transform .28s cubic-bezier(.22,.61,.36,1), border-color .28s ease; }
+.ib-challenge-hover:hover { box-shadow: var(--ib-shadow-lg); transform: translateY(-4px); }
 .ib-getstarted-card { transition: border-color .2s ease, transform .2s ease, background .2s ease; }
 .ib-getstarted-card:hover { border-color: rgba(242,101,34,0.4) !important; background: #181819 !important; transform: translateY(-3px); }
 

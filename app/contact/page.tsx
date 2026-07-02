@@ -32,10 +32,10 @@ const TOP_HTML = `
 
 <!-- HERO -->
 <div style="position:relative;background:#0B0B0D;padding:56px 40px 60px;overflow:hidden;text-align:center;">
-  <div style="position:absolute;bottom:-120px;left:50%;transform:translateX(-50%);width:540px;height:540px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.30) 0%,transparent 60%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:-120px;left:50%;transform:translateX(-50%);width:540px;height:540px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.24) 0%,transparent 60%);pointer-events:none;"></div>
   <div style="position:relative;max-width:680px;margin:0 auto;">
     <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:20px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.8);">Contact</span></div>
-    <div style="display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:9999px;border:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.04);margin-bottom:24px;"><span style="width:7px;height:7px;border-radius:9999px;background:#F26522;"></span><span style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.75);">Get in touch</span></div>
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:9999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.03);margin-bottom:24px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,101,34,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:#F26522;"></span></span><span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Get in touch</span></div>
     <h1 style="margin:0;font-size:50px;line-height:1.05;font-weight:700;letter-spacing:-0.035em;color:#fff;">Let&rsquo;s talk about<br><span style="color:#F26522;">building something.</span></h1>
     <p style="margin:22px auto 0;font-size:17px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:560px;">Whether you&rsquo;re a founder, researcher, mentor, or organization, the Incubator Baguio team is here to help you find the right path.</p>
   </div>

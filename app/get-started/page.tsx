@@ -129,7 +129,7 @@ const HTML = `
 
       <!-- HERO PANEL -->
       <div style="grid-column:1;grid-row:1;position:relative;background:linear-gradient(160deg,#1A0F08 0%,#0B0B0D 70%);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:22px 20px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;">
-        <div style="position:absolute;top:-80px;left:-60px;width:280px;height:280px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.32),transparent 65%);pointer-events:none;"></div>
+        <div style="position:absolute;top:-80px;left:-60px;width:280px;height:280px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.22),transparent 65%);pointer-events:none;"></div>
         <div style="position:relative;">
           <div style="font-size:11px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F26522;margin-bottom:10px;">Welcome to Incubator Baguio</div>
           <h1 style="margin:0;font-size:22px;line-height:1.2;font-weight:700;letter-spacing:-0.02em;color:#fff;">What are you looking for today?<span style="color:#F26522;">.</span></h1>

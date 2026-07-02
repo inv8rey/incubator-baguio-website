@@ -42,12 +42,13 @@ export default function FeaturedStartups({ bp }: { bp: string }) {
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }} className="ib-featured-grid">
             {startups.map((s) => (
-              <div key={s.name} className="ib-card-hover ib-startup-card" style={{ position: "relative", background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, overflow: "hidden" }}>
-                <div style={{ height: 148, background: "repeating-linear-gradient(135deg,#F4F2EC,#F4F2EC 11px,#EDEAE1 11px,#EDEAE1 22px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div key={s.name} className="ib-card-hover ib-startup-card" style={{ position: "relative", background: "#fff", border: "1px solid rgba(20,20,25,0.07)", borderRadius: 16, overflow: "hidden", boxShadow: "var(--ib-shadow-sm)" }}>
+                <div style={{ position: "relative", height: 150, background: `radial-gradient(130% 120% at 50% 0%, ${s.bg} 0%, #F6F4EF 60%)`, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                  <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(20,20,25,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(20,20,25,0.03) 1px,transparent 1px)", backgroundSize: "26px 26px" }} />
                   {s.logoUrl ? (
-                    <img src={s.logoUrl} alt={`${s.name} logo`} style={{ width: 56, height: 56, borderRadius: 12, objectFit: "cover" }} />
+                    <img src={s.logoUrl} alt={`${s.name} logo`} style={{ position: "relative", width: 60, height: 60, borderRadius: 14, objectFit: "cover", boxShadow: "0 8px 20px -6px rgba(20,20,25,0.25)" }} />
                   ) : (
-                    <span style={{ fontFamily: "ui-monospace,SFMono-Regular,Menlo,monospace", fontSize: 11, letterSpacing: "0.08em", color: "#A8A399" }}>startup cover</span>
+                    <div style={{ position: "relative", width: 60, height: 60, borderRadius: 14, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 700, color: s.color, boxShadow: "0 8px 20px -6px rgba(20,20,25,0.18)" }}>{s.initial}</div>
                   )}
                 </div>
                 <div style={{ padding: 24 }}>

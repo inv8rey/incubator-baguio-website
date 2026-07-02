@@ -32,30 +32,34 @@ const CHALLENGES_HTML_TOP = `
 </div>
 
 <!-- HERO -->
-<div style="position:relative;background:#0B0B0D;padding:60px 40px 64px;overflow:hidden;text-align:center;">
-  <div style="position:absolute;bottom:-120px;left:50%;transform:translateX(-50%);width:600px;height:600px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.32) 0%,transparent 60%);pointer-events:none;"></div>
-  <svg style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);opacity:0.15;" width="720" height="410" viewBox="0 0 120 104" fill="none" preserveAspectRatio="none"><polyline points="6,40 60,8 114,40" stroke="#F5A623" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,62 60,30 114,62" stroke="#E23A2E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,84 60,52 114,84" stroke="#9E2A52" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,106 60,74 114,106" stroke="#285E7A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
-  <div style="position:relative;max-width:880px;margin:0 auto;">
-    <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:20px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.8);">Innovation Challenges</span></div>
-    <div style="display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:9999px;border:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.04);margin-bottom:24px;"><span style="width:7px;height:7px;border-radius:9999px;background:#F26522;"></span><span style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.75);">Open innovation marketplace</span></div>
-    <h1 style="margin:0;font-size:62px;line-height:1.0;font-weight:700;letter-spacing:-0.035em;color:#fff;">Real problems, posted by<br>the city. <span style="color:#F26522;">Solved by you.</span></h1>
-    <p style="margin:24px auto 0;font-size:18px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:620px;">LGUs, MSMEs, universities, and NGOs post the challenges that matter. Founders, startups, researchers, and students step up to build the solutions.</p>
-    <div style="display:flex;gap:14px;justify-content:center;margin-top:34px;flex-wrap:wrap;">
-      <a href="#" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:16px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 14px 36px rgba(242,101,34,0.4);">Browse challenges <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-      <a href="${BP}/challenges/post" style="display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:16px;padding:15px 28px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);">Post a challenge</a>
+<div style="position:relative;background:#0B0B0D;padding:60px 40px 56px;overflow:hidden;text-align:center;">
+  <div style="position:absolute;bottom:-140px;left:50%;transform:translateX(-50%);width:640px;height:600px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.24) 0%,transparent 62%);pointer-events:none;"></div>
+  <svg style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);opacity:0.12;" width="720" height="410" viewBox="0 0 120 104" fill="none" preserveAspectRatio="none"><polyline points="6,40 60,8 114,40" stroke="#F5A623" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,62 60,30 114,62" stroke="#E23A2E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,84 60,52 114,84" stroke="#9E2A52" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,106 60,74 114,106" stroke="#285E7A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+  <div style="position:relative;max-width:900px;margin:0 auto;">
+    <div style="font-size:12.5px;color:rgba(255,255,255,0.4);margin-bottom:22px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.7);">Innovation Challenges</span></div>
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:9999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.03);margin-bottom:26px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,101,34,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:#F26522;"></span></span><span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Open innovation marketplace</span></div>
+    <h1 style="margin:0;font-size:62px;line-height:1.02;font-weight:700;letter-spacing:-0.04em;color:#fff;">Real problems, posted by<br>the city. <span style="color:#F26522;">Solved by you.</span></h1>
+    <p style="margin:26px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:620px;">LGUs, MSMEs, universities, and NGOs post the challenges that matter. Founders, startups, researchers, and students step up to build the solutions.</p>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:36px;flex-wrap:wrap;">
+      <a href="#" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15.5px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 16px 40px -14px rgba(242,101,34,0.7);">Browse challenges <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a href="${BP}/challenges/post" style="display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:15.5px;padding:15px 28px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.02);">Post a challenge</a>
     </div>
   </div>
 </div>
 
-<!-- STAT STRIP -->
-<div style="background:#F26522;padding:30px 40px;">
-  <div style="max-width:1080px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
+<!-- STAT STRIP — seamless dark continuation of the hero -->
+<div style="background:#0B0B0D;padding:0 40px 64px;">
+  <div style="max-width:1080px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:repeat(4,1fr);">
     ${[
       ["48", "Open challenges", false],
       ["7", "Sectors covered", true],
-      ["320+", "Solvers registered", true],
+      ["320", "+", "Solvers registered", true],
       ["27", "Solutions deployed", true],
-    ].map((s) => `<div style="text-align:center;${s[2] ? "border-left:1px solid rgba(255,255,255,0.25);" : ""}"><div style="font-size:38px;font-weight:700;color:#fff;letter-spacing:-0.02em;">${s[0]}</div><div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);margin-top:3px;">${s[1]}</div></div>`).join("")}
+    ].map((s) => {
+      const hasPlus = s.length === 5;
+      const num = s[0]; const plus = hasPlus ? s[1] : ""; const label = hasPlus ? s[2] : s[1]; const divider = hasPlus ? s[3] : s[2];
+      return `<div style="text-align:center;padding:40px 20px 4px;${divider ? "border-left:1px solid rgba(255,255,255,0.08);" : ""}"><div style="font-size:42px;font-weight:700;color:#fff;letter-spacing:-0.03em;line-height:1;">${num}<span style="color:#F26522;">${plus}</span></div><div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.42);margin-top:12px;">${label}</div></div>`;
+    }).join("")}
   </div>
 </div>
 
@@ -172,8 +176,9 @@ const CHALLENGES_HTML_BOTTOM = `
       <div style="position:absolute;top:-60px;right:-40px;width:220px;height:220px;background:radial-gradient(circle,rgba(40,94,122,0.3),transparent 65%);"></div>
       <div style="position:relative;"><h3 style="margin:0 0 10px;font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.02em;">Have a problem to solve?</h3><p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:rgba(255,255,255,0.62);">Post a challenge and tap into Baguio&rsquo;s full innovation community.</p><a href="${BP}/challenges/post" style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:#141417;font-weight:600;font-size:15px;padding:14px 26px;border-radius:9999px;text-decoration:none;">Post a challenge <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#141417" stroke-width="2.3"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
     </div>
-    <div style="background:#F26522;border-radius:24px;padding:40px;position:relative;overflow:hidden;">
-      <svg style="position:absolute;top:-30px;right:-20px;opacity:0.2;" width="200" height="170" viewBox="0 0 120 104" fill="none"><polyline points="12,40 60,12 108,40" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="12,62 60,34 108,62" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="12,84 60,56 108,84" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+    <div style="background:linear-gradient(135deg,#F26522 0%,#E14E12 60%,#C8410C 100%);border-radius:24px;padding:40px;position:relative;overflow:hidden;box-shadow:0 24px 48px -20px rgba(226,78,18,0.5);">
+      <div style="position:absolute;inset:0;background:radial-gradient(90% 120% at 100% 0%,rgba(255,255,255,0.15),transparent 55%);"></div>
+      <svg style="position:absolute;top:-30px;right:-20px;opacity:0.16;" width="200" height="170" viewBox="0 0 120 104" fill="none"><polyline points="12,40 60,12 108,40" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="12,62 60,34 108,62" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="12,84 60,56 108,84" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
       <div style="position:relative;"><h3 style="margin:0 0 10px;font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.02em;">Ready to build a solution?</h3><p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:rgba(255,255,255,0.9);">Register as a solver and start submitting to open challenges today.</p><a href="#" style="display:inline-flex;align-items:center;gap:8px;background:#0B0B0D;color:#fff;font-weight:600;font-size:15px;padding:14px 26px;border-radius:9999px;text-decoration:none;">Become a solver <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
     </div>
   </div>
