@@ -10,7 +10,7 @@ const DARK = "#141417";
 // each pin gets a small, deterministic (name-hash based) offset from here —
 // stable across renders, not literal locations. Swap in real lat/lng per
 // entry later and this component keeps working unchanged.
-const BAGUIO_CENTER: [number, number] = [120.596, 16.4023];
+export const BAGUIO_CENTER: [number, number] = [120.596, 16.4023];
 
 export interface MapPin {
   key: string;
@@ -19,6 +19,8 @@ export interface MapPin {
   bg: string;
   name: string;
   sub: string;
+  lat?: number;
+  lng?: number;
 }
 
 function hashOffset(key: string): [number, number] {
@@ -71,8 +73,13 @@ export default function EcosystemMap({ pins }: { pins: MapPin[] }) {
       markersRef.current = [];
 
       pins.forEach((p) => {
-        const [dLng, dLat] = hashOffset(p.key);
-        const lngLat: [number, number] = [BAGUIO_CENTER[0] + dLng, BAGUIO_CENTER[1] + dLat];
+        let lngLat: [number, number];
+        if (typeof p.lat === "number" && typeof p.lng === "number") {
+          lngLat = [p.lng, p.lat];
+        } else {
+          const [dLng, dLat] = hashOffset(p.key);
+          lngLat = [BAGUIO_CENTER[0] + dLng, BAGUIO_CENTER[1] + dLat];
+        }
 
         const el = document.createElement("div");
         el.style.cssText = `width:34px;height:34px;border-radius:9999px;background:${p.bg};color:${p.color};font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.25);cursor:pointer;`;

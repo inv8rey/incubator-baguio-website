@@ -1,10 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useAuth } from "../../AuthProvider";
 import { supabase } from "../../../lib/supabaseClient";
 import { uploadStartupLogo } from "../../../lib/uploadLogo";
+import type { LocationValue } from "../../LocationPicker";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, rowItemStyle, DARK } from "../styles";
+
+const LocationPicker = dynamic(() => import("../../LocationPicker"), { ssr: false });
 
 const NAME_MAX = 60;
 const TAGLINE_MAX = 100;
@@ -29,6 +33,7 @@ export default function StartupManager() {
   const { user } = useAuth();
   const [startups, setStartups] = useState<Startup[]>([]);
   const [form, setForm] = useState(EMPTY);
+  const [location, setLocation] = useState<LocationValue | null>(null);
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -68,13 +73,20 @@ export default function StartupManager() {
     if (!supabase || !user) return;
     setError("");
     setBusy(true);
-    const { error: err } = await supabase.from("startups").insert({ ...form, owner_id: user.id });
+    const { error: err } = await supabase.from("startups").insert({
+      ...form,
+      owner_id: user.id,
+      address: location?.address ?? "",
+      latitude: location?.lat ?? null,
+      longitude: location?.lng ?? null,
+    });
     setBusy(false);
     if (err) {
       setError(err.message);
       return;
     }
     setForm(EMPTY);
+    setLocation(null);
     load();
   }
 
@@ -142,6 +154,10 @@ export default function StartupManager() {
               <label style={labelStyle}>Contact email</label>
               <input style={inputStyle} type="email" value={form.contact_email} onChange={(e) => update("contact_email", e.target.value)} placeholder="you@example.com" />
             </div>
+          </div>
+          <div>
+            <label style={labelStyle}>Location (optional)</label>
+            <LocationPicker value={location} onChange={setLocation} />
           </div>
           {error && <p style={{ color: "#E23A2E", fontSize: 13, margin: 0 }}>{error}</p>}
           <div>

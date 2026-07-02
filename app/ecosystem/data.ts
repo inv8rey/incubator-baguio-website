@@ -7,6 +7,8 @@ export interface StartupEntry {
   description: string;
   logoUrl?: string;
   website?: string;
+  latitude?: number;
+  longitude?: number;
   initial: string;
   color: string;
   bg: string;

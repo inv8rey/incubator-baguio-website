@@ -82,6 +82,9 @@ create table if not exists public.startups (
   lifecycle_stage text not null default 'Idea',
   funding_raised text not null default '',
   founded_year text not null default '',
+  address text not null default '',
+  latitude double precision,
+  longitude double precision,
   created_at timestamptz not null default now()
 );
 
@@ -97,6 +100,13 @@ alter table public.startups add column if not exists lifecycle_stage text not nu
 alter table public.startups add column if not exists funding_raised text not null default '';
 alter table public.startups add column if not exists founded_year text not null default '';
 
+-- Migrates tables created before real map locations were supported. Nullable
+-- lat/lng is intentional — rows without a set location fall back to the map's
+-- deterministic placeholder placement (see app/ecosystem/EcosystemMap.tsx).
+alter table public.startups add column if not exists address text not null default '';
+alter table public.startups add column if not exists latitude double precision;
+alter table public.startups add column if not exists longitude double precision;
+
 -- Keeps startup cards visually consistent by capping field lengths at the database level.
 alter table public.startups drop constraint if exists startups_lifecycle_stage_check;
 alter table public.startups add constraint startups_lifecycle_stage_check check (lifecycle_stage in ('Idea', 'MVP', 'Launch', 'Growth'));
@@ -108,6 +118,8 @@ alter table public.startups drop constraint if exists startups_description_lengt
 alter table public.startups add constraint startups_description_length check (char_length(description) <= 280);
 alter table public.startups drop constraint if exists startups_tbi_affiliation_length;
 alter table public.startups add constraint startups_tbi_affiliation_length check (char_length(tbi_affiliation) <= 60);
+alter table public.startups drop constraint if exists startups_address_length;
+alter table public.startups add constraint startups_address_length check (char_length(address) <= 160);
 
 alter table public.startups enable row level security;
 

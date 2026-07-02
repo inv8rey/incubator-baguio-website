@@ -27,6 +27,8 @@ export async function fetchDynamicStartups(): Promise<StartupEntry[]> {
       description: s.description,
       logoUrl: s.logo_url || undefined,
       website: s.website || undefined,
+      latitude: s.latitude ?? undefined,
+      longitude: s.longitude ?? undefined,
       initial: initialsOf(s.name)[0],
       color: p.color,
       bg: p.bg,

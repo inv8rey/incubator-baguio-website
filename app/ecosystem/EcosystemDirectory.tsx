@@ -89,6 +89,8 @@ export default function EcosystemDirectory() {
         bg: item.bg,
         name: item.name,
         sub: item.sector ?? item.type ?? item.expertise ?? item.host ?? "",
+        lat: item.latitude,
+        lng: item.longitude,
       })),
     [filtered]
   );

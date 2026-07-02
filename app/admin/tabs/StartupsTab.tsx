@@ -1,11 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { StatCard } from "../StatCard";
 import { DARK, ORANGE, SECTOR_FILTERS, STAGE_BADGE, STAGE_FILTERS, STARTUP_STATS } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
 import { uploadStartupLogo } from "../../../lib/uploadLogo";
+import type { LocationValue } from "../../LocationPicker";
+
+const LocationPicker = dynamic(() => import("../../LocationPicker"), { ssr: false });
 
 const NAME_MAX = 60;
 const DESCRIPTION_MAX = 280;
@@ -22,6 +26,9 @@ interface Startup {
   description: string;
   logoUrl: string;
   website: string;
+  address: string;
+  latitude: number | null;
+  longitude: number | null;
   initials: string;
   color: string;
 }
@@ -46,6 +53,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
+  const [location, setLocation] = useState<LocationValue | null>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
@@ -69,6 +77,9 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
           description: s.description,
           logoUrl: s.logo_url,
           website: s.website,
+          address: s.address,
+          latitude: s.latitude,
+          longitude: s.longitude,
           initials: initialsOf(s.name),
           color: p.color,
         };
@@ -91,6 +102,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
   function openAddModal() {
     setEditingId(null);
     setForm(EMPTY_FORM);
+    setLocation(null);
     setError("");
     setModalOpen(true);
   }
@@ -98,6 +110,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
   function openEditModal(s: Startup) {
     setEditingId(s.id);
     setForm({ name: s.name, sector: s.sector, stage: s.stage, tbi: s.tbi, funding: s.funding, since: s.since, description: s.description, logoUrl: s.logoUrl, website: s.website });
+    setLocation(s.latitude != null && s.longitude != null ? { lat: s.latitude, lng: s.longitude, address: s.address } : null);
     setError("");
     setModalOpen(true);
   }
@@ -148,6 +161,9 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
       description: form.description.trim(),
       logo_url: form.logoUrl,
       website: form.website.trim(),
+      address: location?.address ?? "",
+      latitude: location?.lat ?? null,
+      longitude: location?.lng ?? null,
     };
     const { error: err } = editingId
       ? await supabase.from("startups").update(payload).eq("id", editingId)
@@ -410,6 +426,11 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                 style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
               />
               <div style={{ fontSize: 11, color: "#9A958B", marginTop: 4 }}>Shown as a link button on the startup's public card.</div>
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Location</label>
+              <LocationPicker value={location} onChange={setLocation} />
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
