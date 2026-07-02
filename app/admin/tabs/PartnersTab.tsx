@@ -5,9 +5,7 @@ import { DARK, ORANGE } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
 import { uploadMentorPhoto } from "../../../lib/uploadLogo";
-import { MENTOR_EXPERTISE_COLORS, type MentorExpertise } from "../../calendar/data";
-
-const EXPERTISE_LIST = Object.keys(MENTOR_EXPERTISE_COLORS) as MentorExpertise[];
+import { MENTOR_SPECIALIZATIONS } from "../../ecosystem/data";
 
 const ORG_TYPES = ["TBIs", "Corporate", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
 type OrgType = (typeof ORG_TYPES)[number];
@@ -16,14 +14,17 @@ type Category = (typeof CATEGORIES)[number];
 
 const NAME_MAX = 60;
 const BIO_MAX = 280;
-const TAG_MAX = 40;
+const POSITION_MAX = 60;
+const COMPANY_MAX = 60;
+const MAX_SPECIALIZATIONS = 3;
 
 interface MentorRow {
   id: string;
   name: string;
-  expertise: string;
+  position: string;
+  company: string;
   bio: string;
-  tag: string;
+  specializations: string[];
   photoUrl: string;
   initials: string;
   color: string;
@@ -40,7 +41,7 @@ interface OrgRow {
   color: string;
 }
 
-const EMPTY_MENTOR = { name: "", expertise: EXPERTISE_LIST[0] as string, bio: "", tag: "", photoUrl: "" };
+const EMPTY_MENTOR = { name: "", position: "", company: "", bio: "", specializations: [] as string[], photoUrl: "" };
 const EMPTY_ORG = { name: "", description: "", website: "", contact_email: "" };
 
 export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string }) {
@@ -67,7 +68,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     setMentors(
       (mentorData ?? []).map((m: any) => {
         const p = paletteFor(m.name);
-        return { id: m.id, name: m.name, expertise: m.expertise, bio: m.bio, tag: m.tag, photoUrl: m.photo_url, initials: initialsOf(m.name), color: p.color };
+        return { id: m.id, name: m.name, position: m.position, company: m.company, bio: m.bio, specializations: m.specializations ?? [], photoUrl: m.photo_url, initials: initialsOf(m.name), color: p.color };
       })
     );
     setOrgs(
@@ -85,7 +86,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
   const q = searchQuery.toLowerCase();
   const isMentors = category === "Mentors";
-  const filteredMentors = mentors.filter((m) => !q || m.name.toLowerCase().includes(q) || m.expertise.toLowerCase().includes(q));
+  const filteredMentors = mentors.filter((m) => !q || m.name.toLowerCase().includes(q) || m.position.toLowerCase().includes(q) || m.company.toLowerCase().includes(q));
   const filteredOrgs = orgs.filter((o) => o.org_type === category && (!q || o.name.toLowerCase().includes(q) || o.description.toLowerCase().includes(q)));
 
   function openAddModal() {
@@ -98,9 +99,17 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
   function openEditMentor(m: MentorRow) {
     setEditingId(m.id);
-    setMentorForm({ name: m.name, expertise: m.expertise, bio: m.bio, tag: m.tag, photoUrl: m.photoUrl });
+    setMentorForm({ name: m.name, position: m.position, company: m.company, bio: m.bio, specializations: m.specializations, photoUrl: m.photoUrl });
     setError("");
     setModalOpen(true);
+  }
+
+  function toggleSpecialization(s: string) {
+    setMentorForm((f) => {
+      if (f.specializations.includes(s)) return { ...f, specializations: f.specializations.filter((x) => x !== s) };
+      if (f.specializations.length >= MAX_SPECIALIZATIONS) return f;
+      return { ...f, specializations: [...f.specializations, s] };
+    });
   }
 
   async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -154,7 +163,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
     if (isMentors) {
       if (!mentorForm.name.trim()) return;
-      const payload = { name: mentorForm.name.trim(), expertise: mentorForm.expertise, bio: mentorForm.bio.trim(), tag: mentorForm.tag.trim(), photo_url: mentorForm.photoUrl };
+      const payload = { name: mentorForm.name.trim(), position: mentorForm.position.trim(), company: mentorForm.company.trim(), bio: mentorForm.bio.trim(), specializations: mentorForm.specializations, photo_url: mentorForm.photoUrl };
       const { error: err } = editingId
         ? await supabase.from("mentors").update(payload).eq("id", editingId)
         : await supabase.from("mentors").insert(payload);
@@ -221,7 +230,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
               )}
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{m.name}</div>
-                <div style={{ fontSize: 11.5, color: "#9A958B", margin: "3px 0 8px" }}>{m.expertise}{m.tag ? ` · ${m.tag}` : ""}</div>
+                <div style={{ fontSize: 11.5, color: "#9A958B", margin: "3px 0 8px" }}>{m.position}{m.company ? ` · ${m.company}` : ""}</div>
                 <div style={{ display: "flex", gap: 12 }}>
                   <button onClick={() => openEditMentor(m)} style={{ fontSize: 11.5, fontWeight: 600, color: "#285E7A", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Edit</button>
                   <button onClick={() => deleteMentor(m.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Delete</button>
@@ -300,26 +309,56 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   <div>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Expertise</label>
-                    <select
-                      value={mentorForm.expertise}
-                      onChange={(e) => setMentorForm((f) => ({ ...f, expertise: e.target.value }))}
-                      style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
-                    >
-                      {EXPERTISE_LIST.map((x) => (
-                        <option key={x} value={x}>{x}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Tag</label>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Position</label>
                     <input
-                      value={mentorForm.tag}
-                      onChange={(e) => setMentorForm((f) => ({ ...f, tag: e.target.value }))}
-                      placeholder="e.g. Founder, 2 exits"
-                      maxLength={TAG_MAX}
+                      value={mentorForm.position}
+                      onChange={(e) => setMentorForm((f) => ({ ...f, position: e.target.value }))}
+                      placeholder="e.g. CTO & Mentor"
+                      maxLength={POSITION_MAX}
                       style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
                     />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Company</label>
+                    <input
+                      value={mentorForm.company}
+                      onChange={(e) => setMentorForm((f) => ({ ...f, company: e.target.value }))}
+                      placeholder="e.g. Independent"
+                      maxLength={COMPANY_MAX}
+                      style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>
+                    <span>Specialization</span>
+                    <span style={{ color: "#9A958B", fontWeight: 500 }}>{mentorForm.specializations.length}/{MAX_SPECIALIZATIONS}</span>
+                  </label>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {MENTOR_SPECIALIZATIONS.map((s) => {
+                      const active = mentorForm.specializations.includes(s);
+                      const disabled = !active && mentorForm.specializations.length >= MAX_SPECIALIZATIONS;
+                      return (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => toggleSpecialization(s)}
+                          disabled={disabled}
+                          style={{
+                            fontSize: 11.5,
+                            fontWeight: 600,
+                            padding: "6px 12px",
+                            borderRadius: 999,
+                            border: active ? "1.5px solid #F26522" : "1.5px solid rgba(20,20,25,0.12)",
+                            color: active ? "#F26522" : disabled ? "#C9C5BB" : "#6B6B73",
+                            background: active ? "rgba(242,101,34,0.08)" : "#fff",
+                            cursor: disabled ? "default" : "pointer",
+                          }}
+                        >
+                          {s}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
                 <div>

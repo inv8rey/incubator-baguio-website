@@ -4,24 +4,27 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../AuthProvider";
 import { supabase } from "../../../lib/supabaseClient";
 import { uploadMentorPhoto } from "../../../lib/uploadLogo";
-import { MENTOR_EXPERTISE_COLORS, type MentorExpertise } from "../../calendar/data";
+import { MENTOR_SPECIALIZATIONS } from "../../ecosystem/data";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } from "../styles";
 
-const EXPERTISE_LIST = Object.keys(MENTOR_EXPERTISE_COLORS) as MentorExpertise[];
+const MAX_SPECIALIZATIONS = 3;
 
 interface MentorProfile {
   id: string;
   name: string;
-  expertise: string;
+  position: string;
+  company: string;
   bio: string;
-  tag: string;
+  specializations: string[];
   photo_url: string;
 }
+
+const EMPTY = { name: "", position: "", company: "", bio: "", specializations: [] as string[], photo_url: "" };
 
 export default function MentorManager() {
   const { user, profile, refreshProfile } = useAuth();
   const [mentor, setMentor] = useState<MentorProfile | null>(null);
-  const [form, setForm] = useState({ name: "", expertise: EXPERTISE_LIST[0], bio: "", tag: "", photo_url: "" });
+  const [form, setForm] = useState(EMPTY);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -34,7 +37,7 @@ export default function MentorManager() {
       const { data } = await supabase!.from("mentors").select("*").eq("owner_id", user.id).maybeSingle();
       if (data) {
         setMentor(data as MentorProfile);
-        setForm({ name: data.name, expertise: data.expertise, bio: data.bio, tag: data.tag, photo_url: data.photo_url });
+        setForm({ name: data.name, position: data.position, company: data.company, bio: data.bio, specializations: data.specializations ?? [], photo_url: data.photo_url });
       } else {
         setForm((f) => ({ ...f, name: profile?.full_name || "" }));
       }
@@ -42,8 +45,16 @@ export default function MentorManager() {
     })();
   }, [user, profile]);
 
-  function update<K extends keyof typeof form>(key: K, value: string) {
+  function update<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  function toggleSpecialization(s: string) {
+    setForm((f) => {
+      if (f.specializations.includes(s)) return { ...f, specializations: f.specializations.filter((x) => x !== s) };
+      if (f.specializations.length >= MAX_SPECIALIZATIONS) return f;
+      return { ...f, specializations: [...f.specializations, s] };
+    });
   }
 
   async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -117,16 +128,44 @@ export default function MentorManager() {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <div>
-            <label style={labelStyle}>Area of expertise</label>
-            <select style={{ ...inputStyle, appearance: "auto" }} value={form.expertise} onChange={(e) => update("expertise", e.target.value)}>
-              {EXPERTISE_LIST.map((x) => (
-                <option key={x} value={x}>{x}</option>
-              ))}
-            </select>
+            <label style={labelStyle}>Position</label>
+            <input style={inputStyle} value={form.position} onChange={(e) => update("position", e.target.value)} placeholder="e.g. CTO & Mentor" />
           </div>
           <div>
-            <label style={labelStyle}>Tag (short label shown on your card)</label>
-            <input style={inputStyle} value={form.tag} onChange={(e) => update("tag", e.target.value)} placeholder="e.g. Fundraising" />
+            <label style={labelStyle}>Company</label>
+            <input style={inputStyle} value={form.company} onChange={(e) => update("company", e.target.value)} placeholder="e.g. Independent" />
+          </div>
+        </div>
+        <div>
+          <label style={{ ...labelStyle, display: "flex", justifyContent: "space-between" }}>
+            <span>Specialization</span>
+            <span style={{ fontWeight: 500, color: "#9A958B" }}>{form.specializations.length}/{MAX_SPECIALIZATIONS}</span>
+          </label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {MENTOR_SPECIALIZATIONS.map((s) => {
+              const active = form.specializations.includes(s);
+              const disabled = !active && form.specializations.length >= MAX_SPECIALIZATIONS;
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => toggleSpecialization(s)}
+                  disabled={disabled}
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    padding: "7px 13px",
+                    borderRadius: 999,
+                    border: active ? `1.5px solid ${ORANGE}` : "1.5px solid rgba(20,20,25,0.12)",
+                    color: active ? ORANGE : disabled ? "#C9C5BB" : "#6B6B73",
+                    background: active ? "rgba(242,101,34,0.08)" : "#FAFAF7",
+                    cursor: disabled ? "default" : "pointer",
+                  }}
+                >
+                  {s}
+                </button>
+              );
+            })}
           </div>
         </div>
         <div>

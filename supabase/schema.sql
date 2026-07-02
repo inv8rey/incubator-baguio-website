@@ -149,9 +149,10 @@ create table if not exists public.mentors (
   id uuid primary key default gen_random_uuid(),
   owner_id uuid unique references public.profiles (id) on delete cascade,
   name text not null,
-  expertise text not null default '',
+  position text not null default '',
+  company text not null default '',
   bio text not null default '',
-  tag text not null default '',
+  specializations text[] not null default '{}',
   photo_url text not null default '',
   created_at timestamptz not null default now()
 );
@@ -159,6 +160,25 @@ create table if not exists public.mentors (
 -- Migrates tables created before admin-added mentors (no linked founder account) were supported.
 alter table public.mentors alter column owner_id drop not null;
 alter table public.mentors add column if not exists photo_url text not null default '';
+
+-- Migrates tables created before "Expertise" + "Tag" were replaced with
+-- Position/Company + a fixed up-to-3 Specialization list.
+alter table public.mentors add column if not exists position text not null default '';
+alter table public.mentors add column if not exists company text not null default '';
+alter table public.mentors add column if not exists specializations text[] not null default '{}';
+alter table public.mentors drop column if exists expertise;
+alter table public.mentors drop column if exists tag;
+
+alter table public.mentors drop constraint if exists mentors_specializations_count;
+alter table public.mentors add constraint mentors_specializations_count check (array_length(specializations, 1) is null or array_length(specializations, 1) <= 3);
+alter table public.mentors drop constraint if exists mentors_specializations_values;
+alter table public.mentors add constraint mentors_specializations_values check (
+  specializations <@ array[
+    'Startup & Entrepreneurship', 'Business Development', 'Finance & Investment',
+    'Marketing & Growth', 'Product & Technology', 'Legal & Intellectual Property',
+    'Research & Commercialization', 'Industry Experts'
+  ]::text[]
+);
 
 alter table public.mentors enable row level security;
 

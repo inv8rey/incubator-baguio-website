@@ -14,16 +14,38 @@ export interface StartupEntry {
   bg: string;
 }
 
+export const MENTOR_SPECIALIZATIONS = [
+  "Startup & Entrepreneurship",
+  "Business Development",
+  "Finance & Investment",
+  "Marketing & Growth",
+  "Product & Technology",
+  "Legal & Intellectual Property",
+  "Research & Commercialization",
+  "Industry Experts",
+] as const;
+export type MentorSpecialization = (typeof MENTOR_SPECIALIZATIONS)[number];
+
+export const SPECIALIZATION_COLORS: Record<string, { color: string; bg: string }> = {
+  "Startup & Entrepreneurship": { color: "#F26522", bg: "rgba(242,101,34,0.14)" },
+  "Business Development": { color: "#285E7A", bg: "rgba(40,94,122,0.14)" },
+  "Finance & Investment": { color: "#1A6B3C", bg: "rgba(26,107,60,0.12)" },
+  "Marketing & Growth": { color: "#9E2A52", bg: "rgba(158,42,82,0.12)" },
+  "Product & Technology": { color: "#7C5CD6", bg: "rgba(124,92,214,0.14)" },
+  "Legal & Intellectual Property": { color: "#D88A0A", bg: "rgba(245,166,35,0.16)" },
+  "Research & Commercialization": { color: "#0055A5", bg: "rgba(0,85,165,0.12)" },
+  "Industry Experts": { color: "#E23A2E", bg: "rgba(226,58,46,0.12)" },
+};
+
 export interface MentorEntry {
   name: string;
-  expertise: string;
+  position: string;
+  company: string;
   bio: string;
+  specializations: string[];
   initials: string;
   color: string;
   bg: string;
-  tagColor: string;
-  tagBg: string;
-  tag: string;
   photoUrl?: string;
 }
 
@@ -87,14 +109,14 @@ export interface MakerspaceEntry {
 // dashboard and self-service founder submissions.
 
 export const MENTORS: MentorEntry[] = [
-  { name: "Maria Aquino", expertise: "Startup & fundraising", bio: "Founder, 2 exits", initials: "MA", color: "rgba(242,101,34,0.5)", bg: "rgba(242,101,34,0.12)", tagColor: "#FFB489", tagBg: "rgba(242,101,34,0.12)", tag: "Founder, 2 exits" },
-  { name: "Ramon Dizon", expertise: "Product & engineering", bio: "CTO, fintech", initials: "RD", color: "rgba(40,94,122,0.5)", bg: "rgba(40,94,122,0.12)", tagColor: "#5B9BC0", tagBg: "rgba(40,94,122,0.16)", tag: "CTO, fintech" },
-  { name: "Liza Tan", expertise: "Research & IP", bio: "Professor, SLU", initials: "LT", color: "rgba(245,166,35,0.5)", bg: "rgba(245,166,35,0.12)", tagColor: "#F5C06B", tagBg: "rgba(245,166,35,0.16)", tag: "Professor, SLU" },
-  { name: "Jun Baltazar", expertise: "Go-to-market", bio: "Growth lead", initials: "JB", color: "rgba(158,42,82,0.5)", bg: "rgba(158,42,82,0.12)", tagColor: "#D87BA0", tagBg: "rgba(158,42,82,0.18)", tag: "Growth lead" },
-  { name: "Anna Cruz", expertise: "Legal & compliance", bio: "Corporate lawyer", initials: "AC", color: "rgba(26,107,60,0.5)", bg: "rgba(26,107,60,0.12)", tagColor: "#7AC79A", tagBg: "rgba(26,107,60,0.16)", tag: "Corporate lawyer" },
-  { name: "Paolo Reyes", expertise: "Manufacturing & ops", bio: "Plant manager", initials: "PR", color: "rgba(0,85,165,0.5)", bg: "rgba(0,85,165,0.12)", tagColor: "#7BAEE8", tagBg: "rgba(0,85,165,0.16)", tag: "Plant manager" },
-  { name: "Grace Lim", expertise: "Brand & marketing", bio: "Agency founder", initials: "GL", color: "rgba(226,58,46,0.5)", bg: "rgba(226,58,46,0.12)", tagColor: "#F0938C", tagBg: "rgba(226,58,46,0.14)", tag: "Agency founder" },
-  { name: "Carlo Mendoza", expertise: "Data & AI", bio: "ML engineer", initials: "CM", color: "rgba(124,92,214,0.5)", bg: "rgba(124,92,214,0.12)", tagColor: "#B7A4EE", tagBg: "rgba(124,92,214,0.16)", tag: "ML engineer" },
+  { name: "Maria Aquino", position: "Founder & Advisor", company: "Independent", bio: "Serial entrepreneur and fundraising expert helping early-stage startups build and scale.", specializations: ["Startup & Entrepreneurship", "Finance & Investment"], initials: "MA", color: "#F26522", bg: "rgba(242,101,34,0.12)" },
+  { name: "Ramon Dizon", position: "CTO & Mentor", company: "Fintech Startup", bio: "Product engineer and tech leader passionate about building scalable fintech solutions.", specializations: ["Product & Technology"], initials: "RD", color: "#285E7A", bg: "rgba(40,94,122,0.16)" },
+  { name: "Liza Tan", position: "Researcher & IP Advisor", company: "Saint Louis University", bio: "IP strategist and researcher helping innovators protect and commercialize their ideas.", specializations: ["Legal & Intellectual Property", "Research & Commercialization"], initials: "LT", color: "#D88A0A", bg: "rgba(245,166,35,0.16)" },
+  { name: "Jun Baltazar", position: "Growth & Strategy Mentor", company: "Independent", bio: "Growth strategist helping startups find product-market fit and scale sustainably.", specializations: ["Marketing & Growth", "Business Development"], initials: "JB", color: "#9E2A52", bg: "rgba(158,42,82,0.18)" },
+  { name: "Anna Cruz", position: "Legal & Compliance Advisor", company: "Independent", bio: "Corporate lawyer advising startups on legal structure, contracts, and compliance.", specializations: ["Legal & Intellectual Property"], initials: "AC", color: "#1A6B3C", bg: "rgba(26,107,60,0.16)" },
+  { name: "Paolo Reyes", position: "Operations Mentor", company: "Manufacturing Co.", bio: "Operations leader focused on process optimization and building efficient teams.", specializations: ["Business Development", "Industry Experts"], initials: "PR", color: "#0055A5", bg: "rgba(0,85,165,0.16)" },
+  { name: "Grace Lim", position: "Brand & Marketing Advisor", company: "Independent", bio: "Brand builder and marketer helping startups craft strong brands and engage their audience.", specializations: ["Marketing & Growth"], initials: "GL", color: "#E23A2E", bg: "rgba(226,58,46,0.14)" },
+  { name: "Carlo Mendoza", position: "Data & AI Mentor", company: "Independent", bio: "Data scientist and AI practitioner helping startups build data-driven products.", specializations: ["Product & Technology", "Research & Commercialization"], initials: "CM", color: "#7C5CD6", bg: "rgba(124,92,214,0.16)" },
 ];
 
 export const TBIS: TbiEntry[] = [

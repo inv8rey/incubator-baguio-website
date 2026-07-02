@@ -44,15 +44,14 @@ export async function fetchDynamicMentors(): Promise<DynamicMentorEntry[]> {
     return {
       id: m.id,
       name: m.name,
-      expertise: m.expertise,
+      position: m.position,
+      company: m.company,
       bio: m.bio,
+      specializations: m.specializations ?? [],
       photoUrl: m.photo_url || undefined,
       initials: initialsOf(m.name),
       color: p.color,
       bg: p.bg,
-      tagColor: p.color,
-      tagBg: p.bg,
-      tag: m.tag || m.expertise,
     };
   });
 }

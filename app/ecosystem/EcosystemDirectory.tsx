@@ -80,7 +80,7 @@ export default function EcosystemDirectory() {
 
   const filtered = useMemo(() => {
     if (tab === "Startups") return allStartups.filter((s) => matches([s.name, s.sector, s.description], query));
-    if (tab === "Mentors") return allMentors.filter((m) => matches([m.name, m.expertise, m.bio], query));
+    if (tab === "Mentors") return allMentors.filter((m) => matches([m.name, m.position, m.company, m.bio, ...(m.specializations ?? [])], query));
     if (tab === "TBIs") return allTbis.filter((t) => matches([t.name, t.host, t.focus], query));
     if (tab === "Corporate") return allCorporate.filter((c) => matches([c.name, c.type, c.description], query));
     if (tab === "Government") return allGovernment.filter((g) => matches([g.name, g.type, g.description], query));
@@ -98,7 +98,7 @@ export default function EcosystemDirectory() {
         color: item.color,
         bg: item.bg,
         name: item.name,
-        sub: item.sector ?? item.type ?? item.expertise ?? item.host ?? "",
+        sub: item.sector ?? item.type ?? item.position ?? item.host ?? "",
         lat: item.latitude,
         lng: item.longitude,
       })),
@@ -249,12 +249,14 @@ export default function EcosystemDirectory() {
                   />
                   <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "18px 18px 16px" }}>
                     <h3 style={{ margin: "0 0 2px", fontSize: 16.5, fontWeight: 700, color: "#fff" }}>{m.name}</h3>
-                    <p style={{ margin: "0 0 8px", fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.75)" }}>{m.expertise}</p>
-                    <p style={{ margin: "0 0 14px", fontSize: 12, lineHeight: 1.5, color: "rgba(255,255,255,0.7)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{m.bio}</p>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                      {m.tag && (
-                        <span style={{ fontSize: 11, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.18)", backdropFilter: "blur(4px)", padding: "5px 11px", borderRadius: 9999 }}>{m.tag}</span>
-                      )}
+                    <p style={{ margin: "0 0 8px", fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.75)" }}>{[m.position, m.company].filter(Boolean).join(" · ")}</p>
+                    <p style={{ margin: "0 0 12px", fontSize: 12, lineHeight: 1.5, color: "rgba(255,255,255,0.7)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{m.bio}</p>
+                    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                        {(m.specializations ?? []).map((s) => (
+                          <span key={s} style={{ fontSize: 10.5, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.18)", backdropFilter: "blur(4px)", padding: "4px 9px", borderRadius: 9999 }}>{s}</span>
+                        ))}
+                      </div>
                       {"id" in m && <ConnectMentorButton mentorId={m.id} mentorName={m.name} variant="icon" />}
                     </div>
                   </div>
