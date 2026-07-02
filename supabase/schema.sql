@@ -217,7 +217,7 @@ create policy "mentor can update connection status" on public.mentor_connections
 -- ---------------------------------------------------------------------------
 create table if not exists public.organizations (
   id uuid primary key default gen_random_uuid(),
-  owner_id uuid not null references public.profiles (id) on delete cascade,
+  owner_id uuid references public.profiles (id) on delete cascade,
   name text not null,
   org_type text not null check (org_type in ('TBIs', 'Corporate', 'Government', 'Community', 'Coworking Spaces', 'Makerspaces & Labs')),
   description text not null default '',
@@ -225,6 +225,9 @@ create table if not exists public.organizations (
   contact_email text not null default '',
   created_at timestamptz not null default now()
 );
+
+-- Migrates tables created before admin-added organizations (no linked founder account) were supported.
+alter table public.organizations alter column owner_id drop not null;
 
 alter table public.organizations enable row level security;
 
