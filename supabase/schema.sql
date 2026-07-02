@@ -152,11 +152,13 @@ create table if not exists public.mentors (
   expertise text not null default '',
   bio text not null default '',
   tag text not null default '',
+  photo_url text not null default '',
   created_at timestamptz not null default now()
 );
 
 -- Migrates tables created before admin-added mentors (no linked founder account) were supported.
 alter table public.mentors alter column owner_id drop not null;
+alter table public.mentors add column if not exists photo_url text not null default '';
 
 alter table public.mentors enable row level security;
 
@@ -323,3 +325,26 @@ create policy "authenticated users can update startup logos" on storage.objects
 drop policy if exists "authenticated users can delete startup logos" on storage.objects;
 create policy "authenticated users can delete startup logos" on storage.objects
   for delete to authenticated using (bucket_id = 'startup-logos');
+
+-- ---------------------------------------------------------------------------
+-- storage: mentor-photos bucket for mentor card photos
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('mentor-photos', 'mentor-photos', true)
+on conflict (id) do nothing;
+
+drop policy if exists "mentor photos are publicly readable" on storage.objects;
+create policy "mentor photos are publicly readable" on storage.objects
+  for select using (bucket_id = 'mentor-photos');
+
+drop policy if exists "authenticated users can upload mentor photos" on storage.objects;
+create policy "authenticated users can upload mentor photos" on storage.objects
+  for insert to authenticated with check (bucket_id = 'mentor-photos');
+
+drop policy if exists "authenticated users can update mentor photos" on storage.objects;
+create policy "authenticated users can update mentor photos" on storage.objects
+  for update to authenticated using (bucket_id = 'mentor-photos');
+
+drop policy if exists "authenticated users can delete mentor photos" on storage.objects;
+create policy "authenticated users can delete mentor photos" on storage.objects
+  for delete to authenticated using (bucket_id = 'mentor-photos');

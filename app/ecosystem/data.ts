@@ -24,6 +24,7 @@ export interface MentorEntry {
   tagColor: string;
   tagBg: string;
   tag: string;
+  photoUrl?: string;
 }
 
 export interface TbiEntry {

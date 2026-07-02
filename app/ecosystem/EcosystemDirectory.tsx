@@ -24,6 +24,16 @@ function matches(haystacks: string[], query: string) {
   return haystacks.some((h) => h.toLowerCase().includes(q));
 }
 
+// Mentors without an uploaded photo fall back to a branded gradient card
+// (orange or black, chosen deterministically per name) instead of a photo.
+function mentorFallbackGradient(name: string): string {
+  let sum = 0;
+  for (let i = 0; i < name.length; i++) sum += name.charCodeAt(i);
+  return sum % 2 === 0
+    ? "linear-gradient(160deg,#F26522 0%,#7A2E0A 100%)"
+    : "linear-gradient(160deg,#3A3A3E 0%,#0B0B0D 100%)";
+}
+
 type ViewMode = "list" | "map";
 
 export default function EcosystemDirectory() {
@@ -211,15 +221,46 @@ export default function EcosystemDirectory() {
 
         {view === "list" && tab === "Mentors" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18 }} className="ib-ecosystem-grid">
-            {(filtered as (DynamicMentorEntry | (typeof MENTORS)[number])[]).map((m) => (
-              <div key={m.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 24, textAlign: "center" }}>
-                <div style={{ width: 72, height: 72, borderRadius: 9999, margin: "0 auto 16px", background: `linear-gradient(150deg,${m.color},${m.bg})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 700, color: "#fff", border: "1px solid rgba(20,20,25,0.06)" }}>{m.initials}</div>
-                <h3 style={{ margin: "0 0 3px", fontSize: 15.5, fontWeight: 600, color: DARK }}>{m.name}</h3>
-                <p style={{ margin: "0 0 12px", fontSize: 12.5, color: "#9A958B" }}>{m.expertise}</p>
-                <span style={{ fontSize: 11, fontWeight: 600, color: "#44444C", background: "#F4F2EC", padding: "5px 11px", borderRadius: 9999 }}>{m.tag}</span>
-                {"id" in m && <div style={{ marginTop: 14 }}><ConnectMentorButton mentorId={m.id} mentorName={m.name} /></div>}
-              </div>
-            ))}
+            {(filtered as (DynamicMentorEntry | (typeof MENTORS)[number])[]).map((m) => {
+              const photoUrl = (m as DynamicMentorEntry).photoUrl;
+              return (
+                <div
+                  key={m.name}
+                  className="ib-challenge-hover"
+                  style={{
+                    position: "relative",
+                    height: 300,
+                    borderRadius: 18,
+                    overflow: "hidden",
+                    background: photoUrl ? "#141417" : mentorFallbackGradient(m.name),
+                  }}
+                >
+                  {photoUrl && (
+                    <img src={photoUrl} alt={m.name} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  )}
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: photoUrl
+                        ? "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.05) 70%)"
+                        : "linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 55%)",
+                    }}
+                  />
+                  <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "18px 18px 16px" }}>
+                    <h3 style={{ margin: "0 0 2px", fontSize: 16.5, fontWeight: 700, color: "#fff" }}>{m.name}</h3>
+                    <p style={{ margin: "0 0 8px", fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.75)" }}>{m.expertise}</p>
+                    <p style={{ margin: "0 0 14px", fontSize: 12, lineHeight: 1.5, color: "rgba(255,255,255,0.7)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{m.bio}</p>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                      {m.tag && (
+                        <span style={{ fontSize: 11, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.18)", backdropFilter: "blur(4px)", padding: "5px 11px", borderRadius: 9999 }}>{m.tag}</span>
+                      )}
+                      {"id" in m && <ConnectMentorButton mentorId={m.id} mentorName={m.name} variant="icon" />}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
 

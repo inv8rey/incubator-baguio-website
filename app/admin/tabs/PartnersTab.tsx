@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { DARK, ORANGE } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
+import { uploadMentorPhoto } from "../../../lib/uploadLogo";
 import { MENTOR_EXPERTISE_COLORS, type MentorExpertise } from "../../calendar/data";
 
 const EXPERTISE_LIST = Object.keys(MENTOR_EXPERTISE_COLORS) as MentorExpertise[];
@@ -23,6 +24,7 @@ interface MentorRow {
   expertise: string;
   bio: string;
   tag: string;
+  photoUrl: string;
   initials: string;
   color: string;
 }
@@ -38,7 +40,7 @@ interface OrgRow {
   color: string;
 }
 
-const EMPTY_MENTOR = { name: "", expertise: EXPERTISE_LIST[0] as string, bio: "", tag: "" };
+const EMPTY_MENTOR = { name: "", expertise: EXPERTISE_LIST[0] as string, bio: "", tag: "", photoUrl: "" };
 const EMPTY_ORG = { name: "", description: "", website: "", contact_email: "" };
 
 export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string }) {
@@ -50,6 +52,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
   const [editingId, setEditingId] = useState<string | null>(null);
   const [mentorForm, setMentorForm] = useState(EMPTY_MENTOR);
   const [orgForm, setOrgForm] = useState(EMPTY_ORG);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
   async function load() {
@@ -64,7 +67,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     setMentors(
       (mentorData ?? []).map((m: any) => {
         const p = paletteFor(m.name);
-        return { id: m.id, name: m.name, expertise: m.expertise, bio: m.bio, tag: m.tag, initials: initialsOf(m.name), color: p.color };
+        return { id: m.id, name: m.name, expertise: m.expertise, bio: m.bio, tag: m.tag, photoUrl: m.photo_url, initials: initialsOf(m.name), color: p.color };
       })
     );
     setOrgs(
@@ -95,9 +98,25 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
   function openEditMentor(m: MentorRow) {
     setEditingId(m.id);
-    setMentorForm({ name: m.name, expertise: m.expertise, bio: m.bio, tag: m.tag });
+    setMentorForm({ name: m.name, expertise: m.expertise, bio: m.bio, tag: m.tag, photoUrl: m.photoUrl });
     setError("");
     setModalOpen(true);
+  }
+
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError("");
+    try {
+      const url = await uploadMentorPhoto(file);
+      setMentorForm((f) => ({ ...f, photoUrl: url }));
+    } catch (err: any) {
+      setError(err.message || "Photo upload failed.");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
   }
 
   function openEditOrg(o: OrgRow) {
@@ -135,7 +154,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
     if (isMentors) {
       if (!mentorForm.name.trim()) return;
-      const payload = { name: mentorForm.name.trim(), expertise: mentorForm.expertise, bio: mentorForm.bio.trim(), tag: mentorForm.tag.trim() };
+      const payload = { name: mentorForm.name.trim(), expertise: mentorForm.expertise, bio: mentorForm.bio.trim(), tag: mentorForm.tag.trim(), photo_url: mentorForm.photoUrl };
       const { error: err } = editingId
         ? await supabase.from("mentors").update(payload).eq("id", editingId)
         : await supabase.from("mentors").insert(payload);
@@ -195,7 +214,11 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
         {isMentors &&
           filteredMentors.map((m) => (
             <div key={m.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18, display: "flex", gap: 12 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 10, background: m.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{m.initials}</div>
+              {m.photoUrl ? (
+                <img src={m.photoUrl} alt="" style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
+              ) : (
+                <div style={{ width: 44, height: 44, borderRadius: 10, background: m.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{m.initials}</div>
+              )}
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{m.name}</div>
                 <div style={{ fontSize: 11.5, color: "#9A958B", margin: "3px 0 8px" }}>{m.expertise}{m.tag ? ` · ${m.tag}` : ""}</div>
@@ -248,6 +271,22 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
             {isMentors ? (
               <>
+                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                  {mentorForm.photoUrl ? (
+                    <img src={mentorForm.photoUrl} alt="" style={{ width: 52, height: 52, borderRadius: 9999, objectFit: "cover" }} />
+                  ) : (
+                    <div style={{ width: 52, height: 52, borderRadius: 9999, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10.5, textAlign: "center" }}>
+                      No photo
+                    </div>
+                  )}
+                  <div>
+                    <label style={{ display: "inline-block", fontSize: 12.5, fontWeight: 600, color: "#285E7A", cursor: "pointer" }}>
+                      {uploading ? "Uploading…" : "Upload photo"}
+                      <input type="file" accept="image/*" onChange={handlePhotoChange} disabled={uploading} style={{ display: "none" }} />
+                    </label>
+                    <div style={{ fontSize: 11, color: "#9A958B", marginTop: 2 }}>Shown as the card background on the Ecosystem directory.</div>
+                  </div>
+                </div>
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Full name</label>
                   <input
@@ -352,7 +391,8 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
             <button
               type="submit"
-              style={{ marginTop: 4, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 999, padding: "11px 22px", cursor: "pointer" }}
+              disabled={uploading}
+              style={{ marginTop: 4, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 999, padding: "11px 22px", cursor: "pointer", opacity: uploading ? 0.7 : 1 }}
             >
               {editingId ? "Save changes" : "Add"}
             </button>
