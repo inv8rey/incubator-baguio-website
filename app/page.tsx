@@ -1,5 +1,6 @@
 import EcosystemModel from "./programs/EcosystemModel";
 import FeaturedStartups from "./FeaturedStartups";
+import EcosystemPartnersMarquee from "./EcosystemPartnersMarquee";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -116,7 +117,7 @@ const HOME_HTML_BOTTOM_A = `
 </div>
 `;
 
-const HOME_HTML_BOTTOM_B = `
+const HOME_HTML_BOTTOM_B1 = `
 <!-- UPCOMING EVENTS -->
 <div style="background:#fff;padding:80px 40px;">
   <div style="max-width:1060px;margin:0 auto;">
@@ -173,36 +174,9 @@ const HOME_HTML_BOTTOM_B = `
     </div>
   </div>
 </div>
+`;
 
-<!-- ECOSYSTEM PARTNERS MARQUEE -->
-<div style="background:#fff;padding:56px 0 48px;border-top:1px solid rgba(20,20,25,0.06);overflow:hidden;">
-  <div style="text-align:center;margin-bottom:30px;">
-    <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#9A958B;">Ecosystem partners</div>
-  </div>
-  <div style="position:relative;overflow:hidden;">
-    <div style="display:flex;width:max-content;animation:ibmarquee 36s linear infinite;">
-      ${[0, 1].map(() => `<div style="display:flex;gap:14px;padding-right:14px;align-items:center;">
-        ${[
-          ["#F5A623", "SLU", "Saint Louis University", "12px"],
-          ["#285E7A", "UB", "University of Baguio", "12px"],
-          ["#7E0707", "UP", "UP Baguio", "12px"],
-          ["#1A6B3C", "UC", "University of the Cordilleras", "12px"],
-          ["#3A5FA0", "BSU", "Benguet State University", "12px"],
-          ["#0055A5", "DOST", "Dept of Science &amp; Technology", "11px"],
-          ["#CE1126", "DTI", "Dept of Trade &amp; Industry", "12px"],
-          ["#5B3A99", "CHED", "Comm on Higher Education", "11px"],
-          ["#009B8D", "DICT", "Dept of ICT", "11px"],
-          ["#F26522", "CPDS", "CPDSO &middot; City of Baguio", "10px"],
-          ["#2D2D2D", "BCC", "Baguio Chamber of Commerce", "12px"],
-        ].map((m) => `<div style="display:flex;align-items:center;gap:10px;background:#F4F2EC;border:1px solid rgba(20,20,25,0.09);border-radius:14px;padding:11px 18px;white-space:nowrap;"><div style="width:34px;height:34px;border-radius:8px;background:${m[0]};display:flex;align-items:center;justify-content:center;font-size:${m[3]};font-weight:700;color:#fff;flex-shrink:0;">${m[1]}</div><span style="font-size:14px;font-weight:600;color:#141417;">${m[2]}</span></div>`).join("")}
-      </div>`).join("")}
-    </div>
-  </div>
-  <div style="text-align:center;margin-top:28px;">
-    <a href="#" style="font-size:13px;font-weight:600;color:#F26522;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">View all ecosystem partners <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2.3"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-  </div>
-</div>
-
+const HOME_HTML_BOTTOM_B2 = `
 <!-- FOOTER -->
 <div style="background:#0B0B0D;padding:56px 40px 36px;">
   <div style="max-width:1180px;margin:0 auto;">
@@ -230,7 +204,9 @@ export default function Home() {
       <EcosystemModel />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_A }} />
       <FeaturedStartups bp={BP} />
-      <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_B }} />
+      <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_B1 }} />
+      <EcosystemPartnersMarquee />
+      <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_B2 }} />
     </main>
   );
 }

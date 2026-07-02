@@ -65,6 +65,18 @@ interface DynamicOrgBuckets {
   "Makerspaces & Labs": MakerspaceEntry[];
 }
 
+export interface EcosystemPartnerEntry {
+  id: string;
+  name: string;
+  logoUrl?: string;
+}
+
+export async function fetchDynamicEcosystemPartners(): Promise<EcosystemPartnerEntry[]> {
+  if (!supabase) return [];
+  const { data } = await supabase.from("ecosystem_partners").select("*").order("created_at", { ascending: true });
+  return (data ?? []).map((p: any) => ({ id: p.id, name: p.name, logoUrl: p.logo_url || undefined }));
+}
+
 export async function fetchDynamicOrganizations(): Promise<DynamicOrgBuckets> {
   const empty: DynamicOrgBuckets = { TBIs: [], Corporate: [], Government: [], Community: [], "Coworking Spaces": [], "Makerspaces & Labs": [] };
   if (!supabase) return empty;

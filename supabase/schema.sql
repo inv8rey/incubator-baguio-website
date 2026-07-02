@@ -399,3 +399,52 @@ create policy "authenticated users can update org logos" on storage.objects
 drop policy if exists "authenticated users can delete org logos" on storage.objects;
 create policy "authenticated users can delete org logos" on storage.objects
   for delete to authenticated using (bucket_id = 'org-logos');
+
+-- ---------------------------------------------------------------------------
+-- ecosystem_partners: logos for the homepage's scrolling "Ecosystem partners"
+-- marquee (universities, agencies, chambers, etc). Admin-managed only — no
+-- owner_id, since these aren't self-published by founders.
+-- ---------------------------------------------------------------------------
+create table if not exists public.ecosystem_partners (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  logo_url text not null default '',
+  created_at timestamptz not null default now()
+);
+
+alter table public.ecosystem_partners enable row level security;
+
+drop policy if exists "ecosystem partners are publicly readable" on public.ecosystem_partners;
+create policy "ecosystem partners are publicly readable" on public.ecosystem_partners
+  for select using (true);
+
+drop policy if exists "admins manage ecosystem partners" on public.ecosystem_partners;
+create policy "admins manage ecosystem partners" on public.ecosystem_partners
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+-- ---------------------------------------------------------------------------
+-- storage: partner-logos bucket for the ecosystem partners marquee
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('partner-logos', 'partner-logos', true)
+on conflict (id) do nothing;
+
+drop policy if exists "partner logos are publicly readable" on storage.objects;
+create policy "partner logos are publicly readable" on storage.objects
+  for select using (bucket_id = 'partner-logos');
+
+drop policy if exists "authenticated users can upload partner logos" on storage.objects;
+create policy "authenticated users can upload partner logos" on storage.objects
+  for insert to authenticated with check (bucket_id = 'partner-logos');
+
+drop policy if exists "authenticated users can update partner logos" on storage.objects;
+create policy "authenticated users can update partner logos" on storage.objects
+  for update to authenticated using (bucket_id = 'partner-logos');
+
+drop policy if exists "authenticated users can delete partner logos" on storage.objects;
+create policy "authenticated users can delete partner logos" on storage.objects
+  for delete to authenticated using (bucket_id = 'partner-logos');

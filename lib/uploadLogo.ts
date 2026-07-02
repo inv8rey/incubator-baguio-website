@@ -32,3 +32,7 @@ export function uploadMentorPhoto(file: File): Promise<string> {
 export function uploadOrgLogo(file: File): Promise<string> {
   return uploadImage(file, "org-logos");
 }
+
+export function uploadPartnerLogo(file: File): Promise<string> {
+  return uploadImage(file, "partner-logos");
+}

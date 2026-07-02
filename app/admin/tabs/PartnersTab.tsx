@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { DARK, ORANGE } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
-import { uploadMentorPhoto, uploadOrgLogo } from "../../../lib/uploadLogo";
+import { uploadMentorPhoto, uploadOrgLogo, uploadPartnerLogo } from "../../../lib/uploadLogo";
 import { MENTOR_SPECIALIZATIONS } from "../../ecosystem/data";
 
 const ORG_TYPES = ["TBIs", "Corporate", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
 type OrgType = (typeof ORG_TYPES)[number];
-const CATEGORIES = ["Mentors", ...ORG_TYPES] as const;
+const CATEGORIES = ["Mentors", ...ORG_TYPES, "Ecosystem Partners"] as const;
 type Category = (typeof CATEGORIES)[number];
 
 const NAME_MAX = 60;
@@ -43,19 +43,28 @@ interface OrgRow {
   color: string;
 }
 
+interface PartnerRow {
+  id: string;
+  name: string;
+  logoUrl: string;
+}
+
 const TYPE_MAX = 40;
 const EMPTY_MENTOR = { name: "", position: "", company: "", bio: "", specializations: [] as string[], photoUrl: "" };
 const EMPTY_ORG = { name: "", description: "", website: "", contact_email: "", logoUrl: "", type: "" };
+const EMPTY_PARTNER = { name: "", logoUrl: "" };
 
 export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string }) {
   const [category, setCategory] = useState<Category>("Mentors");
   const [mentors, setMentors] = useState<MentorRow[]>([]);
   const [orgs, setOrgs] = useState<OrgRow[]>([]);
+  const [partners, setPartners] = useState<PartnerRow[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [mentorForm, setMentorForm] = useState(EMPTY_MENTOR);
   const [orgForm, setOrgForm] = useState(EMPTY_ORG);
+  const [partnerForm, setPartnerForm] = useState(EMPTY_PARTNER);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
@@ -64,9 +73,10 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
       setLoaded(true);
       return;
     }
-    const [{ data: mentorData }, { data: orgData }] = await Promise.all([
+    const [{ data: mentorData }, { data: orgData }, { data: partnerData }] = await Promise.all([
       supabase.from("mentors").select("*").order("created_at", { ascending: false }),
       supabase.from("organizations").select("*").order("created_at", { ascending: false }),
+      supabase.from("ecosystem_partners").select("*").order("created_at", { ascending: false }),
     ]);
     setMentors(
       (mentorData ?? []).map((m: any) => {
@@ -80,6 +90,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
         return { id: o.id, name: o.name, org_type: o.org_type, description: o.description, website: o.website, contact_email: o.contact_email, logoUrl: o.logo_url, type: o.type, initials: initialsOf(o.name), color: p.color };
       })
     );
+    setPartners((partnerData ?? []).map((p: any) => ({ id: p.id, name: p.name, logoUrl: p.logo_url })));
     setLoaded(true);
   }
 
@@ -89,13 +100,17 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
   const q = searchQuery.toLowerCase();
   const isMentors = category === "Mentors";
+  const isPartners = category === "Ecosystem Partners";
+  const isOrg = !isMentors && !isPartners;
   const filteredMentors = mentors.filter((m) => !q || m.name.toLowerCase().includes(q) || m.position.toLowerCase().includes(q) || m.company.toLowerCase().includes(q));
   const filteredOrgs = orgs.filter((o) => o.org_type === category && (!q || o.name.toLowerCase().includes(q) || o.description.toLowerCase().includes(q)));
+  const filteredPartners = partners.filter((p) => !q || p.name.toLowerCase().includes(q));
 
   function openAddModal() {
     setEditingId(null);
     setMentorForm(EMPTY_MENTOR);
     setOrgForm(EMPTY_ORG);
+    setPartnerForm(EMPTY_PARTNER);
     setError("");
     setModalOpen(true);
   }
@@ -154,6 +169,29 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     }
   }
 
+  function openEditPartner(p: PartnerRow) {
+    setEditingId(p.id);
+    setPartnerForm({ name: p.name, logoUrl: p.logoUrl });
+    setError("");
+    setModalOpen(true);
+  }
+
+  async function handlePartnerLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError("");
+    try {
+      const url = await uploadPartnerLogo(file);
+      setPartnerForm((f) => ({ ...f, logoUrl: url }));
+    } catch (err: any) {
+      setError(err.message || "Logo upload failed.");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
   function closeModal() {
     setModalOpen(false);
     setEditingId(null);
@@ -175,6 +213,14 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     load();
   }
 
+  async function deletePartner(id: string) {
+    if (!supabase) return;
+    if (!window.confirm("Delete this partner logo? This can't be undone.")) return;
+    const { error: err } = await supabase.from("ecosystem_partners").delete().eq("id", id);
+    if (err) return window.alert(err.message);
+    load();
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!supabase) return;
@@ -186,6 +232,13 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
       const { error: err } = editingId
         ? await supabase.from("mentors").update(payload).eq("id", editingId)
         : await supabase.from("mentors").insert(payload);
+      if (err) return setError(err.message);
+    } else if (isPartners) {
+      if (!partnerForm.name.trim()) return;
+      const payload = { name: partnerForm.name.trim(), logo_url: partnerForm.logoUrl };
+      const { error: err } = editingId
+        ? await supabase.from("ecosystem_partners").update(payload).eq("id", editingId)
+        : await supabase.from("ecosystem_partners").insert(payload);
       if (err) return setError(err.message);
     } else {
       if (!orgForm.name.trim()) return;
@@ -205,7 +258,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
         <div style={{ display: "flex", gap: 6, flex: 1, flexWrap: "wrap" }}>
           {CATEGORIES.map((c) => {
             const active = category === c;
-            const count = c === "Mentors" ? mentors.length : orgs.filter((o) => o.org_type === c).length;
+            const count = c === "Mentors" ? mentors.length : c === "Ecosystem Partners" ? partners.length : orgs.filter((o) => o.org_type === c).length;
             return (
               <button
                 key={c}
@@ -234,7 +287,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
           onClick={openAddModal}
           style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 999, fontSize: 13, fontWeight: 600, border: "none", color: "#fff", background: ORANGE, cursor: "pointer" }}
         >
-          + Add {isMentors ? "Mentor" : category.replace(/s$/, "")}
+          + Add {isMentors ? "Mentor" : isPartners ? "Partner logo" : category.replace(/s$/, "")}
         </button>
       </div>
 
@@ -258,7 +311,25 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
             </div>
           ))}
 
-        {!isMentors &&
+        {isPartners &&
+          filteredPartners.map((p) => (
+            <div key={p.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18, display: "flex", gap: 12, alignItems: "center" }}>
+              {p.logoUrl ? (
+                <img src={p.logoUrl} alt="" style={{ width: 44, height: 44, borderRadius: 10, objectFit: "contain", background: "#F5F4F0", flexShrink: 0 }} />
+              ) : (
+                <div style={{ width: 44, height: 44, borderRadius: 10, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 9.5, textAlign: "center", flexShrink: 0 }}>No logo</div>
+              )}
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{p.name}</div>
+                <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
+                  <button onClick={() => openEditPartner(p)} style={{ fontSize: 11.5, fontWeight: 600, color: "#285E7A", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Edit</button>
+                  <button onClick={() => deletePartner(p.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Delete</button>
+                </div>
+              </div>
+            </div>
+          ))}
+
+        {isOrg &&
           filteredOrgs.map((o) => (
             <div key={o.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18, display: "flex", gap: 12 }}>
               {o.logoUrl ? (
@@ -277,7 +348,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
             </div>
           ))}
 
-        {loaded && ((isMentors && filteredMentors.length === 0) || (!isMentors && filteredOrgs.length === 0)) && (
+        {loaded && ((isMentors && filteredMentors.length === 0) || (isPartners && filteredPartners.length === 0) || (isOrg && filteredOrgs.length === 0)) && (
           <div style={{ gridColumn: "1 / -1", padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)" }}>
             No {category.toLowerCase()} yet.
           </div>
@@ -296,7 +367,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div style={{ fontSize: 16.5, fontWeight: 700, color: DARK }}>
-                {editingId ? "Edit" : "Add"} {isMentors ? "mentor" : category.replace(/s$/, "").toLowerCase()}
+                {editingId ? "Edit" : "Add"} {isMentors ? "mentor" : isPartners ? "partner logo" : category.replace(/s$/, "").toLowerCase()}
               </div>
               <button type="button" onClick={closeModal} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#9A958B", lineHeight: 1 }}>×</button>
             </div>
@@ -396,6 +467,37 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                     maxLength={BIO_MAX}
                     style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box", minHeight: 74, resize: "vertical", fontFamily: "inherit" }}
                   />
+                </div>
+              </>
+            ) : isPartners ? (
+              <>
+                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                  {partnerForm.logoUrl ? (
+                    <img src={partnerForm.logoUrl} alt="" style={{ width: 68, height: 52, borderRadius: 12, objectFit: "contain", background: "#F5F4F0" }} />
+                  ) : (
+                    <div style={{ width: 68, height: 52, borderRadius: 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10.5, textAlign: "center" }}>
+                      No logo
+                    </div>
+                  )}
+                  <div>
+                    <label style={{ display: "inline-block", fontSize: 12.5, fontWeight: 600, color: "#285E7A", cursor: "pointer" }}>
+                      {uploading ? "Uploading…" : "Upload logo"}
+                      <input type="file" accept="image/*" onChange={handlePartnerLogoChange} disabled={uploading} style={{ display: "none" }} />
+                    </label>
+                    <div style={{ fontSize: 11, color: "#9A958B", marginTop: 2 }}>Shown in the homepage&rsquo;s scrolling ecosystem partners strip. A transparent PNG/SVG-style logo works best.</div>
+                  </div>
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Partner name</label>
+                  <input
+                    value={partnerForm.name}
+                    onChange={(e) => setPartnerForm((f) => ({ ...f, name: e.target.value }))}
+                    placeholder="e.g. Saint Louis University"
+                    required
+                    maxLength={NAME_MAX}
+                    style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                  />
+                  <div style={{ fontSize: 11, color: "#9A958B", marginTop: 4 }}>Used as alt text and shown only if no logo is uploaded.</div>
                 </div>
               </>
             ) : (
