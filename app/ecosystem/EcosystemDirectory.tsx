@@ -1,9 +1,19 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { COMMUNITY, CORPORATE, COWORKING, GOVERNMENT, MAKERSPACES, MENTORS, TBIS, type EcosystemCategory, type StartupEntry, type TbiEntry, type CorporateEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry } from "./data";
 import { fetchDynamicStartups, fetchDynamicMentors, fetchDynamicOrganizations, type DynamicMentorEntry } from "./dynamicData";
 import ConnectMentorButton from "./ConnectMentorButton";
+
+const EcosystemMap = dynamic(() => import("./EcosystemMap"), {
+  ssr: false,
+  loading: () => (
+    <div style={{ width: "100%", height: 480, borderRadius: 20, border: "1px solid rgba(20,20,25,0.10)", background: "#FAFAF7", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 14 }}>
+      Loading map&hellip;
+    </div>
+  ),
+});
 
 const DARK = "#141417";
 const ORANGE = "#F26522";
@@ -163,49 +173,7 @@ export default function EcosystemDirectory() {
           <p style={{ textAlign: "center", fontSize: 14, color: "#9A958B", padding: "32px 0" }}>No {tab.toLowerCase()} match &ldquo;{query}&rdquo;.</p>
         )}
 
-        {view === "map" && filtered.length > 0 && (
-          <div
-            style={{
-              position: "relative",
-              borderRadius: 20,
-              border: "1px solid rgba(20,20,25,0.10)",
-              background: "linear-gradient(135deg,#F4F2EC 0%,#FAFAF7 100%)",
-              backgroundImage:
-                "radial-gradient(rgba(20,20,25,0.07) 1px, transparent 1px), linear-gradient(135deg,#F4F2EC 0%,#FAFAF7 100%)",
-              backgroundSize: "22px 22px, 100% 100%",
-              minHeight: 420,
-              padding: 28,
-              overflow: "hidden",
-            }}
-          >
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 14, position: "relative", zIndex: 1 }}>
-              {pins.map((p) => (
-                <div
-                  key={p.key}
-                  title={p.name}
-                  style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 9999, padding: "6px 14px 6px 6px", boxShadow: "0 1px 2px rgba(20,20,25,0.05)" }}
-                >
-                  <span style={{ width: 26, height: 26, borderRadius: 9999, background: p.bg, color: p.color, fontSize: 11, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{p.label}</span>
-                  <span style={{ fontSize: 12.5, fontWeight: 600, color: DARK, whiteSpace: "nowrap" }}>{p.name}</span>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, textAlign: "center", padding: 24 }}>
-              <div style={{ width: 56, height: 56, borderRadius: 9999, background: "rgba(242,101,34,0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7" />
-                </svg>
-              </div>
-              <div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: DARK, marginBottom: 6 }}>Interactive map coming soon</div>
-                <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.6, color: "#6B6B73", maxWidth: 380 }}>
-                  This panel is ready for a map API (e.g. Google Maps or Mapbox) to plot the {filtered.length} {tab.toLowerCase()} shown above by location.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
+        {view === "map" && filtered.length > 0 && <EcosystemMap pins={pins} />}
 
         {view === "list" && tab === "Startups" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
