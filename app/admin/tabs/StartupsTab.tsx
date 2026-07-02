@@ -21,6 +21,7 @@ interface Startup {
   since: string;
   description: string;
   logoUrl: string;
+  website: string;
   initials: string;
   color: string;
 }
@@ -34,6 +35,7 @@ const EMPTY_FORM = {
   since: "",
   description: "",
   logoUrl: "",
+  website: "",
 };
 
 export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string }) {
@@ -66,6 +68,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
           since: s.founded_year,
           description: s.description,
           logoUrl: s.logo_url,
+          website: s.website,
           initials: initialsOf(s.name),
           color: p.color,
         };
@@ -94,7 +97,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
 
   function openEditModal(s: Startup) {
     setEditingId(s.id);
-    setForm({ name: s.name, sector: s.sector, stage: s.stage, tbi: s.tbi, funding: s.funding, since: s.since, description: s.description, logoUrl: s.logoUrl });
+    setForm({ name: s.name, sector: s.sector, stage: s.stage, tbi: s.tbi, funding: s.funding, since: s.since, description: s.description, logoUrl: s.logoUrl, website: s.website });
     setError("");
     setModalOpen(true);
   }
@@ -144,6 +147,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
       founded_year: form.since.trim(),
       description: form.description.trim(),
       logo_url: form.logoUrl,
+      website: form.website.trim(),
     };
     const { error: err } = editingId
       ? await supabase.from("startups").update(payload).eq("id", editingId)
@@ -394,6 +398,18 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                 maxLength={TBI_MAX}
                 style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
               />
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Website / Facebook link</label>
+              <input
+                type="url"
+                value={form.website}
+                onChange={(e) => update("website", e.target.value)}
+                placeholder="https://facebook.com/... or https://..."
+                style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+              />
+              <div style={{ fontSize: 11, color: "#9A958B", marginTop: 4 }}>Shown as a link button on the startup's public card.</div>
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>

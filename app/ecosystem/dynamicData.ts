@@ -26,6 +26,7 @@ export async function fetchDynamicStartups(): Promise<StartupEntry[]> {
       tbiAffiliation: s.tbi_affiliation,
       description: s.description,
       logoUrl: s.logo_url || undefined,
+      website: s.website || undefined,
       initial: initialsOf(s.name)[0],
       color: p.color,
       bg: p.bg,

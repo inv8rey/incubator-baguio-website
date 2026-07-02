@@ -210,7 +210,7 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Startups" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as StartupEntry[]).map((s) => (
-              <div key={s.name} className="ib-challenge-hover" style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
+              <div key={s.name} className="ib-challenge-hover ib-startup-card" style={{ position: "relative", background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
                   {s.logoUrl ? (
                     <img src={s.logoUrl} alt={`${s.name} logo`} style={{ width: 46, height: 46, borderRadius: 12, objectFit: "cover" }} />
@@ -222,6 +222,18 @@ export default function EcosystemDirectory() {
                 <h3 style={{ margin: "0 0 6px", fontSize: 18, fontWeight: 600, color: DARK }}>{s.name}</h3>
                 <p style={{ margin: "0 0 14px", fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{s.description}</p>
                 <span style={{ fontSize: 12, fontWeight: 600, color: "#44444C" }}>{s.tbiAffiliation}</span>
+                {s.website && (
+                  <a
+                    href={s.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ib-startup-link-btn"
+                    aria-label={`Visit ${s.name}`}
+                    style={{ position: "absolute", right: 16, bottom: 16, width: 34, height: 34, borderRadius: 9999, background: DARK, display: "flex", alignItems: "center", justifyContent: "center" }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                  </a>
+                )}
               </div>
             ))}
           </div>

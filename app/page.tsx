@@ -1,4 +1,5 @@
 import EcosystemModel from "./programs/EcosystemModel";
+import FeaturedStartups from "./FeaturedStartups";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -56,7 +57,7 @@ const HOME_HTML_TOP = `
 </div>
 `;
 
-const HOME_HTML_BOTTOM = `
+const HOME_HTML_BOTTOM_A = `
 <!-- INNOVATION CHALLENGES -->
 <div style="background:#fff;padding:80px 40px;border-top:1px solid rgba(20,20,25,0.06);">
   <div style="max-width:1060px;margin:0 auto;">
@@ -104,34 +105,9 @@ const HOME_HTML_BOTTOM = `
     </div>
   </div>
 </div>
+`;
 
-<!-- FEATURED STARTUPS -->
-<div style="background:#FAFAF7;padding:80px 40px;">
-  <div style="max-width:1060px;margin:0 auto;">
-    <div style="margin-bottom:40px;max-width:640px;">
-      <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">Startup Directory</div>
-      <h2 style="margin:0;font-size:40px;font-weight:700;letter-spacing:-0.03em;color:#141417;line-height:1.08;">Startups in the Incubator Baguio network</h2>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
-      ${[
-        ["#F5A623", "TT", "TerraTrack", "AgriTech", "Soil and crop monitoring for highland farmers across the Cordillera."],
-        ["#285E7A", "PW", "PineWaste", "CleanTech", "Turning pine and organic waste into compost and biochar products."],
-        ["#9E2A52", "KW", "KraftWeave", "Creative", "Marketplace connecting Cordillera weavers to national and global buyers."],
-      ].map((s) => `
-      <div class="ib-card-hover" style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;overflow:hidden;">
-        <div style="height:148px;background:repeating-linear-gradient(135deg,#F4F2EC,#F4F2EC 11px,#EDEAE1 11px,#EDEAE1 22px);display:flex;align-items:center;justify-content:center;"><span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:0.08em;color:#A8A399;">startup cover</span></div>
-        <div style="padding:24px;">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;"><div style="width:46px;height:46px;border-radius:12px;background:${s[0]};display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;">${s[1]}</div><div><div style="font-size:16px;font-weight:600;color:#141417;">${s[2]}</div><div style="font-size:12.5px;color:#9A958B;">${s[3]}</div></div></div>
-          <p style="margin:0;font-size:14px;line-height:1.55;color:#6B6B73;">${s[4]}</p>
-        </div>
-      </div>`).join("")}
-    </div>
-    <div style="margin-top:32px;">
-      <a href="#" style="display:inline-flex;align-items:center;gap:9px;background:#141417;color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;">View all startups<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-    </div>
-  </div>
-</div>
-
+const HOME_HTML_BOTTOM_B = `
 <!-- UPCOMING EVENTS -->
 <div style="background:#fff;padding:80px 40px;">
   <div style="max-width:1060px;margin:0 auto;">
@@ -243,7 +219,9 @@ export default function Home() {
     <main>
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_TOP }} />
       <EcosystemModel />
-      <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM }} />
+      <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_A }} />
+      <FeaturedStartups bp={BP} />
+      <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_B }} />
     </main>
   );
 }

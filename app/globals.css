@@ -47,6 +47,9 @@ html { scroll-behavior: smooth; }
 .ib-getstarted-card { transition: border-color .2s ease, transform .2s ease, background .2s ease; }
 .ib-getstarted-card:hover { border-color: rgba(242,101,34,0.4) !important; background: #181819 !important; transform: translateY(-3px); }
 
+.ib-startup-link-btn { opacity: 0; transform: translateY(6px) scale(0.9); transition: opacity .18s ease, transform .18s ease; }
+.ib-startup-card:hover .ib-startup-link-btn { opacity: 1; transform: translateY(0) scale(1); }
+
 /* FAQ accordion (native <details>/<summary>) */
 .ib-faq-summary { list-style: none; transition: background .18s ease; }
 .ib-faq-summary::-webkit-details-marker { display: none; }

@@ -6,6 +6,7 @@ export interface StartupEntry {
   tbiAffiliation: string;
   description: string;
   logoUrl?: string;
+  website?: string;
   initial: string;
   color: string;
   bg: string;
