@@ -3,6 +3,7 @@ import "./globals.css";
 import Interactive from "./Interactive";
 import AuthProvider from "./AuthProvider";
 import AuthNav from "./AuthNav";
+import PostHogProvider from "./PostHogProvider";
 import { SITE_URL } from "./seo";
 
 const TITLE = "Incubator Baguio — Official Technology Business Incubator of the City of Baguio";
@@ -61,11 +62,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthProvider>
-          {children}
-          <Interactive />
-          <AuthNav />
-        </AuthProvider>
+        <PostHogProvider>
+          <AuthProvider>
+            {children}
+            <Interactive />
+            <AuthNav />
+          </AuthProvider>
+        </PostHogProvider>
       </body>
     </html>
   );
