@@ -117,15 +117,15 @@ const PROGRAMS_HTML_TOP = `
 
 <!-- HERO -->
 <div style="position:relative;background:#0B0B0D;overflow:hidden;">
-  <div class="ib-programs-hero" style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:1.3fr 1fr;align-items:stretch;min-height:560px;">
-    <div style="position:relative;padding:64px 40px;display:flex;flex-direction:column;justify-content:center;">
+  <div class="ib-programs-hero" style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:1.3fr 1fr;align-items:stretch;">
+    <div style="position:relative;padding:88px 40px;display:flex;flex-direction:column;justify-content:center;">
       <div style="position:absolute;top:-120px;left:-100px;width:420px;height:420px;background:radial-gradient(circle,rgba(242,101,34,0.2),transparent 65%);pointer-events:none;"></div>
       <div style="position:relative;">
-        <div style="font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:18px;">Programs &amp; Opportunities</div>
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:16px;">Programs &amp; Opportunities</div>
         <h1 style="margin:0;font-size:46px;font-weight:800;letter-spacing:-0.03em;color:#fff;line-height:1.12;max-width:560px;">Find the Right Opportunity for Your <span style="color:#F26522;">Innovation Journey.</span></h1>
-        <p style="margin:22px 0 0;font-size:16px;line-height:1.65;color:rgba(255,255,255,0.62);max-width:520px;">Whether you&rsquo;re a founder, student, researcher, mentor, investor, or organization, discover programs, events, funding opportunities, and ecosystem initiatives designed to help you succeed.</p>
+        <p style="margin:20px 0 0;font-size:16px;line-height:1.65;color:rgba(255,255,255,0.62);max-width:520px;">Whether you&rsquo;re a founder, student, researcher, mentor, investor, or organization, discover programs, events, funding opportunities, and ecosystem initiatives designed to help you succeed.</p>
 
-        <div style="display:grid;grid-template-columns:repeat(2,auto);gap:18px 36px;margin:34px 0 30px;">
+        <div style="display:grid;grid-template-columns:repeat(2,auto);gap:16px 36px;margin:32px 0 30px;">
           ${[
             ["#F26522", "rgba(242,101,34,0.14)", `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F5A07A" stroke-width="2"><circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="9" r="2.3"></circle><path d="M3 20c0-3 2.5-5 6-5s6 2 6 5M14 20c0-2 .8-3.5 2-4"></path></svg>`, "15+", "Programs &amp; Initiatives"],
             ["#E23A2E", "rgba(226,58,46,0.14)", `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F0938C" stroke-width="2"><path d="M20.8 4.6a4.7 4.7 0 0 0-6.6 0L12 6.8l-2.2-2.2a4.7 4.7 0 0 0-6.6 6.6L12 20l8.8-8.8a4.7 4.7 0 0 0 0-6.6Z"></path></svg>`, "8", "Ecosystem Partners"],
