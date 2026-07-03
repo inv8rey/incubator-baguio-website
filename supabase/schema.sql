@@ -603,3 +603,30 @@ create policy "admins manage ecosystem signups" on public.ecosystem_signups
   ) with check (
     exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
   );
+
+-- ---------------------------------------------------------------------------
+-- storage: ecosystem-signup-logos bucket for the no-login ecosystem signup
+-- form. Deliberately its own bucket (not startup-logos/mentor-photos/
+-- org-logos) since this is the only place anonymous uploads are allowed —
+-- keeps that looser policy isolated from the buckets used by authenticated
+-- flows, and makes it easy to drop alongside the rest of this temporary
+-- feature later.
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('ecosystem-signup-logos', 'ecosystem-signup-logos', true)
+on conflict (id) do nothing;
+
+drop policy if exists "ecosystem signup logos are publicly readable" on storage.objects;
+create policy "ecosystem signup logos are publicly readable" on storage.objects
+  for select using (bucket_id = 'ecosystem-signup-logos');
+
+drop policy if exists "anyone can upload ecosystem signup logos" on storage.objects;
+create policy "anyone can upload ecosystem signup logos" on storage.objects
+  for insert with check (bucket_id = 'ecosystem-signup-logos');
+
+drop policy if exists "admins can delete ecosystem signup logos" on storage.objects;
+create policy "admins can delete ecosystem signup logos" on storage.objects
+  for delete using (
+    bucket_id = 'ecosystem-signup-logos'
+    and exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );

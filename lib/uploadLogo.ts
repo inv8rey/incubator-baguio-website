@@ -36,3 +36,7 @@ export function uploadOrgLogo(file: File): Promise<string> {
 export function uploadPartnerLogo(file: File): Promise<string> {
   return uploadImage(file, "partner-logos");
 }
+
+export function uploadEcosystemSignupLogo(file: File): Promise<string> {
+  return uploadImage(file, "ecosystem-signup-logos");
+}

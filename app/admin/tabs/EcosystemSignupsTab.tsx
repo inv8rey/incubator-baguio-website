@@ -48,6 +48,10 @@ function payloadName(p: Record<string, unknown>): string {
   return typeof p.name === "string" && p.name ? p.name : "Untitled";
 }
 
+function payloadLogo(p: Record<string, unknown>): string {
+  return typeof p.logo_url === "string" ? p.logo_url : "";
+}
+
 export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?: string }) {
   const [signups, setSignups] = useState<SignupRow[]>([]);
   const [status, setStatus] = useState<Status>("pending");
@@ -95,6 +99,7 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
         tbi_affiliation: p.tbi_affiliation,
         description: p.description,
         website: p.website,
+        logo_url: p.logo_url || "",
         contact_email: row.email,
         owner_id: null,
       });
@@ -106,6 +111,7 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
         company: p.company,
         bio: p.bio,
         specializations: p.specializations,
+        photo_url: p.logo_url || "",
         owner_id: null,
       });
       insertError = err?.message ?? null;
@@ -116,6 +122,7 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
         type: p.type,
         description: p.description,
         website: p.website,
+        logo_url: p.logo_url || "",
         contact_email: row.email,
         owner_id: null,
       });
@@ -183,6 +190,11 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
           const ec = ENTITY_COLORS[s.entity_type];
           return (
             <div key={s.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18, display: "flex", gap: 16, alignItems: "flex-start" }}>
+              {payloadLogo(s.payload) ? (
+                <img src={payloadLogo(s.payload)} alt="" style={{ width: 40, height: 40, borderRadius: s.entity_type === "mentor" ? 9999 : 9, objectFit: "cover", flexShrink: 0 }} />
+              ) : (
+                <div style={{ width: 40, height: 40, borderRadius: s.entity_type === "mentor" ? 9999 : 9, background: "#F5F4F0", flexShrink: 0 }} />
+              )}
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4, flexWrap: "wrap" }}>
                   <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: ec.color, background: ec.bg, padding: "3px 9px", borderRadius: 999 }}>{ENTITY_LABELS[s.entity_type]}</span>
@@ -217,15 +229,22 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
         <div onClick={() => setViewing(null)} style={{ position: "fixed", inset: 0, background: "rgba(15,15,17,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 20 }}>
           <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 18, padding: 26, width: "100%", maxWidth: 480, display: "flex", flexDirection: "column", gap: 14, maxHeight: "88vh", overflowY: "auto" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div>
-                <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: ENTITY_COLORS[viewing.entity_type].color, marginBottom: 4 }}>{ENTITY_LABELS[viewing.entity_type]}</div>
-                <div style={{ fontSize: 16.5, fontWeight: 700, color: DARK }}>{payloadName(viewing.payload)}</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                {payloadLogo(viewing.payload) ? (
+                  <img src={payloadLogo(viewing.payload)} alt="" style={{ width: 48, height: 48, borderRadius: viewing.entity_type === "mentor" ? 9999 : 10, objectFit: "cover", flexShrink: 0 }} />
+                ) : (
+                  <div style={{ width: 48, height: 48, borderRadius: viewing.entity_type === "mentor" ? 9999 : 10, background: "#F5F4F0", flexShrink: 0 }} />
+                )}
+                <div>
+                  <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: ENTITY_COLORS[viewing.entity_type].color, marginBottom: 4 }}>{ENTITY_LABELS[viewing.entity_type]}</div>
+                  <div style={{ fontSize: 16.5, fontWeight: 700, color: DARK }}>{payloadName(viewing.payload)}</div>
+                </div>
               </div>
-              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#9A958B", lineHeight: 1 }}>×</button>
+              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#9A958B", lineHeight: 1, flexShrink: 0 }}>×</button>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13 }}>
               {Object.entries(viewing.payload)
-                .filter(([k]) => k !== "name")
+                .filter(([k]) => k !== "name" && k !== "logo_url")
                 .map(([k, v]) => (
                   <div key={k}><span style={{ color: "#9A958B" }}>{humanize(k)}:</span> <strong>{displayValue(v)}</strong></div>
                 ))}

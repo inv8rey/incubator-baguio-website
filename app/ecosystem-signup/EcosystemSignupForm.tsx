@@ -5,6 +5,7 @@ import { supabase } from "../../lib/supabaseClient";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } from "../dashboard/styles";
 import { SECTOR_FILTERS } from "../admin/data";
 import { MENTOR_SPECIALIZATIONS } from "../ecosystem/data";
+import { uploadEcosystemSignupLogo } from "../../lib/uploadLogo";
 
 const ENTITY_TYPES = [
   { value: "startup", label: "Startup" },
@@ -50,12 +51,32 @@ export default function EcosystemSignupForm() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
+  // Logo / photo (shared across all three types — only one is active at a time)
+  const [logoUrl, setLogoUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
+
   function toggleSpecialization(s: string) {
     setMSpecializations((prev) => {
       if (prev.includes(s)) return prev.filter((x) => x !== s);
       if (prev.length >= MAX_SPECIALIZATIONS) return prev;
       return [...prev, s];
     });
+  }
+
+  async function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError("");
+    try {
+      const url = await uploadEcosystemSignupLogo(file);
+      setLogoUrl(url);
+    } catch (err: any) {
+      setError(err.message || "Upload failed.");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
   }
 
   async function submit(e: React.FormEvent) {
@@ -69,13 +90,13 @@ export default function EcosystemSignupForm() {
     let payload: Record<string, unknown>;
     if (entityType === "startup") {
       if (!suName.trim()) return;
-      payload = { name: suName.trim(), sector: suSector, tbi_affiliation: suTbi.trim(), description: suDescription.trim(), website: suWebsite.trim() };
+      payload = { name: suName.trim(), sector: suSector, tbi_affiliation: suTbi.trim(), description: suDescription.trim(), website: suWebsite.trim(), logo_url: logoUrl };
     } else if (entityType === "mentor") {
       if (!mName.trim()) return;
-      payload = { name: mName.trim(), position: mPosition.trim(), company: mCompany.trim(), bio: mBio.trim(), specializations: mSpecializations };
+      payload = { name: mName.trim(), position: mPosition.trim(), company: mCompany.trim(), bio: mBio.trim(), specializations: mSpecializations, logo_url: logoUrl };
     } else {
       if (!oName.trim()) return;
-      payload = { name: oName.trim(), org_type: oOrgType, type: oType.trim(), description: oDescription.trim(), website: oWebsite.trim() };
+      payload = { name: oName.trim(), org_type: oOrgType, type: oType.trim(), description: oDescription.trim(), website: oWebsite.trim(), logo_url: logoUrl };
     }
 
     setError("");
@@ -136,6 +157,26 @@ export default function EcosystemSignupForm() {
               </button>
             );
           })}
+        </div>
+      </div>
+
+      <div>
+        <label style={labelStyle}>{entityType === "mentor" ? "Photo (optional)" : "Logo (optional)"}</label>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          {logoUrl ? (
+            <img src={logoUrl} alt="" style={{ width: 52, height: 52, borderRadius: entityType === "mentor" ? 9999 : 12, objectFit: "cover" }} />
+          ) : (
+            <div style={{ width: 52, height: 52, borderRadius: entityType === "mentor" ? 9999 : 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10, textAlign: "center" }}>
+              No {entityType === "mentor" ? "photo" : "logo"}
+            </div>
+          )}
+          <div>
+            <label style={{ display: "inline-block", fontSize: 12.5, fontWeight: 600, color: ORANGE, cursor: "pointer" }}>
+              {uploading ? "Uploading…" : `Upload ${entityType === "mentor" ? "photo" : "logo"}`}
+              <input type="file" accept="image/*" onChange={handleLogoChange} disabled={uploading} style={{ display: "none" }} />
+            </label>
+            <div style={{ fontSize: 11, color: "#9A958B", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
+          </div>
         </div>
       </div>
 
