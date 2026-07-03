@@ -630,3 +630,26 @@ create policy "admins can delete ecosystem signup logos" on storage.objects
     bucket_id = 'ecosystem-signup-logos'
     and exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
   );
+
+-- ---------------------------------------------------------------------------
+-- ecosystem_signup_visits: a bare page-view counter for /ecosystem-signup,
+-- so an admin can see how many people opened the link vs. how many actually
+-- submitted (see the "Signups" tab). One row per page load, no PII. Drop
+-- alongside the rest of this temporary feature when it's retired.
+-- ---------------------------------------------------------------------------
+create table if not exists public.ecosystem_signup_visits (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now()
+);
+
+alter table public.ecosystem_signup_visits enable row level security;
+
+drop policy if exists "anyone can log an ecosystem signup visit" on public.ecosystem_signup_visits;
+create policy "anyone can log an ecosystem signup visit" on public.ecosystem_signup_visits
+  for insert with check (true);
+
+drop policy if exists "admins can read ecosystem signup visits" on public.ecosystem_signup_visits;
+create policy "admins can read ecosystem signup visits" on public.ecosystem_signup_visits
+  for select using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );

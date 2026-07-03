@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import EcosystemSignupForm from "./EcosystemSignupForm";
+import VisitTracker from "./VisitTracker";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 export default function EcosystemSignupPage() {
   return (
     <main style={{ minHeight: "100vh", background: "#FAFAF7" }}>
+      <VisitTracker />
       <div style={{ background: "#0B0B0D", padding: "20px 40px" }}>
         <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", alignItems: "center", gap: 11 }}>
           <img src={`${BP}/assets/ib-icon.png`} alt="Incubator Baguio" style={{ height: 30, width: "auto" }} />

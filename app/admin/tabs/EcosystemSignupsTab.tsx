@@ -54,6 +54,7 @@ function payloadLogo(p: Record<string, unknown>): string {
 
 export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?: string }) {
   const [signups, setSignups] = useState<SignupRow[]>([]);
+  const [visitCount, setVisitCount] = useState<number | null>(null);
   const [status, setStatus] = useState<Status>("pending");
   const [loaded, setLoaded] = useState(false);
   const [viewing, setViewing] = useState<SignupRow | null>(null);
@@ -65,8 +66,12 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
       setLoaded(true);
       return;
     }
-    const { data } = await supabase.from("ecosystem_signups").select("*").order("created_at", { ascending: false });
+    const [{ data }, { count }] = await Promise.all([
+      supabase.from("ecosystem_signups").select("*").order("created_at", { ascending: false }),
+      supabase.from("ecosystem_signup_visits").select("*", { count: "exact", head: true }),
+    ]);
     setSignups((data as SignupRow[]) ?? []);
+    setVisitCount(count ?? 0);
     setLoaded(true);
   }
 
@@ -153,7 +158,15 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
 
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
-      <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(20,20,25,0.09)", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+      <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(20,20,25,0.09)", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#6B6B73", flexShrink: 0 }}>
+          <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2}><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z" /><circle cx={12} cy={12} r={3} /></svg>
+          <span>
+            <strong style={{ color: DARK, fontWeight: 700 }}>{visitCount ?? "—"}</strong> page visits
+            {visitCount ? <span style={{ color: "#9A958B" }}> &middot; {signups.length} submitted ({Math.round((signups.length / visitCount) * 100)}%)</span> : null}
+          </span>
+        </div>
+        <div style={{ width: 1, alignSelf: "stretch", background: "rgba(20,20,25,0.08)" }} />
         <div style={{ display: "flex", gap: 6, flex: 1, flexWrap: "wrap" }}>
           {STATUSES.map((s) => {
             const active = status === s;
