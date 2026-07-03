@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { DARK, ORANGE } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
-import { uploadMentorPhoto, uploadOrgLogo, uploadPartnerLogo } from "../../../lib/uploadLogo";
+import { uploadMentorPhoto, uploadOrgLogo, uploadOrgCoverImage, uploadPartnerLogo } from "../../../lib/uploadLogo";
 import { MENTOR_SPECIALIZATIONS } from "../../ecosystem/data";
 
 const ORG_TYPES = ["TBIs", "Corporate", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
@@ -38,6 +38,7 @@ interface OrgRow {
   website: string;
   contact_email: string;
   logoUrl: string;
+  coverUrl: string;
   type: string;
   initials: string;
   color: string;
@@ -51,7 +52,7 @@ interface PartnerRow {
 
 const TYPE_MAX = 40;
 const EMPTY_MENTOR = { name: "", position: "", company: "", bio: "", specializations: [] as string[], photoUrl: "" };
-const EMPTY_ORG = { name: "", description: "", website: "", contact_email: "", logoUrl: "", type: "" };
+const EMPTY_ORG = { name: "", description: "", website: "", contact_email: "", logoUrl: "", coverUrl: "", type: "" };
 const EMPTY_PARTNER = { name: "", logoUrl: "" };
 
 export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string }) {
@@ -87,7 +88,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     setOrgs(
       (orgData ?? []).map((o: any) => {
         const p = paletteFor(o.name);
-        return { id: o.id, name: o.name, org_type: o.org_type, description: o.description, website: o.website, contact_email: o.contact_email, logoUrl: o.logo_url, type: o.type, initials: initialsOf(o.name), color: p.color };
+        return { id: o.id, name: o.name, org_type: o.org_type, description: o.description, website: o.website, contact_email: o.contact_email, logoUrl: o.logo_url, coverUrl: o.cover_url, type: o.type, initials: initialsOf(o.name), color: p.color };
       })
     );
     setPartners((partnerData ?? []).map((p: any) => ({ id: p.id, name: p.name, logoUrl: p.logo_url })));
@@ -148,7 +149,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
   function openEditOrg(o: OrgRow) {
     setEditingId(o.id);
-    setOrgForm({ name: o.name, description: o.description, website: o.website, contact_email: o.contact_email, logoUrl: o.logoUrl, type: o.type });
+    setOrgForm({ name: o.name, description: o.description, website: o.website, contact_email: o.contact_email, logoUrl: o.logoUrl, coverUrl: o.coverUrl || "", type: o.type });
     setError("");
     setModalOpen(true);
   }
@@ -163,6 +164,22 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
       setOrgForm((f) => ({ ...f, logoUrl: url }));
     } catch (err: any) {
       setError(err.message || "Logo upload failed.");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  async function handleOrgCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError("");
+    try {
+      const url = await uploadOrgCoverImage(file);
+      setOrgForm((f) => ({ ...f, coverUrl: url }));
+    } catch (err: any) {
+      setError(err.message || "Cover image upload failed.");
     } finally {
       setUploading(false);
       e.target.value = "";
@@ -242,7 +259,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
       if (err) return setError(err.message);
     } else {
       if (!orgForm.name.trim()) return;
-      const payload = { name: orgForm.name.trim(), org_type: category, description: orgForm.description.trim(), website: orgForm.website.trim(), contact_email: orgForm.contact_email.trim(), logo_url: orgForm.logoUrl, type: orgForm.type.trim() };
+      const payload = { name: orgForm.name.trim(), org_type: category, description: orgForm.description.trim(), website: orgForm.website.trim(), contact_email: orgForm.contact_email.trim(), logo_url: orgForm.logoUrl, cover_url: orgForm.coverUrl, type: orgForm.type.trim() };
       const { error: err } = editingId
         ? await supabase.from("organizations").update(payload).eq("id", editingId)
         : await supabase.from("organizations").insert(payload);
@@ -518,6 +535,24 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                     <div style={{ fontSize: 11, color: "#9A958B", marginTop: 2 }}>Shown on the Ecosystem directory card.</div>
                   </div>
                 </div>
+                {(category === "Coworking Spaces" || category === "Makerspaces & Labs") && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                    {orgForm.coverUrl ? (
+                      <img src={orgForm.coverUrl} alt="" style={{ width: 84, height: 52, borderRadius: 10, objectFit: "cover" }} />
+                    ) : (
+                      <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10.5, textAlign: "center" }}>
+                        No cover
+                      </div>
+                    )}
+                    <div>
+                      <label style={{ display: "inline-block", fontSize: 12.5, fontWeight: 600, color: "#285E7A", cursor: "pointer" }}>
+                        {uploading ? "Uploading…" : "Upload cover image"}
+                        <input type="file" accept="image/*" onChange={handleOrgCoverChange} disabled={uploading} style={{ display: "none" }} />
+                      </label>
+                      <div style={{ fontSize: 11, color: "#9A958B", marginTop: 2 }}>Banner photo shown at the top of the card.</div>
+                    </div>
+                  </div>
+                )}
                 <div>
                   <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Name</label>
                   <input

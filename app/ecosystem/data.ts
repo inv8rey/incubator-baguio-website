@@ -102,6 +102,7 @@ export interface CoworkingEntry {
   bg: string;
   initials: string;
   logoUrl?: string;
+  coverUrl?: string;
   website?: string;
 }
 
@@ -113,6 +114,7 @@ export interface MakerspaceEntry {
   bg: string;
   initials: string;
   logoUrl?: string;
+  coverUrl?: string;
   website?: string;
 }
 

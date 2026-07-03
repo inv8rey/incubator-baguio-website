@@ -42,17 +42,19 @@ interface OrgPhotoCardProps {
   bg: string;
   initials: string;
   logoUrl?: string;
+  coverUrl?: string;
   website?: string;
 }
 
 // Shared photo-style card for Coworking Spaces and Makerspaces & Labs —
 // physical locations read better with a cover image than a plain icon row.
-function OrgPhotoCard({ name, type, description, color, bg, initials, logoUrl, website }: OrgPhotoCardProps) {
+function OrgPhotoCard({ name, type, description, color, bg, initials, logoUrl, coverUrl, website }: OrgPhotoCardProps) {
+  const banner = coverUrl || logoUrl;
   return (
     <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, overflow: "hidden" }}>
       <div style={{ position: "relative", height: 150 }}>
-        {logoUrl ? (
-          <img src={logoUrl} alt={`${name} cover`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        {banner ? (
+          <img src={banner} alt={`${name} cover`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         ) : (
           <div
             style={{
@@ -485,7 +487,7 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Coworking Spaces" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as CoworkingEntry[]).map((c) => (
-              <OrgPhotoCard key={c.name} name={c.name} type={c.type} description={c.description} color={c.color} bg={c.bg} initials={c.initials} logoUrl={c.logoUrl} website={c.website} />
+              <OrgPhotoCard key={c.name} name={c.name} type={c.type} description={c.description} color={c.color} bg={c.bg} initials={c.initials} logoUrl={c.logoUrl} coverUrl={c.coverUrl} website={c.website} />
             ))}
           </div>
         )}
@@ -493,7 +495,7 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Makerspaces & Labs" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as MakerspaceEntry[]).map((m) => (
-              <OrgPhotoCard key={m.name} name={m.name} type={m.type} description={m.description} color={m.color} bg={m.bg} initials={m.initials} logoUrl={m.logoUrl} website={m.website} />
+              <OrgPhotoCard key={m.name} name={m.name} type={m.type} description={m.description} color={m.color} bg={m.bg} initials={m.initials} logoUrl={m.logoUrl} coverUrl={m.coverUrl} website={m.website} />
             ))}
           </div>
         )}
