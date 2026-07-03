@@ -102,6 +102,60 @@ function OrgPhotoCard({ name, type, description, color, bg, initials, logoUrl, w
   );
 }
 
+interface OrgListCardProps {
+  name: string;
+  badge: string;
+  description: string;
+  color: string;
+  bg: string;
+  initials: string;
+  logoUrl?: string;
+  website?: string;
+}
+
+// Shared card for TBIs, Corporate, Government, and Community: a white logo
+// tile + colored badge up top, a divider, then description and a "visit
+// website" pill that's icon-only until the card is hovered.
+function OrgListCard({ name, badge, description, color, bg, initials, logoUrl, website }: OrgListCardProps) {
+  return (
+    <div className="ib-card-hover ib-org-list-card" style={{ position: "relative", background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: 24, display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", gap: 14, marginBottom: 16 }}>
+        {logoUrl ? (
+          <img src={logoUrl} alt={`${name} logo`} style={{ width: 64, height: 64, borderRadius: 14, objectFit: "contain", background: "#fff", border: "1px solid rgba(20,20,25,0.08)", flexShrink: 0, padding: 6, boxSizing: "border-box" }} />
+        ) : (
+          <div style={{ width: 64, height: 64, borderRadius: 14, background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 700, color, flexShrink: 0 }}>{initials}</div>
+        )}
+        <div style={{ minWidth: 0 }}>
+          {badge && (
+            <span style={{ display: "inline-block", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.02em", color, background: bg, padding: "4px 10px", borderRadius: 9999, marginBottom: 6 }}>
+              {badge}
+            </span>
+          )}
+          <h3 style={{ margin: 0, fontSize: 16.5, fontWeight: 700, color: DARK, lineHeight: 1.3 }}>{name}</h3>
+        </div>
+      </div>
+      <div style={{ borderTop: "1px solid rgba(20,20,25,0.08)", paddingTop: 14, flex: 1 }}>
+        <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{description}</p>
+      </div>
+      {website && (
+        <a
+          href={website}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Visit ${name}`}
+          className="ib-orglist-btn"
+          style={{ marginTop: 16, alignSelf: "flex-end", height: 34, borderRadius: 9999, background: "#141417", color: "#fff", display: "flex", alignItems: "center", justifyContent: "flex-end", overflow: "hidden", textDecoration: "none", flexShrink: 0 }}
+        >
+          <span className="ib-orglist-label" style={{ fontSize: 12.5, fontWeight: 600, whiteSpace: "nowrap" }}>View website</span>
+          <span style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+          </span>
+        </a>
+      )}
+    </div>
+  );
+}
+
 type ViewMode = "list" | "map";
 
 type SortOrder = "az" | "za";
@@ -399,18 +453,7 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "TBIs" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as TbiEntry[]).map((t) => (
-              <div key={t.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26, display: "flex", gap: 16 }}>
-                {t.logoUrl ? (
-                  <img src={t.logoUrl} alt={`${t.name} logo`} style={{ width: 50, height: 50, borderRadius: 12, objectFit: "cover", flexShrink: 0 }} />
-                ) : (
-                  <div style={{ width: 50, height: 50, borderRadius: 12, background: t.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: t.color, flexShrink: 0 }}>{t.initials}</div>
-                )}
-                <div>
-                  <h3 style={{ margin: "0 0 4px", fontSize: 17, fontWeight: 600, color: DARK }}>{t.name}</h3>
-                  <p style={{ margin: "0 0 10px", fontSize: 12.5, color: "#9A958B" }}>{t.host} &middot; {t.focus}</p>
-                  <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>{t.description}</p>
-                </div>
-              </div>
+              <OrgListCard key={t.name} name={t.name} badge={t.host} description={t.description} color={t.color} bg={t.bg} initials={t.initials} logoUrl={t.logoUrl} website={t.website} />
             ))}
           </div>
         )}
@@ -418,20 +461,7 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Corporate" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as CorporateEntry[]).map((c) => (
-              <div key={c.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                  {c.logoUrl ? (
-                    <img src={c.logoUrl} alt={`${c.name} logo`} style={{ width: 44, height: 44, borderRadius: 11, objectFit: "cover", flexShrink: 0 }} />
-                  ) : (
-                    <div style={{ width: 44, height: 44, borderRadius: 11, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: c.color, flexShrink: 0 }}>{c.initials}</div>
-                  )}
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 600, color: DARK }}>{c.name}</h3>
-                    <span style={{ fontSize: 11.5, color: "#9A958B" }}>{c.type}</span>
-                  </div>
-                </div>
-                <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>{c.description}</p>
-              </div>
+              <OrgListCard key={c.name} name={c.name} badge={c.type} description={c.description} color={c.color} bg={c.bg} initials={c.initials} logoUrl={c.logoUrl} website={c.website} />
             ))}
           </div>
         )}
@@ -439,20 +469,7 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Government" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as GovernmentEntry[]).map((g) => (
-              <div key={g.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                  {g.logoUrl ? (
-                    <img src={g.logoUrl} alt={`${g.name} logo`} style={{ width: 44, height: 44, borderRadius: 11, objectFit: "cover", flexShrink: 0 }} />
-                  ) : (
-                    <div style={{ width: 44, height: 44, borderRadius: 11, background: g.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: g.color, flexShrink: 0 }}>{g.initials}</div>
-                  )}
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 600, color: DARK }}>{g.name}</h3>
-                    <span style={{ fontSize: 11.5, color: "#9A958B" }}>{g.type}</span>
-                  </div>
-                </div>
-                <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>{g.description}</p>
-              </div>
+              <OrgListCard key={g.name} name={g.name} badge={g.type} description={g.description} color={g.color} bg={g.bg} initials={g.initials} logoUrl={g.logoUrl} website={g.website} />
             ))}
           </div>
         )}
@@ -460,20 +477,7 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Community" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as CommunityEntry[]).map((c) => (
-              <div key={c.name} style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                  {c.logoUrl ? (
-                    <img src={c.logoUrl} alt={`${c.name} logo`} style={{ width: 44, height: 44, borderRadius: 11, objectFit: "cover", flexShrink: 0 }} />
-                  ) : (
-                    <div style={{ width: 44, height: 44, borderRadius: 11, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: c.color, flexShrink: 0 }}>{c.initials}</div>
-                  )}
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: 15.5, fontWeight: 600, color: DARK }}>{c.name}</h3>
-                    <span style={{ fontSize: 11.5, color: "#9A958B" }}>{c.type}</span>
-                  </div>
-                </div>
-                <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>{c.description}</p>
-              </div>
+              <OrgListCard key={c.name} name={c.name} badge={c.type} description={c.description} color={c.color} bg={c.bg} initials={c.initials} logoUrl={c.logoUrl} website={c.website} />
             ))}
           </div>
         )}

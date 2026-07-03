@@ -86,6 +86,13 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
 .ib-startup-link-btn { opacity: 0; transform: translateY(6px) scale(0.9); transition: opacity .18s ease, transform .18s ease; }
 .ib-startup-card:hover .ib-startup-link-btn { opacity: 1; transform: translateY(0) scale(1); }
 
+/* Org list card: icon-only "visit" pill that expands to reveal a text
+   label on card hover, anchored to the right so it grows leftward. */
+.ib-orglist-btn { width: 34px; transition: width .25s cubic-bezier(.22,.61,.36,1); }
+.ib-org-list-card:hover .ib-orglist-btn { width: 152px; }
+.ib-orglist-label { opacity: 0; margin-right: 0; transition: opacity .18s ease, margin-right .25s ease; }
+.ib-org-list-card:hover .ib-orglist-label { opacity: 1; margin-right: 4px; }
+
 /* FAQ accordion (native <details>/<summary>) */
 .ib-faq-summary { list-style: none; transition: background .18s ease; }
 .ib-faq-summary::-webkit-details-marker { display: none; }
