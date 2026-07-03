@@ -563,3 +563,43 @@ create policy "admins manage event submissions" on public.event_submissions
   ) with check (
     exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
   );
+
+-- ---------------------------------------------------------------------------
+-- ecosystem_signups: TEMPORARY no-login signup form (app/ecosystem-signup)
+-- for people to submit themselves as a startup, mentor, or organization
+-- without needing an account. Purely a moderation staging table — it has
+-- no public read policy because approved rows are materialized directly
+-- into the real startups/mentors/organizations tables (see the admin
+-- "Signups" tab), not read from here. Safe to drop this whole table (and
+-- delete app/ecosystem-signup + app/admin/tabs/EcosystemSignupsTab.tsx)
+-- once the temporary signup period is over.
+--
+-- Expected `payload` shape per entity_type:
+--   startup:      { name, sector, tbi_affiliation, description, website }
+--   mentor:       { name, position, company, bio, specializations: string[] }
+--   organization: { name, org_type, type, description, website }
+-- ---------------------------------------------------------------------------
+create table if not exists public.ecosystem_signups (
+  id uuid primary key default gen_random_uuid(),
+  entity_type text not null check (entity_type in ('startup', 'mentor', 'organization')),
+  contact_name text not null default '',
+  email text not null default '',
+  phone text not null default '',
+  payload jsonb not null default '{}'::jsonb,
+  status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
+  created_at timestamptz not null default now()
+);
+
+alter table public.ecosystem_signups enable row level security;
+
+drop policy if exists "anyone can submit an ecosystem signup" on public.ecosystem_signups;
+create policy "anyone can submit an ecosystem signup" on public.ecosystem_signups
+  for insert with check (true);
+
+drop policy if exists "admins manage ecosystem signups" on public.ecosystem_signups;
+create policy "admins manage ecosystem signups" on public.ecosystem_signups
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
