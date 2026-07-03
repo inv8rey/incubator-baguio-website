@@ -51,7 +51,7 @@ interface OrgPhotoCardProps {
 function OrgPhotoCard({ name, type, description, color, bg, initials, logoUrl, coverUrl, website }: OrgPhotoCardProps) {
   const banner = coverUrl || logoUrl;
   return (
-    <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, overflow: "hidden" }}>
+    <div className="ib-card-hover ib-org-photo-card" style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, overflow: "hidden" }}>
       <div style={{ position: "relative", height: 150 }}>
         {banner ? (
           <img src={banner} alt={`${name} cover`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -94,9 +94,13 @@ function OrgPhotoCard({ name, type, description, color, bg, initials, logoUrl, c
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Visit ${name}`}
-            style={{ position: "absolute", right: 20, bottom: 20, width: 34, height: 34, borderRadius: 9999, background: bg, color, display: "flex", alignItems: "center", justifyContent: "center" }}
+            className="ib-orglist-btn"
+            style={{ position: "absolute", right: 20, bottom: 20, height: 34, borderRadius: 9999, background: bg, color, display: "flex", alignItems: "center", justifyContent: "flex-end", overflow: "hidden", textDecoration: "none" }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+            <span className="ib-orglist-label" style={{ fontSize: 12.5, fontWeight: 600, whiteSpace: "nowrap" }}>View website</span>
+            <span style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+            </span>
           </a>
         )}
       </div>
@@ -394,11 +398,14 @@ export default function EcosystemDirectory() {
                     href={s.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="ib-startup-link-btn"
+                    className="ib-orglist-btn"
                     aria-label={`Visit ${s.name}`}
-                    style={{ position: "absolute", right: 16, bottom: 16, width: 34, height: 34, borderRadius: 9999, background: DARK, display: "flex", alignItems: "center", justifyContent: "center" }}
+                    style={{ position: "absolute", right: 16, bottom: 16, height: 34, borderRadius: 9999, background: DARK, color: "#fff", display: "flex", alignItems: "center", justifyContent: "flex-end", overflow: "hidden", textDecoration: "none" }}
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                    <span className="ib-orglist-label" style={{ fontSize: 12.5, fontWeight: 600, whiteSpace: "nowrap" }}>View website</span>
+                    <span style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                    </span>
                   </a>
                 )}
               </div>

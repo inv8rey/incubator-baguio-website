@@ -564,19 +564,32 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                     style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
                   />
                 </div>
-                {category !== "TBIs" && (
-                  <div>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Type</label>
-                    <input
-                      value={orgForm.type}
-                      onChange={(e) => setOrgForm((f) => ({ ...f, type: e.target.value }))}
-                      placeholder={category === "Coworking Spaces" ? "e.g. Coworking space" : category === "Makerspaces & Labs" ? "e.g. Digital fabrication lab" : "e.g. Business association"}
-                      maxLength={TYPE_MAX}
-                      style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
-                    />
-                    <div style={{ fontSize: 11, color: "#9A958B", marginTop: 4 }}>Short label shown on the card, e.g. &ldquo;Coworking space.&rdquo;</div>
-                  </div>
-                )}
+                {(() => {
+                  const isPhotoCard = category === "Coworking Spaces" || category === "Makerspaces & Labs";
+                  return (
+                    <div>
+                      <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>
+                        {isPhotoCard ? "Type" : "Badge / abbreviation"}
+                      </label>
+                      <input
+                        value={orgForm.type}
+                        onChange={(e) => setOrgForm((f) => ({ ...f, type: e.target.value }))}
+                        placeholder={
+                          category === "Coworking Spaces" ? "e.g. Coworking space" :
+                          category === "Makerspaces & Labs" ? "e.g. Digital fabrication lab" :
+                          "e.g. DICT-CAR"
+                        }
+                        maxLength={TYPE_MAX}
+                        style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                      />
+                      <div style={{ fontSize: 11, color: "#9A958B", marginTop: 4 }}>
+                        {isPhotoCard
+                          ? <>Short label shown on the card, e.g. &ldquo;Coworking space.&rdquo;</>
+                          : <>Short badge shown on the card, e.g. &ldquo;DICT-CAR.&rdquo; Leave blank to auto-generate one from the name.</>}
+                      </div>
+                    </div>
+                  );
+                })()}
                 <div>
                   <label style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>
                     <span>Description</span>
