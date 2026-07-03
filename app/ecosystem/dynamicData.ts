@@ -1,5 +1,5 @@
 import { supabase } from "../../lib/supabaseClient";
-import { initialsOf, paletteFor, truncate } from "../../lib/visualIdentity";
+import { acronymOf, initialsOf, paletteFor, truncate } from "../../lib/visualIdentity";
 import type {
   CommunityEntry,
   CorporateEntry,
@@ -88,9 +88,9 @@ export async function fetchDynamicOrganizations(): Promise<DynamicOrgBuckets> {
     const coverUrl = o.cover_url || undefined;
     const website = o.website || undefined;
     if (o.org_type === "TBIs") {
-      empty.TBIs.push({ name: o.name, host: "Published by a member", focus: truncate(o.description, 40), description: o.description, color: p.color, bg: p.bg, initials, logoUrl, website });
+      empty.TBIs.push({ name: o.name, host: o.type || acronymOf(o.name), focus: truncate(o.description, 40), description: o.description, color: p.color, bg: p.bg, initials, logoUrl, website });
     } else if (o.org_type in empty) {
-      (empty as any)[o.org_type].push({ name: o.name, type: o.type || "Member-published", description: o.description, color: p.color, bg: p.bg, initials, logoUrl, coverUrl, website });
+      (empty as any)[o.org_type].push({ name: o.name, type: o.type || acronymOf(o.name), description: o.description, color: p.color, bg: p.bg, initials, logoUrl, coverUrl, website });
     }
   }
   return empty;

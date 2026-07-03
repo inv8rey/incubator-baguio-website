@@ -30,6 +30,32 @@ export function initialsOf(name: string) {
   return (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase();
 }
 
+const ACRONYM_STOPWORDS = new Set(["of", "and", "the", "for", "in", "on", "a", "an", "&"]);
+
+// Turns a long org name into a short badge label, e.g. "Department of
+// Information and Communications Technology - Cordillera Administrative
+// Region" -> "DICT-CAR". Used as the badge fallback when no explicit
+// type/host label has been set for an org.
+export function acronymOf(name: string): string {
+  const withoutParens = name.replace(/\([^)]*\)/g, " ");
+  const segments = withoutParens.split(/\s*[-–—]\s*/).filter((s) => s.trim());
+  const abbreviate = (segment: string) => {
+    const words = segment.trim().split(/\s+/).filter(Boolean);
+    if (words.length === 1) return words[0].toUpperCase().slice(0, 8);
+    // Words that are already an acronym (e.g. "CAR") are kept whole rather
+    // than reduced to a single letter, so "Cordillera Administrative
+    // Region" -> "CAR" but so does the literal segment "CAR".
+    const existingAcronyms = words.filter((w) => /^[A-Z]{3,}$/.test(w));
+    if (existingAcronyms.length) return existingAcronyms.join("");
+    const letters = words
+      .filter((w) => !ACRONYM_STOPWORDS.has(w.toLowerCase()))
+      .map((w) => w[0])
+      .join("");
+    return (letters || words.map((w) => w[0]).join("")).toUpperCase();
+  };
+  return segments.map(abbreviate).filter(Boolean).join("-") || "?";
+}
+
 export function truncate(text: string, n: number) {
   const t = (text || "").trim();
   return t.length > n ? `${t.slice(0, n).trim()}…` : t;
