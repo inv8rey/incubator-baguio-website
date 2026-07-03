@@ -308,7 +308,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
         </button>
       </div>
 
-      <div className="ib-admin-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 14 }}>
+      <div className="ib-admin-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 14 }}>
         {isMentors &&
           filteredMentors.map((m) => (
             <div key={m.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18, display: "flex", gap: 12 }}>
