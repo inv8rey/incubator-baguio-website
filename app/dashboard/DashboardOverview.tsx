@@ -206,10 +206,12 @@ export default function DashboardOverview() {
   const setupDoneCount = [doneStartup, doneMentor, doneOrg].filter(Boolean).length;
   const setupPct = Math.round((setupDoneCount / 3) * 100);
 
+  const firstName = profile?.full_name?.trim().split(" ")[0];
+
   return (
     <div>
-      <h2 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>
-        Overview
+      <h2 style={{ margin: "0 0 6px", fontSize: 24, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>
+        Welcome back{firstName ? `, ${firstName}` : ""}! <span aria-hidden>👋</span>
       </h2>
       <p style={{ margin: "0 0 24px", fontSize: 14, color: "#6B6B73" }}>Here's what you can do as a logged-in member of Incubator Baguio.</p>
 

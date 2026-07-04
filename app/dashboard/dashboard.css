@@ -1,0 +1,42 @@
+.ib-userdash-mobile-sidebar {
+  display: none;
+}
+
+@media (max-width: 980px) {
+  .ib-userdash-grid {
+    grid-template-columns: 1fr !important;
+  }
+  /* Only hide the desktop sidebar (a direct child of the grid) — the
+     drawer's cloned copy is nested inside .ib-userdash-mobile-sidebar and
+     must stay visible. */
+  .ib-userdash-grid > .ib-userdash-sidebar {
+    display: none !important;
+  }
+  .ib-userdash-burger {
+    display: flex !important;
+  }
+  .ib-userdash-mobile-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;
+    max-width: 80vw;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.24s ease;
+  }
+  .ib-userdash-mobile-sidebar > aside {
+    height: 100%;
+    width: 100%;
+    position: static !important;
+  }
+  .ib-userdash-mobile-sidebar.ib-userdash-mobile-open {
+    display: block;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 620px) {
+  .ib-userdash-content { padding: 24px 16px 40px !important; }
+}

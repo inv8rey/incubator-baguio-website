@@ -23,26 +23,6 @@ export function navBarHtml() {
 `;
 }
 
-// Generic (non-personalized) hero used by every dashboard subpage except the
-// Overview, which renders its own personalized <DashboardHero /> instead.
-export function dashboardHeroHtml() {
-  return `
-<!-- HERO -->
-<div style="position:relative;background:#0B0B0D;padding:36px 40px 40px;overflow:hidden;">
-  <div style="position:absolute;bottom:-140px;left:50%;transform:translateX(-50%);width:480px;height:480px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.22) 0%,transparent 60%);pointer-events:none;"></div>
-  <div style="position:relative;max-width:1080px;margin:0 auto;">
-    <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:14px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.8);">Dashboard</span></div>
-    <h1 style="margin:0;font-size:28px;line-height:1.2;font-weight:700;letter-spacing:-0.02em;color:#fff;">Your dashboard</h1>
-    <p style="margin:10px 0 0;font-size:14.5px;line-height:1.6;color:rgba(255,255,255,0.6);max-width:520px;">Manage your startup profile, challenges, mentor connections, and organization listings.</p>
-  </div>
-</div>
-`;
-}
-
-export function navHtml() {
-  return navBarHtml() + dashboardHeroHtml();
-}
-
 export function footerHtml() {
   return `
 <!-- FOOTER -->
