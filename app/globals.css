@@ -395,6 +395,20 @@ img { max-width: 100%; height: auto; }
   .ib-getstarted-divider {
     display: none !important;
   }
+  /* Get Started stat strip + About's four-function cards: text-heavy
+     repeat(4,1fr) grids that need full single column, not the 2x2 used
+     for numeric stat bands. */
+  .ib-getstarted-stats,
+  .ib-about-functions {
+    grid-template-columns: 1fr !important;
+  }
+  /* The "WE CONNECT / WE EMPOWER / WE GROW BAGUIO" tagline is flex-shrink:0,
+     so on narrow screens it needs its own row instead of squeezing the
+     stats grid beside it. */
+  .ib-getstarted-stripwrap {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
 
   /* Tighten the generous 40px side padding on every section */
   main > div {

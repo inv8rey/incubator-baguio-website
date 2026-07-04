@@ -139,7 +139,7 @@ const HOME_HTML_BOTTOM_B1 = `
         ["Jul", "24", "Innovation Forum: Highland Futures", "Cross-sector panel on regional innovation &middot; Saint Louis University"],
         ["Aug", "07", "Community Demo Night", "Open showcase of incubator startups &middot; Baguio Convention Center"],
       ].map((e, i, arr) => `
-      <div class="ib-event-hover" style="display:grid;grid-template-columns:96px 1fr auto;gap:28px;align-items:center;padding:24px 8px;border-top:1px solid rgba(20,20,25,0.12);${i === arr.length - 1 ? 'border-bottom:1px solid rgba(20,20,25,0.12);' : ''}">
+      <div class="ib-event-hover" style="display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:28px;align-items:center;padding:24px 8px;border-top:1px solid rgba(20,20,25,0.12);${i === arr.length - 1 ? 'border-bottom:1px solid rgba(20,20,25,0.12);' : ''}">
         <div style="text-align:center;"><div style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#F26522;">${e[0]}</div><div style="font-size:30px;font-weight:700;color:#141417;letter-spacing:-0.02em;">${e[1]}</div></div>
         <div><h3 style="margin:0 0 4px;font-size:19px;font-weight:600;color:#141417;">${e[2]}</h3><p style="margin:0;font-size:14px;color:#6B6B73;">${e[3]}</p></div>
         <a href="#" style="background:#141417;color:#fff;font-weight:600;font-size:13.5px;padding:10px 20px;border-radius:9999px;text-decoration:none;white-space:nowrap;">RSVP</a>

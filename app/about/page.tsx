@@ -59,7 +59,7 @@ const ABOUT_HTML_TOP = `
     </div>
 
     <!-- Four functions -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
+    <div class="ib-about-functions" style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
       ${[
         ["#FDEEE6", `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m15.5 8.5-2.2 5.2-5.2 2.2 2.2-5.2 5.2-2.2Z"></path></svg>`, "Ecosystem Gateway", "Connect founders to the right Technology Business Incubator, mentors, funding opportunities, and ecosystem partners."],
         ["#E8EEF4", `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#285E7A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="3"></circle><circle cx="17" cy="7" r="3"></circle><circle cx="12" cy="18" r="3"></circle><path d="M7 10v2.5L12 15M17 10v2.5L12 15"></path></svg>`, "Ecosystem Coordination", "Coordinate universities, government agencies, industry, investors, and community partners through shared initiatives and collaborative programs."],

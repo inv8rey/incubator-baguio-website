@@ -168,16 +168,16 @@ const HTML = `
     </div>
 
     <!-- STAT STRIP -->
-    <div style="margin-top:18px;background:#141417;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px 32px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
+    <div class="ib-getstarted-stripwrap" style="margin-top:18px;background:#141417;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px 32px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
       <div style="font-size:17px;font-weight:700;letter-spacing:-0.01em;color:#fff;line-height:1.4;flex-shrink:0;">WE CONNECT.<br>WE EMPOWER.<br><span style="color:#F26522;">WE GROW BAGUIO.</span></div>
       <div style="width:1px;height:64px;background:rgba(255,255,255,0.1);flex-shrink:0;" class="ib-getstarted-divider"></div>
-      <div style="flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;min-width:0;">
+      <div class="ib-getstarted-stats" style="flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;min-width:0;">
         ${STATS.map((s) => `
-        <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;min-width:0;">
           <div style="width:38px;height:38px;border-radius:9999px;background:rgba(242,101,34,0.14);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="${s.color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${s.icon}</svg>
           </div>
-          <div><div style="font-size:13.5px;font-weight:600;color:#fff;margin-bottom:4px;">${s.title}</div><p style="margin:0;font-size:12px;line-height:1.5;color:rgba(255,255,255,0.5);">${s.desc}</p></div>
+          <div style="min-width:0;"><div style="font-size:13.5px;font-weight:600;color:#fff;margin-bottom:4px;">${s.title}</div><p style="margin:0;font-size:12px;line-height:1.5;color:rgba(255,255,255,0.5);">${s.desc}</p></div>
         </div>`).join("")}
       </div>
     </div>

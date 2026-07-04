@@ -17,8 +17,12 @@ export default function Interactive() {
     if (!main) return;
 
     // --- Mobile hamburger menu ------------------------------------------
-    // Built from the existing nav so no per-page markup is needed.
-    const nav = main.firstElementChild as HTMLElement | null;
+    // Built from the existing nav so no per-page markup is needed. Every
+    // page's nav bar uses `position:sticky;top:0`, so match on that instead
+    // of assuming the nav is main's first child — some pages (e.g. the
+    // homepage, which injects a JSON-LD <script> before it) don't have the
+    // nav as the very first element.
+    const nav = main.querySelector<HTMLElement>('div[style*="position:sticky"]');
     if (nav && !nav.querySelector(".ib-burger")) {
       const links = nav.querySelector<HTMLElement>(
         'div[style*="font-weight:500"]'
