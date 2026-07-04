@@ -1,6 +1,6 @@
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
-export function navHtml() {
+export function navBarHtml() {
   return `
 <!-- NAV -->
 <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:#0E0E10;position:sticky;top:0;z-index:50;">
@@ -20,7 +20,13 @@ export function navHtml() {
     </div>
   </div>
 </div>
+`;
+}
 
+// Generic (non-personalized) hero used by every dashboard subpage except the
+// Overview, which renders its own personalized <DashboardHero /> instead.
+export function dashboardHeroHtml() {
+  return `
 <!-- HERO -->
 <div style="position:relative;background:#0B0B0D;padding:36px 40px 40px;overflow:hidden;">
   <div style="position:absolute;bottom:-140px;left:50%;transform:translateX(-50%);width:480px;height:480px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.22) 0%,transparent 60%);pointer-events:none;"></div>
@@ -31,6 +37,10 @@ export function navHtml() {
   </div>
 </div>
 `;
+}
+
+export function navHtml() {
+  return navBarHtml() + dashboardHeroHtml();
 }
 
 export function footerHtml() {

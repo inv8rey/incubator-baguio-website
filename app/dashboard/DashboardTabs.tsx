@@ -8,7 +8,6 @@ const TABS = [
   { href: "/dashboard/startup/", label: "Startups" },
   { href: "/dashboard/mentor/", label: "Mentor Hub" },
   { href: "/dashboard/organizations/", label: "Organizations" },
-  { href: "/dashboard/connections/", label: "Connections" },
 ];
 
 export default function DashboardTabs({ active }: { active: string }) {
