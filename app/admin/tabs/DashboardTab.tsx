@@ -313,17 +313,6 @@ export default function DashboardTab() {
       return { ...a, initials: initialsOf(a.name), color: p.color, time: timeAgo(a.created_at) };
     });
 
-  const aiStats = {
-    kpis: kpis.map((k) => ({ label: k.label, value: k.value, trend: k.delta.text })),
-    totalFundingPhp: totalFunding,
-    startupsBySector: sectorRows.map((r) => ({ sector: r.label, count: r.count, pct: r.pct })),
-    startupsByStage: stageRows.map((r) => ({ stage: r.label, count: r.count })),
-    startupsByTbi: tbiRows.slice(0, 8).map((r) => ({ tbi: r.label, count: r.count, pct: r.pct })),
-    partnerOrgsByType: orgRows.map((r) => ({ type: r.label, count: r.count })),
-    topFundedStartups: topFunded.map((f) => ({ name: f.name, funding: f.display })),
-    recentActivity: activity.map((a) => ({ who: a.name, what: a.note, when: a.time })),
-  };
-
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 20 }}>
       {supabase && (
@@ -333,7 +322,7 @@ export default function DashboardTab() {
         </div>
       )}
 
-      <AiInsightsPanel stats={aiStats} ready={loaded} />
+      <AiInsightsPanel ready={loaded} />
 
       {/* KPI ROW */}
       <div className="ib-admin-grid-5" style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 16 }}>

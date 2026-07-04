@@ -1,42 +1,70 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { DARK, ORANGE } from "../data";
+import { ORANGE } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 
-export default function AiInsightsPanel({ stats, ready }: { stats: unknown; ready: boolean }) {
+function formatTime(iso: string): string {
+  return new Date(iso).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+}
+
+export default function AiInsightsPanel({ ready }: { ready: boolean }) {
   const [insights, setInsights] = useState<string[]>([]);
+  const [source, setSource] = useState<"cron" | "manual" | null>(null);
+  const [generatedAt, setGeneratedAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [generatedAt, setGeneratedAt] = useState<Date | null>(null);
   const autoRanRef = useRef(false);
 
-  async function generate() {
+  async function authedFetch(method: "GET" | "POST") {
     if (!supabase) {
       setError("The backend isn't configured yet.");
-      return;
+      return null;
     }
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    if (!token) {
+      setError("Log in again to load insights.");
+      return null;
+    }
+    return fetch("/api/ai-insights/", { method, headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` } });
+  }
+
+  async function loadCached() {
     setLoading(true);
     setError("");
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const token = sessionData.session?.access_token;
-      if (!token) {
-        setError("Log in again to generate insights.");
+      const res = await authedFetch("GET");
+      if (!res) return;
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data?.error || "Couldn't load insights.");
         return;
       }
-      const res = await fetch("/api/ai-insights", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify(stats),
-      });
+      setInsights(data.insights ?? []);
+      setSource(data.source ?? null);
+      setGeneratedAt(data.generatedAt ?? null);
+    } catch {
+      setError("Couldn't reach the AI insights service.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function regenerate() {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await authedFetch("POST");
+      if (!res) return;
       const data = await res.json();
       if (!res.ok) {
         setError(data?.error || "Couldn't generate insights.");
         return;
       }
       setInsights(data.insights ?? []);
-      setGeneratedAt(new Date());
+      setSource(data.source ?? "manual");
+      setGeneratedAt(data.generatedAt ?? null);
     } catch {
       setError("Couldn't reach the AI insights service.");
     } finally {
@@ -47,7 +75,7 @@ export default function AiInsightsPanel({ stats, ready }: { stats: unknown; read
   useEffect(() => {
     if (!ready || autoRanRef.current) return;
     autoRanRef.current = true;
-    generate();
+    loadCached();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
 
@@ -64,8 +92,9 @@ export default function AiInsightsPanel({ stats, ready }: { stats: unknown; read
           <span style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>AI Insights</span>
         </div>
         <button
-          onClick={generate}
+          onClick={regenerate}
           disabled={loading}
+          title="Generate a fresh, real-time summary right now"
           style={{
             display: "flex",
             alignItems: "center",
@@ -88,7 +117,9 @@ export default function AiInsightsPanel({ stats, ready }: { stats: unknown; read
         </button>
       </div>
       <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.4)", marginBottom: 16 }}>
-        {generatedAt ? `Generated ${generatedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}` : "Auto-generated summary of your ecosystem's current numbers"}
+        {generatedAt
+          ? `${source === "manual" ? "Regenerated" : "Auto-updated"} ${formatTime(generatedAt)}`
+          : "Auto-updates daily at 7:30am — click Regenerate for a real-time summary"}
       </div>
 
       {loading && insights.length === 0 && (
@@ -99,9 +130,7 @@ export default function AiInsightsPanel({ stats, ready }: { stats: unknown; read
         </div>
       )}
 
-      {!loading && error && (
-        <div style={{ fontSize: 13, color: "#F0A088" }}>{error}</div>
-      )}
+      {!loading && error && <div style={{ fontSize: 13, color: "#F0A088" }}>{error}</div>}
 
       {!error && insights.length > 0 && (
         <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
@@ -115,7 +144,9 @@ export default function AiInsightsPanel({ stats, ready }: { stats: unknown; read
       )}
 
       {!loading && !error && insights.length === 0 && (
-        <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>Not enough data yet to generate insights.</div>
+        <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>
+          No insights yet — click Regenerate to generate the first one, or wait for the 7:30am auto-update.
+        </div>
       )}
     </div>
   );

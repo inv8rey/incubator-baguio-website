@@ -677,3 +677,32 @@ create policy "admins can read ecosystem signup visits" on public.ecosystem_sign
   for select using (
     exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
   );
+
+-- ---------------------------------------------------------------------------
+-- ai_insights: cached AI Insights text for the admin Dashboard tab.
+-- Written by (1) a daily 7:30am Asia/Manila Vercel Cron job hitting
+-- /api/ai-insights/cron, and (2) an admin clicking "Regenerate" on the
+-- Dashboard. The dashboard always reads the most recent row instead of
+-- calling the (paid) Workers AI model on every page load. Insert is open
+-- (no service-role key in this project — same tradeoff already made for
+-- ecosystem_signup_visits) since a stray row here can only ever mislead an
+-- admin's reading of already-public ecosystem stats, not leak or alter data.
+-- ---------------------------------------------------------------------------
+create table if not exists public.ai_insights (
+  id uuid primary key default gen_random_uuid(),
+  insights text[] not null default '{}',
+  source text not null default 'cron' check (source in ('cron', 'manual')),
+  generated_at timestamptz not null default now()
+);
+
+alter table public.ai_insights enable row level security;
+
+drop policy if exists "anyone can insert ai insights" on public.ai_insights;
+create policy "anyone can insert ai insights" on public.ai_insights
+  for insert with check (true);
+
+drop policy if exists "admins can read ai insights" on public.ai_insights;
+create policy "admins can read ai insights" on public.ai_insights
+  for select using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
