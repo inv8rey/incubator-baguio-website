@@ -706,3 +706,72 @@ create policy "admins can read ai insights" on public.ai_insights
   for select using (
     exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
   );
+
+-- ---------------------------------------------------------------------------
+-- cofounder_profiles: opt-in "looking for a co-founder" listing shown in the
+-- user dashboard's Co-Founder Finder tab. One row per user (owner_id unique),
+-- same shape as mentors/startups: real name + editable pitch fields.
+-- ---------------------------------------------------------------------------
+create table if not exists public.cofounder_profiles (
+  id uuid primary key default gen_random_uuid(),
+  owner_id uuid unique not null references public.profiles (id) on delete cascade,
+  name text not null,
+  building text not null default '',
+  role_needed text not null default 'Any' check (role_needed in ('Technical', 'Business/Marketing', 'Design', 'Any')),
+  sector text not null default '',
+  commitment text not null default 'Full-time' check (commitment in ('Full-time', 'Part-time', 'Advisor')),
+  looking_for text not null default '',
+  contact_email text not null default '',
+  is_active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+alter table public.cofounder_profiles enable row level security;
+
+drop policy if exists "active cofounder profiles are publicly readable" on public.cofounder_profiles;
+create policy "active cofounder profiles are publicly readable" on public.cofounder_profiles
+  for select using (is_active = true or auth.uid() = owner_id);
+
+drop policy if exists "owners manage their cofounder profile" on public.cofounder_profiles;
+create policy "owners manage their cofounder profile" on public.cofounder_profiles
+  for all using (auth.uid() = owner_id) with check (auth.uid() = owner_id);
+
+drop policy if exists "admins manage all cofounder profiles" on public.cofounder_profiles;
+create policy "admins manage all cofounder profiles" on public.cofounder_profiles
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+-- ---------------------------------------------------------------------------
+-- cofounder_connections: "Connect" requests sent to a cofounder_profiles row,
+-- mirrors mentor_connections exactly.
+-- ---------------------------------------------------------------------------
+create table if not exists public.cofounder_connections (
+  id uuid primary key default gen_random_uuid(),
+  cofounder_profile_id uuid not null references public.cofounder_profiles (id) on delete cascade,
+  requester_id uuid not null references public.profiles (id) on delete cascade,
+  message text not null default '',
+  status text not null default 'pending' check (status in ('pending', 'accepted', 'declined')),
+  created_at timestamptz not null default now()
+);
+
+alter table public.cofounder_connections enable row level security;
+
+drop policy if exists "requester or profile owner can read a cofounder connection" on public.cofounder_connections;
+create policy "requester or profile owner can read a cofounder connection" on public.cofounder_connections
+  for select using (
+    auth.uid() = requester_id
+    or auth.uid() = (select owner_id from public.cofounder_profiles where id = cofounder_profile_id)
+  );
+
+drop policy if exists "authenticated users can request a cofounder connection" on public.cofounder_connections;
+create policy "authenticated users can request a cofounder connection" on public.cofounder_connections
+  for insert with check (auth.uid() = requester_id);
+
+drop policy if exists "profile owner can update cofounder connection status" on public.cofounder_connections;
+create policy "profile owner can update cofounder connection status" on public.cofounder_connections
+  for update using (
+    auth.uid() = (select owner_id from public.cofounder_profiles where id = cofounder_profile_id)
+  );

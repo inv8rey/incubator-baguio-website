@@ -35,12 +35,6 @@ interface RecommendedItem {
   href: string;
 }
 
-interface ActivityItem {
-  key: string;
-  text: string;
-  created_at: string;
-}
-
 interface UpcomingEvent {
   id: string;
   title: string;
@@ -99,18 +93,6 @@ const CARDS: { key: keyof Counts | "isMentor"; title: string; href: string; colo
   },
 ];
 
-function timeAgo(iso: string): string {
-  const diffMs = Date.now() - new Date(iso).getTime();
-  const mins = Math.floor(diffMs / 60000);
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  const days = Math.floor(hrs / 24);
-  if (days < 30) return `${days}d ago`;
-  return `${Math.floor(days / 30)}mo ago`;
-}
-
 function formatEventDate(iso: string): { month: string; day: string } {
   const d = new Date(iso);
   return { month: d.toLocaleDateString([], { month: "short" }).toUpperCase(), day: String(d.getDate()) };
@@ -136,7 +118,6 @@ export default function DashboardOverview() {
   const [counts, setCounts] = useState<Counts | null>(null);
   const [siteStats, setSiteStats] = useState<SiteStats | null>(null);
   const [recommended, setRecommended] = useState<RecommendedItem[]>([]);
-  const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [events, setEvents] = useState<UpcomingEvent[]>([]);
 
   useEffect(() => {
@@ -206,22 +187,6 @@ export default function DashboardOverview() {
         href: `${BP}/challenges/community/?id=${c.id}`,
       }));
       setRecommended([...staticItems, ...submittedItems]);
-
-      const [recentStartups, recentMentors, recentOrgs, recentSubmissions] = await Promise.all([
-        supabase!.from("startups").select("id,name,created_at").order("created_at", { ascending: false }).limit(4),
-        supabase!.from("mentors").select("id,name,created_at").order("created_at", { ascending: false }).limit(4),
-        supabase!.from("organizations").select("id,name,org_type,created_at").order("created_at", { ascending: false }).limit(4),
-        supabase!.from("challenge_submissions").select("id,title,org_name,created_at").order("created_at", { ascending: false }).limit(4),
-      ]);
-      const merged: ActivityItem[] = [
-        ...(recentStartups.data ?? []).map((s: any) => ({ key: `s-${s.id}`, text: `${s.name} joined as a new startup`, created_at: s.created_at })),
-        ...(recentMentors.data ?? []).map((m: any) => ({ key: `m-${m.id}`, text: `${m.name} joined the mentor network`, created_at: m.created_at })),
-        ...(recentOrgs.data ?? []).map((o: any) => ({ key: `o-${o.id}`, text: `${o.name} published as a ${o.org_type || "partner"} organization`, created_at: o.created_at })),
-        ...(recentSubmissions.data ?? []).map((c: any) => ({ key: `c-${c.id}`, text: `${c.org_name || "A member"} posted a new challenge: "${c.title}"`, created_at: c.created_at })),
-      ]
-        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-        .slice(0, 6);
-      setActivity(merged);
 
       const todayIso = new Date().toISOString().slice(0, 10);
       const { data: eventRows } = await supabase!
@@ -311,51 +276,39 @@ export default function DashboardOverview() {
             )}
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }} className="ib-dashboard-bottom">
-            {/* RECENT ACTIVITY */}
-            <div style={cardStyle}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: DARK, marginBottom: 16 }}>Recent activity</div>
-              {activity.length === 0 ? (
-                <div style={{ fontSize: 13, color: "#9A958B" }}>No activity yet.</div>
-              ) : (
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  {activity.map((a, i) => (
-                    <div key={a.key} style={{ display: "flex", justifyContent: "space-between", gap: 10, padding: "10px 0", borderBottom: i < activity.length - 1 ? "1px solid rgba(20,20,25,0.06)" : "none" }}>
-                      <span style={{ fontSize: 12.5, color: "#44444C", lineHeight: 1.4 }}>{a.text}</span>
-                      <span style={{ fontSize: 11, color: "#9A958B", flexShrink: 0, whiteSpace: "nowrap" }}>{timeAgo(a.created_at)}</span>
-                    </div>
-                  ))}
+          {/* NEXT STEPS */}
+          <div style={cardStyle}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: DARK, marginBottom: 16 }}>Your next steps</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: DARK }}>{doneStartup ? "Manage your startup" : "Create your startup profile"}</div>
+                  <div style={{ fontSize: 11.5, color: "#9A958B" }}>{doneStartup ? "Keep your listing up to date." : "Get discovered by mentors and programs."}</div>
                 </div>
-              )}
-            </div>
-
-            {/* NEXT STEPS */}
-            <div style={cardStyle}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: DARK, marginBottom: 16 }}>Your next steps</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: DARK }}>{doneStartup ? "Manage your startup" : "Create your startup profile"}</div>
-                    <div style={{ fontSize: 11.5, color: "#9A958B" }}>{doneStartup ? "Keep your listing up to date." : "Get discovered by mentors and programs."}</div>
-                  </div>
-                  <a href={`${BP}/dashboard/startup/`} style={{ fontSize: 12, fontWeight: 600, color: doneStartup ? DARK : "#fff", background: doneStartup ? "none" : ORANGE, border: doneStartup ? "1.5px solid rgba(20,20,25,0.15)" : "none", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>
-                    {doneStartup ? "Manage" : "Start now"}
-                  </a>
+                <a href={`${BP}/dashboard/startup/`} style={{ fontSize: 12, fontWeight: 600, color: doneStartup ? DARK : "#fff", background: doneStartup ? "none" : ORANGE, border: doneStartup ? "1.5px solid rgba(20,20,25,0.15)" : "none", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>
+                  {doneStartup ? "Manage" : "Start now"}
+                </a>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: DARK }}>Find a co-founder</div>
+                  <div style={{ fontSize: 11.5, color: "#9A958B" }}>Browse founders looking to team up.</div>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: DARK }}>Explore open challenges</div>
-                    <div style={{ fontSize: 11.5, color: "#9A958B" }}>Find problems to solve and opportunities.</div>
-                  </div>
-                  <a href={`${BP}/challenges/`} style={{ fontSize: 12, fontWeight: 600, color: DARK, background: "none", border: "1.5px solid rgba(20,20,25,0.15)", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>Explore</a>
+                <a href={`${BP}/dashboard/cofounder/`} style={{ fontSize: 12, fontWeight: 600, color: DARK, background: "none", border: "1.5px solid rgba(20,20,25,0.15)", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>Find one</a>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: DARK }}>Explore open challenges</div>
+                  <div style={{ fontSize: 11.5, color: "#9A958B" }}>Find problems to solve and opportunities.</div>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: DARK }}>Connect with mentors</div>
-                    <div style={{ fontSize: 11.5, color: "#9A958B" }}>Request guidance from experts.</div>
-                  </div>
-                  <a href={`${BP}/ecosystem/`} style={{ fontSize: 12, fontWeight: 600, color: DARK, background: "none", border: "1.5px solid rgba(20,20,25,0.15)", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>Find mentors</a>
+                <a href={`${BP}/challenges/`} style={{ fontSize: 12, fontWeight: 600, color: DARK, background: "none", border: "1.5px solid rgba(20,20,25,0.15)", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>Explore</a>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: DARK }}>Connect with mentors</div>
+                  <div style={{ fontSize: 11.5, color: "#9A958B" }}>Request guidance from experts.</div>
                 </div>
+                <a href={`${BP}/ecosystem/`} style={{ fontSize: 12, fontWeight: 600, color: DARK, background: "none", border: "1.5px solid rgba(20,20,25,0.15)", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>Find mentors</a>
               </div>
             </div>
           </div>

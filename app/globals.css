@@ -236,11 +236,10 @@ img { max-width: 100%; height: auto; }
   .ib-4e-wrap { display: none !important; }
   .ib-4e-mobile { display: block !important; }
 
-  /* User dashboard overview: sidebar drops below the main column, stat
-     row goes 3-up, and the two bottom cards stack. */
+  /* User dashboard overview: sidebar drops below the main column and the
+     stat row goes 3-up. */
   .ib-dashboard-grid { grid-template-columns: 1fr !important; }
   .ib-dashboard-stats { grid-template-columns: repeat(3, 1fr) !important; }
-  .ib-dashboard-bottom { grid-template-columns: 1fr !important; }
 }
 
 @media (max-width: 600px) {
