@@ -155,6 +155,167 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
     opacity: 1;
     transform: none;
   }
+
+  /* Staggered card cascade: Interactive.tsx tags grid children inside
+     below-fold sections; each rises in sequence when its section reveals.
+     Implemented as a one-shot animation (the class is removed on
+     animationend) so it never fights the cards' own hover transforms. */
+  .ib-sr-item { opacity: 0; }
+  .ib-reveal-in .ib-sr-item {
+    animation: ibrise .55s cubic-bezier(.22,.61,.36,1) both;
+    animation-delay: var(--sr-delay, 0s);
+  }
+}
+
+@keyframes ibrise {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Ping on the hero badge's live dot */
+@keyframes ibpulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(242, 101, 34, 0.55); }
+  70% { box-shadow: 0 0 0 8px rgba(242, 101, 34, 0); }
+}
+
+/* Arrow inside orange CTAs nudges forward on hover */
+.ib-cta-orange svg { transition: transform .2s ease; }
+.ib-cta-orange:hover svg { transform: translateX(3px); }
+
+/* Ghost (outlined) buttons on dark sections get a matching hover */
+.ib-cta-ghost { transition: background .2s ease, border-color .2s ease, transform .2s ease; }
+.ib-cta-ghost:hover { background: rgba(255,255,255,0.08) !important; border-color: rgba(255,255,255,0.38) !important; transform: translateY(-2px); }
+
+/* Partner marquee: pause while the visitor inspects a logo, and lift tiles */
+.ib-marquee-track:hover { animation-play-state: paused; }
+.ib-partner-tile { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+.ib-partner-tile:hover { transform: translateY(-3px); box-shadow: var(--ib-shadow-md); border-color: rgba(242,101,34,0.35) !important; }
+
+/* Reading-progress bar pinned to the very top (driven by Interactive.tsx) */
+.ib-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #F26522, #F5A623);
+  transform: scaleX(0);
+  transform-origin: left;
+  z-index: 200;
+  pointer-events: none;
+}
+
+/* Branded page-load curtain (PageLoader.tsx): chevron mark draws itself in
+   while the page loads, then the whole overlay fades away. It fades back in
+   on internal link clicks so navigations read as one dark transition. */
+.ib-pageloader {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: #0B0B0D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .45s ease, visibility .45s ease;
+}
+.ib-pageloader.ib-pageloader-hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.ib-pageloader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.ib-pageloader-line {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: ibdraw 1.8s cubic-bezier(.65, 0, .35, 1) infinite;
+}
+@keyframes ibdraw {
+  0% { stroke-dashoffset: 100; opacity: 0; }
+  30% { opacity: 1; }
+  55% { stroke-dashoffset: 0; opacity: 1; }
+  82% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+.ib-pageloader-text {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.85);
+}
+.ib-pageloader-bar {
+  width: 148px;
+  height: 3px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.ib-pageloader-bar span {
+  display: block;
+  height: 100%;
+  width: 40%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #F26522, #F5A623);
+  animation: ibloadbar 1.1s ease-in-out infinite;
+}
+@keyframes ibloadbar {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(380%); }
+}
+
+/* Floating back-to-top button (created by Interactive.tsx) */
+.ib-backtotop {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 90;
+  width: 46px;
+  height: 46px;
+  border-radius: 9999px;
+  background: #141417;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition: opacity .3s ease, transform .3s ease, background .2s ease;
+}
+.ib-backtotop.ib-show { opacity: 1; transform: none; pointer-events: auto; }
+.ib-backtotop:hover { background: #F26522; }
+
+/* Homepage journey: dashed connector between the step numbers (desktop only) */
+.ib-journey-line {
+  position: absolute;
+  top: 31px;
+  left: 12%;
+  right: 12%;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, rgba(20,20,25,0.16) 0 8px, transparent 8px 18px);
+}
+@media (max-width: 900px) {
+  .ib-journey-line { display: none; }
+}
+
+/* Honor reduced motion everywhere, including the raw-HTML pages' inline
+   animations (hero float/glow, marquee, pulses). */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 img { max-width: 100%; height: auto; }
@@ -395,11 +556,12 @@ img { max-width: 100%; height: auto; }
   .ib-getstarted-divider {
     display: none !important;
   }
-  /* Get Started stat strip + About's four-function cards: text-heavy
-     repeat(4,1fr) grids that need full single column, not the 2x2 used
-     for numeric stat bands. */
+  /* Get Started stat strip, About's four-function cards, and the homepage
+     journey steps: text-heavy repeat(4,1fr) grids that need full single
+     column, not the 2x2 used for numeric stat bands. */
   .ib-getstarted-stats,
-  .ib-about-functions {
+  .ib-about-functions,
+  .ib-journey-grid {
     grid-template-columns: 1fr !important;
   }
   /* The "WE CONNECT / WE EMPOWER / WE GROW BAGUIO" tagline is flex-shrink:0,

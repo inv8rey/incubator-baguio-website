@@ -3,6 +3,7 @@ import "./globals.css";
 import Interactive from "./Interactive";
 import AuthProvider from "./AuthProvider";
 import AuthNav from "./AuthNav";
+import PageLoader from "./PageLoader";
 import PostHogProvider from "./PostHogProvider";
 import { SITE_URL } from "./seo";
 
@@ -62,6 +63,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <PageLoader />
         <PostHogProvider>
           <AuthProvider>
             {children}

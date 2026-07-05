@@ -4,17 +4,23 @@ import { useEffect } from "react";
 
 /**
  * Adds client-side interactivity to the statically-rendered pages:
- *  - Scroll-reveal: each top-level section fades/slides in as it enters view.
+ *  - Mobile hamburger menu, built from each page's existing nav markup.
+ *  - Back-to-top button once the visitor scrolls past the first fold.
+ *  - Reading-progress bar along the very top of the viewport.
+ *  - Scroll-reveal: each top-level section fades/slides in as it enters view,
+ *    with card grids inside it cascading in a stagger.
  *  - Count-up: the big numbers in the orange stat bands animate from 0.
- * Both no-op under prefers-reduced-motion, and degrade gracefully without JS
- * (content is fully visible until this runs).
+ * The menu and back-to-top are functional and always installed; everything
+ * motion-only no-ops under prefers-reduced-motion, and all content degrades
+ * gracefully without JS (fully visible until this runs).
  */
 export default function Interactive() {
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
     const main = document.querySelector("main");
     if (!main) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const cleanups: (() => void)[] = [];
 
     // --- Mobile hamburger menu ------------------------------------------
     // Built from the existing nav so no per-page markup is needed. Every
@@ -91,6 +97,44 @@ export default function Interactive() {
       }
     }
 
+    // --- Back-to-top + reading progress ---------------------------------
+    let backTop: HTMLButtonElement | null = null;
+    if (!document.querySelector(".ib-backtotop")) {
+      backTop = document.createElement("button");
+      backTop.className = "ib-backtotop";
+      backTop.setAttribute("aria-label", "Back to top");
+      backTop.innerHTML =
+        '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+      backTop.addEventListener("click", () =>
+        window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" })
+      );
+      document.body.appendChild(backTop);
+      cleanups.push(() => backTop?.remove());
+    }
+
+    let progress: HTMLDivElement | null = null;
+    if (!reduceMotion && !document.querySelector(".ib-scroll-progress")) {
+      progress = document.createElement("div");
+      progress.className = "ib-scroll-progress";
+      document.body.appendChild(progress);
+      cleanups.push(() => progress?.remove());
+    }
+
+    const onScroll = () => {
+      const sc = window.scrollY;
+      backTop?.classList.toggle("ib-show", sc > 600);
+      if (progress) {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.transform = `scaleX(${max > 0 ? Math.min(sc / max, 1) : 0})`;
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    cleanups.push(() => window.removeEventListener("scroll", onScroll));
+    onScroll();
+
+    // Everything below is decorative motion.
+    if (reduceMotion) return () => cleanups.forEach((fn) => fn());
+
     const sections = Array.from(main.children).filter(
       (el): el is HTMLElement => el instanceof HTMLElement
     );
@@ -108,12 +152,44 @@ export default function Interactive() {
       { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
     );
 
+    // Card grids inside a revealed section cascade in one-by-one. The class
+    // is removed when each item's rise finishes so the animation's fill mode
+    // can never override the cards' own hover transforms afterwards.
+    const staggeredGrids = new Set<Element>();
+    const tagStaggerItems = (section: HTMLElement) => {
+      section
+        .querySelectorAll<HTMLElement>('[style*="display:grid"]')
+        .forEach((grid) => {
+          // Skip nested grids (their parent already cascades) and anything
+          // that isn't a small card set — calendars, footers, etc.
+          for (const done of staggeredGrids) if (done.contains(grid) && done !== grid) return;
+          const kids = Array.from(grid.children).filter(
+            (k): k is HTMLElement => k instanceof HTMLElement
+          );
+          if (kids.length < 2 || kids.length > 12) return;
+          staggeredGrids.add(grid);
+          kids.forEach((kid, i) => {
+            kid.classList.add("ib-sr-item");
+            kid.style.setProperty("--sr-delay", `${Math.min(i, 8) * 70}ms`);
+            kid.addEventListener(
+              "animationend",
+              () => {
+                kid.classList.remove("ib-sr-item");
+                kid.style.removeProperty("--sr-delay");
+              },
+              { once: true }
+            );
+          });
+        });
+    };
+
     sections.forEach((el) => {
       // Skip the sticky nav, and anything already on screen at load (avoids a
       // flash of hidden content for the hero / first fold).
       if (getComputedStyle(el).position === "sticky") return;
       if (el.getBoundingClientRect().top < window.innerHeight * 0.85) return;
       el.classList.add("ib-reveal");
+      tagStaggerItems(el);
       io.observe(el);
     });
 
@@ -176,6 +252,7 @@ export default function Interactive() {
     return () => {
       io.disconnect();
       countObserver.disconnect();
+      cleanups.forEach((fn) => fn());
     };
   }, []);
 

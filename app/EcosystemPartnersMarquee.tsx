@@ -30,12 +30,13 @@ export default function EcosystemPartnersMarquee() {
         </div>
       ) : (
         <div style={{ position: "relative", overflow: "hidden" }}>
-          <div style={{ display: "flex", width: "max-content", animation: "ibmarquee 36s linear infinite" }}>
+          <div className="ib-marquee-track" style={{ display: "flex", width: "max-content", animation: "ibmarquee 36s linear infinite" }}>
             {Array.from({ length: repeats }, (_, i) => i).map((copy) => (
               <div key={copy} style={{ display: "flex", gap: 18, paddingRight: 18, alignItems: "center" }}>
                 {partners.map((p, i) => (
                   <div
                     key={`${copy}-${p.id ?? i}`}
+                    className="ib-partner-tile"
                     style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "#F4F2EC", border: "1px solid rgba(20,20,25,0.09)", borderRadius: 16, padding: "16px 26px", height: 88, minWidth: 140 }}
                   >
                     {p.logoUrl ? (

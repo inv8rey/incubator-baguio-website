@@ -52,9 +52,57 @@ const ABOUT_HTML_TOP = `
         <h2 style="margin:0 0 24px;font-size:44px;font-weight:700;letter-spacing:-0.03em;color:#141417;line-height:1.08;">Building the Infrastructure for Innovation</h2>
         <p style="margin:0;font-size:16px;line-height:1.65;color:#6B6B73;">Incubator Baguio is the city&rsquo;s startup and innovation ecosystem platform, connecting founders, researchers, universities, Technology Business Incubators, government agencies, investors, industry, and the community to create opportunities, strengthen collaboration, and accelerate innovation across Baguio.</p>
       </div>
-      <div style="position:relative;border-radius:20px;overflow:hidden;aspect-ratio:16/11;background:repeating-linear-gradient(135deg,#E9E6DE,#E9E6DE 13px,#E2DFD6 13px,#E2DFD6 26px);display:flex;align-items:center;justify-content:center;">
-        <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.5;" width="320" height="300" viewBox="0 0 120 104" fill="none"><polyline points="18,38 60,8 102,38" stroke="#F26522" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="18,60 60,30 102,60" stroke="#E23A2E" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="18,82 60,52 102,82" stroke="#9E2A52" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="18,104 60,74 102,104" stroke="#285E7A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
-        <span style="position:relative;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:0.1em;color:#9A958B;background:rgba(255,255,255,0.7);padding:6px 12px;border-radius:6px;">Baguio cityscape</span>
+      <div style="position:relative;border-radius:20px;overflow:hidden;aspect-ratio:16/11;background:#FFEEDD;">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;display:block;" viewBox="0 0 800 550" preserveAspectRatio="xMidYMid slice" fill="none" role="img" aria-label="Illustration of Baguio City: pine-covered mountains at golden hour">
+          <defs>
+            <linearGradient id="ib-sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#FFF6EC"></stop>
+              <stop offset="0.65" stop-color="#FFE3C4"></stop>
+              <stop offset="1" stop-color="#FFD5AC"></stop>
+            </linearGradient>
+            <linearGradient id="ib-fog" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#FFF3E4" stop-opacity="0"></stop>
+              <stop offset="0.5" stop-color="#FFF3E4" stop-opacity="0.85"></stop>
+              <stop offset="1" stop-color="#FFF3E4" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+          <rect width="800" height="550" fill="url(#ib-sky)"></rect>
+          <circle cx="588" cy="188" r="118" fill="#F26522" opacity="0.1"></circle>
+          <circle cx="588" cy="188" r="84" fill="#F26522" opacity="0.18"></circle>
+          <circle cx="588" cy="188" r="54" fill="#F26522"></circle>
+          <ellipse cx="180" cy="120" rx="74" ry="16" fill="#fff" opacity="0.55"></ellipse>
+          <ellipse cx="255" cy="138" rx="52" ry="12" fill="#fff" opacity="0.4"></ellipse>
+          <ellipse cx="640" cy="86" rx="60" ry="13" fill="#fff" opacity="0.45"></ellipse>
+          <path d="M690 128c4-10 16-10 20 0M718 122c3-8 13-8 16 0" stroke="#B0745A" stroke-width="3" stroke-linecap="round"></path>
+          <path d="M0 306 L92 224 L184 288 L276 206 L378 296 L474 216 L576 290 L684 222 L800 294 L800 550 L0 550 Z" fill="#F0BE94"></path>
+          <path d="M0 364 L112 282 L224 352 L338 268 L456 358 L566 284 L676 352 L800 288 L800 550 L0 550 Z" fill="#DD8A57"></path>
+          <rect y="336" width="800" height="66" fill="url(#ib-fog)"></rect>
+          <g>
+            <rect x="296" y="398" width="26" height="64" fill="#8A5642"></rect>
+            <rect x="330" y="380" width="34" height="82" fill="#9E634B"></rect>
+            <rect x="372" y="406" width="22" height="56" fill="#7C4C39"></rect>
+            <rect x="402" y="388" width="30" height="74" fill="#8A5642"></rect>
+            <rect x="440" y="412" width="24" height="50" fill="#9E634B"></rect>
+            <rect x="338" y="392" width="6" height="8" fill="#FFD9A0"></rect><rect x="350" y="392" width="6" height="8" fill="#FFD9A0"></rect>
+            <rect x="338" y="408" width="6" height="8" fill="#FFD9A0"></rect><rect x="350" y="424" width="6" height="8" fill="#FFD9A0"></rect>
+            <rect x="408" y="400" width="5" height="7" fill="#FFD9A0"></rect><rect x="418" y="414" width="5" height="7" fill="#FFD9A0"></rect>
+            <rect x="303" y="410" width="5" height="7" fill="#FFD9A0"></rect><rect x="313" y="426" width="5" height="7" fill="#FFD9A0"></rect>
+            <rect x="446" y="422" width="5" height="7" fill="#FFD9A0"></rect>
+          </g>
+          <path d="M0 474 L128 420 L268 468 L424 414 L596 472 L800 428 L800 550 L0 550 Z" fill="#3A5A50"></path>
+          <g fill="#22423A">
+            <path d="M96 458 L118 404 L140 458 Z"></path><path d="M102 434 L118 394 L134 434 Z"></path><rect x="114" y="456" width="8" height="14"></rect>
+            <path d="M196 470 L214 426 L232 470 Z"></path><path d="M201 450 L214 418 L227 450 Z"></path><rect x="210" y="468" width="7" height="12"></rect>
+            <path d="M528 470 L548 420 L568 470 Z"></path><path d="M534 448 L548 410 L562 448 Z"></path><rect x="544" y="468" width="8" height="13"></rect>
+          </g>
+          <g fill="#16302A">
+            <path d="M20 512 L56 424 L92 512 Z"></path><path d="M30 470 L56 406 L82 470 Z"></path><rect x="50" y="508" width="11" height="22"></rect>
+            <path d="M656 516 L694 424 L732 516 Z"></path><path d="M666 472 L694 406 L722 472 Z"></path><rect x="688" y="512" width="12" height="24"></rect>
+            <path d="M740 526 L772 448 L800 526 Z"></path><path d="M748 488 L772 432 L796 488 Z"></path>
+          </g>
+          <path d="M0 522 L180 496 L400 524 L620 498 L800 522 L800 550 L0 550 Z" fill="#274239"></path>
+        </svg>
+        <span style="position:absolute;left:16px;bottom:16px;font-size:11.5px;font-weight:600;letter-spacing:0.06em;color:#fff;background:rgba(20,20,25,0.45);backdrop-filter:blur(6px);padding:7px 14px;border-radius:9999px;">Baguio City &middot; City of Pines &middot; 1,540 MASL</span>
       </div>
     </div>
 
