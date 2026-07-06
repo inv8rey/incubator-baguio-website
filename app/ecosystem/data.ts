@@ -3,7 +3,7 @@ export type EcosystemCategory = "Startups" | "Mentors" | "TBIs" | "Companies" | 
 export interface StartupEntry {
   name: string;
   sector: string;
-  stage: string;
+  contactEmail: string;
   description: string;
   logoUrl?: string;
   website?: string;

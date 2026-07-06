@@ -24,7 +24,7 @@ export async function fetchDynamicStartups(): Promise<StartupEntry[]> {
     return {
       name: s.name,
       sector: s.sector,
-      stage: s.lifecycle_stage || "Idea",
+      contactEmail: s.contact_email || "",
       description: s.description,
       logoUrl: s.logo_url || undefined,
       website: s.website || undefined,
