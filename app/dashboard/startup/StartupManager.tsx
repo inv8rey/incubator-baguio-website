@@ -7,14 +7,15 @@ import { supabase } from "../../../lib/supabaseClient";
 import { uploadStartupLogo } from "../../../lib/uploadLogo";
 import type { LocationValue } from "../../LocationPicker";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, rowItemStyle, DARK } from "../styles";
+import { STAGE_FILTERS } from "../../admin/data";
 
 const LocationPicker = dynamic(() => import("../../LocationPicker"), { ssr: false });
 
 const NAME_MAX = 60;
 const TAGLINE_MAX = 100;
 const DESCRIPTION_MAX = 280;
-const TBI_MAX = 60;
 const FOUNDER_STATUSES = ["Student Founder", "Professional Founder"] as const;
+const STAGE_OPTIONS = STAGE_FILTERS.filter((s) => s !== "All");
 
 interface FounderRow {
   name: string;
@@ -26,7 +27,7 @@ interface Startup {
   name: string;
   tagline: string;
   sector: string;
-  tbi_affiliation: string;
+  lifecycle_stage: string;
   description: string;
   website: string;
   contact_email: string;
@@ -34,7 +35,7 @@ interface Startup {
   founders: FounderRow[];
 }
 
-const EMPTY = { name: "", tagline: "", sector: "", tbi_affiliation: "", description: "", website: "", contact_email: "", logo_url: "" };
+const EMPTY = { name: "", tagline: "", sector: "", lifecycle_stage: STAGE_OPTIONS[0], description: "", website: "", contact_email: "", logo_url: "" };
 
 export default function StartupManager() {
   const { user } = useAuth();
@@ -155,8 +156,12 @@ export default function StartupManager() {
               <input style={inputStyle} required value={form.sector} onChange={(e) => update("sector", e.target.value)} placeholder="e.g. Agritech" />
             </div>
             <div>
-              <label style={labelStyle}>TBI affiliation</label>
-              <input style={inputStyle} maxLength={TBI_MAX} value={form.tbi_affiliation} onChange={(e) => update("tbi_affiliation", e.target.value)} placeholder="e.g. SLU iDEYA, or Independent" />
+              <label style={labelStyle}>Stage</label>
+              <select style={{ ...inputStyle, appearance: "auto" }} value={form.lifecycle_stage} onChange={(e) => update("lifecycle_stage", e.target.value)}>
+                {STAGE_OPTIONS.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
             </div>
           </div>
           <div>
@@ -246,7 +251,7 @@ export default function StartupManager() {
                   )}
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{s.name}</div>
-                    <div style={{ fontSize: 12.5, color: "#9A958B" }}>{s.sector}{s.tbi_affiliation ? ` · ${s.tbi_affiliation}` : ""}</div>
+                    <div style={{ fontSize: 12.5, color: "#9A958B" }}>{s.sector}{s.lifecycle_stage ? ` · ${s.lifecycle_stage}` : ""}</div>
                   </div>
                 </div>
                 <button onClick={() => remove(s.id)} style={{ fontSize: 12.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer" }}>

@@ -613,7 +613,7 @@ create policy "admins manage event submissions" on public.event_submissions
 -- once the temporary signup period is over.
 --
 -- Expected `payload` shape per entity_type:
---   startup:      { name, sector, tbi_affiliation, description, website }
+--   startup:      { name, sector, stage, description, website }
 --   mentor:       { name, position, company, bio, specializations: string[] }
 --   organization: { name, org_type, type, description, website }
 -- ---------------------------------------------------------------------------

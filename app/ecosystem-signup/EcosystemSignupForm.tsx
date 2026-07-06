@@ -41,7 +41,6 @@ export default function EcosystemSignupForm() {
   // Startup fields
   const [suName, setSuName] = useState("");
   const [suSector, setSuSector] = useState(SECTOR_FILTERS[0].label);
-  const [suTbi, setSuTbi] = useState("");
   const [suDescription, setSuDescription] = useState("");
   const [suWebsite, setSuWebsite] = useState("");
   const [founders, setFounders] = useState<FounderRow[]>([{ name: "", status: "Student Founder" }]);
@@ -143,7 +142,7 @@ export default function EcosystemSignupForm() {
     if (entityType === "startup") {
       if (!suName.trim()) return;
       const cleanFounders = founders.map((f) => ({ name: f.name.trim(), status: f.status })).filter((f) => f.name);
-      payload = { name: suName.trim(), sector: suSector, tbi_affiliation: suTbi.trim(), description: suDescription.trim(), website: suWebsite.trim(), logo_url: logoUrl, founders: cleanFounders, stage: suStage, biggest_challenge: suChallenge.trim() };
+      payload = { name: suName.trim(), sector: suSector, description: suDescription.trim(), website: suWebsite.trim(), logo_url: logoUrl, founders: cleanFounders, stage: suStage, biggest_challenge: suChallenge.trim() };
     } else if (entityType === "mentor") {
       if (!mName.trim()) return;
       payload = {
@@ -290,19 +289,13 @@ export default function EcosystemSignupForm() {
               })}
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            <div>
-              <label style={labelStyle}>Sector</label>
-              <select style={{ ...inputStyle, appearance: "auto" }} value={suSector} onChange={(e) => setSuSector(e.target.value)}>
-                {SECTOR_FILTERS.map((s) => (
-                  <option key={s.label} value={s.label}>{s.label}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label style={labelStyle}>TBI affiliation (optional)</label>
-              <input style={inputStyle} value={suTbi} onChange={(e) => setSuTbi(e.target.value)} placeholder="e.g. Independent" />
-            </div>
+          <div>
+            <label style={labelStyle}>Sector</label>
+            <select style={{ ...inputStyle, appearance: "auto" }} value={suSector} onChange={(e) => setSuSector(e.target.value)}>
+              {SECTOR_FILTERS.map((s) => (
+                <option key={s.label} value={s.label}>{s.label}</option>
+              ))}
+            </select>
           </div>
           <div>
             <label style={labelStyle}>Description</label>

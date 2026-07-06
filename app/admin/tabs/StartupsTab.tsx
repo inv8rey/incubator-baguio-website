@@ -13,7 +13,6 @@ const LocationPicker = dynamic(() => import("../../LocationPicker"), { ssr: fals
 
 const NAME_MAX = 60;
 const DESCRIPTION_MAX = 280;
-const TBI_MAX = 60;
 const FOUNDER_STATUSES = ["Student Founder", "Professional Founder"] as const;
 
 interface FounderRow {
@@ -26,7 +25,6 @@ interface Startup {
   name: string;
   sector: string;
   stage: string;
-  tbi: string;
   funding: string;
   since: string;
   description: string;
@@ -44,7 +42,6 @@ const EMPTY_FORM = {
   name: "",
   sector: SECTOR_FILTERS[0].label,
   stage: STAGE_FILTERS[1],
-  tbi: "Independent",
   funding: "",
   since: "",
   description: "",
@@ -89,7 +86,6 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
           name: s.name,
           sector: s.sector,
           stage: s.lifecycle_stage,
-          tbi: s.tbi_affiliation,
           funding: s.funding_raised,
           since: s.founded_year,
           description: s.description,
@@ -129,7 +125,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
 
   function openEditModal(s: Startup) {
     setEditingId(s.id);
-    setForm({ name: s.name, sector: s.sector, stage: s.stage, tbi: s.tbi, funding: s.funding, since: s.since, description: s.description, logoUrl: s.logoUrl, website: s.website });
+    setForm({ name: s.name, sector: s.sector, stage: s.stage, funding: s.funding, since: s.since, description: s.description, logoUrl: s.logoUrl, website: s.website });
     setLocation(s.latitude != null && s.longitude != null ? { lat: s.latitude, lng: s.longitude, address: s.address } : null);
     setFounders(s.founders.length > 0 ? s.founders : [{ name: "", status: "Student Founder" }]);
     setError("");
@@ -177,7 +173,6 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
       name: form.name.trim(),
       sector: form.sector,
       lifecycle_stage: form.stage,
-      tbi_affiliation: form.tbi.trim(),
       funding_raised: form.funding.trim(),
       founded_year: form.since.trim(),
       description: form.description.trim(),
@@ -272,7 +267,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 760 }}>
           <thead>
             <tr style={{ background: "#F5F4F0" }}>
-              {["Startup", "Sector", "Stage", "TBI", "Funding", "Since", "Actions"].map((h, i) => (
+              {["Startup", "Sector", "Stage", "Funding", "Since", "Actions"].map((h, i) => (
                 <th
                   key={h}
                   style={{
@@ -314,7 +309,6 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                   <td style={{ padding: "13px 14px", verticalAlign: "middle" }}>
                     <span style={{ fontSize: 10.5, fontWeight: 600, padding: "3px 9px", borderRadius: 999, color: badge.color, background: badge.bg }}>● {s.stage}</span>
                   </td>
-                  <td style={{ padding: "13px 14px", verticalAlign: "middle", color: "#6B6B73" }}>{s.tbi}</td>
                   <td style={{ padding: "13px 14px", verticalAlign: "middle", fontWeight: 600, color: DARK }}>{s.funding || "—"}</td>
                   <td style={{ padding: "13px 14px", verticalAlign: "middle", color: "#9A958B" }}>{s.since || "—"}</td>
                   <td style={{ padding: "13px 14px", verticalAlign: "middle" }}>
@@ -332,7 +326,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
             })}
             {loaded && filtered.length === 0 && (
               <tr>
-                <td colSpan={7} style={{ padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13 }}>
+                <td colSpan={6} style={{ padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13 }}>
                   {startups.length === 0 ? "No startups yet — add the first one." : "No startups match these filters."}
                 </td>
               </tr>
@@ -426,17 +420,6 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                   ))}
                 </select>
               </div>
-            </div>
-
-            <div>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>TBI affiliation</label>
-              <input
-                value={form.tbi}
-                onChange={(e) => update("tbi", e.target.value)}
-                placeholder="Independent"
-                maxLength={TBI_MAX}
-                style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
-              />
             </div>
 
             <div>

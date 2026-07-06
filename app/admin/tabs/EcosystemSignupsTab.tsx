@@ -101,7 +101,7 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
       const { error: err } = await supabase.from("startups").insert({
         name: p.name,
         sector: p.sector,
-        tbi_affiliation: p.tbi_affiliation,
+        lifecycle_stage: p.stage || "Idea",
         description: p.description,
         website: p.website,
         logo_url: p.logo_url || "",

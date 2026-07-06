@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { MENTOR_SPECIALIZATIONS, type EcosystemCategory, type StartupEntry, type TbiEntry, type CompanyEntry, type ServiceProviderEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry } from "./data";
 import { fetchDynamicStartups, fetchDynamicMentors, fetchDynamicOrganizations, type DynamicMentorEntry } from "./dynamicData";
 import ConnectMentorButton from "./ConnectMentorButton";
+import { STAGE_BADGE } from "../admin/data";
 
 const EcosystemMap = dynamic(() => import("./EcosystemMap"), {
   ssr: false,
@@ -398,7 +399,12 @@ export default function EcosystemDirectory() {
                 </div>
                 <h3 style={{ margin: "0 0 6px", fontSize: 18, fontWeight: 600, color: DARK }}>{s.name}</h3>
                 <p style={{ margin: "0 0 14px", fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{s.description}</p>
-                <span style={{ fontSize: 12, fontWeight: 600, color: "#44444C" }}>{s.tbiAffiliation}</span>
+                {(() => {
+                  const badge = STAGE_BADGE[s.stage] ?? STAGE_BADGE.Idea;
+                  return (
+                    <span style={{ fontSize: 10.5, fontWeight: 600, padding: "3px 9px", borderRadius: 999, color: badge.color, background: badge.bg }}>● {s.stage}</span>
+                  );
+                })()}
                 {s.website && (
                   <a
                     href={s.website}

@@ -182,6 +182,7 @@ export const SECTOR_FILTERS = [
   { label: "Government & Public Services", color: "#009B8D" },
   { label: "Real Estate & Construction", color: "#9A958B" },
   { label: "Artificial Intelligence & Emerging Technologies", color: "#3A5FA0" },
+  { label: "Others", color: "#6B6B73" },
 ];
 
 export const STAGE_BADGE: Record<string, { color: string; bg: string }> = {
