@@ -30,8 +30,8 @@ const TOP_HTML = `
       <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,101,34,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:#F26522;animation:ibpulse 2.4s ease-in-out infinite;"></span></span>
       <span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Launching July 2026</span>
     </div>
-    <h1 style="margin:0;font-size:60px;line-height:1.05;font-weight:700;letter-spacing:-0.035em;color:#fff;">Baguio&rsquo;s innovation ecosystem is about to go&nbsp;<span style="color:#F26522;">live.</span></h1>
-    <p style="margin:26px auto 0;font-size:17.5px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:620px;">Incubator Baguio brings founders, mentors, TBIs, government, and industry into one alliance built to accelerate the city&rsquo;s next generation of startups and researchers. We&rsquo;re opening the doors this July &mdash; here&rsquo;s your chance to be counted from day one.</p>
+    <h1 style="margin:0;font-size:60px;line-height:1.05;font-weight:700;letter-spacing:-0.035em;color:#fff;">The home for Baguio&rsquo;s&nbsp;<span style="color:#F26522;">startup and innovation ecosystem.</span></h1>
+    <p style="margin:26px auto 0;font-size:17.5px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:620px;">Incubator Baguio is the digital gateway to the city&rsquo;s innovation ecosystem, connecting people with opportunities, programs, mentors, challenges, funding, and partnerships.</p>
     <div style="display:flex;gap:12px;justify-content:center;margin-top:36px;flex-wrap:wrap;">
       <a href="#join" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15.5px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 16px 40px -14px rgba(242,101,34,0.7);">Get counted before we launch
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
@@ -40,40 +40,10 @@ const TOP_HTML = `
   </div>
 </div>
 
-<!-- WHAT'S COMING -->
+<!-- WHAT'S INSIDE -->
 <div style="background:#FAFAF7;padding:80px 40px;border-top:1px solid rgba(20,20,25,0.06);">
   <div style="max-width:1060px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:48px;">
-      <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">What&rsquo;s coming</div>
-      <h2 style="margin:0;font-size:38px;font-weight:700;letter-spacing:-0.03em;color:#141417;line-height:1.1;">Everything a founder needs, in one alliance</h2>
-      <p style="margin:14px auto 0;font-size:15.5px;line-height:1.6;color:#6B6B73;max-width:520px;">This is what goes live in July &mdash; built around the people and places already forming the ecosystem below.</p>
-    </div>
-    <div class="ib-teaser-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
-      ${[
-        ["#F26522", "rgba(242,101,34,0.09)", "Mentorship Matching", "Get paired with mentors across sectors &mdash; from finance to product to industry-specific expertise."],
-        ["#285E7A", "rgba(40,94,122,0.09)", "Funding &amp; Investment Pathways", "Discover grants, TBI programs, and investor connections suited to your stage."],
-        ["#9E2A52", "rgba(158,42,82,0.09)", "Coworking &amp; Maker Access", "Book desks, meeting rooms, and fabrication tools at partner coworking spaces and makerspaces around the city."],
-        ["#1A6B3C", "rgba(26,107,60,0.09)", "Innovation Challenges", "Take on real problem statements from government, industry, and academia."],
-      ].map((c) => `
-      <div class="ib-card-hover" style="background:#fff;border:1px solid rgba(20,20,25,0.09);border-radius:18px;padding:26px 22px;border-top:3px solid ${c[0]};">
-        <div style="width:38px;height:38px;border-radius:11px;background:${c[1]};margin-bottom:16px;"></div>
-        <h3 style="margin:0 0 8px;font-size:16.5px;font-weight:600;color:#141417;">${c[2]}</h3>
-        <p style="margin:0;font-size:13.5px;line-height:1.55;color:#6B6B73;">${c[3]}</p>
-      </div>`).join("")}
-    </div>
-  </div>
-</div>
-
-<!-- BACKED BY -->
-<div style="background:#fff;padding:16px 40px 8px;text-align:center;">
-  <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#9A958B;">Backed by</div>
-</div>
-`;
-
-const ECOSYSTEM_INTRO_HTML = `
-<div id="ecosystem" style="scroll-margin-top:24px;background:#FAFAF7;padding:80px 40px 8px;border-top:1px solid rgba(20,20,25,0.06);">
-  <div style="max-width:1060px;margin:0 auto;">
-    <div style="text-align:center;margin-bottom:52px;">
       <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">What&rsquo;s inside</div>
       <h2 style="margin:0;font-size:38px;font-weight:700;letter-spacing:-0.03em;color:#141417;line-height:1.1;">Designed to connect Baguio&rsquo;s innovation ecosystem.</h2>
       <p style="margin:14px auto 0;font-size:15.5px;line-height:1.6;color:#6B6B73;max-width:600px;">Browse ecosystem directories, discover innovation challenges, connect with mentors, and stay informed through a shared calendar of research and innovation activities.</p>
@@ -119,6 +89,15 @@ const ECOSYSTEM_INTRO_HTML = `
     </div>
   </div>
 </div>
+
+<!-- BACKED BY -->
+<div style="background:#fff;padding:16px 40px 8px;text-align:center;">
+  <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#9A958B;">Backed by</div>
+</div>
+`;
+
+const ECOSYSTEM_INTRO_HTML = `
+<div id="ecosystem" style="scroll-margin-top:24px;"></div>
 `;
 
 const JOIN_INTRO_HTML = `
