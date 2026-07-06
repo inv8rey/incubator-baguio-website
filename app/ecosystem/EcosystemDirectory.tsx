@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import { MENTOR_SPECIALIZATIONS, type EcosystemCategory, type StartupEntry, type TbiEntry, type CorporateEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry } from "./data";
+import { MENTOR_SPECIALIZATIONS, type EcosystemCategory, type StartupEntry, type TbiEntry, type CompanyEntry, type ServiceProviderEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry } from "./data";
 import { fetchDynamicStartups, fetchDynamicMentors, fetchDynamicOrganizations, type DynamicMentorEntry } from "./dynamicData";
 import ConnectMentorButton from "./ConnectMentorButton";
 
@@ -119,7 +119,8 @@ interface OrgListCardProps {
   website?: string;
 }
 
-// Shared card for TBIs, Corporate, Government, and Community: a white logo
+// Shared card for TBIs, Companies, Service Providers, Government, and
+// Community: a white logo
 // tile + colored badge up top, a divider, then description and a "visit
 // website" pill that's icon-only until the card is hovered.
 function OrgListCard({ name, badge, description, color, bg, initials, logoUrl, website }: OrgListCardProps) {
@@ -185,12 +186,13 @@ export default function EcosystemDirectory() {
   const [dynMentors, setDynMentors] = useState<DynamicMentorEntry[]>([]);
   const [dynOrgs, setDynOrgs] = useState<{
     TBIs: TbiEntry[];
-    Corporate: CorporateEntry[];
+    Companies: CompanyEntry[];
+    "Service Providers": ServiceProviderEntry[];
     Government: GovernmentEntry[];
     Community: CommunityEntry[];
     "Coworking Spaces": CoworkingEntry[];
     "Makerspaces & Labs": MakerspaceEntry[];
-  }>({ TBIs: [], Corporate: [], Government: [], Community: [], "Coworking Spaces": [], "Makerspaces & Labs": [] });
+  }>({ TBIs: [], Companies: [], "Service Providers": [], Government: [], Community: [], "Coworking Spaces": [], "Makerspaces & Labs": [] });
 
   useEffect(() => {
     fetchDynamicStartups().then(setDynStartups);
@@ -201,7 +203,8 @@ export default function EcosystemDirectory() {
   const allStartups = dynStartups;
   const allMentors = dynMentors;
   const allTbis = dynOrgs.TBIs;
-  const allCorporate = dynOrgs.Corporate;
+  const allCompanies = dynOrgs.Companies;
+  const allServiceProviders = dynOrgs["Service Providers"];
   const allGovernment = dynOrgs.Government;
   const allCommunity = dynOrgs.Community;
   const allCoworking = dynOrgs["Coworking Spaces"];
@@ -211,7 +214,8 @@ export default function EcosystemDirectory() {
     { id: "Startups", label: "Startups", count: allStartups.length },
     { id: "Mentors", label: "Mentors", count: allMentors.length },
     { id: "TBIs", label: "TBIs", count: allTbis.length },
-    { id: "Corporate", label: "Corporate", count: allCorporate.length },
+    { id: "Companies", label: "Companies", count: allCompanies.length },
+    { id: "Service Providers", label: "Service Providers", count: allServiceProviders.length },
     { id: "Government", label: "Government", count: allGovernment.length },
     { id: "Community", label: "Community", count: allCommunity.length },
     { id: "Coworking Spaces", label: "Coworking Spaces", count: allCoworking.length },
@@ -233,8 +237,10 @@ export default function EcosystemDirectory() {
       if (specializationFilter) list = list.filter((m) => (m.specializations ?? []).includes(specializationFilter));
     } else if (tab === "TBIs") {
       list = allTbis.filter((t) => matches([t.name, t.host, t.focus], query));
-    } else if (tab === "Corporate") {
-      list = allCorporate.filter((c) => matches([c.name, c.type, c.description], query));
+    } else if (tab === "Companies") {
+      list = allCompanies.filter((c) => matches([c.name, c.type, c.description], query));
+    } else if (tab === "Service Providers") {
+      list = allServiceProviders.filter((s) => matches([s.name, s.type, s.description], query));
     } else if (tab === "Government") {
       list = allGovernment.filter((g) => matches([g.name, g.type, g.description], query));
     } else if (tab === "Coworking Spaces") {
@@ -245,7 +251,7 @@ export default function EcosystemDirectory() {
       list = allCommunity.filter((c) => matches([c.name, c.type, c.description], query));
     }
     return [...list].sort((a, b) => (sort === "az" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)));
-  }, [tab, query, sort, sectorFilter, specializationFilter, allStartups, allMentors, allTbis, allCorporate, allGovernment, allCoworking, allMakerspaces, allCommunity]);
+  }, [tab, query, sort, sectorFilter, specializationFilter, allStartups, allMentors, allTbis, allCompanies, allServiceProviders, allGovernment, allCoworking, allMakerspaces, allCommunity]);
 
   // Normalized pin data for the map placeholder — swap this for real coordinates once a map API is wired up.
   const pins = useMemo(
@@ -270,7 +276,7 @@ export default function EcosystemDirectory() {
           <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: ORANGE, marginBottom: 12 }}>Ecosystem database</div>
           <h2 style={{ margin: 0, fontSize: 38, fontWeight: 700, letterSpacing: "-0.025em", color: DARK }}>Browse the people and places building Baguio</h2>
           <p style={{ margin: "14px auto 0", fontSize: 15, lineHeight: 1.6, color: "#6B6B73", maxWidth: 560 }}>
-            Search across registered startups, mentors, TBIs, corporate, government, community partners, coworking spaces, and makerspaces.
+            Search across registered startups, mentors, TBIs, companies, service providers, government, community partners, coworking spaces, and makerspaces.
           </p>
         </div>
 
@@ -505,10 +511,18 @@ export default function EcosystemDirectory() {
           </div>
         )}
 
-        {view === "list" && tab === "Corporate" && (
+        {view === "list" && tab === "Companies" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
-            {(filtered as CorporateEntry[]).map((c) => (
+            {(filtered as CompanyEntry[]).map((c) => (
               <OrgListCard key={c.name} name={c.name} badge={c.type} description={c.description} color={c.color} bg={c.bg} initials={c.initials} logoUrl={c.logoUrl} website={c.website} />
+            ))}
+          </div>
+        )}
+
+        {view === "list" && tab === "Service Providers" && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
+            {(filtered as ServiceProviderEntry[]).map((s) => (
+              <OrgListCard key={s.name} name={s.name} badge={s.type} description={s.description} color={s.color} bg={s.bg} initials={s.initials} logoUrl={s.logoUrl} website={s.website} />
             ))}
           </div>
         )}

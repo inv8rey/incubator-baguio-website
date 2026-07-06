@@ -2,11 +2,12 @@ import { supabase } from "../../lib/supabaseClient";
 import { acronymOf, initialsOf, paletteFor, truncate } from "../../lib/visualIdentity";
 import type {
   CommunityEntry,
-  CorporateEntry,
+  CompanyEntry,
   CoworkingEntry,
   GovernmentEntry,
   MakerspaceEntry,
   MentorEntry,
+  ServiceProviderEntry,
   StartupEntry,
   TbiEntry,
 } from "./data";
@@ -60,7 +61,8 @@ export async function fetchDynamicMentors(): Promise<DynamicMentorEntry[]> {
 
 interface DynamicOrgBuckets {
   TBIs: TbiEntry[];
-  Corporate: CorporateEntry[];
+  Companies: CompanyEntry[];
+  "Service Providers": ServiceProviderEntry[];
   Government: GovernmentEntry[];
   Community: CommunityEntry[];
   "Coworking Spaces": CoworkingEntry[];
@@ -80,7 +82,7 @@ export async function fetchDynamicEcosystemPartners(): Promise<EcosystemPartnerE
 }
 
 export async function fetchDynamicOrganizations(): Promise<DynamicOrgBuckets> {
-  const empty: DynamicOrgBuckets = { TBIs: [], Corporate: [], Government: [], Community: [], "Coworking Spaces": [], "Makerspaces & Labs": [] };
+  const empty: DynamicOrgBuckets = { TBIs: [], Companies: [], "Service Providers": [], Government: [], Community: [], "Coworking Spaces": [], "Makerspaces & Labs": [] };
   if (!supabase) return empty;
   const { data } = await supabase.from("organizations").select("*").order("created_at", { ascending: false });
   for (const o of data ?? []) {

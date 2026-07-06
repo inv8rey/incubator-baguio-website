@@ -7,7 +7,7 @@ import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
 import { uploadMentorPhoto, uploadOrgLogo, uploadOrgCoverImage, uploadPartnerLogo } from "../../../lib/uploadLogo";
 import { MENTOR_SPECIALIZATIONS } from "../../ecosystem/data";
 
-const ORG_TYPES = ["TBIs", "Corporate", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
+const ORG_TYPES = ["TBIs", "Companies", "Service Providers", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
 type OrgType = (typeof ORG_TYPES)[number];
 const CATEGORIES = ["Mentors", ...ORG_TYPES, "Ecosystem Partners"] as const;
 type Category = (typeof CATEGORIES)[number];
@@ -17,6 +17,13 @@ const BIO_MAX = 280;
 const POSITION_MAX = 60;
 const COMPANY_MAX = 60;
 const MAX_SPECIALIZATIONS = 3;
+
+// Category label, singularized for "Add ___" / "Edit ___" copy. Plain
+// s-stripping mishandles "Companies", so special-case it.
+function singularCategory(category: string): string {
+  if (category === "Companies") return "Company";
+  return category.replace(/s$/, "");
+}
 
 interface MentorRow {
   id: string;
@@ -307,7 +314,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
           onClick={openAddModal}
           style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 999, fontSize: 13, fontWeight: 600, border: "none", color: "#fff", background: ORANGE, cursor: "pointer" }}
         >
-          + Add {isMentors ? "Mentor" : isPartners ? "Partner logo" : category.replace(/s$/, "")}
+          + Add {isMentors ? "Mentor" : isPartners ? "Partner logo" : singularCategory(category)}
         </button>
       </div>
 
@@ -387,7 +394,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div style={{ fontSize: 16.5, fontWeight: 700, color: DARK }}>
-                {editingId ? "Edit" : "Add"} {isMentors ? "mentor" : isPartners ? "partner logo" : category.replace(/s$/, "").toLowerCase()}
+                {editingId ? "Edit" : "Add"} {isMentors ? "mentor" : isPartners ? "partner logo" : singularCategory(category).toLowerCase()}
               </div>
               <button type="button" onClick={closeModal} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#9A958B", lineHeight: 1 }}>×</button>
             </div>

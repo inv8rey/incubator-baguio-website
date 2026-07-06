@@ -247,7 +247,7 @@ create table if not exists public.organizations (
   id uuid primary key default gen_random_uuid(),
   owner_id uuid references public.profiles (id) on delete cascade,
   name text not null,
-  org_type text not null check (org_type in ('TBIs', 'Corporate', 'Government', 'Community', 'Coworking Spaces', 'Makerspaces & Labs')),
+  org_type text not null check (org_type in ('TBIs', 'Companies', 'Service Providers', 'Government', 'Community', 'Coworking Spaces', 'Makerspaces & Labs')),
   description text not null default '',
   website text not null default '',
   contact_email text not null default '',
@@ -263,6 +263,12 @@ alter table public.organizations add column if not exists logo_url text not null
 alter table public.organizations add column if not exists type text not null default '';
 -- Banner/cover photo shown on Coworking Spaces & Makerspaces & Labs cards (OrgPhotoCard), separate from logo_url.
 alter table public.organizations add column if not exists cover_url text not null default '';
+
+-- "Corporate" renamed to "Companies", plus a new "Service Providers" category.
+update public.organizations set org_type = 'Companies' where org_type = 'Corporate';
+alter table public.organizations drop constraint if exists organizations_org_type_check;
+alter table public.organizations add constraint organizations_org_type_check
+  check (org_type in ('TBIs', 'Companies', 'Service Providers', 'Government', 'Community', 'Coworking Spaces', 'Makerspaces & Labs'));
 
 alter table public.organizations enable row level security;
 
@@ -388,7 +394,7 @@ create policy "authenticated users can delete mentor photos" on storage.objects
   for delete to authenticated using (bucket_id = 'mentor-photos');
 
 -- ---------------------------------------------------------------------------
--- storage: org-logos bucket for TBI/Corporate/Government/Community/Coworking/Makerspace logos
+-- storage: org-logos bucket for TBI/Companies/Service Providers/Government/Community/Coworking/Makerspace logos
 -- ---------------------------------------------------------------------------
 insert into storage.buckets (id, name, public)
 values ('org-logos', 'org-logos', true)

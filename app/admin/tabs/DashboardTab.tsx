@@ -37,7 +37,8 @@ const TBI_PALETTE = [ORANGE, "#285E7A", "#1A6B3C", "#9E2A52", "#3A5FA0", "#7C5CD
 
 const ORG_TYPE_COLORS: Record<string, string> = {
   TBIs: "#285E7A",
-  Corporate: ORANGE,
+  Companies: ORANGE,
+  "Service Providers": "#5B9BC0",
   Government: "#1A6B3C",
   Community: "#9E2A52",
   "Coworking Spaces": "#7C5CD6",

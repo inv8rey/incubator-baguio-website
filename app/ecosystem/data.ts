@@ -1,4 +1,4 @@
-export type EcosystemCategory = "Startups" | "Mentors" | "TBIs" | "Corporate" | "Government" | "Community" | "Coworking Spaces" | "Makerspaces & Labs";
+export type EcosystemCategory = "Startups" | "Mentors" | "TBIs" | "Companies" | "Service Providers" | "Government" | "Community" | "Coworking Spaces" | "Makerspaces & Labs";
 
 export interface StartupEntry {
   name: string;
@@ -74,7 +74,18 @@ export interface CommunityEntry {
   website?: string;
 }
 
-export interface CorporateEntry {
+export interface CompanyEntry {
+  name: string;
+  type: string;
+  description: string;
+  color: string;
+  bg: string;
+  initials: string;
+  logoUrl?: string;
+  website?: string;
+}
+
+export interface ServiceProviderEntry {
   name: string;
   type: string;
   description: string;
@@ -121,6 +132,7 @@ export interface MakerspaceEntry {
 }
 
 // Nothing is seeded here anymore — every Ecosystem directory tab (Startups,
-// Mentors, TBIs, Corporate, Government, Community, Coworking Spaces,
-// Makerspaces & Labs) reads live from Supabase only (see dynamicData.ts),
-// sourced from the admin dashboard and self-service submissions.
+// Mentors, TBIs, Companies, Service Providers, Government, Community,
+// Coworking Spaces, Makerspaces & Labs) reads live from Supabase only (see
+// dynamicData.ts), sourced from the admin dashboard and self-service
+// submissions.

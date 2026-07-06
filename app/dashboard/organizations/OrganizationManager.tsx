@@ -6,7 +6,7 @@ import { supabase } from "../../../lib/supabaseClient";
 import { uploadOrgLogo, uploadOrgCoverImage } from "../../../lib/uploadLogo";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, rowItemStyle, DARK } from "../styles";
 
-const ORG_TYPES = ["TBIs", "Corporate", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
+const ORG_TYPES = ["TBIs", "Companies", "Service Providers", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
 
 interface Organization {
   id: string;

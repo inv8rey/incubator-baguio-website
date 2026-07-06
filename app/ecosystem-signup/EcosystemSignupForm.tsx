@@ -14,7 +14,7 @@ const ENTITY_TYPES = [
 ] as const;
 type EntityType = (typeof ENTITY_TYPES)[number]["value"];
 
-const ORG_TYPES = ["TBIs", "Corporate", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
+const ORG_TYPES = ["TBIs", "Companies", "Service Providers", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
 const MAX_SPECIALIZATIONS = 3;
 const FOUNDER_STATUSES = ["Student Founder", "Professional Founder"] as const;
 
