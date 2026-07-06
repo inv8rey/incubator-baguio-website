@@ -86,7 +86,7 @@ export default function AdminApp() {
     >
       <div style={{ padding: "22px 20px 18px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-          <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/assets/cpdso-logo.png`} alt="CPDSO" style={{ width: 36, height: 36, borderRadius: 9, objectFit: "contain" }} />
+          <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/assets/cpdso-logo.png`} alt="CPDSO" style={{ width: 46, height: 46, borderRadius: 9, objectFit: "contain" }} />
           <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/assets/ib-icon.png`} alt="IB" style={{ width: 36, height: 36, borderRadius: 9, objectFit: "contain" }} />
           <div>
             <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", lineHeight: 1.2 }}>Incubator Baguio</div>

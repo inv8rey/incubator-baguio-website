@@ -16,7 +16,7 @@ const TOP_HTML = `
 <!-- HEADER -->
 <div style="display:flex;align-items:center;justify-content:center;padding:20px 40px;background:#0B0B0D;">
   <div style="display:flex;align-items:center;gap:11px;">
-    <img src="${BP}/assets/cpdso-logo.png" alt="CPDSO" style="height:30px;width:auto;">
+    <img src="${BP}/assets/cpdso-logo.png" alt="CPDSO" style="height:42px;width:auto;">
     <img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:30px;width:auto;">
     <div style="font-size:15px;font-weight:600;color:#fff;">Incubator Baguio</div>
   </div>
@@ -115,7 +115,7 @@ const BOTTOM_HTML = `
 <!-- FOOTER -->
 <div style="background:#0B0B0D;padding:40px 24px;text-align:center;">
   <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:12px;">
-    <img src="${BP}/assets/cpdso-logo.png" alt="CPDSO" style="height:26px;width:auto;">
+    <img src="${BP}/assets/cpdso-logo.png" alt="CPDSO" style="height:36px;width:auto;">
     <img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:26px;width:auto;">
     <div style="font-size:14px;font-weight:600;color:#fff;">Incubator Baguio</div>
   </div>
