@@ -107,6 +107,9 @@ alter table public.startups add column if not exists address text not null defau
 alter table public.startups add column if not exists latitude double precision;
 alter table public.startups add column if not exists longitude double precision;
 
+-- One row per founder: [{ "name": "Juan Dela Cruz", "status": "Student" | "Professional" }, ...]
+alter table public.startups add column if not exists founders jsonb not null default '[]'::jsonb;
+
 -- Keeps startup cards visually consistent by capping field lengths at the database level.
 alter table public.startups drop constraint if exists startups_lifecycle_stage_check;
 alter table public.startups add constraint startups_lifecycle_stage_check check (lifecycle_stage in ('Idea', 'MVP', 'Launch', 'Growth'));
@@ -179,6 +182,11 @@ alter table public.mentors add constraint mentors_specializations_values check (
     'Research & Commercialization', 'Industry Experts'
   ]::text[]
 );
+
+-- Sector only applies to "Industry Experts" mentors; social_link is a single
+-- Facebook/LinkedIn/website URL shown alongside their card.
+alter table public.mentors add column if not exists sector text not null default '';
+alter table public.mentors add column if not exists social_link text not null default '';
 
 alter table public.mentors enable row level security;
 

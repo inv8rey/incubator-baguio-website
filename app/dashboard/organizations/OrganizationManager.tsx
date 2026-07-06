@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../AuthProvider";
 import { supabase } from "../../../lib/supabaseClient";
-import { uploadOrgLogo } from "../../../lib/uploadLogo";
+import { uploadOrgLogo, uploadOrgCoverImage } from "../../../lib/uploadLogo";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, rowItemStyle, DARK } from "../styles";
 
 const ORG_TYPES = ["TBIs", "Corporate", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
@@ -17,9 +17,10 @@ interface Organization {
   contact_email: string;
   logo_url: string;
   type: string;
+  cover_url: string;
 }
 
-const EMPTY = { name: "", org_type: ORG_TYPES[0] as string, description: "", website: "", contact_email: "", logo_url: "", type: "" };
+const EMPTY = { name: "", org_type: ORG_TYPES[0] as string, description: "", website: "", contact_email: "", logo_url: "", type: "", cover_url: "" };
 
 export default function OrganizationManager() {
   const { user } = useAuth();
@@ -27,7 +28,9 @@ export default function OrganizationManager() {
   const [form, setForm] = useState(EMPTY);
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
   const [error, setError] = useState("");
+  const isCoworkingOrMakerspace = form.org_type === "Coworking Spaces" || form.org_type === "Makerspaces & Labs";
 
   async function load() {
     if (!supabase || !user) return;
@@ -55,6 +58,22 @@ export default function OrganizationManager() {
       setError(err.message || "Logo upload failed.");
     } finally {
       setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  async function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingCover(true);
+    setError("");
+    try {
+      const url = await uploadOrgCoverImage(file);
+      update("cover_url", url);
+    } catch (err: any) {
+      setError(err.message || "Cover image upload failed.");
+    } finally {
+      setUploadingCover(false);
       e.target.value = "";
     }
   }
@@ -122,6 +141,27 @@ export default function OrganizationManager() {
             <div>
               <label style={labelStyle}>Type (short label shown on your card)</label>
               <input style={inputStyle} value={form.type} onChange={(e) => update("type", e.target.value)} placeholder="e.g. Coworking space" />
+            </div>
+          )}
+          {isCoworkingOrMakerspace && (
+            <div>
+              <label style={labelStyle}>Cover photo (optional)</label>
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                {form.cover_url ? (
+                  <img src={form.cover_url} alt="" style={{ width: 84, height: 52, borderRadius: 10, objectFit: "cover" }} />
+                ) : (
+                  <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F4F2EC", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10, textAlign: "center" }}>
+                    No cover
+                  </div>
+                )}
+                <div>
+                  <label style={{ display: "inline-block", fontSize: 13, fontWeight: 600, color: "#F26522", cursor: "pointer" }}>
+                    {uploadingCover ? "Uploading…" : "Upload cover photo"}
+                    <input type="file" accept="image/*" onChange={handleCoverChange} disabled={uploadingCover} style={{ display: "none" }} />
+                  </label>
+                  <div style={{ fontSize: 11.5, color: "#9A958B", marginTop: 2 }}>Shown as the banner on your Ecosystem directory card.</div>
+                </div>
+              </div>
             </div>
           )}
           <div>

@@ -418,39 +418,77 @@ export default function EcosystemDirectory() {
             {(filtered as DynamicMentorEntry[]).map((m) => {
               const photoUrl = m.photoUrl;
               return (
-                <div
-                  key={m.name}
-                  className="ib-challenge-hover"
-                  style={{
-                    position: "relative",
-                    height: 300,
-                    borderRadius: 18,
-                    overflow: "hidden",
-                    background: photoUrl ? "#141417" : mentorFallbackGradient(m.name),
-                  }}
-                >
-                  {photoUrl && (
-                    <img src={photoUrl} alt={m.name} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
-                  )}
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      background: photoUrl
-                        ? "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.05) 70%)"
-                        : "linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 55%)",
-                    }}
-                  />
-                  <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "18px 18px 16px" }}>
-                    <h3 style={{ margin: "0 0 2px", fontSize: 16.5, fontWeight: 700, color: "#fff" }}>{m.name}</h3>
-                    <p style={{ margin: "0 0 12px", fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.75)" }}>{[m.position, m.company].filter(Boolean).join(" · ")}</p>
-                    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
-                        {(m.specializations ?? []).slice(0, 1).map((s) => (
-                          <span key={s} style={{ fontSize: 10.5, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.18)", backdropFilter: "blur(4px)", padding: "4px 9px", borderRadius: 9999 }}>{s}</span>
-                        ))}
+                <div key={m.name} className="ib-mentor-flip" style={{ height: 300, borderRadius: 18 }}>
+                  <div className="ib-mentor-flip-inner">
+                    {/* FRONT */}
+                    <div
+                      className="ib-mentor-flip-face"
+                      style={{ background: photoUrl ? "#141417" : mentorFallbackGradient(m.name) }}
+                    >
+                      {photoUrl && (
+                        <img src={photoUrl} alt={m.name} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                      )}
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          background: photoUrl
+                            ? "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.05) 70%)"
+                            : "linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 55%)",
+                        }}
+                      />
+                      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "18px 18px 16px" }}>
+                        <h3 style={{ margin: "0 0 2px", fontSize: 16.5, fontWeight: 700, color: "#fff" }}>{m.name}</h3>
+                        <p style={{ margin: "0 0 12px", fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.75)" }}>{[m.position, m.company].filter(Boolean).join(" · ")}</p>
+                        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                            {(m.specializations ?? []).slice(0, 1).map((s) => (
+                              <span key={s} style={{ fontSize: 10.5, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.18)", backdropFilter: "blur(4px)", padding: "4px 9px", borderRadius: 9999 }}>{s}</span>
+                            ))}
+                          </div>
+                          <ConnectMentorButton mentorId={m.id} mentorName={m.name} variant="icon" />
+                        </div>
                       </div>
-                      <ConnectMentorButton mentorId={m.id} mentorName={m.name} variant="icon" />
+                    </div>
+
+                    {/* BACK — bio */}
+                    <div
+                      className="ib-mentor-flip-face ib-mentor-flip-back"
+                      style={{ background: "#141417", padding: "20px 20px 18px", display: "flex", flexDirection: "column" }}
+                    >
+                      <h3 style={{ margin: "0 0 2px", fontSize: 15.5, fontWeight: 700, color: "#fff" }}>{m.name}</h3>
+                      {m.sector && (
+                        <p style={{ margin: "0 0 10px", fontSize: 11, fontWeight: 600, color: ORANGE }}>{m.sector}</p>
+                      )}
+                      <p
+                        style={{
+                          margin: m.sector ? 0 : "10px 0 0",
+                          fontSize: 12.5,
+                          lineHeight: 1.6,
+                          color: "rgba(255,255,255,0.78)",
+                          flex: 1,
+                          overflow: "hidden",
+                          display: "-webkit-box",
+                          WebkitLineClamp: m.socialLink ? 7 : 9,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
+                        {m.bio || "This mentor hasn't added a bio yet."}
+                      </p>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 12 }}>
+                        {m.socialLink ? (
+                          <a
+                            href={m.socialLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ fontSize: 11.5, fontWeight: 600, color: "#fff", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}
+                          >
+                            Visit profile
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                          </a>
+                        ) : <span />}
+                        <ConnectMentorButton mentorId={m.id} mentorName={m.name} variant="icon" />
+                      </div>
                     </div>
                   </div>
                 </div>

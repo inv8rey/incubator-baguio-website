@@ -14,6 +14,12 @@ const LocationPicker = dynamic(() => import("../../LocationPicker"), { ssr: fals
 const NAME_MAX = 60;
 const DESCRIPTION_MAX = 280;
 const TBI_MAX = 60;
+const FOUNDER_STATUSES = ["Student Founder", "Professional Founder"] as const;
+
+interface FounderRow {
+  name: string;
+  status: (typeof FOUNDER_STATUSES)[number];
+}
 
 interface Startup {
   id: string;
@@ -29,6 +35,7 @@ interface Startup {
   address: string;
   latitude: number | null;
   longitude: number | null;
+  founders: FounderRow[];
   initials: string;
   color: string;
 }
@@ -54,8 +61,19 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [location, setLocation] = useState<LocationValue | null>(null);
+  const [founders, setFounders] = useState<FounderRow[]>([{ name: "", status: "Student Founder" }]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+
+  function updateFounder(i: number, patch: Partial<FounderRow>) {
+    setFounders((prev) => prev.map((f, idx) => (idx === i ? { ...f, ...patch } : f)));
+  }
+  function addFounder() {
+    setFounders((prev) => [...prev, { name: "", status: "Student Founder" }]);
+  }
+  function removeFounder(i: number) {
+    setFounders((prev) => (prev.length > 1 ? prev.filter((_, idx) => idx !== i) : prev));
+  }
 
   async function load() {
     if (!supabase) {
@@ -80,6 +98,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
           address: s.address,
           latitude: s.latitude,
           longitude: s.longitude,
+          founders: s.founders ?? [],
           initials: initialsOf(s.name),
           color: p.color,
         };
@@ -103,6 +122,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
     setEditingId(null);
     setForm(EMPTY_FORM);
     setLocation(null);
+    setFounders([{ name: "", status: "Student Founder" }]);
     setError("");
     setModalOpen(true);
   }
@@ -111,6 +131,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
     setEditingId(s.id);
     setForm({ name: s.name, sector: s.sector, stage: s.stage, tbi: s.tbi, funding: s.funding, since: s.since, description: s.description, logoUrl: s.logoUrl, website: s.website });
     setLocation(s.latitude != null && s.longitude != null ? { lat: s.latitude, lng: s.longitude, address: s.address } : null);
+    setFounders(s.founders.length > 0 ? s.founders : [{ name: "", status: "Student Founder" }]);
     setError("");
     setModalOpen(true);
   }
@@ -151,6 +172,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
     e.preventDefault();
     if (!supabase || !form.name.trim()) return;
     setError("");
+    const cleanFounders = founders.map((f) => ({ name: f.name.trim(), status: f.status })).filter((f) => f.name);
     const payload = {
       name: form.name.trim(),
       sector: form.sector,
@@ -164,6 +186,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
       address: location?.address ?? "",
       latitude: location?.lat ?? null,
       longitude: location?.lng ?? null,
+      founders: cleanFounders,
     };
     const { error: err } = editingId
       ? await supabase.from("startups").update(payload).eq("id", editingId)
@@ -431,6 +454,48 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
             <div>
               <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Location</label>
               <LocationPicker value={location} onChange={setLocation} />
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Founders</label>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {founders.map((f, i) => (
+                  <div key={i} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                    <input
+                      style={{ flex: 1, fontSize: 13.5, padding: "9px 11px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                      value={f.name}
+                      onChange={(e) => updateFounder(i, { name: e.target.value })}
+                      placeholder={i === 0 ? "Founder name" : "Additional founder name"}
+                    />
+                    <select
+                      style={{ width: 160, flexShrink: 0, fontSize: 13, padding: "9px 10px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box", appearance: "auto" }}
+                      value={f.status}
+                      onChange={(e) => updateFounder(i, { status: e.target.value as FounderRow["status"] })}
+                    >
+                      {FOUNDER_STATUSES.map((s) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                    {founders.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeFounder(i)}
+                        aria-label="Remove founder"
+                        style={{ width: 30, height: 30, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", color: "#9A958B", cursor: "pointer", fontSize: 15, lineHeight: 1 }}
+                      >
+                        &times;
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={addFounder}
+                style={{ marginTop: 8, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 600, color: ORANGE, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+              >
+                <span style={{ fontSize: 14, lineHeight: 1 }}>+</span> Add another founder
+              </button>
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>

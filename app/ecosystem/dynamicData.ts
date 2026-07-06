@@ -49,6 +49,8 @@ export async function fetchDynamicMentors(): Promise<DynamicMentorEntry[]> {
       bio: m.bio,
       specializations: m.specializations ?? [],
       photoUrl: m.photo_url || undefined,
+      sector: m.sector || undefined,
+      socialLink: m.social_link || undefined,
       initials: initialsOf(m.name),
       color: p.color,
       bg: p.bg,

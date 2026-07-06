@@ -5,6 +5,7 @@ import { useAuth } from "../../AuthProvider";
 import { supabase } from "../../../lib/supabaseClient";
 import { uploadMentorPhoto } from "../../../lib/uploadLogo";
 import { MENTOR_SPECIALIZATIONS } from "../../ecosystem/data";
+import { SECTOR_FILTERS } from "../../admin/data";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } from "../styles";
 
 const MAX_SPECIALIZATIONS = 3;
@@ -17,9 +18,11 @@ interface MentorProfile {
   bio: string;
   specializations: string[];
   photo_url: string;
+  sector: string;
+  social_link: string;
 }
 
-const EMPTY = { name: "", position: "", company: "", bio: "", specializations: [] as string[], photo_url: "" };
+const EMPTY = { name: "", position: "", company: "", bio: "", specializations: [] as string[], photo_url: "", sector: SECTOR_FILTERS[0].label, social_link: "" };
 
 export default function MentorManager() {
   const { user, profile, refreshProfile } = useAuth();
@@ -37,7 +40,7 @@ export default function MentorManager() {
       const { data } = await supabase!.from("mentors").select("*").eq("owner_id", user.id).maybeSingle();
       if (data) {
         setMentor(data as MentorProfile);
-        setForm({ name: data.name, position: data.position, company: data.company, bio: data.bio, specializations: data.specializations ?? [], photo_url: data.photo_url });
+        setForm({ name: data.name, position: data.position, company: data.company, bio: data.bio, specializations: data.specializations ?? [], photo_url: data.photo_url, sector: data.sector || SECTOR_FILTERS[0].label, social_link: data.social_link || "" });
       } else {
         setForm((f) => ({ ...f, name: profile?.full_name || "" }));
       }
@@ -78,9 +81,10 @@ export default function MentorManager() {
     if (!supabase || !user) return;
     setError("");
     setBusy(true);
+    const isIndustryExpert = form.specializations.includes("Industry Experts");
     const { data, error: err } = await supabase
       .from("mentors")
-      .upsert({ ...form, owner_id: user.id }, { onConflict: "owner_id" })
+      .upsert({ ...form, sector: isIndustryExpert ? form.sector : "", owner_id: user.id }, { onConflict: "owner_id" })
       .select()
       .single();
     if (!err) {
@@ -168,9 +172,24 @@ export default function MentorManager() {
             })}
           </div>
         </div>
+        {form.specializations.includes("Industry Experts") && (
+          <div>
+            <label style={labelStyle}>Sector</label>
+            <select style={{ ...inputStyle, appearance: "auto" }} value={form.sector} onChange={(e) => update("sector", e.target.value)}>
+              {SECTOR_FILTERS.map((s) => (
+                <option key={s.label} value={s.label}>{s.label}</option>
+              ))}
+            </select>
+            <div style={{ fontSize: 11, color: "#9A958B", marginTop: 4 }}>Which sector is your expertise in?</div>
+          </div>
+        )}
         <div>
           <label style={labelStyle}>Bio</label>
           <textarea style={{ ...inputStyle, minHeight: 100, resize: "vertical" }} value={form.bio} onChange={(e) => update("bio", e.target.value)} placeholder="Your background and how you can help founders." />
+        </div>
+        <div>
+          <label style={labelStyle}>Facebook / LinkedIn / Website (optional)</label>
+          <input style={inputStyle} value={form.social_link} onChange={(e) => update("social_link", e.target.value)} placeholder="https://" />
         </div>
         {error && <p style={{ color: "#E23A2E", fontSize: 13, margin: 0 }}>{error}</p>}
         {saved && <p style={{ color: "#1A6B3C", fontSize: 13, margin: 0 }}>Saved.</p>}

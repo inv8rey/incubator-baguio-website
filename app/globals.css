@@ -85,6 +85,31 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
 .ib-resource-hover:hover { box-shadow: var(--ib-shadow-lg); transform: translateY(-3px); }
 .ib-challenge-hover { transition: box-shadow .28s cubic-bezier(.22,.61,.36,1), transform .28s cubic-bezier(.22,.61,.36,1), border-color .28s ease; }
 .ib-challenge-hover:hover { box-shadow: var(--ib-shadow-lg); transform: translateY(-4px); }
+
+/* Mentor card flip: front (photo) rotates away to reveal the bio on hover.
+   Falls back to a plain non-flipping card under reduced motion. */
+.ib-mentor-flip { perspective: 1400px; }
+.ib-mentor-flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform .6s cubic-bezier(.22,.61,.36,1);
+  transform-style: preserve-3d;
+}
+.ib-mentor-flip:hover .ib-mentor-flip-inner { transform: rotateY(180deg); }
+.ib-mentor-flip-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: inherit;
+  overflow: hidden;
+}
+.ib-mentor-flip-back { transform: rotateY(180deg); }
+@media (prefers-reduced-motion: reduce) {
+  .ib-mentor-flip-inner { transition: none; }
+  .ib-mentor-flip-back { display: none; }
+}
 .ib-getstarted-card { transition: border-color .2s ease, transform .2s ease, background .2s ease; }
 .ib-getstarted-card:hover { border-color: rgba(242,101,34,0.4) !important; background: #181819 !important; transform: translateY(-3px); }
 

@@ -47,6 +47,8 @@ export interface MentorEntry {
   color: string;
   bg: string;
   photoUrl?: string;
+  sector?: string;
+  socialLink?: string;
 }
 
 export interface TbiEntry {

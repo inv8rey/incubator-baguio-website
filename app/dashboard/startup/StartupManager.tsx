@@ -14,6 +14,12 @@ const NAME_MAX = 60;
 const TAGLINE_MAX = 100;
 const DESCRIPTION_MAX = 280;
 const TBI_MAX = 60;
+const FOUNDER_STATUSES = ["Student Founder", "Professional Founder"] as const;
+
+interface FounderRow {
+  name: string;
+  status: (typeof FOUNDER_STATUSES)[number];
+}
 
 interface Startup {
   id: string;
@@ -25,6 +31,7 @@ interface Startup {
   website: string;
   contact_email: string;
   logo_url: string;
+  founders: FounderRow[];
 }
 
 const EMPTY = { name: "", tagline: "", sector: "", tbi_affiliation: "", description: "", website: "", contact_email: "", logo_url: "" };
@@ -33,10 +40,21 @@ export default function StartupManager() {
   const { user } = useAuth();
   const [startups, setStartups] = useState<Startup[]>([]);
   const [form, setForm] = useState(EMPTY);
+  const [founders, setFounders] = useState<FounderRow[]>([{ name: "", status: "Student Founder" }]);
   const [location, setLocation] = useState<LocationValue | null>(null);
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+
+  function updateFounder(i: number, patch: Partial<FounderRow>) {
+    setFounders((prev) => prev.map((f, idx) => (idx === i ? { ...f, ...patch } : f)));
+  }
+  function addFounder() {
+    setFounders((prev) => [...prev, { name: "", status: "Student Founder" }]);
+  }
+  function removeFounder(i: number) {
+    setFounders((prev) => (prev.length > 1 ? prev.filter((_, idx) => idx !== i) : prev));
+  }
 
   async function load() {
     if (!supabase || !user) return;
@@ -73,12 +91,14 @@ export default function StartupManager() {
     if (!supabase || !user) return;
     setError("");
     setBusy(true);
+    const cleanFounders = founders.map((f) => ({ name: f.name.trim(), status: f.status })).filter((f) => f.name);
     const { error: err } = await supabase.from("startups").insert({
       ...form,
       owner_id: user.id,
       address: location?.address ?? "",
       latitude: location?.lat ?? null,
       longitude: location?.lng ?? null,
+      founders: cleanFounders,
     });
     setBusy(false);
     if (err) {
@@ -86,6 +106,7 @@ export default function StartupManager() {
       return;
     }
     setForm(EMPTY);
+    setFounders([{ name: "", status: "Student Founder" }]);
     setLocation(null);
     load();
   }
@@ -154,6 +175,47 @@ export default function StartupManager() {
               <label style={labelStyle}>Contact email</label>
               <input style={inputStyle} type="email" value={form.contact_email} onChange={(e) => update("contact_email", e.target.value)} placeholder="you@example.com" />
             </div>
+          </div>
+          <div>
+            <label style={labelStyle}>Founders</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {founders.map((f, i) => (
+                <div key={i} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <input
+                    style={{ ...inputStyle, flex: 1 }}
+                    value={f.name}
+                    onChange={(e) => updateFounder(i, { name: e.target.value })}
+                    placeholder={i === 0 ? "Founder name" : "Additional founder name"}
+                  />
+                  <select
+                    style={{ ...inputStyle, appearance: "auto", width: 172, flexShrink: 0 }}
+                    value={f.status}
+                    onChange={(e) => updateFounder(i, { status: e.target.value as FounderRow["status"] })}
+                  >
+                    {FOUNDER_STATUSES.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                  {founders.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeFounder(i)}
+                      aria-label="Remove founder"
+                      style={{ width: 34, height: 34, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", color: "#9A958B", cursor: "pointer", fontSize: 16, lineHeight: 1 }}
+                    >
+                      &times;
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={addFounder}
+              style={{ marginTop: 10, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12.5, fontWeight: 600, color: "#F26522", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+            >
+              <span style={{ fontSize: 15, lineHeight: 1 }}>+</span> Add another founder
+            </button>
           </div>
           <div>
             <label style={labelStyle}>Location (optional)</label>

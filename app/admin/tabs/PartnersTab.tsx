@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DARK, ORANGE } from "../data";
+import { DARK, ORANGE, SECTOR_FILTERS } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
 import { uploadMentorPhoto, uploadOrgLogo, uploadOrgCoverImage, uploadPartnerLogo } from "../../../lib/uploadLogo";
@@ -26,6 +26,8 @@ interface MentorRow {
   bio: string;
   specializations: string[];
   photoUrl: string;
+  sector: string;
+  socialLink: string;
   initials: string;
   color: string;
 }
@@ -51,7 +53,7 @@ interface PartnerRow {
 }
 
 const TYPE_MAX = 40;
-const EMPTY_MENTOR = { name: "", position: "", company: "", bio: "", specializations: [] as string[], photoUrl: "" };
+const EMPTY_MENTOR = { name: "", position: "", company: "", bio: "", specializations: [] as string[], photoUrl: "", sector: SECTOR_FILTERS[0].label, socialLink: "" };
 const EMPTY_ORG = { name: "", description: "", website: "", contact_email: "", logoUrl: "", coverUrl: "", type: "" };
 const EMPTY_PARTNER = { name: "", logoUrl: "" };
 
@@ -82,7 +84,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     setMentors(
       (mentorData ?? []).map((m: any) => {
         const p = paletteFor(m.name);
-        return { id: m.id, name: m.name, position: m.position, company: m.company, bio: m.bio, specializations: m.specializations ?? [], photoUrl: m.photo_url, initials: initialsOf(m.name), color: p.color };
+        return { id: m.id, name: m.name, position: m.position, company: m.company, bio: m.bio, specializations: m.specializations ?? [], photoUrl: m.photo_url, sector: m.sector || "", socialLink: m.social_link || "", initials: initialsOf(m.name), color: p.color };
       })
     );
     setOrgs(
@@ -118,7 +120,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
   function openEditMentor(m: MentorRow) {
     setEditingId(m.id);
-    setMentorForm({ name: m.name, position: m.position, company: m.company, bio: m.bio, specializations: m.specializations, photoUrl: m.photoUrl });
+    setMentorForm({ name: m.name, position: m.position, company: m.company, bio: m.bio, specializations: m.specializations, photoUrl: m.photoUrl, sector: m.sector || SECTOR_FILTERS[0].label, socialLink: m.socialLink || "" });
     setError("");
     setModalOpen(true);
   }
@@ -245,7 +247,8 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
     if (isMentors) {
       if (!mentorForm.name.trim()) return;
-      const payload = { name: mentorForm.name.trim(), position: mentorForm.position.trim(), company: mentorForm.company.trim(), bio: mentorForm.bio.trim(), specializations: mentorForm.specializations, photo_url: mentorForm.photoUrl };
+      const isIndustryExpert = mentorForm.specializations.includes("Industry Experts");
+      const payload = { name: mentorForm.name.trim(), position: mentorForm.position.trim(), company: mentorForm.company.trim(), bio: mentorForm.bio.trim(), specializations: mentorForm.specializations, photo_url: mentorForm.photoUrl, sector: isIndustryExpert ? mentorForm.sector : "", social_link: mentorForm.socialLink.trim() };
       const { error: err } = editingId
         ? await supabase.from("mentors").update(payload).eq("id", editingId)
         : await supabase.from("mentors").insert(payload);
@@ -472,6 +475,20 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                     })}
                   </div>
                 </div>
+                {mentorForm.specializations.includes("Industry Experts") && (
+                  <div>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Sector</label>
+                    <select
+                      value={mentorForm.sector}
+                      onChange={(e) => setMentorForm((f) => ({ ...f, sector: e.target.value }))}
+                      style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box", appearance: "auto" }}
+                    >
+                      {SECTOR_FILTERS.map((s) => (
+                        <option key={s.label} value={s.label}>{s.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
                 <div>
                   <label style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>
                     <span>Bio</span>
@@ -483,6 +500,15 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                     placeholder="Background and how they can help founders."
                     maxLength={BIO_MAX}
                     style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box", minHeight: 74, resize: "vertical", fontFamily: "inherit" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Facebook / LinkedIn / Website (optional)</label>
+                  <input
+                    value={mentorForm.socialLink}
+                    onChange={(e) => setMentorForm((f) => ({ ...f, socialLink: e.target.value }))}
+                    placeholder="https://"
+                    style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
                   />
                 </div>
               </>

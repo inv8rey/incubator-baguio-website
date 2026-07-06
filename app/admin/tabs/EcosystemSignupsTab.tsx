@@ -105,6 +105,7 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
         description: p.description,
         website: p.website,
         logo_url: p.logo_url || "",
+        founders: p.founders || [],
         contact_email: row.email,
         owner_id: null,
       });
@@ -117,6 +118,8 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
         bio: p.bio,
         specializations: p.specializations,
         photo_url: p.logo_url || "",
+        sector: p.sector || "",
+        social_link: p.social_link || "",
         owner_id: null,
       });
       insertError = err?.message ?? null;
@@ -128,6 +131,7 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
         description: p.description,
         website: p.website,
         logo_url: p.logo_url || "",
+        cover_url: p.cover_url || "",
         contact_email: row.email,
         owner_id: null,
       });

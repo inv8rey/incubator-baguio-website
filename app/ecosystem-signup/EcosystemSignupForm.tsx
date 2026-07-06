@@ -5,7 +5,7 @@ import { supabase } from "../../lib/supabaseClient";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } from "../dashboard/styles";
 import { SECTOR_FILTERS } from "../admin/data";
 import { MENTOR_SPECIALIZATIONS } from "../ecosystem/data";
-import { uploadEcosystemSignupLogo } from "../../lib/uploadLogo";
+import { uploadEcosystemSignupLogo, uploadOrgCoverImage } from "../../lib/uploadLogo";
 
 const ENTITY_TYPES = [
   { value: "startup", label: "Startup" },
@@ -16,6 +16,12 @@ type EntityType = (typeof ENTITY_TYPES)[number]["value"];
 
 const ORG_TYPES = ["TBIs", "Corporate", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
 const MAX_SPECIALIZATIONS = 3;
+const FOUNDER_STATUSES = ["Student Founder", "Professional Founder"] as const;
+
+interface FounderRow {
+  name: string;
+  status: (typeof FOUNDER_STATUSES)[number];
+}
 
 const textareaStyle: React.CSSProperties = { ...inputStyle, minHeight: 90, resize: "vertical" };
 
@@ -31,6 +37,7 @@ export default function EcosystemSignupForm() {
   const [suTbi, setSuTbi] = useState("");
   const [suDescription, setSuDescription] = useState("");
   const [suWebsite, setSuWebsite] = useState("");
+  const [founders, setFounders] = useState<FounderRow[]>([{ name: "", status: "Student Founder" }]);
 
   // Mentor fields
   const [mName, setMName] = useState("");
@@ -38,6 +45,8 @@ export default function EcosystemSignupForm() {
   const [mCompany, setMCompany] = useState("");
   const [mBio, setMBio] = useState("");
   const [mSpecializations, setMSpecializations] = useState<string[]>([]);
+  const [mSector, setMSector] = useState(SECTOR_FILTERS[0].label);
+  const [mSocialLink, setMSocialLink] = useState("");
 
   // Organization fields
   const [oName, setOName] = useState("");
@@ -45,6 +54,8 @@ export default function EcosystemSignupForm() {
   const [oType, setOType] = useState("");
   const [oDescription, setODescription] = useState("");
   const [oWebsite, setOWebsite] = useState("");
+  const [coverUrl, setCoverUrl] = useState("");
+  const [uploadingCover, setUploadingCover] = useState(false);
 
   // Contact fields
   const [contactName, setContactName] = useState("");
@@ -54,6 +65,35 @@ export default function EcosystemSignupForm() {
   // Logo / photo (shared across all three types — only one is active at a time)
   const [logoUrl, setLogoUrl] = useState("");
   const [uploading, setUploading] = useState(false);
+
+  const isIndustryExpert = mSpecializations.includes("Industry Experts");
+  const isCoworkingOrMakerspace = oOrgType === "Coworking Spaces" || oOrgType === "Makerspaces & Labs";
+
+  function updateFounder(i: number, patch: Partial<FounderRow>) {
+    setFounders((prev) => prev.map((f, idx) => (idx === i ? { ...f, ...patch } : f)));
+  }
+  function addFounder() {
+    setFounders((prev) => [...prev, { name: "", status: "Student Founder" }]);
+  }
+  function removeFounder(i: number) {
+    setFounders((prev) => (prev.length > 1 ? prev.filter((_, idx) => idx !== i) : prev));
+  }
+
+  async function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingCover(true);
+    setError("");
+    try {
+      const url = await uploadOrgCoverImage(file);
+      setCoverUrl(url);
+    } catch (err: any) {
+      setError(err.message || "Upload failed.");
+    } finally {
+      setUploadingCover(false);
+      e.target.value = "";
+    }
+  }
 
   function toggleSpecialization(s: string) {
     setMSpecializations((prev) => {
@@ -81,7 +121,10 @@ export default function EcosystemSignupForm() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!contactName.trim() || !email.trim()) return;
+    // Mentors don't fill "Your name" separately — it's the same as their
+    // full name, already required below.
+    const effectiveContactName = entityType === "mentor" ? mName : contactName;
+    if (!effectiveContactName.trim() || !email.trim()) return;
     if (!supabase) {
       setError("Signups aren't configured yet.");
       return;
@@ -90,20 +133,30 @@ export default function EcosystemSignupForm() {
     let payload: Record<string, unknown>;
     if (entityType === "startup") {
       if (!suName.trim()) return;
-      payload = { name: suName.trim(), sector: suSector, tbi_affiliation: suTbi.trim(), description: suDescription.trim(), website: suWebsite.trim(), logo_url: logoUrl };
+      const cleanFounders = founders.map((f) => ({ name: f.name.trim(), status: f.status })).filter((f) => f.name);
+      payload = { name: suName.trim(), sector: suSector, tbi_affiliation: suTbi.trim(), description: suDescription.trim(), website: suWebsite.trim(), logo_url: logoUrl, founders: cleanFounders };
     } else if (entityType === "mentor") {
       if (!mName.trim()) return;
-      payload = { name: mName.trim(), position: mPosition.trim(), company: mCompany.trim(), bio: mBio.trim(), specializations: mSpecializations, logo_url: logoUrl };
+      payload = {
+        name: mName.trim(),
+        position: mPosition.trim(),
+        company: mCompany.trim(),
+        bio: mBio.trim(),
+        specializations: mSpecializations,
+        logo_url: logoUrl,
+        sector: isIndustryExpert ? mSector : "",
+        social_link: mSocialLink.trim(),
+      };
     } else {
       if (!oName.trim()) return;
-      payload = { name: oName.trim(), org_type: oOrgType, type: oType.trim(), description: oDescription.trim(), website: oWebsite.trim(), logo_url: logoUrl };
+      payload = { name: oName.trim(), org_type: oOrgType, type: oType.trim(), description: oDescription.trim(), website: oWebsite.trim(), logo_url: logoUrl, cover_url: isCoworkingOrMakerspace ? coverUrl : "" };
     }
 
     setError("");
     setBusy(true);
     const { error: err } = await supabase.from("ecosystem_signups").insert({
       entity_type: entityType,
-      contact_name: contactName.trim(),
+      contact_name: effectiveContactName.trim(),
       email: email.trim(),
       phone: phone.trim(),
       payload,
@@ -208,6 +261,47 @@ export default function EcosystemSignupForm() {
             <label style={labelStyle}>Website (optional)</label>
             <input style={inputStyle} value={suWebsite} onChange={(e) => setSuWebsite(e.target.value)} placeholder="https://" />
           </div>
+          <div>
+            <label style={labelStyle}>Founders</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {founders.map((f, i) => (
+                <div key={i} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <input
+                    style={{ ...inputStyle, flex: 1 }}
+                    value={f.name}
+                    onChange={(e) => updateFounder(i, { name: e.target.value })}
+                    placeholder={i === 0 ? "Founder name" : "Additional founder name"}
+                  />
+                  <select
+                    style={{ ...inputStyle, appearance: "auto", width: 172, flexShrink: 0 }}
+                    value={f.status}
+                    onChange={(e) => updateFounder(i, { status: e.target.value as FounderRow["status"] })}
+                  >
+                    {FOUNDER_STATUSES.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                  {founders.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeFounder(i)}
+                      aria-label="Remove founder"
+                      style={{ width: 34, height: 34, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", color: "#9A958B", cursor: "pointer", fontSize: 16, lineHeight: 1 }}
+                    >
+                      &times;
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={addFounder}
+              style={{ marginTop: 10, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12.5, fontWeight: 600, color: ORANGE, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+            >
+              <span style={{ fontSize: 15, lineHeight: 1 }}>+</span> Add another founder
+            </button>
+          </div>
         </>
       )}
 
@@ -259,9 +353,24 @@ export default function EcosystemSignupForm() {
               })}
             </div>
           </div>
+          {isIndustryExpert && (
+            <div>
+              <label style={labelStyle}>Sector</label>
+              <select style={{ ...inputStyle, appearance: "auto" }} value={mSector} onChange={(e) => setMSector(e.target.value)}>
+                {SECTOR_FILTERS.map((s) => (
+                  <option key={s.label} value={s.label}>{s.label}</option>
+                ))}
+              </select>
+              <div style={{ fontSize: 11, color: "#9A958B", marginTop: 4 }}>Which sector is your expertise in?</div>
+            </div>
+          )}
           <div>
             <label style={labelStyle}>Bio</label>
             <textarea style={textareaStyle} value={mBio} onChange={(e) => setMBio(e.target.value)} placeholder="Background and how you can help founders." />
+          </div>
+          <div>
+            <label style={labelStyle}>Facebook / LinkedIn / Website (optional)</label>
+            <input style={inputStyle} value={mSocialLink} onChange={(e) => setMSocialLink(e.target.value)} placeholder="https://" />
           </div>
         </>
       )}
@@ -296,14 +405,37 @@ export default function EcosystemSignupForm() {
             <label style={labelStyle}>Website (optional)</label>
             <input style={inputStyle} value={oWebsite} onChange={(e) => setOWebsite(e.target.value)} placeholder="https://" />
           </div>
+          {isCoworkingOrMakerspace && (
+            <div>
+              <label style={labelStyle}>Cover photo (optional)</label>
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                {coverUrl ? (
+                  <img src={coverUrl} alt="" style={{ width: 84, height: 52, borderRadius: 10, objectFit: "cover" }} />
+                ) : (
+                  <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10, textAlign: "center" }}>
+                    No cover
+                  </div>
+                )}
+                <div>
+                  <label style={{ display: "inline-block", fontSize: 12.5, fontWeight: 600, color: ORANGE, cursor: "pointer" }}>
+                    {uploadingCover ? "Uploading…" : "Upload cover photo"}
+                    <input type="file" accept="image/*" onChange={handleCoverChange} disabled={uploadingCover} style={{ display: "none" }} />
+                  </label>
+                  <div style={{ fontSize: 11, color: "#9A958B", marginTop: 2 }}>Shown as the banner on your Ecosystem directory card.</div>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
 
-      <div style={{ borderTop: "1px solid rgba(20,20,25,0.08)", paddingTop: 18, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        <div>
-          <label style={labelStyle}>Your name</label>
-          <input style={inputStyle} required value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder="Juan Dela Cruz" />
-        </div>
+      <div style={{ borderTop: "1px solid rgba(20,20,25,0.08)", paddingTop: 18, display: "grid", gridTemplateColumns: entityType === "mentor" ? "1fr" : "1fr 1fr", gap: 16 }}>
+        {entityType !== "mentor" && (
+          <div>
+            <label style={labelStyle}>Your name</label>
+            <input style={inputStyle} required value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder="Juan Dela Cruz" />
+          </div>
+        )}
         <div>
           <label style={labelStyle}>Email</label>
           <input style={inputStyle} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
