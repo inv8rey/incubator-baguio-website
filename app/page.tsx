@@ -43,8 +43,8 @@ const HOME_HTML_TOP = `
       <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,101,34,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:#F26522;animation:ibpulse 2.4s ease-in-out infinite;"></span></span>
       <span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Baguio&rsquo;s Startup &amp; Innovation Gateway</span>
     </div>
-    <h1 style="margin:0;font-size:76px;line-height:1.0;font-weight:700;letter-spacing:-0.042em;color:#fff;">Building Baguio&rsquo;s Innovation and&nbsp;<span style="color:#F26522;">Startup Ecosystem.</span></h1>
-    <p style="margin:28px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:580px;">Incubator Baguio connects startups, universities, Technology Business Incubators, government agencies, investors, and industry partners to accelerate innovation across the city.</p>
+    <h1 style="margin:0;font-size:76px;line-height:1.0;font-weight:700;letter-spacing:-0.042em;color:#fff;">The home for Baguio&rsquo;s&nbsp;<span style="color:#F26522;">startup and innovation ecosystem.</span></h1>
+    <p style="margin:28px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:600px;">Incubator Baguio is the digital gateway to the city&rsquo;s innovation ecosystem, connecting people with opportunities, programs, mentors, challenges, funding, and partnerships.</p>
     <div style="display:flex;gap:12px;justify-content:center;margin-top:38px;flex-wrap:wrap;">
       <a href="${BP}/programs" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15.5px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 16px 40px -14px rgba(242,101,34,0.7);">Find Startup Support
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
@@ -62,6 +62,61 @@ const HOME_HTML_TOP = `
       ["4", "", "TBIs", true],
       ["&#8734;", "", "Opportunities to build", true],
     ].map((s) => `<div style="text-align:center;padding:44px 20px 4px;${s[3] ? "border-left:1px solid rgba(255,255,255,0.08);" : ""}"><div style="font-size:48px;font-weight:700;color:#fff;letter-spacing:-0.03em;line-height:1;">${s[0]}<span style="color:#F26522;">${s[1]}</span></div><div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.42);margin-top:12px;">${s[2]}</div></div>`).join("")}
+  </div>
+</div>
+
+<!-- WHAT'S INSIDE -->
+<div style="background:#FAFAF7;padding:84px 40px;border-top:1px solid rgba(20,20,25,0.06);">
+  <div style="max-width:1060px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:52px;">
+      <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">What&rsquo;s inside</div>
+      <h2 style="margin:0;font-size:40px;font-weight:700;letter-spacing:-0.03em;color:#141417;line-height:1.08;">Designed to connect Baguio&rsquo;s innovation ecosystem.</h2>
+      <p style="margin:14px auto 0;font-size:15.5px;line-height:1.6;color:#6B6B73;max-width:640px;">Browse ecosystem directories, discover innovation challenges, connect with mentors, and stay informed through a shared calendar of research and innovation activities.</p>
+    </div>
+    <div class="ib-teaser-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
+      ${[
+        [
+          "#F26522",
+          "rgba(242,101,34,0.1)",
+          `<ellipse cx="12" cy="5" rx="8" ry="3"></ellipse><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"></path><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"></path>`,
+          "Ecosystem Database",
+          "Browse startups, mentors, universities, government agencies, Technology Business Incubators, coworking spaces, and ecosystem partners in one searchable directory.",
+          "/ecosystem",
+        ],
+        [
+          "#285E7A",
+          "rgba(40,94,122,0.1)",
+          `<circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1"></circle>`,
+          "Open Innovation Challenges",
+          "Explore challenge statements from government, industry, MSMEs, and academia and collaborate on solutions with real impact.",
+          "/challenges",
+        ],
+        [
+          "#9E2A52",
+          "rgba(158,42,82,0.1)",
+          `<circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><circle cx="17" cy="7" r="2.5"></circle><path d="M21 19c0-2.4-1.8-4.5-4-5"></path>`,
+          "Mentor Directory",
+          "Find mentors across technology, business, research, product, finance, legal, and commercialization.",
+          "/ecosystem",
+        ],
+        [
+          "#1A6B3C",
+          "rgba(26,107,60,0.1)",
+          `<rect x="3" y="5" width="18" height="16" rx="2.5"></rect><path d="M16 3v4M8 3v4M3 10h18"></path>`,
+          "Centralized Calendar",
+          "Access a shared calendar of startup events, workshops, Demo Days, funding calls, research activities, and innovation programs across the city.",
+          "/calendar",
+        ],
+      ].map((c) => `
+      <div class="ib-card-hover" style="background:#fff;border:1px solid rgba(20,20,25,0.09);border-radius:18px;padding:26px 22px;border-top:3px solid ${c[0]};display:flex;flex-direction:column;">
+        <div style="width:44px;height:44px;border-radius:12px;background:${c[1]};display:flex;align-items:center;justify-content:center;margin-bottom:16px;flex-shrink:0;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="${c[0]}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${c[2]}</svg>
+        </div>
+        <h3 style="margin:0 0 8px;font-size:16.5px;font-weight:600;color:#141417;">${c[3]}</h3>
+        <p style="margin:0 0 18px;font-size:13.5px;line-height:1.55;color:#6B6B73;flex:1;">${c[4]}</p>
+        <a href="${BP}${c[5]}" style="margin-top:auto;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:${c[0]};text-decoration:none;">Explore<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${c[0]}" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      </div>`).join("")}
+    </div>
   </div>
 </div>
 `;
