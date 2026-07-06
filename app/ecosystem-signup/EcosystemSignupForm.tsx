@@ -18,6 +18,13 @@ const ORG_TYPES = ["TBIs", "Companies", "Service Providers", "Government", "Comm
 const MAX_SPECIALIZATIONS = 3;
 const FOUNDER_STATUSES = ["Student Founder", "Professional Founder"] as const;
 
+const STARTUP_STAGES = [
+  { value: "Idea", label: "Idea", description: "I have an idea and I’m still validating the problem and solution." },
+  { value: "MVP", label: "MVP", description: "I have a working prototype or MVP that I’m testing with early users." },
+  { value: "Launch", label: "Launch", description: "My product or service is live, and I’ve started gaining customers or generating revenue." },
+  { value: "Growth", label: "Growth", description: "My startup has traction and is focused on growing customers, revenue, or expanding into new markets." },
+] as const;
+
 interface FounderRow {
   name: string;
   status: (typeof FOUNDER_STATUSES)[number];
@@ -38,6 +45,8 @@ export default function EcosystemSignupForm() {
   const [suDescription, setSuDescription] = useState("");
   const [suWebsite, setSuWebsite] = useState("");
   const [founders, setFounders] = useState<FounderRow[]>([{ name: "", status: "Student Founder" }]);
+  const [suStage, setSuStage] = useState<string>(STARTUP_STAGES[0].value);
+  const [suChallenge, setSuChallenge] = useState("");
 
   // Mentor fields
   const [mName, setMName] = useState("");
@@ -134,7 +143,7 @@ export default function EcosystemSignupForm() {
     if (entityType === "startup") {
       if (!suName.trim()) return;
       const cleanFounders = founders.map((f) => ({ name: f.name.trim(), status: f.status })).filter((f) => f.name);
-      payload = { name: suName.trim(), sector: suSector, tbi_affiliation: suTbi.trim(), description: suDescription.trim(), website: suWebsite.trim(), logo_url: logoUrl, founders: cleanFounders };
+      payload = { name: suName.trim(), sector: suSector, tbi_affiliation: suTbi.trim(), description: suDescription.trim(), website: suWebsite.trim(), logo_url: logoUrl, founders: cleanFounders, stage: suStage, biggest_challenge: suChallenge.trim() };
     } else if (entityType === "mentor") {
       if (!mName.trim()) return;
       payload = {
@@ -239,6 +248,48 @@ export default function EcosystemSignupForm() {
             <label style={labelStyle}>Startup name</label>
             <input style={inputStyle} required value={suName} onChange={(e) => setSuName(e.target.value)} placeholder="e.g. Tasarap Ecobites" />
           </div>
+          <div>
+            <label style={labelStyle}>What stage is your startup currently in?</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {STARTUP_STAGES.map((s) => {
+                const active = suStage === s.value;
+                return (
+                  <button
+                    key={s.value}
+                    type="button"
+                    onClick={() => setSuStage(s.value)}
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: 10,
+                      textAlign: "left",
+                      padding: "12px 14px",
+                      borderRadius: 12,
+                      border: active ? `1.5px solid ${ORANGE}` : "1.5px solid rgba(20,20,25,0.12)",
+                      background: active ? "rgba(242,101,34,0.06)" : "#fff",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 17,
+                        height: 17,
+                        borderRadius: 9999,
+                        border: active ? `5px solid ${ORANGE}` : "1.5px solid rgba(20,20,25,0.25)",
+                        flexShrink: 0,
+                        marginTop: 2,
+                        boxSizing: "border-box",
+                      }}
+                    />
+                    <span>
+                      <span style={{ display: "block", fontSize: 13.5, fontWeight: 600, color: DARK }}>{s.label}</span>
+                      <span style={{ display: "block", fontSize: 12.5, lineHeight: 1.5, color: "#6B6B73", marginTop: 2 }}>{s.description}</span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
               <label style={labelStyle}>Sector</label>
@@ -256,6 +307,13 @@ export default function EcosystemSignupForm() {
           <div>
             <label style={labelStyle}>Description</label>
             <textarea style={textareaStyle} value={suDescription} onChange={(e) => setSuDescription(e.target.value)} placeholder="What does your startup do?" />
+          </div>
+          <div>
+            <label style={labelStyle}>What is your biggest challenge today?</label>
+            <p style={{ margin: "-2px 0 8px", fontSize: 12, lineHeight: 1.5, color: "#9A958B" }}>
+              Tell us the biggest challenge you&rsquo;re currently facing so we can better connect you with the right opportunities and support.
+            </p>
+            <textarea style={textareaStyle} value={suChallenge} onChange={(e) => setSuChallenge(e.target.value)} placeholder="e.g. Finding customers, raising funding, building the team..." />
           </div>
           <div>
             <label style={labelStyle}>Website (optional)</label>
