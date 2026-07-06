@@ -16,6 +16,7 @@ export default function EcosystemSignupPage() {
       <VisitTracker />
       <div style={{ background: "#0B0B0D", padding: "20px 40px" }}>
         <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", alignItems: "center", gap: 11 }}>
+          <img src={`${BP}/assets/cpdso-logo.png`} alt="CPDSO" style={{ height: 30, width: "auto" }} />
           <img src={`${BP}/assets/ib-icon.png`} alt="Incubator Baguio" style={{ height: 30, width: "auto" }} />
           <div style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>Incubator Baguio</div>
         </div>

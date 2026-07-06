@@ -14,6 +14,7 @@ export default function AdminLoginPage() {
     <main style={{ minHeight: "100vh", background: "#0B0B0D", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div style={{ width: "100%", maxWidth: 420 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 28, justifyContent: "center" }}>
+          <img src={`${BP}/assets/cpdso-logo.png`} alt="CPDSO" style={{ height: 32, width: "auto" }} />
           <img src={`${BP}/assets/ib-icon.png`} alt="Incubator Baguio" style={{ height: 32, width: "auto" }} />
           <div style={{ fontSize: 16, fontWeight: 600, color: "#fff" }}>Incubator Baguio Admin</div>
         </div>
