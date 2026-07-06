@@ -406,6 +406,9 @@ img { max-width: 100%; height: auto; }
   .ib-brings-grid > div {
     grid-column: span 1 !important;
   }
+  div.ib-teaser-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
 
   /* Featured / resource rows stack their columns */
   [style*="grid-template-columns:auto 1fr auto auto"] {
@@ -513,7 +516,8 @@ img { max-width: 100%; height: auto; }
   [style*="grid-template-columns:auto 1fr auto"],
   .ib-events-card,
   .ib-ecosystem-grid,
-  .ib-brings-grid {
+  .ib-brings-grid,
+  div.ib-teaser-grid {
     grid-template-columns: 1fr !important;
   }
   .ib-brings-grid > div {
