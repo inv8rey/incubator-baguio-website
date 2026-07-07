@@ -53,6 +53,7 @@ export default function NotFound() {
 
       <div style={{ position: "relative", maxWidth: 560 }}>
         <a href={`${BP}/`} style={{ display: "inline-flex", alignItems: "center", gap: 11, textDecoration: "none", marginBottom: 40 }}>
+          <img src={`${BP}/assets/city-of-baguio-seal.png`} alt="City of Baguio" style={{ height: 50, width: "auto" }} />
           <img src={`${BP}/assets/cpdso-logo.png`} alt="CPDSO" style={{ height: 50, width: "auto" }} />
           <img src={`${BP}/assets/ib-icon.png`} alt="Incubator Baguio" style={{ height: 36, width: "auto" }} />
           <span style={{ fontSize: 16, fontWeight: 600, color: "#fff" }}>Incubator Baguio</span>

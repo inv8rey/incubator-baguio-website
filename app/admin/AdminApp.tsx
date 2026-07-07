@@ -86,6 +86,7 @@ export default function AdminApp() {
     >
       <div style={{ padding: "22px 20px 18px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+          <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/assets/city-of-baguio-seal.png`} alt="City of Baguio" style={{ width: 46, height: 46, borderRadius: 9, objectFit: "contain" }} />
           <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/assets/cpdso-logo.png`} alt="CPDSO" style={{ width: 46, height: 46, borderRadius: 9, objectFit: "contain" }} />
           <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/assets/ib-icon.png`} alt="IB" style={{ width: 36, height: 36, borderRadius: 9, objectFit: "contain" }} />
           <div>
