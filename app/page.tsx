@@ -261,6 +261,18 @@ const HOME_HTML_BOTTOM_B2 = `
 </div>
 `;
 
+// Distinct from ORG_JSON_LD below — WebSite tells Google which single URL
+// represents "Incubator Baguio" as a site (vs. Organization, which describes
+// the alliance as an entity). Both signals together are what Google uses to
+// pick the canonical result for a branded/name search.
+const WEBSITE_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Incubator Baguio",
+  alternateName: "Baguio City Research and Innovation Alliance",
+  url: "https://incubator-baguio.vercel.app/",
+};
+
 const ORG_JSON_LD = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -284,6 +296,7 @@ const ORG_JSON_LD = {
 export default function Home() {
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_JSON_LD) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }} />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_TOP }} />
       <EcosystemModel />
