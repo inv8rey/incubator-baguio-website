@@ -145,7 +145,7 @@ const HTML = `
         <div>
           <div style="font-size:14.5px;font-weight:600;color:#fff;margin-bottom:6px;">Not sure where to start?</div>
           <p style="margin:0 0 10px;font-size:13px;line-height:1.55;color:rgba(255,255,255,0.55);">Chat with our team and we&rsquo;ll help you find the right path.</p>
-          <a href="mailto:hello@incubatorbaguio.ph" style="font-size:13px;font-weight:600;color:#F26522;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">Chat with our team <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          <a href="mailto:incubatorbaguio63@gmail.com" style="font-size:13px;font-weight:600;color:#F26522;text-decoration:none;display:inline-flex;align-items:center;gap:5px;">Chat with our team <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
         </div>
       </div>
 
@@ -200,7 +200,7 @@ const HTML = `
       </div>
       <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Explore</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/programs">Programs</a><a class="ib-footlink" href="${BP}/challenges">Challenges</a><a class="ib-footlink" href="${BP}/knowledge">Knowledge Hub</a><a class="ib-footlink" href="${BP}/ecosystem">Ecosystem</a><a class="ib-footlink" href="${BP}/calendar">Calendar</a><a class="ib-footlink" href="${BP}/contact">Contact</a></div></div>
       <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Apply</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/dashboard/startup">Startup Incubation</a><a class="ib-footlink" href="${BP}/challenges/post">Post a Challenge</a><a class="ib-footlink" href="${BP}/dashboard/mentor">Mentor Registration</a><a class="ib-footlink" href="${BP}/dashboard/organizations">Partner Inquiry</a></div></div>
-      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Contact</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>CPDSO, City Hall, Baguio</span><span>hello@incubatorbaguio.ph</span><a class="ib-footlink" href="https://www.facebook.com/incubatorbaguio" target="_blank" rel="noopener noreferrer">Facebook</a></div></div>
+      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Contact</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>CPDSO, City Hall, Baguio</span><span>incubatorbaguio63@gmail.com</span><a class="ib-footlink" href="https://www.facebook.com/incubatorbaguio" target="_blank" rel="noopener noreferrer">Facebook</a></div></div>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-size:12.5px;color:rgba(255,255,255,0.4);flex-wrap:wrap;gap:10px;">
       <span>&copy; 2026 City Government of Baguio &middot; CPDSO</span>

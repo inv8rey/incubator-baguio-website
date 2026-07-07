@@ -53,6 +53,13 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true },
   },
+  // Google Search Console ownership verification (Settings → Ownership
+  // verification → HTML tag method). Set GOOGLE_SITE_VERIFICATION in Vercel
+  // env vars with the content value Search Console gives you — no code
+  // change needed after that.
+  ...(process.env.GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } }
+    : {}),
 };
 
 export default function RootLayout({
