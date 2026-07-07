@@ -24,6 +24,28 @@ function matches(haystacks: string[], query: string) {
   return haystacks.some((h) => h.toLowerCase().includes(q));
 }
 
+// Renders a contact email without a static mailto: href or a literal "@" in
+// the markup, so basic scrapers that read raw HTML/attributes (rather than
+// running a real browser) can't harvest it. The address is only assembled
+// into a real mailto: link on click.
+function ObfuscatedEmail({ email, style }: { email: string; style?: React.CSSProperties }) {
+  const [user, domain] = email.split("@");
+  if (!user || !domain) return null;
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        window.location.href = `mailto:${user}@${domain}`;
+      }}
+      style={{ fontSize: 12, fontWeight: 600, color: "#44444C", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left", ...style }}
+    >
+      {user}
+      <span aria-hidden>&#64;</span>
+      {domain}
+    </button>
+  );
+}
+
 // Mentors without an uploaded photo fall back to a branded gradient card
 // (orange or black, chosen deterministically per name) instead of a photo.
 function mentorFallbackGradient(name: string): string {
@@ -398,9 +420,7 @@ export default function EcosystemDirectory() {
                 </div>
                 <h3 style={{ margin: "0 0 6px", fontSize: 18, fontWeight: 600, color: DARK }}>{s.name}</h3>
                 <p style={{ margin: "0 0 14px", fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{s.description}</p>
-                {s.contactEmail && (
-                  <a href={`mailto:${s.contactEmail}`} style={{ fontSize: 12, fontWeight: 600, color: "#44444C", textDecoration: "none" }}>{s.contactEmail}</a>
-                )}
+                {s.contactEmail && <ObfuscatedEmail email={s.contactEmail} />}
                 {s.website && (
                   <a
                     href={s.website}
