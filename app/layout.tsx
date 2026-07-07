@@ -7,7 +7,7 @@ import PageLoader from "./PageLoader";
 import PostHogProvider from "./PostHogProvider";
 import { SITE_URL } from "./seo";
 
-const TITLE = "Incubator Baguio — Official Technology Business Incubator of the City of Baguio";
+const TITLE = "Incubator Baguio | Baguio’s Startup & Innovation Ecosystem Platform";
 const DESCRIPTION =
   "Incubator Baguio brings together entrepreneurs, researchers, students, government, businesses, and academic institutions to transform ideas into solutions that create economic, social, and technological impact.";
 
