@@ -105,11 +105,6 @@ function OrgPhotoCard({ name, type, description, color, bg, initials, logoUrl, c
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2}><path d="M12 22s7-6.5 7-12A7 7 0 0 0 5 10c0 5.5 7 12 7 12Z" /><circle cx="12" cy="10" r="2.5" /></svg>
             Baguio City
           </span>
-          <span style={{ color: "rgba(20,20,25,0.15)" }}>|</span>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2}><circle cx="9" cy="8" r="3.5" /><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" /><circle cx="17" cy="7" r="2.5" /><path d="M21 19c0-2.4-1.8-4.5-4-5" /></svg>
-            Open to public
-          </span>
         </div>
         <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", flex: 1 }}>{description}</p>
         {website && (
