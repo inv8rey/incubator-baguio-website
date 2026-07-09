@@ -71,12 +71,11 @@ interface OrgPhotoCardProps {
 // Shared photo-style card for Coworking Spaces and Makerspaces & Labs —
 // physical locations read better with a cover image than a plain icon row.
 function OrgPhotoCard({ name, type, description, color, bg, initials, logoUrl, coverUrl, website }: OrgPhotoCardProps) {
-  const banner = coverUrl || logoUrl;
   return (
-    <div className="ib-card-hover ib-org-photo-card" style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, overflow: "hidden" }}>
-      <div style={{ position: "relative", height: 150 }}>
-        {banner ? (
-          <img src={banner} alt={`${name} cover`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+    <div className="ib-card-hover ib-org-photo-card" style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <div style={{ position: "relative", height: 150, flexShrink: 0 }}>
+        {coverUrl ? (
+          <img src={coverUrl} alt={`${name} cover`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         ) : (
           <div
             style={{
@@ -87,17 +86,20 @@ function OrgPhotoCard({ name, type, description, color, bg, initials, logoUrl, c
           />
         )}
         {type && (
-          <span style={{ position: "absolute", top: 12, right: 12, fontSize: 11, fontWeight: 700, color, background: "#fff", padding: "6px 12px", borderRadius: 9999, boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
+          <span style={{ position: "absolute", top: 12, right: 12, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.02em", color, background: "#fff", padding: "4px 10px", borderRadius: 9999, boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
             {type}
           </span>
         )}
-        <div style={{ position: "absolute", left: 16, bottom: -18, width: 46, height: 46, borderRadius: 12, background: bg, color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, border: "2px solid #fff" }}>
-          {initials}
-        </div>
+        {logoUrl ? (
+          <img src={logoUrl} alt={`${name} logo`} style={{ position: "absolute", left: 16, bottom: -18, width: 46, height: 46, borderRadius: 12, objectFit: "contain", background: "#fff", border: "2px solid #fff", boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }} />
+        ) : (
+          <div style={{ position: "absolute", left: 16, bottom: -18, width: 46, height: 46, borderRadius: 12, background: bg, color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, border: "2px solid #fff", boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
+            {initials}
+          </div>
+        )}
       </div>
-      <div style={{ position: "relative", padding: "30px 22px 22px" }}>
-        <h3 style={{ margin: "0 0 3px", fontSize: 17, fontWeight: 600, color: DARK }}>{name}</h3>
-        {type && <p style={{ margin: "0 0 10px", fontSize: 12.5, color: "#9A958B" }}>{type}</p>}
+      <div style={{ padding: "30px 22px 22px", display: "flex", flexDirection: "column", flex: 1 }}>
+        <h3 style={{ margin: "0 0 10px", fontSize: 16.5, fontWeight: 700, color: DARK, lineHeight: 1.3 }}>{name}</h3>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12, fontSize: 12, color: "#6B6B73" }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2}><path d="M12 22s7-6.5 7-12A7 7 0 0 0 5 10c0 5.5 7 12 7 12Z" /><circle cx="12" cy="10" r="2.5" /></svg>
@@ -109,7 +111,7 @@ function OrgPhotoCard({ name, type, description, color, bg, initials, logoUrl, c
             Open to public
           </span>
         </div>
-        <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{description}</p>
+        <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", flex: 1 }}>{description}</p>
         {website && (
           <a
             href={website}
@@ -117,7 +119,7 @@ function OrgPhotoCard({ name, type, description, color, bg, initials, logoUrl, c
             rel="noopener noreferrer"
             aria-label={`Visit ${name}`}
             className="ib-orglist-btn"
-            style={{ position: "absolute", right: 20, bottom: 20, height: 34, borderRadius: 9999, background: bg, color, display: "flex", alignItems: "center", justifyContent: "flex-end", overflow: "hidden", textDecoration: "none" }}
+            style={{ marginTop: 16, alignSelf: "flex-end", height: 34, borderRadius: 9999, background: "#141417", color: "#fff", display: "flex", alignItems: "center", justifyContent: "flex-end", overflow: "hidden", textDecoration: "none", flexShrink: 0 }}
           >
             <span className="ib-orglist-label" style={{ fontSize: 12.5, fontWeight: 600, whiteSpace: "nowrap" }}>View website</span>
             <span style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
