@@ -55,6 +55,7 @@ export interface CityEvent {
   orgType: OrganizerType;
   format: EventFormat;
   cta: string;
+  registrationLink?: string;
 }
 
 export const EVENTS: CityEvent[] = [];

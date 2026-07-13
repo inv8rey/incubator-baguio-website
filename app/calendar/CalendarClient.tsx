@@ -51,6 +51,7 @@ function mapEventRow(r: any): CityEvent {
     orgType: (r.org_type as OrganizerType) || "Community Partners",
     format: (r.format as EventFormat) || "In-Person",
     cta: r.cta || "Register",
+    registrationLink: r.registration_link || undefined,
   };
 }
 
@@ -166,7 +167,7 @@ function EventRow({ e }: { e: CityEvent }) {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <span style={{ fontSize: 11.5, color: "#9A958B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{e.venue}</span>
           <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-            <a href="#" style={{ background: DARK, color: "#fff", fontWeight: 600, fontSize: 11.5, padding: "7px 13px", borderRadius: 9999, textDecoration: "none", whiteSpace: "nowrap" }}>{e.cta}</a>
+            <a href={e.registrationLink || "#"} target={e.registrationLink ? "_blank" : undefined} rel={e.registrationLink ? "noopener noreferrer" : undefined} onClick={(ev) => { if (!e.registrationLink) ev.preventDefault(); }} style={{ background: DARK, color: "#fff", fontWeight: 600, fontSize: 11.5, padding: "7px 13px", borderRadius: 9999, textDecoration: "none", whiteSpace: "nowrap" }}>{e.cta}</a>
             <button aria-label="Save event" style={{ width: 27, height: 27, borderRadius: 8, border: "1.5px solid rgba(20,20,25,0.1)", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
               <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2}><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
             </button>
@@ -286,6 +287,7 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
   const [orgType, setOrgType] = useState<OrganizerType>(ORGANIZER_TYPES[0]);
   const [format, setFormat] = useState<EventFormat>("In-Person");
   const [description, setDescription] = useState("");
+  const [registrationLink, setRegistrationLink] = useState("");
   const [contactName, setContactName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -311,6 +313,7 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
       org_type: orgType,
       format,
       description: description.trim(),
+      registration_link: registrationLink.trim(),
       contact_name: contactName.trim(),
       email: email.trim(),
       phone: phone.trim(),
@@ -403,6 +406,10 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
           <div>
             <label style={modalLabelStyle}>Description</label>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What is this event about?" style={{ ...modalInputStyle, resize: "vertical", minHeight: 70 }} />
+          </div>
+          <div>
+            <label style={modalLabelStyle}>Registration link</label>
+            <input type="url" value={registrationLink} onChange={(e) => setRegistrationLink(e.target.value)} placeholder="https://forms.gle/…" style={modalInputStyle} />
           </div>
           <div style={{ borderTop: "1px solid rgba(20,20,25,0.08)", paddingTop: 14, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div>

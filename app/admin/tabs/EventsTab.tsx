@@ -33,6 +33,7 @@ interface EventRow {
   format: string;
   description: string;
   cta: string;
+  registration_link: string;
   contact_name: string;
   email: string;
   phone: string;
@@ -59,6 +60,7 @@ function AddEventModal({ onClose, onAdded }: { onClose: () => void; onAdded: () 
   const [format, setFormat] = useState<EventFormat>("In-Person");
   const [description, setDescription] = useState("");
   const [cta, setCta] = useState("Register");
+  const [registrationLink, setRegistrationLink] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [error, setError] = useState("");
 
@@ -83,6 +85,7 @@ function AddEventModal({ onClose, onAdded }: { onClose: () => void; onAdded: () 
       format,
       description: description.trim(),
       cta: cta.trim() || "Register",
+      registration_link: registrationLink.trim(),
       status: "approved",
     });
     if (err) {
@@ -165,9 +168,15 @@ function AddEventModal({ onClose, onAdded }: { onClose: () => void; onAdded: () 
             <label style={modalLabelStyle}>Description</label>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What is this event about?" style={{ ...modalInputStyle, resize: "vertical", minHeight: 70 }} />
           </div>
-          <div>
-            <label style={modalLabelStyle}>Button label</label>
-            <input value={cta} onChange={(e) => setCta(e.target.value)} placeholder="e.g. Register, RSVP, Join online" style={modalInputStyle} />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
+              <label style={modalLabelStyle}>Button label</label>
+              <input value={cta} onChange={(e) => setCta(e.target.value)} placeholder="e.g. Register, RSVP, Join online" style={modalInputStyle} />
+            </div>
+            <div>
+              <label style={modalLabelStyle}>Registration link</label>
+              <input type="url" value={registrationLink} onChange={(e) => setRegistrationLink(e.target.value)} placeholder="https://forms.gle/…" style={modalInputStyle} />
+            </div>
           </div>
 
           {error && <p style={{ color: "#E23A2E", fontSize: 12.5, margin: 0 }}>{error}</p>}
@@ -313,6 +322,9 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
                   <span style={{ color: "#9A958B" }}>Description:</span>
                   <p style={{ margin: "4px 0 0", lineHeight: 1.55 }}>{viewing.description}</p>
                 </div>
+              )}
+              {viewing.registration_link && (
+                <div><span style={{ color: "#9A958B" }}>Registration link:</span> <a href={viewing.registration_link} target="_blank" rel="noopener noreferrer" style={{ color: "#285E7A", fontWeight: 600 }}>{viewing.registration_link}</a></div>
               )}
               <div style={{ borderTop: "1px solid rgba(20,20,25,0.08)", paddingTop: 10 }}>
                 <div><span style={{ color: "#9A958B" }}>Contact:</span> <strong>{viewing.contact_name}</strong></div>

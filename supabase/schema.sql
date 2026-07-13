@@ -580,9 +580,12 @@ create table if not exists public.event_submissions (
   format text not null default 'In-Person',
   description text not null default '',
   cta text not null default 'Register',
+  registration_link text not null default '',
   status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
   created_at timestamptz not null default now()
 );
+
+alter table public.event_submissions add column if not exists registration_link text not null default '';
 
 alter table public.event_submissions enable row level security;
 
