@@ -26,7 +26,6 @@ export const PARTNERS: Partner[] = [
 export const NAV = [
   { id: "dashboard", label: "Dashboard", cnt: null as number | null },
   { id: "startups", label: "Startups", cnt: 82 },
-  { id: "founders", label: "Founders", cnt: 148 },
   { id: "challenges", label: "Challenges", cnt: 18 },
   { id: "events", label: "Events", cnt: null as number | null },
   { id: "signups", label: "Signups", cnt: null as number | null },
@@ -38,7 +37,6 @@ export type TabId = (typeof NAV)[number]["id"];
 export const TITLES: Record<TabId, string> = {
   dashboard: "Dashboard",
   startups: "Startups",
-  founders: "Founders",
   challenges: "Innovation Challenges",
   events: "Calendar Events",
   signups: "Ecosystem Signups",
@@ -48,7 +46,6 @@ export const TITLES: Record<TabId, string> = {
 export const SUBS: Record<TabId, string> = {
   dashboard: "Baguio City Research and Innovation Alliance · Jun 2026",
   startups: "82 registered startups across 13 sectors",
-  founders: "148 registered founders in the ecosystem",
   challenges: "18 open challenges from government, industry, and academia",
   events: "Review and approve events submitted to the public calendar",
   signups: "Review the temporary public signup form and approve entries into the Ecosystem directory",
@@ -191,26 +188,6 @@ export const STAGE_BADGE: Record<string, { color: string; bg: string }> = {
   MVP: { color: "#7C5CD6", bg: "rgba(124,92,214,0.12)" },
   Idea: { color: "#F5A623", bg: "rgba(245,166,35,0.12)" },
 };
-
-// ---- Founders ----
-export const FOUNDER_STATS = [
-  { label: "Total Founders", value: "148", delta: "↑ +45.1% YoY", note: null },
-  { label: "Female Founders", value: "62", delta: null, note: "41.9% of total" },
-  { label: "First-time Founders", value: "91", delta: null, note: "61.5% of total" },
-  { label: "Avg. Cohorts", value: "2.1", delta: null, note: "Per founder" },
-  { label: "University-linked", value: "74", delta: null, note: "50% of total" },
-];
-
-export const FOUNDERS = [
-  { initials: "ID", color: ORANGE, name: "Iloisa Romaraog Diga", role: "CEO & Co-founder", tags: [{ label: "Agriculture & Food", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }, { label: "Growth", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }], funding: "₱5.0M", programs: 2, startup: "Session Groceries" },
-  { initials: "AC", color: "#1A6B3C", name: "Ana Bettina Cruz", role: "CEO & Founder", tags: [{ label: "Finance", color: "#285E7A", bg: "rgba(40,94,122,0.10)" }, { label: "Growth", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }], funding: "₱3.7M", programs: 3, startup: "IOL Inc." },
-  { initials: "JB", color: "#F5A623", name: "Jason Balangue", role: "CEO & Co-founder", tags: [{ label: "Tourism & Hospitality", color: "#9E2A52", bg: "rgba(158,42,82,0.10)" }, { label: "Growth", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }], funding: "₱1.9M", programs: 0, startup: "When In Baguio" },
-  { initials: "CM", color: "#9E2A52", name: "Christine Mina", role: "Country Director", tags: [{ label: "Education", color: "#9E2A52", bg: "rgba(158,42,82,0.10)" }, { label: "Launch", color: ORANGE, bg: "rgba(242,101,34,0.10)" }], funding: "₱1.0M", programs: 2, startup: "VIVITA PH" },
-  { initials: "RA", color: "#2A8A52", name: "Renato Acosta Jr.", role: "CEO & Founder", tags: [{ label: "Agriculture & Food", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" }, { label: "Launch", color: ORANGE, bg: "rgba(242,101,34,0.10)" }], funding: "₱840K", programs: 2, startup: "Dontog Technofarms" },
-  { initials: "BS", color: "#6B5BD6", name: "Bea Santos", role: "Founder", tags: [{ label: "Creative Industries", color: "#6B5BD6", bg: "rgba(107,91,214,0.10)" }, { label: "Launch", color: ORANGE, bg: "rgba(242,101,34,0.10)" }], funding: "₱440K", programs: 1, startup: "theneutral.space" },
-  { initials: "LD", color: "#0E5C44", name: "Leo Dangwa", role: "CEO & Co-founder", tags: [{ label: "Environment & Sustainability", color: "#0E5C44", bg: "rgba(14,92,68,0.10)" }, { label: "Idea", color: "#F5A623", bg: "rgba(245,166,35,0.12)" }], funding: "₱360K", programs: 2, startup: "Sunshare" },
-  { initials: "MB", color: "#8B4513", name: "Maria Carla Bautista", role: "CEO & Founder", tags: [{ label: "Retail & Commerce", color: "#8B4513", bg: "rgba(139,69,19,0.10)" }, { label: "Launch", color: ORANGE, bg: "rgba(242,101,34,0.10)" }], funding: "₱560K", programs: 1, startup: "Dulche Chocolates" },
-];
 
 // ---- Challenges ----
 export const CHALLENGE_STATS = [

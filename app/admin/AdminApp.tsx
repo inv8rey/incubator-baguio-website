@@ -4,7 +4,6 @@ import { useState } from "react";
 import { NAV, ORANGE, SUBS, TITLES, type TabId } from "./data";
 import DashboardTab from "./tabs/DashboardTab";
 import StartupsTab from "./tabs/StartupsTab";
-import FoundersTab from "./tabs/FoundersTab";
 import ChallengesTab from "./tabs/ChallengesTab";
 import EventsTab from "./tabs/EventsTab";
 import EcosystemSignupsTab from "./tabs/EcosystemSignupsTab";
@@ -23,14 +22,6 @@ const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
     <>
       <path d="M5 13.5L3 21l7.5-2M14.5 5.5C17 3 21 3 21 3s0 4-2.5 6.5L11 17l-4-4z" />
       <circle cx={15} cy={9} r={1.2} fill="currentColor" stroke="none" />
-    </>
-  ),
-  founders: (
-    <>
-      <circle cx={9} cy={8} r={3.5} />
-      <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
-      <circle cx={17} cy={7} r={2.5} />
-      <path d="M21 19c0-2.4-1.8-4.5-4-5" />
     </>
   ),
   challenges: <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />,
@@ -86,8 +77,6 @@ export default function AdminApp() {
     >
       <div style={{ padding: "22px 20px 18px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-          <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/assets/city-of-baguio-seal.png`} alt="City of Baguio" style={{ width: 46, height: 46, borderRadius: 9, objectFit: "contain" }} />
-          <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/assets/cpdso-logo.png`} alt="CPDSO" style={{ width: 46, height: 46, borderRadius: 9, objectFit: "contain" }} />
           <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/assets/ib-icon.png`} alt="IB" style={{ width: 36, height: 36, borderRadius: 9, objectFit: "contain" }} />
           <div>
             <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", lineHeight: 1.2 }}>Incubator Baguio</div>
@@ -218,7 +207,6 @@ export default function AdminApp() {
 
         {page === "dashboard" && <DashboardTab />}
         {page === "startups" && <StartupsTab searchQuery={searchQuery} />}
-        {page === "founders" && <FoundersTab searchQuery={searchQuery} />}
         {page === "challenges" && <ChallengesTab searchQuery={searchQuery} />}
         {page === "events" && <EventsTab searchQuery={searchQuery} />}
         {page === "signups" && <EcosystemSignupsTab searchQuery={searchQuery} />}
