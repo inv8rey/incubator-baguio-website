@@ -817,3 +817,58 @@ create policy "profile owner can update cofounder connection status" on public.c
   for update using (
     auth.uid() = (select owner_id from public.cofounder_profiles where id = cofounder_profile_id)
   );
+
+-- ---------------------------------------------------------------------------
+-- knowledge_resources: admin-managed library for the Knowledge Hub
+-- (app/knowledge). Each resource is either an uploaded file (file_url) or an
+-- external link (link_url) filed under one of four fixed categories.
+-- ---------------------------------------------------------------------------
+create table if not exists public.knowledge_resources (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  category text not null default 'Startup Resources' check (
+    category in ('Startup Resources', 'Research & Innovation', 'Funding & Opportunities', 'Policies & Reports')
+  ),
+  description text not null default '',
+  file_url text not null default '',
+  link_url text not null default '',
+  source text not null default '',
+  created_at timestamptz not null default now()
+);
+
+alter table public.knowledge_resources enable row level security;
+
+drop policy if exists "knowledge resources are publicly readable" on public.knowledge_resources;
+create policy "knowledge resources are publicly readable" on public.knowledge_resources
+  for select using (true);
+
+drop policy if exists "admins manage knowledge resources" on public.knowledge_resources;
+create policy "admins manage knowledge resources" on public.knowledge_resources
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+-- ---------------------------------------------------------------------------
+-- storage: knowledge-files bucket for uploaded Knowledge Hub resource files.
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('knowledge-files', 'knowledge-files', true)
+on conflict (id) do nothing;
+
+drop policy if exists "knowledge files are publicly readable" on storage.objects;
+create policy "knowledge files are publicly readable" on storage.objects
+  for select using (bucket_id = 'knowledge-files');
+
+drop policy if exists "authenticated users can upload knowledge files" on storage.objects;
+create policy "authenticated users can upload knowledge files" on storage.objects
+  for insert to authenticated with check (bucket_id = 'knowledge-files');
+
+drop policy if exists "authenticated users can update knowledge files" on storage.objects;
+create policy "authenticated users can update knowledge files" on storage.objects
+  for update to authenticated using (bucket_id = 'knowledge-files');
+
+drop policy if exists "authenticated users can delete knowledge files" on storage.objects;
+create policy "authenticated users can delete knowledge files" on storage.objects
+  for delete to authenticated using (bucket_id = 'knowledge-files');

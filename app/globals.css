@@ -377,6 +377,11 @@ img { max-width: 100%; height: auto; }
     grid-template-columns: repeat(2, 1fr) !important;
   }
 
+  /* Knowledge Hub: category grid collapses to 2, resource grid stays 2 */
+  .ib-knowledge-cat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
   /* Programs hero: image panel drops below the text column */
   .ib-programs-hero {
     grid-template-columns: 1fr !important;
@@ -517,6 +522,7 @@ img { max-width: 100%; height: auto; }
   .ib-events-card,
   .ib-ecosystem-grid,
   .ib-brings-grid,
+  .ib-knowledge-cat-grid,
   div.ib-teaser-grid {
     grid-template-columns: 1fr !important;
   }
