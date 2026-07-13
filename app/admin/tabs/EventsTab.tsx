@@ -3,6 +3,12 @@
 import { useEffect, useState } from "react";
 import { DARK, ORANGE } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
+import { CATEGORY_COLORS, EVENT_FORMATS, ORGANIZER_TYPES, type EventCategory, type EventFormat, type OrganizerType } from "../../calendar/data";
+
+const EVENT_CATEGORIES = Object.keys(CATEGORY_COLORS) as EventCategory[];
+
+const modalInputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "10px 14px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.14)", fontSize: 13.5, color: DARK, outline: "none", fontFamily: "inherit" };
+const modalLabelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 5, display: "block" };
 
 const STATUSES = ["pending", "approved", "rejected"] as const;
 type Status = (typeof STATUSES)[number];
@@ -41,11 +47,149 @@ function formatDate(iso: string) {
   return new Date(y, m - 1, d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
+function AddEventModal({ onClose, onAdded }: { onClose: () => void; onAdded: () => void }) {
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState<EventCategory>("Workshop");
+  const [eventDate, setEventDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [eventTime, setEventTime] = useState("");
+  const [venue, setVenue] = useState("");
+  const [org, setOrg] = useState("Incubator Baguio");
+  const [orgType, setOrgType] = useState<OrganizerType>(ORGANIZER_TYPES[0]);
+  const [format, setFormat] = useState<EventFormat>("In-Person");
+  const [description, setDescription] = useState("");
+  const [cta, setCta] = useState("Register");
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [error, setError] = useState("");
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!title.trim() || !eventDate || !org.trim()) return;
+    if (!supabase) {
+      setError("Events aren't configured yet.");
+      return;
+    }
+    setError("");
+    setStatus("loading");
+    const { error: err } = await supabase.from("event_submissions").insert({
+      title: title.trim(),
+      category,
+      event_date: eventDate,
+      end_date: endDate || null,
+      event_time: eventTime.trim(),
+      venue: venue.trim(),
+      org: org.trim(),
+      org_type: orgType,
+      format,
+      description: description.trim(),
+      cta: cta.trim() || "Register",
+      status: "approved",
+    });
+    if (err) {
+      setError(err.message);
+      setStatus("error");
+      return;
+    }
+    onAdded();
+  }
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, overflowY: "auto" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, padding: "32px 36px", width: "100%", maxWidth: 560, boxShadow: "0 24px 64px rgba(0,0,0,0.18)", display: "flex", flexDirection: "column", gap: 18, maxHeight: "88vh", overflowY: "auto" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Add event</div>
+            <div style={{ fontSize: 12.5, color: "#9A958B", marginTop: 3 }}>Goes live on the calendar immediately.</div>
+          </div>
+          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#6B6B73", flexShrink: 0 }}>&times;</button>
+        </div>
+
+        <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div>
+            <label style={modalLabelStyle}>Event title *</label>
+            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Founder Fundamentals Workshop" style={modalInputStyle} required />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
+              <label style={modalLabelStyle}>Category *</label>
+              <select value={category} onChange={(e) => setCategory(e.target.value as EventCategory)} style={{ ...modalInputStyle, appearance: "none" }}>
+                {EVENT_CATEGORIES.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label style={modalLabelStyle}>Format *</label>
+              <select value={format} onChange={(e) => setFormat(e.target.value as EventFormat)} style={{ ...modalInputStyle, appearance: "none" }}>
+                {EVENT_FORMATS.map((f) => (
+                  <option key={f} value={f}>{f}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
+              <label style={modalLabelStyle}>Date *</label>
+              <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} style={modalInputStyle} required />
+            </div>
+            <div>
+              <label style={modalLabelStyle}>End date (optional)</label>
+              <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={modalInputStyle} />
+            </div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
+              <label style={modalLabelStyle}>Time</label>
+              <input value={eventTime} onChange={(e) => setEventTime(e.target.value)} placeholder="e.g. 2:00 PM" style={modalInputStyle} />
+            </div>
+            <div>
+              <label style={modalLabelStyle}>Venue</label>
+              <input value={venue} onChange={(e) => setVenue(e.target.value)} placeholder="e.g. Incubator Baguio Hub, or Online" style={modalInputStyle} />
+            </div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
+              <label style={modalLabelStyle}>Organizer *</label>
+              <input value={org} onChange={(e) => setOrg(e.target.value)} placeholder="e.g. Incubator Baguio" style={modalInputStyle} required />
+            </div>
+            <div>
+              <label style={modalLabelStyle}>Organizer type *</label>
+              <select value={orgType} onChange={(e) => setOrgType(e.target.value as OrganizerType)} style={{ ...modalInputStyle, appearance: "none" }}>
+                {ORGANIZER_TYPES.map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label style={modalLabelStyle}>Description</label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What is this event about?" style={{ ...modalInputStyle, resize: "vertical", minHeight: 70 }} />
+          </div>
+          <div>
+            <label style={modalLabelStyle}>Button label</label>
+            <input value={cta} onChange={(e) => setCta(e.target.value)} placeholder="e.g. Register, RSVP, Join online" style={modalInputStyle} />
+          </div>
+
+          {error && <p style={{ color: "#E23A2E", fontSize: 12.5, margin: 0 }}>{error}</p>}
+
+          <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", paddingTop: 4 }}>
+            <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
+            <button type="submit" disabled={status === "loading"} style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: status === "loading" ? 0.7 : 1 }}>
+              {status === "loading" ? "Adding…" : "Add event"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }) {
   const [events, setEvents] = useState<EventRow[]>([]);
   const [status, setStatus] = useState<Status>("pending");
   const [loaded, setLoaded] = useState(false);
   const [viewing, setViewing] = useState<EventRow | null>(null);
+  const [adding, setAdding] = useState(false);
 
   async function load() {
     if (!supabase) {
@@ -112,6 +256,7 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
             );
           })}
         </div>
+        <button onClick={() => setAdding(true)} style={{ fontSize: 12.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 999, padding: "8px 16px", cursor: "pointer", flexShrink: 0 }}>+ Add event</button>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -186,6 +331,17 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
             </div>
           </div>
         </div>
+      )}
+
+      {adding && (
+        <AddEventModal
+          onClose={() => setAdding(false)}
+          onAdded={() => {
+            setAdding(false);
+            setStatus("approved");
+            load();
+          }}
+        />
       )}
     </div>
   );
