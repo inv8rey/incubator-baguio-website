@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { DARK, ORANGE } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
+import { uploadEventPoster } from "../../../lib/uploadLogo";
 import { CATEGORY_COLORS, EVENT_FORMATS, ORGANIZER_TYPES, type EventCategory, type EventFormat, type OrganizerType } from "../../calendar/data";
 
 const EVENT_CATEGORIES = Object.keys(CATEGORY_COLORS) as EventCategory[];
@@ -34,6 +35,7 @@ interface EventRow {
   description: string;
   cta: string;
   registration_link: string;
+  poster_url: string;
   contact_name: string;
   email: string;
   phone: string;
@@ -48,21 +50,38 @@ function formatDate(iso: string) {
   return new Date(y, m - 1, d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-function AddEventModal({ onClose, onAdded }: { onClose: () => void; onAdded: () => void }) {
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState<EventCategory>("Workshop");
-  const [eventDate, setEventDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [eventTime, setEventTime] = useState("");
-  const [venue, setVenue] = useState("");
-  const [org, setOrg] = useState("Incubator Baguio");
-  const [orgType, setOrgType] = useState<OrganizerType>(ORGANIZER_TYPES[0]);
-  const [format, setFormat] = useState<EventFormat>("In-Person");
-  const [description, setDescription] = useState("");
-  const [cta, setCta] = useState("Register");
-  const [registrationLink, setRegistrationLink] = useState("");
+function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; onClose: () => void; onSaved: () => void }) {
+  const isEdit = !!event;
+  const [title, setTitle] = useState(event?.title ?? "");
+  const [category, setCategory] = useState<EventCategory>((event?.category as EventCategory) || "Workshop");
+  const [eventDate, setEventDate] = useState(event?.event_date ?? "");
+  const [endDate, setEndDate] = useState(event?.end_date ?? "");
+  const [eventTime, setEventTime] = useState(event?.event_time ?? "");
+  const [venue, setVenue] = useState(event?.venue ?? "");
+  const [org, setOrg] = useState(event?.org ?? "Incubator Baguio");
+  const [orgType, setOrgType] = useState<OrganizerType>((event?.org_type as OrganizerType) || ORGANIZER_TYPES[0]);
+  const [format, setFormat] = useState<EventFormat>((event?.format as EventFormat) || "In-Person");
+  const [description, setDescription] = useState(event?.description ?? "");
+  const [cta, setCta] = useState(event?.cta || "Register");
+  const [registrationLink, setRegistrationLink] = useState(event?.registration_link ?? "");
+  const [posterUrl, setPosterUrl] = useState(event?.poster_url ?? "");
+  const [posterUploading, setPosterUploading] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [error, setError] = useState("");
+
+  async function handlePosterChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setPosterUploading(true);
+    setError("");
+    try {
+      setPosterUrl(await uploadEventPoster(file));
+    } catch (err: any) {
+      setError(err.message || "Poster upload failed.");
+    }
+    setPosterUploading(false);
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -73,7 +92,7 @@ function AddEventModal({ onClose, onAdded }: { onClose: () => void; onAdded: () 
     }
     setError("");
     setStatus("loading");
-    const { error: err } = await supabase.from("event_submissions").insert({
+    const payload = {
       title: title.trim(),
       category,
       event_date: eventDate,
@@ -86,14 +105,17 @@ function AddEventModal({ onClose, onAdded }: { onClose: () => void; onAdded: () 
       description: description.trim(),
       cta: cta.trim() || "Register",
       registration_link: registrationLink.trim(),
-      status: "approved",
-    });
+      poster_url: posterUrl,
+    };
+    const { error: err } = isEdit
+      ? await supabase.from("event_submissions").update(payload).eq("id", event!.id)
+      : await supabase.from("event_submissions").insert({ ...payload, status: "approved" });
     if (err) {
       setError(err.message);
       setStatus("error");
       return;
     }
-    onAdded();
+    onSaved();
   }
 
   return (
@@ -101,13 +123,30 @@ function AddEventModal({ onClose, onAdded }: { onClose: () => void; onAdded: () 
       <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, padding: "32px 36px", width: "100%", maxWidth: 560, boxShadow: "0 24px 64px rgba(0,0,0,0.18)", display: "flex", flexDirection: "column", gap: 18, maxHeight: "88vh", overflowY: "auto" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Add event</div>
-            <div style={{ fontSize: 12.5, color: "#9A958B", marginTop: 3 }}>Goes live on the calendar immediately.</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>{isEdit ? "Edit event" : "Add event"}</div>
+            <div style={{ fontSize: 12.5, color: "#9A958B", marginTop: 3 }}>{isEdit ? "Changes save immediately." : "Goes live on the calendar immediately."}</div>
           </div>
           <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#6B6B73", flexShrink: 0 }}>&times;</button>
         </div>
 
         <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div>
+            <label style={modalLabelStyle}>Poster</label>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              {posterUrl ? (
+                <img src={posterUrl} alt="" style={{ width: 68, height: 68, borderRadius: 10, objectFit: "cover", flexShrink: 0, border: "1px solid rgba(20,20,25,0.1)" }} />
+              ) : (
+                <div style={{ width: 68, height: 68, borderRadius: 10, background: "#F5F4F0", flexShrink: 0 }} />
+              )}
+              <label style={{ fontSize: 12.5, fontWeight: 600, color: "#285E7A", border: "1.5px solid rgba(40,94,122,0.3)", borderRadius: 999, padding: "8px 14px", cursor: "pointer" }}>
+                {posterUploading ? "Uploading…" : posterUrl ? "Replace poster" : "Upload poster"}
+                <input type="file" accept="image/*" onChange={handlePosterChange} disabled={posterUploading} style={{ display: "none" }} />
+              </label>
+              {posterUrl && (
+                <button type="button" onClick={() => setPosterUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#9A958B", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
+              )}
+            </div>
+          </div>
           <div>
             <label style={modalLabelStyle}>Event title *</label>
             <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Founder Fundamentals Workshop" style={modalInputStyle} required />
@@ -183,8 +222,8 @@ function AddEventModal({ onClose, onAdded }: { onClose: () => void; onAdded: () 
 
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", paddingTop: 4 }}>
             <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
-            <button type="submit" disabled={status === "loading"} style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: status === "loading" ? 0.7 : 1 }}>
-              {status === "loading" ? "Adding…" : "Add event"}
+            <button type="submit" disabled={status === "loading" || posterUploading} style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: status === "loading" ? 0.7 : 1 }}>
+              {status === "loading" ? "Saving…" : isEdit ? "Save changes" : "Add event"}
             </button>
           </div>
         </form>
@@ -198,6 +237,7 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
   const [status, setStatus] = useState<Status>("pending");
   const [loaded, setLoaded] = useState(false);
   const [viewing, setViewing] = useState<EventRow | null>(null);
+  const [editing, setEditing] = useState<EventRow | null>(null);
   const [adding, setAdding] = useState(false);
 
   async function load() {
@@ -273,6 +313,9 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
           const sc = STATUS_COLORS[e.status];
           return (
             <div key={e.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18, display: "flex", gap: 16, alignItems: "flex-start" }}>
+              {e.poster_url ? (
+                <img src={e.poster_url} alt="" style={{ width: 56, height: 56, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
+              ) : null}
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4, flexWrap: "wrap" }}>
                   <span style={{ fontSize: 14.5, fontWeight: 700, color: DARK }}>{e.title}</span>
@@ -287,6 +330,7 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
               </div>
               <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
                 <button onClick={() => setViewing(e)} style={{ fontSize: 12, fontWeight: 600, color: "#285E7A", background: "none", border: "1.5px solid rgba(40,94,122,0.3)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>View</button>
+                <button onClick={() => setEditing(e)} style={{ fontSize: 12, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(20,20,25,0.14)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Edit</button>
                 {e.status !== "approved" && (
                   <button onClick={() => setEventStatus(e.id, "approved")} style={{ fontSize: 12, fontWeight: 600, color: "#fff", background: "#1A6B3C", border: "none", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Approve</button>
                 )}
@@ -312,6 +356,9 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
               <div style={{ fontSize: 16.5, fontWeight: 700, color: DARK }}>{viewing.title}</div>
               <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#9A958B", lineHeight: 1 }}>×</button>
             </div>
+            {viewing.poster_url && (
+              <img src={viewing.poster_url} alt="" style={{ width: "100%", borderRadius: 12, objectFit: "cover", maxHeight: 220 }} />
+            )}
             <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13 }}>
               <div><span style={{ color: "#9A958B" }}>Category:</span> <strong>{viewing.category}</strong></div>
               <div><span style={{ color: "#9A958B" }}>When:</span> <strong>{formatDate(viewing.event_date)}{viewing.end_date ? ` – ${formatDate(viewing.end_date)}` : ""}{viewing.event_time ? `, ${viewing.event_time}` : ""}</strong></div>
@@ -333,6 +380,7 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
               </div>
             </div>
             <div style={{ display: "flex", gap: 8, marginTop: 6, flexWrap: "wrap" }}>
+              <button onClick={() => { setEditing(viewing); setViewing(null); }} style={{ fontSize: 13, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(20,20,25,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}>Edit</button>
               {viewing.status !== "approved" && (
                 <button onClick={() => setEventStatus(viewing.id, "approved")} style={{ fontSize: 13, fontWeight: 600, color: "#fff", background: "#1A6B3C", border: "none", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}>Approve</button>
               )}
@@ -346,11 +394,23 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
       )}
 
       {adding && (
-        <AddEventModal
+        <EventFormModal
+          event={null}
           onClose={() => setAdding(false)}
-          onAdded={() => {
+          onSaved={() => {
             setAdding(false);
             setStatus("approved");
+            load();
+          }}
+        />
+      )}
+
+      {editing && (
+        <EventFormModal
+          event={editing}
+          onClose={() => setEditing(null)}
+          onSaved={() => {
+            setEditing(null);
             load();
           }}
         />

@@ -581,11 +581,13 @@ create table if not exists public.event_submissions (
   description text not null default '',
   cta text not null default 'Register',
   registration_link text not null default '',
+  poster_url text not null default '',
   status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
   created_at timestamptz not null default now()
 );
 
 alter table public.event_submissions add column if not exists registration_link text not null default '';
+alter table public.event_submissions add column if not exists poster_url text not null default '';
 
 alter table public.event_submissions enable row level security;
 
@@ -604,6 +606,29 @@ create policy "admins manage event submissions" on public.event_submissions
   ) with check (
     exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
   );
+
+-- ---------------------------------------------------------------------------
+-- storage: event-posters bucket for admin-added event poster images.
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('event-posters', 'event-posters', true)
+on conflict (id) do nothing;
+
+drop policy if exists "event posters are publicly readable" on storage.objects;
+create policy "event posters are publicly readable" on storage.objects
+  for select using (bucket_id = 'event-posters');
+
+drop policy if exists "authenticated users can upload event posters" on storage.objects;
+create policy "authenticated users can upload event posters" on storage.objects
+  for insert to authenticated with check (bucket_id = 'event-posters');
+
+drop policy if exists "authenticated users can update event posters" on storage.objects;
+create policy "authenticated users can update event posters" on storage.objects
+  for update to authenticated using (bucket_id = 'event-posters');
+
+drop policy if exists "authenticated users can delete event posters" on storage.objects;
+create policy "authenticated users can delete event posters" on storage.objects
+  for delete to authenticated using (bucket_id = 'event-posters');
 
 -- ---------------------------------------------------------------------------
 -- ecosystem_signups: TEMPORARY no-login signup form (app/ecosystem-signup)

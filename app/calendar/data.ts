@@ -56,6 +56,7 @@ export interface CityEvent {
   format: EventFormat;
   cta: string;
   registrationLink?: string;
+  posterUrl?: string;
 }
 
 export const EVENTS: CityEvent[] = [];

@@ -44,3 +44,7 @@ export function uploadOrgCoverImage(file: File): Promise<string> {
 export function uploadEcosystemSignupLogo(file: File): Promise<string> {
   return uploadImage(file, "ecosystem-signup-logos");
 }
+
+export function uploadEventPoster(file: File): Promise<string> {
+  return uploadImage(file, "event-posters");
+}

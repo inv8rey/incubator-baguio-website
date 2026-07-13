@@ -52,6 +52,7 @@ function mapEventRow(r: any): CityEvent {
     format: (r.format as EventFormat) || "In-Person",
     cta: r.cta || "Register",
     registrationLink: r.registration_link || undefined,
+    posterUrl: r.poster_url || undefined,
   };
 }
 
@@ -136,15 +137,19 @@ function EventRow({ e }: { e: CityEvent }) {
         height: hovered ? 88 : 0,
         overflow: "hidden",
         transition: "height 0.22s ease",
-        background: `linear-gradient(135deg, ${cc.color}18 0%, ${cc.color}38 60%, ${cc.color}22 100%)`,
+        background: e.posterUrl ? undefined : `linear-gradient(135deg, ${cc.color}18 0%, ${cc.color}38 60%, ${cc.color}22 100%)`,
         position: "relative",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
       }}>
-        <svg width={52} height={52} viewBox="0 0 24 24" fill="none" stroke={cc.color} strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.35 }}>
-          <path d={CATEGORY_COVER_PATTERNS[e.category]} />
-        </svg>
+        {e.posterUrl ? (
+          <img src={e.posterUrl} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <svg width={52} height={52} viewBox="0 0 24 24" fill="none" stroke={cc.color} strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.35 }}>
+            <path d={CATEGORY_COVER_PATTERNS[e.category]} />
+          </svg>
+        )}
         <span style={{ position: "absolute", top: 10, left: 12, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 8px", borderRadius: 9999 }}>{e.category}</span>
         <span style={{ position: "absolute", top: 10, right: 12, fontSize: 10.5, color: "#9A958B" }}>{MONTH_NAMES[m - 1].slice(0, 3)} {String(d).padStart(2, "0")}</span>
         <div style={{ position: "absolute", bottom: 10, left: 12, right: 12, fontSize: 13, fontWeight: 700, color: DARK, lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{e.title}</div>
