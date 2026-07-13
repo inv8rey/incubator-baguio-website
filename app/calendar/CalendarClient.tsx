@@ -785,7 +785,7 @@ export default function CalendarClient() {
                   const iso = isoOf(date);
                   const dayItems = mode === "events" ? eventsOnDayFiltered(date) : slotsOnDayFiltered(date);
                   const dayChips: ChipData[] = mode === "events"
-                    ? (dayItems as CityEvent[]).map((e) => ({ key: e.id, label: e.category, time: e.time, color: CATEGORY_COLORS[e.category].color, bg: CATEGORY_COLORS[e.category].bg }))
+                    ? (dayItems as CityEvent[]).map((e) => ({ key: e.id, label: e.title, time: e.time, color: CATEGORY_COLORS[e.category].color, bg: CATEGORY_COLORS[e.category].bg }))
                     : (dayItems as MentorSlot[]).map((s) => ({ key: s.id, label: s.mentorName, time: s.time, color: MENTOR_EXPERTISE_COLORS[s.expertise].color, bg: MENTOR_EXPERTISE_COLORS[s.expertise].bg }));
                   const isToday = iso === todayIso;
                   const isSelected = iso === selectedIso;
