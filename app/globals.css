@@ -691,16 +691,18 @@ img { max-width: 100%; height: auto; }
   font-weight: 700;
   letter-spacing: 0;
   line-height: 1.08;
-  margin: 0;
+  margin: 0 auto;
   max-width: 780px;
+  text-align: center;
 }
 
 .evaluation-lede {
   color: rgba(255, 255, 255, 0.72);
   font-size: 16px;
   line-height: 1.62;
-  margin-top: 24px;
+  margin: 24px auto 0;
   max-width: 680px;
+  text-align: center;
 }
 
 .evaluation-body {
