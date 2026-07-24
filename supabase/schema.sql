@@ -240,6 +240,49 @@ create policy "mentor can update connection status" on public.mentor_connections
   );
 
 -- ---------------------------------------------------------------------------
+-- consultation_feedback: private feedback from /evaluation visitors
+-- ---------------------------------------------------------------------------
+create table if not exists public.consultation_feedback (
+  id uuid primary key default gen_random_uuid(),
+  visitor_type text not null default '',
+  visitor_type_other text not null default '',
+  visit_purpose text not null default '',
+  visit_purpose_other text not null default '',
+  startup_name text not null default '',
+  respondent_role text not null default '',
+  organization_contact text not null default '',
+  startup_sector text not null default '',
+  startup_stage text not null default '',
+  ratings jsonb not null default '{}'::jsonb,
+  liked_most text not null default '',
+  takeaway text not null default '',
+  improvements text not null default '',
+  would_recommend text not null default '',
+  wants_updates boolean not null default false,
+  email text not null default '',
+  created_at timestamptz not null default now()
+);
+
+alter table public.consultation_feedback add column if not exists startup_name text not null default '';
+alter table public.consultation_feedback add column if not exists respondent_role text not null default '';
+alter table public.consultation_feedback add column if not exists organization_contact text not null default '';
+alter table public.consultation_feedback add column if not exists startup_sector text not null default '';
+alter table public.consultation_feedback add column if not exists startup_stage text not null default '';
+alter table public.consultation_feedback add column if not exists liked_most text not null default '';
+
+alter table public.consultation_feedback enable row level security;
+
+drop policy if exists "visitors can submit consultation feedback" on public.consultation_feedback;
+create policy "visitors can submit consultation feedback" on public.consultation_feedback
+  for insert with check (true);
+
+drop policy if exists "admins can read consultation feedback" on public.consultation_feedback;
+create policy "admins can read consultation feedback" on public.consultation_feedback
+  for select using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+-- ---------------------------------------------------------------------------
 -- organizations: "Publish an organization"
 -- org_type mirrors app/ecosystem/data.ts EcosystemCategory values
 -- ---------------------------------------------------------------------------
