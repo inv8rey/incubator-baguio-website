@@ -56,7 +56,7 @@ const STEPS: StepData[] = [
       { icon: ICONS.flask, label: "Researchers" },
       { icon: ICONS.briefcase, label: "Early-stage Startups" },
     ],
-    whatWeDo: ["Founder Discovery", "Startup Incubation", "Founder Education", "Mentorship", "Product Validation", "Business Development", "Startup Resources", "Digital Tools"],
+    whatWeDo: ["Founder Discovery", "Founder Education", "Mentorship", "Product Validation", "Business Development", "Startup Resources", "Digital Tools"],
     outcomes: [
       { icon: ICONS.lightbulb, label: "More validated ideas" },
       { icon: ICONS.person, label: "More confident founders" },

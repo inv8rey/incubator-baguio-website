@@ -81,7 +81,7 @@ const HOME_HTML_BOTTOM_A = `
       <div class="ib-journey-line"></div>
       <div class="ib-journey-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:22px;position:relative;">
         ${[
-          ["01", "#F26522", "rgba(242,101,34,0.1)", "Join the alliance", "Create a free account and tell us what you&rsquo;re building &mdash; startup, research, or idea."],
+          ["01", "#F26522", "rgba(242,101,34,0.1)", "Join the ecosystem", "Create a free account and tell us what you&rsquo;re building &mdash; startup, research, or idea."],
           ["02", "#285E7A", "rgba(40,94,122,0.1)", "Build your presence", "Publish your startup, mentor, or organization profile to the city&rsquo;s ecosystem directory."],
           ["03", "#9E2A52", "rgba(158,42,82,0.1)", "Get matched", "Connect with mentors, TBIs, co-founders, and open challenges that fit your stage and sector."],
           ["04", "#1A6B3C", "rgba(26,107,60,0.1)", "Grow with Baguio", "Join programs, workshops, and Startup Week to scale alongside the whole ecosystem."],
@@ -112,11 +112,12 @@ const HOME_HTML_BOTTOM_A = `
         <svg width="118" height="96" viewBox="0 0 118 96" fill="none"><polyline points="6,40 40,14 74,40" stroke="#F5A623" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="30,52 64,26 98,52" stroke="#F26522" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,72 40,46 74,72" stroke="#9E2A52" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><circle cx="98" cy="20" r="9" fill="rgba(242,101,34,0.16)"></circle></svg>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
       ${[
         ["#285E7A", "rgba(40,94,122,0.07)", "Government", "Smarter public services", "LGUs post operational challenges in transport, waste, tourism, and digital governance for the community to solve."],
         ["#F26522", "rgba(242,101,34,0.07)", "Industry", "MSME growth problems", "Local businesses surface bottlenecks in operations, supply chains, and market access that startups can address."],
         ["#9E2A52", "rgba(158,42,82,0.07)", "Academia", "Research to market", "Universities open up applied research questions and technologies seeking commercialization partners."],
+        ["#6B5BD6", "rgba(107,91,214,0.07)", "Society", "Community-led solutions", "Civic groups and community organizations surface local needs and social challenges for innovators to solve."],
       ].map((c) => `
       <div class="ib-card-hover" style="background:${c[1]};border:1px solid rgba(20,20,25,0.08);border-radius:18px;padding:28px;border-top:3px solid ${c[0]};display:flex;flex-direction:column;">
         <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${c[0]};margin-bottom:12px;">${c[2]}</div>
