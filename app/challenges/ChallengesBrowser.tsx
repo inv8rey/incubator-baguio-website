@@ -8,6 +8,15 @@ import { fetchDynamicChallenges } from "./dynamicData";
 const DARK = "#141417";
 const ORANGE = "#F26522";
 
+function shuffle<T>(items: T[]): T[] {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 function Chip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
     <span
@@ -38,7 +47,7 @@ export default function ChallengesBrowser({ bp }: { bp: string }) {
   useEffect(() => {
     function load() {
       fetchDynamicChallenges().then((c) => {
-        setChallenges(c);
+        setChallenges(shuffle(c));
         setLoaded(true);
       });
     }
