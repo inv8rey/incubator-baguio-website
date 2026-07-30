@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { supabase } from "../../lib/supabaseClient";
 
 const ORANGE = "#F26522";
 const DARK = "#141417";
@@ -133,80 +134,32 @@ const STEPS: StepData[] = [
   },
 ];
 
-// Satellite node layout for the evolving diagram (viewBox 0 0 500 500, center 250,250)
-const NODES = [
-  { key: "university", label: "Universities", x: 250, y: 96, icon: ICONS.institution, revealAt: 1 },
-  { key: "investor", label: "Investors", x: 372, y: 148, icon: ICONS.coins, revealAt: 2 },
-  { key: "government", label: "Government", x: 412, y: 250, icon: ICONS.institution, revealAt: 1 },
-  { key: "community", label: "Community", x: 250, y: 404, icon: ICONS.globe, revealAt: 1 },
-  { key: "market", label: "Markets", x: 128, y: 352, icon: ICONS.chart, revealAt: 2 },
-  { key: "mentor", label: "Mentors", x: 88, y: 250, icon: ICONS.people, revealAt: 1 },
-];
-
-const MESH_LOOP = ["university", "investor", "government", "community", "market", "mentor", "university"];
-
 function IconSvg({ path, size = 20, stroke = "currentColor", strokeWidth = 1.9 }: { path: string; size?: number; stroke?: string; strokeWidth?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" dangerouslySetInnerHTML={{ __html: path }} />
   );
 }
 
-function EcosystemIllustration({ active }: { active: number }) {
-  const nodeByKey = Object.fromEntries(NODES.map((n) => [n.key, n]));
+function ProgramPhotoStack({ active, images }: { active: number; images: Record<string, string> }) {
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ position: "absolute", width: 520, height: 520, borderRadius: "9999px", background: `radial-gradient(circle, ${STEPS[active].color}22 0%, transparent 68%)`, transition: "background 0.7s ease" }} />
-      <svg viewBox="0 0 500 500" width="100%" height="100%" style={{ maxWidth: 640, maxHeight: 640 }}>
-        {/* backdrop mountain skyline, reused site visual language */}
-        <g opacity={0.35} stroke="#D9D4C8" strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" fill="none">
-          <polyline points="20,470 120,380 220,470" />
-          <polyline points="260,470 340,360 420,470" />
-        </g>
-
-        {/* evolve: enclosing mesh loop */}
-        <polyline
-          points={MESH_LOOP.map((k) => `${nodeByKey[k].x},${nodeByKey[k].y}`).join(" ")}
-          fill="none"
-          stroke={STEPS[3].color}
-          strokeWidth={1.5}
-          strokeDasharray="4 5"
-          style={{ opacity: active >= 3 ? 0.55 : 0, transition: "opacity 0.8s ease" }}
-        />
-
-        {/* spokes: center to each node */}
-        {NODES.map((n) => (
-          <line
-            key={`spoke-${n.key}`}
-            x1={250}
-            y1={250}
-            x2={n.x}
-            y2={n.y}
-            stroke={STEPS[active].color}
-            strokeWidth={2}
-            style={{ opacity: active >= n.revealAt ? 0.5 : 0, transition: "opacity 0.7s ease, stroke 0.7s ease" }}
+    <div style={{ position: "relative", width: "100%", height: "100%", borderRadius: 20, overflow: "hidden", background: "#F5F4F0" }}>
+      {STEPS.map((s, i) =>
+        images[s.key] ? (
+          <img
+            key={s.key}
+            src={images[s.key]}
+            alt={s.title}
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: i === active ? 1 : 0, transition: "opacity 0.7s ease" }}
           />
-        ))}
-
-        {/* satellite nodes */}
-        {NODES.map((n) => (
-          <g key={n.key} style={{ opacity: active >= n.revealAt ? 1 : 0, transform: active >= n.revealAt ? "scale(1)" : "scale(0.5)", transformOrigin: `${n.x}px ${n.y}px`, transition: "opacity 0.6s ease, transform 0.6s ease" }}>
-            <circle cx={n.x} cy={n.y} r={30} fill="#fff" stroke={STEPS[active].color} strokeWidth={1.5} />
-            <foreignObject x={n.x - 14} y={n.y - 14} width={28} height={28}>
-              <div style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <IconSvg path={n.icon} size={16} stroke={STEPS[active].color} />
-              </div>
-            </foreignObject>
-          </g>
-        ))}
-
-        {/* center founder node */}
-        <circle cx={250} cy={250} r={44} fill={STEPS[active].color} style={{ transition: "fill 0.7s ease" }} />
-        <foreignObject x={250 - 20} y={250 - 20} width={40} height={40}>
-          <div style={{ width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <IconSvg path={ICONS.lightbulb} size={22} stroke="#fff" strokeWidth={1.8} />
+        ) : (
+          <div
+            key={s.key}
+            style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(135deg, ${s.color}22, ${s.color}0a)`, opacity: i === active ? 1 : 0, transition: "opacity 0.7s ease" }}
+          >
+            <IconSvg path={s.icon} size={72} stroke={s.color} strokeWidth={1.2} />
           </div>
-        </foreignObject>
-      </svg>
+        )
+      )}
     </div>
   );
 }
@@ -226,6 +179,27 @@ function InfoCard({ label, icon, children }: { label: string; icon: string; chil
 export default function EcosystemModel() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const [images, setImages] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!supabase) return;
+    async function loadImages() {
+      const { data } = await supabase!.from("program_step_images").select("step,image_url");
+      const map: Record<string, string> = {};
+      (data ?? []).forEach((r: any) => {
+        if (r.image_url) map[r.step] = r.image_url;
+      });
+      setImages(map);
+    }
+    loadImages();
+    const channel = supabase
+      .channel("public-program-step-images")
+      .on("postgres_changes", { event: "*", schema: "public", table: "program_step_images" }, loadImages)
+      .subscribe();
+    return () => {
+      supabase!.removeChannel(channel);
+    };
+  }, []);
 
   useEffect(() => {
     function onScroll() {
@@ -275,7 +249,7 @@ export default function EcosystemModel() {
                 <h2 style={{ margin: 0, fontSize: 30, fontWeight: 800, letterSpacing: "-0.02em", color: DARK, lineHeight: 1.15 }}>Programs Built Around the <span style={{ color: ORANGE }}>Startup Journey.</span></h2>
               </div>
               <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
-                <EcosystemIllustration active={active} />
+                <ProgramPhotoStack active={active} images={images} />
               </div>
             </div>
 
@@ -394,7 +368,11 @@ export default function EcosystemModel() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           {STEPS.map((s) => (
-            <div key={s.key} style={{ border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "26px 22px" }}>
+            <div key={s.key} style={{ border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, overflow: "hidden" }}>
+              {images[s.key] && (
+                <img src={images[s.key]} alt={s.title} style={{ width: "100%", height: 160, objectFit: "cover", display: "block" }} />
+              )}
+              <div style={{ padding: "26px 22px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 12 }}>
                 <div style={{ width: 48, height: 48, borderRadius: 9999, background: s.color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <IconSvg path={s.icon} size={22} stroke="#fff" strokeWidth={1.8} />
@@ -430,6 +408,7 @@ export default function EcosystemModel() {
                     {s.outcomes.map((o) => <span key={o.label} style={{ fontSize: 11.5, color: s.color, background: s.bg, padding: "5px 10px", borderRadius: 9999, fontWeight: 600 }}>{o.label}</span>)}
                   </div>
                 </div>
+              </div>
               </div>
             </div>
           ))}

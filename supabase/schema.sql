@@ -973,3 +973,61 @@ create policy "authenticated users can update knowledge files" on storage.object
 drop policy if exists "authenticated users can delete knowledge files" on storage.objects;
 create policy "authenticated users can delete knowledge files" on storage.objects
   for delete to authenticated using (bucket_id = 'knowledge-files');
+
+-- ---------------------------------------------------------------------------
+-- program_step_images: admin-uploaded photo for each of the 4 "Our Programs"
+-- steps (Enable/Engage/Expand/Evolve) shown on the homepage and /programs
+-- scrollytelling section (app/programs/EcosystemModel.tsx). One row per step.
+-- ---------------------------------------------------------------------------
+create table if not exists public.program_step_images (
+  step text primary key check (step in ('enable', 'engage', 'expand', 'evolve')),
+  image_url text not null default '',
+  updated_at timestamptz not null default now()
+);
+
+alter table public.program_step_images enable row level security;
+
+drop policy if exists "program step images are publicly readable" on public.program_step_images;
+create policy "program step images are publicly readable" on public.program_step_images
+  for select using (true);
+
+drop policy if exists "admins manage program step images" on public.program_step_images;
+create policy "admins manage program step images" on public.program_step_images
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+-- ---------------------------------------------------------------------------
+-- storage: program-images bucket for the 4 Our Programs step photos.
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('program-images', 'program-images', true)
+on conflict (id) do nothing;
+
+drop policy if exists "program images are publicly readable" on storage.objects;
+create policy "program images are publicly readable" on storage.objects
+  for select using (bucket_id = 'program-images');
+
+drop policy if exists "authenticated users can upload program images" on storage.objects;
+create policy "authenticated users can upload program images" on storage.objects
+  for insert to authenticated with check (bucket_id = 'program-images');
+
+drop policy if exists "authenticated users can update program images" on storage.objects;
+create policy "authenticated users can update program images" on storage.objects
+  for update to authenticated using (bucket_id = 'program-images');
+
+drop policy if exists "authenticated users can delete program images" on storage.objects;
+create policy "authenticated users can delete program images" on storage.objects
+  for delete to authenticated using (bucket_id = 'program-images');
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'program_step_images'
+  ) then
+    alter publication supabase_realtime add table public.program_step_images;
+  end if;
+end $$;

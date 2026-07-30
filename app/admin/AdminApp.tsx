@@ -8,6 +8,7 @@ import StartupsTab from "./tabs/StartupsTab";
 import ChallengesTab from "./tabs/ChallengesTab";
 import EventsTab from "./tabs/EventsTab";
 import KnowledgeTab from "./tabs/KnowledgeTab";
+import ProgramsTab from "./tabs/ProgramsTab";
 import EcosystemSignupsTab from "./tabs/EcosystemSignupsTab";
 import EvaluationsTab from "./tabs/EvaluationsTab";
 import PartnersTab from "./tabs/PartnersTab";
@@ -38,6 +39,13 @@ const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
     <>
       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
+    </>
+  ),
+  programs: (
+    <>
+      <rect x={3} y={3} width={18} height={18} rx={2} />
+      <circle cx={8.5} cy={8.5} r={1.5} />
+      <path d="m21 15-5-5L5 21" />
     </>
   ),
   signups: (
@@ -247,6 +255,7 @@ export default function AdminApp() {
         {page === "challenges" && <ChallengesTab searchQuery={searchQuery} />}
         {page === "events" && <EventsTab searchQuery={searchQuery} />}
         {page === "knowledge" && <KnowledgeTab searchQuery={searchQuery} />}
+        {page === "programs" && <ProgramsTab />}
         {page === "signups" && <EcosystemSignupsTab searchQuery={searchQuery} />}
         {page === "evaluations" && <EvaluationsTab searchQuery={searchQuery} />}
         {page === "partners" && <PartnersTab searchQuery={searchQuery} />}
