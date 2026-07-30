@@ -85,7 +85,10 @@ function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; o
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title.trim() || !eventDate || !org.trim()) return;
+    if (!title.trim() || !eventDate || !org.trim()) {
+      setError("Add a title, date, and organizer.");
+      return;
+    }
     if (!supabase) {
       setError("Events aren't configured yet.");
       return;

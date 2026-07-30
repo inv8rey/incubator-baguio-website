@@ -166,6 +166,14 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
 
   useEffect(() => {
     load();
+    if (!supabase) return;
+    const channel = supabase
+      .channel("admin-knowledge-resources-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "knowledge_resources" }, load)
+      .subscribe();
+    return () => {
+      supabase!.removeChannel(channel);
+    };
   }, []);
 
   const q = searchQuery.toLowerCase();

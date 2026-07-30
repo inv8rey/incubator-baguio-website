@@ -1036,4 +1036,22 @@ begin
   ) then
     alter publication supabase_realtime add table public.knowledge_resources;
   end if;
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'consultation_feedback'
+  ) then
+    alter publication supabase_realtime add table public.consultation_feedback;
+  end if;
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'challenge_applications'
+  ) then
+    alter publication supabase_realtime add table public.challenge_applications;
+  end if;
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'ecosystem_partners'
+  ) then
+    alter publication supabase_realtime add table public.ecosystem_partners;
+  end if;
 end $$;

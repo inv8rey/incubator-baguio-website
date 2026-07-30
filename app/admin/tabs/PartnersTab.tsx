@@ -106,6 +106,16 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
   useEffect(() => {
     load();
+    if (!supabase) return;
+    const channel = supabase
+      .channel("admin-partners-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "mentors" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "organizations" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "ecosystem_partners" }, load)
+      .subscribe();
+    return () => {
+      supabase!.removeChannel(channel);
+    };
   }, []);
 
   const q = searchQuery.toLowerCase();
@@ -253,7 +263,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     setError("");
 
     if (isMentors) {
-      if (!mentorForm.name.trim()) return;
+      if (!mentorForm.name.trim()) return setError("Add a name.");
       const isIndustryExpert = mentorForm.specializations.includes("Industry Experts");
       const payload = { name: mentorForm.name.trim(), position: mentorForm.position.trim(), company: mentorForm.company.trim(), bio: mentorForm.bio.trim(), specializations: mentorForm.specializations, photo_url: mentorForm.photoUrl, sector: isIndustryExpert ? mentorForm.sector : "", social_link: mentorForm.socialLink.trim() };
       const { error: err } = editingId
@@ -261,14 +271,14 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
         : await supabase.from("mentors").insert(payload);
       if (err) return setError(err.message);
     } else if (isPartners) {
-      if (!partnerForm.name.trim()) return;
+      if (!partnerForm.name.trim()) return setError("Add a name.");
       const payload = { name: partnerForm.name.trim(), logo_url: partnerForm.logoUrl };
       const { error: err } = editingId
         ? await supabase.from("ecosystem_partners").update(payload).eq("id", editingId)
         : await supabase.from("ecosystem_partners").insert(payload);
       if (err) return setError(err.message);
     } else {
-      if (!orgForm.name.trim()) return;
+      if (!orgForm.name.trim()) return setError("Add a name.");
       const payload = { name: orgForm.name.trim(), org_type: category, description: orgForm.description.trim(), website: orgForm.website.trim(), contact_email: orgForm.contact_email.trim(), logo_url: orgForm.logoUrl, cover_url: orgForm.coverUrl, type: orgForm.type.trim() };
       const { error: err } = editingId
         ? await supabase.from("organizations").update(payload).eq("id", editingId)

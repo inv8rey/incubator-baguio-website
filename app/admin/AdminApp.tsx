@@ -82,22 +82,24 @@ export default function AdminApp() {
   const [page, setPage] = useState<TabId>("dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [liveCounts, setLiveCounts] = useState<{ startups: number | null; challenges: number | null }>({ startups: null, challenges: null });
+  const [liveCounts, setLiveCounts] = useState<{ startups: number | null; challenges: number | null; partners: number | null }>({ startups: null, challenges: null, partners: null });
 
   useEffect(() => {
     if (!supabase) return;
     async function loadCounts() {
-      const [s, c] = await Promise.all([
+      const [s, c, o] = await Promise.all([
         supabase!.from("startups").select("id", { count: "exact", head: true }),
         supabase!.from("challenges").select("id", { count: "exact", head: true }),
+        supabase!.from("organizations").select("id", { count: "exact", head: true }),
       ]);
-      setLiveCounts({ startups: s.count ?? 0, challenges: c.count ?? 0 });
+      setLiveCounts({ startups: s.count ?? 0, challenges: c.count ?? 0, partners: o.count ?? 0 });
     }
     loadCounts();
     const channel = supabase
       .channel("admin-sidebar-counts")
       .on("postgres_changes", { event: "*", schema: "public", table: "startups" }, loadCounts)
       .on("postgres_changes", { event: "*", schema: "public", table: "challenges" }, loadCounts)
+      .on("postgres_changes", { event: "*", schema: "public", table: "organizations" }, loadCounts)
       .subscribe();
     return () => {
       supabase!.removeChannel(channel);
@@ -132,7 +134,7 @@ export default function AdminApp() {
         <div style={{ fontSize: "9.5px", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, color: "rgba(255,255,255,0.28)", padding: "8px 10px 6px" }}>Main</div>
         {NAV.map((n) => {
           const active = page === n.id;
-          const cnt = n.id === "startups" ? liveCounts.startups : n.id === "challenges" ? liveCounts.challenges : n.cnt;
+          const cnt = n.id === "startups" ? liveCounts.startups : n.id === "challenges" ? liveCounts.challenges : n.id === "partners" ? liveCounts.partners : n.cnt;
           return (
             <button
               key={n.id}
@@ -232,17 +234,6 @@ export default function AdminApp() {
               </svg>
               <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} style={{ border: "none", background: "transparent", fontSize: 12.5, color: "#141417", width: "100%", outline: "none" }} />
               <span style={{ fontSize: 10, color: "#9A958B", background: "rgba(20,20,25,0.07)", borderRadius: 4, padding: "1px 5px", fontWeight: 500 }}>⌘K</span>
-            </div>
-            <div style={{ position: "relative" }}>
-              <button style={{ width: 36, height: 36, borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", background: "#F5F4F0", border: "1.5px solid rgba(20,20,25,0.09)", cursor: "pointer" }}>
-                <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#6B6B73" strokeWidth={1.9} strokeLinecap="round">
-                  <path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2H4.5z" />
-                  <path d="M10 20a2 2 0 0 0 4 0" />
-                </svg>
-              </button>
-              <span style={{ position: "absolute", top: -4, right: -4, background: "#E23A2E", color: "#fff", fontSize: 9, fontWeight: 700, borderRadius: 999, padding: "0 5px", minWidth: 17, textAlign: "center", lineHeight: "17px", border: "2px solid #fff" }}>
-                3
-              </span>
             </div>
             <div style={{ width: 36, height: 36, borderRadius: "50%", background: `linear-gradient(135deg,${ORANGE},#FF9A6C)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
               LG

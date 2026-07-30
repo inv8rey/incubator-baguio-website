@@ -1,28 +1,6 @@
 export const ORANGE = "#F26522";
 export const DARK = "#141417";
 
-export interface Partner {
-  name: string;
-  category: string;
-  logo: string | null; // data URL, or null to fall back to initials
-  initials: string;
-  color: string;
-}
-
-export const PARTNER_CATEGORIES = ["Academe", "Government", "Corporate", "Community"];
-
-export const PARTNERS: Partner[] = [
-  { name: "Saint Louis University", category: "Academe", logo: null, initials: "SLU", color: "#F5A623" },
-  { name: "University of Baguio", category: "Academe", logo: null, initials: "UB", color: "#285E7A" },
-  { name: "UP Baguio", category: "Academe", logo: null, initials: "UP", color: "#7E0707" },
-  { name: "University of the Cordilleras", category: "Academe", logo: null, initials: "UC", color: "#1A6B3C" },
-  { name: "Benguet State University", category: "Academe", logo: null, initials: "BSU", color: "#3A5FA0" },
-  { name: "City Government of Baguio", category: "Government", logo: null, initials: "CGB", color: "#F26522" },
-  { name: "Dept of Science & Technology", category: "Government", logo: null, initials: "DOST", color: "#0055A5" },
-  { name: "Dept of Trade & Industry", category: "Government", logo: null, initials: "DTI", color: "#CE1126" },
-  { name: "Baguio Chamber of Commerce", category: "Corporate", logo: null, initials: "BCC", color: "#2D2D2D" },
-];
-
 export const NAV = [
   { id: "dashboard", label: "Dashboard", cnt: null as number | null },
   { id: "startups", label: "Startups", cnt: null as number | null },
@@ -32,7 +10,7 @@ export const NAV = [
   { id: "programs", label: "Programs", cnt: null as number | null },
   { id: "signups", label: "Signups", cnt: null as number | null },
   { id: "evaluations", label: "Evaluations", cnt: null as number | null },
-  { id: "partners", label: "Partners", cnt: PARTNERS.length },
+  { id: "partners", label: "Partners", cnt: null as number | null },
 ] as const;
 
 export type TabId = (typeof NAV)[number]["id"];
@@ -51,8 +29,8 @@ export const TITLES: Record<TabId, string> = {
 
 export const SUBS: Record<TabId, string> = {
   dashboard: "Baguio City Research and Innovation Alliance · Jun 2026",
-  startups: "82 registered startups across 13 sectors",
-  challenges: "18 open challenges from government, industry, and academia",
+  startups: "Registered startups across the ecosystem",
+  challenges: "Innovation challenges from government, industry, and academia",
   events: "Review and approve events submitted to the public calendar",
   knowledge: "Manage the Knowledge Hub resource library",
   programs: "Upload the photo shown for each of the 4 Our Programs steps",
@@ -164,14 +142,6 @@ export const ACTIVITY = [
   { initials: "DT", color: "#1A6B3C", name: "Dontog Technofarms", note: "won 2nd place at Regional Pitching Competition", time: "1d ago" },
 ];
 
-// ---- Startups ----
-export const STARTUP_STATS = [
-  { label: "Total Startups", value: "82", delta: "↑ +20.6%", note: null },
-  { label: "Growth Stage", value: "8", delta: null, note: "9.8% of total" },
-  { label: "Launch Stage", value: "26", delta: null, note: "31.7% of total" },
-  { label: "Active This Month", value: "67", delta: null, note: "81.7% of total" },
-  { label: "Total Funding", value: "₱36M", delta: "↑ +13.4%", note: null },
-];
 
 export const STAGE_FILTERS = ["All", "Growth", "Launch", "MVP", "Idea"];
 export const SECTOR_FILTERS = [

@@ -221,8 +221,8 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
             <div key={row.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18, display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 16, alignItems: "start" }}>
               <div style={{ minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 7, flexWrap: "wrap" }}>
-                  <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", color: ORANGE, background: "rgba(242,101,34,0.12)", padding: "3px 9px", borderRadius: 999 }}>{resolvedVisitorType(row)}</span>
-                  <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", color: "#285E7A", background: "rgba(40,94,122,0.10)", padding: "3px 9px", borderRadius: 999 }}>{resolvedVisitPurpose(row)}</span>
+                  <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", color: ORANGE, background: "rgba(242,101,34,0.12)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap" }}>{resolvedVisitorType(row)}</span>
+                  <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", color: "#285E7A", background: "rgba(40,94,122,0.10)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap" }}>{resolvedVisitPurpose(row)}</span>
                   <span style={{ fontSize: 12, color: "#9A958B" }}>{displayDate(row.created_at)}</span>
                 </div>
                 <div style={{ color: DARK, fontSize: 15, fontWeight: 800, lineHeight: 1.35 }}>

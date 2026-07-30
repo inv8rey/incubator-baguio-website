@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { StatCard } from "../StatCard";
-import { DARK, ORANGE, SECTOR_FILTERS, STAGE_BADGE, STAGE_FILTERS, STARTUP_STATS } from "../data";
+import { DARK, ORANGE, SECTOR_FILTERS, STAGE_BADGE, STAGE_FILTERS } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
 import { uploadStartupLogo } from "../../../lib/uploadLogo";
@@ -41,7 +41,7 @@ interface Startup {
 const EMPTY_FORM = {
   name: "",
   sector: SECTOR_FILTERS[0].label,
-  stage: STAGE_FILTERS[1],
+  stage: "Idea",
   funding: "",
   since: "",
   description: "",
@@ -166,7 +166,11 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
 
   async function submitStartup(e: React.FormEvent) {
     e.preventDefault();
-    if (!supabase || !form.name.trim()) return;
+    if (!supabase) return;
+    if (!form.name.trim()) {
+      setError("Add a startup name.");
+      return;
+    }
     setError("");
     const cleanFounders = founders.map((f) => ({ name: f.name.trim(), status: f.status })).filter((f) => f.name);
     const payload = {
@@ -194,10 +198,24 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
     load();
   }
 
+  const stats = useMemo(() => {
+    const total = startups.length;
+    const pct = (n: number) => (total ? `${((n / total) * 100).toFixed(1)}% of total` : null);
+    const growth = startups.filter((s) => s.stage === "Growth").length;
+    const launch = startups.filter((s) => s.stage === "Launch").length;
+    const mvp = startups.filter((s) => s.stage === "MVP").length;
+    return [
+      { label: "Total Startups", value: String(total), note: null },
+      { label: "Growth Stage", value: String(growth), note: pct(growth) },
+      { label: "Launch Stage", value: String(launch), note: pct(launch) },
+      { label: "MVP Stage", value: String(mvp), note: pct(mvp) },
+    ];
+  }, [startups]);
+
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
-      <div className="ib-admin-grid-5" style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 14 }}>
-        {STARTUP_STATS.map((s) => (
+      <div className="ib-admin-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14 }}>
+        {stats.map((s) => (
           <StatCard key={s.label} {...s} compact />
         ))}
       </div>

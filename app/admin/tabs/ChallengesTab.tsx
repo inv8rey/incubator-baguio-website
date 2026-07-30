@@ -55,7 +55,10 @@ function ChallengeFormModal({ challenge, onClose, onSaved }: { challenge: Challe
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title.trim() || !orgName.trim()) return;
+    if (!title.trim() || !orgName.trim()) {
+      setError("Add a title and organization name.");
+      return;
+    }
     if (!supabase) {
       setError("Challenges aren't configured yet.");
       return;
@@ -235,6 +238,15 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
 
   useEffect(() => {
     load();
+    if (!supabase) return;
+    const channel = supabase
+      .channel("admin-challenges-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "challenges" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "challenge_applications" }, load)
+      .subscribe();
+    return () => {
+      supabase!.removeChannel(channel);
+    };
   }, []);
 
   const q = searchQuery.toLowerCase();
@@ -285,7 +297,7 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
           return (
             <div key={c.id} style={{ background: "#fff", border: "1.5px solid rgba(20,20,25,0.09)", borderRadius: 18, padding: 24, display: "flex", flexDirection: "column" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, gap: 8, flexWrap: "wrap" }}>
-                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.02em", color: cat?.color, background: cat?.bg, padding: "5px 12px", borderRadius: 999 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.02em", color: cat?.color, background: cat?.bg, padding: "5px 12px", borderRadius: 999, whiteSpace: "nowrap" }}>
                   {cat?.emoji} {c.category}
                 </span>
                 <span style={{ fontSize: 11, fontWeight: 700, color: c.status === "Open" ? "#1A6B3C" : "#9A958B", background: c.status === "Open" ? "rgba(26,107,60,0.12)" : "rgba(154,149,139,0.14)", padding: "4px 10px", borderRadius: 999 }}>{c.status}</span>
@@ -350,7 +362,7 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
                 {(() => {
                   const cat = CHALLENGE_CATEGORIES.find((cc) => cc.id === viewing.category);
                   return (
-                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.02em", color: cat?.color, background: cat?.bg, padding: "4px 10px", borderRadius: 999 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.02em", color: cat?.color, background: cat?.bg, padding: "4px 10px", borderRadius: 999, whiteSpace: "nowrap" }}>
                       {cat?.emoji} {viewing.category}
                     </span>
                   );
