@@ -85,13 +85,21 @@ export default function CommunityChallengeDetail({ bp }: { bp: string }) {
             <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: ORANGE, background: "rgba(242,101,34,0.12)", padding: "5px 11px", borderRadius: 9999 }}>
               {item.sector || "General"}
             </span>
-            <h2 style={{ margin: "18px 0 8px", fontSize: 16, fontWeight: 700, color: DARK }}>The problem</h2>
-            <p style={{ margin: "0 0 20px", fontSize: 14, lineHeight: 1.6, color: "#44444C" }}>{item.problem}</p>
-            <h2 style={{ margin: "0 0 8px", fontSize: 16, fontWeight: 700, color: DARK }}>What to build</h2>
-            <p style={{ margin: "0 0 20px", fontSize: 14, lineHeight: 1.6, color: "#44444C" }}>{item.scope}</p>
+            {item.problem && (
+              <>
+                <h2 style={{ margin: "18px 0 8px", fontSize: 16, fontWeight: 700, color: DARK }}>The Challenge</h2>
+                <p style={{ margin: "0 0 20px", fontSize: 14, lineHeight: 1.6, color: "#44444C" }}>{item.problem}</p>
+              </>
+            )}
+            {item.scope && (
+              <>
+                <h2 style={{ margin: "0 0 8px", fontSize: 16, fontWeight: 700, color: DARK }}>Desired Outcomes</h2>
+                <p style={{ margin: "0 0 20px", fontSize: 14, lineHeight: 1.6, color: "#44444C" }}>{item.scope}</p>
+              </>
+            )}
             {item.support && (
               <>
-                <h2 style={{ margin: "0 0 8px", fontSize: 16, fontWeight: 700, color: DARK }}>Support offered</h2>
+                <h2 style={{ margin: "0 0 8px", fontSize: 16, fontWeight: 700, color: DARK }}>Support Available</h2>
                 <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: "#44444C" }}>{item.support}</p>
               </>
             )}

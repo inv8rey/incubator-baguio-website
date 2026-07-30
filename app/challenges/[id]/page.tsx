@@ -74,22 +74,25 @@ export default async function ChallengeDetail({ params }: { params: Promise<{ id
 <div style="background:#FAFAF7;padding:56px 40px 64px;">
   <div style="max-width:880px;margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr;gap:32px;align-items:start;">
     <div style="display:flex;flex-direction:column;gap:28px;">
+      ${c.problem.length > 0 ? `
       <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:28px 30px;">
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#F26522;margin-bottom:14px;">The problem</div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#F26522;margin-bottom:14px;">The Challenge</div>
         ${c.problem.map((p) => `<p style="margin:0 0 14px;font-size:15px;line-height:1.65;color:#44444C;">${p}</p>`).join("")}
-      </div>
+      </div>` : ""}
+      ${c.scope.length > 0 ? `
       <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:28px 30px;">
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#F26522;margin-bottom:14px;">Scope of the challenge</div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#F26522;margin-bottom:14px;">Desired Outcomes</div>
         <div style="display:flex;flex-direction:column;gap:12px;">
           ${c.scope.map((s) => `<div style="display:flex;gap:12px;align-items:flex-start;"><svg style="flex-shrink:0;margin-top:2px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2.6"><path d="M20 6 9 17l-5-5"></path></svg><span style="font-size:14.5px;line-height:1.55;color:#44444C;">${s}</span></div>`).join("")}
         </div>
-      </div>
+      </div>` : ""}
+      ${c.support.length > 0 ? `
       <div style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:28px 30px;">
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#F26522;margin-bottom:14px;">What you&rsquo;ll get</div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#F26522;margin-bottom:14px;">Support Available</div>
         <div style="display:flex;flex-direction:column;gap:12px;">
           ${c.support.map((s) => `<div style="display:flex;gap:12px;align-items:flex-start;"><svg style="flex-shrink:0;margin-top:2px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A6B3C" stroke-width="2.6"><path d="M20 6 9 17l-5-5"></path></svg><span style="font-size:14.5px;line-height:1.55;color:#44444C;">${s}</span></div>`).join("")}
         </div>
-      </div>
+      </div>` : ""}
     </div>
 
     <div style="display:flex;flex-direction:column;gap:20px;">

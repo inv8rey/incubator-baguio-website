@@ -132,16 +132,16 @@ function ChallengeFormModal({ challenge, onClose, onSaved }: { challenge: Challe
             <input value={summary} onChange={(e) => setSummary(e.target.value)} placeholder="One-line summary shown on challenge cards" style={modalInputStyle} />
           </div>
           <div>
-            <label style={modalLabelStyle}>The problem (one paragraph per line)</label>
-            <textarea value={problem} onChange={(e) => setProblem(e.target.value)} placeholder="Describe the problem..." style={{ ...modalInputStyle, resize: "vertical", minHeight: 80 }} />
+            <label style={modalLabelStyle}>The Challenge (one paragraph per line)</label>
+            <textarea value={problem} onChange={(e) => setProblem(e.target.value)} placeholder="Describe the challenge, why it matters, who is affected, and why current approaches are insufficient." style={{ ...modalInputStyle, resize: "vertical", minHeight: 80 }} />
           </div>
           <div>
-            <label style={modalLabelStyle}>Scope of the challenge (one bullet per line)</label>
-            <textarea value={scope} onChange={(e) => setScope(e.target.value)} placeholder="What the solution must do..." style={{ ...modalInputStyle, resize: "vertical", minHeight: 70 }} />
+            <label style={modalLabelStyle}>Desired Outcomes (one bullet per line)</label>
+            <textarea value={scope} onChange={(e) => setScope(e.target.value)} placeholder="Describe what success looks like. Focus on the outcomes you want to achieve rather than prescribing a specific solution." style={{ ...modalInputStyle, resize: "vertical", minHeight: 70 }} />
           </div>
           <div>
-            <label style={modalLabelStyle}>What solvers get (one bullet per line)</label>
-            <textarea value={support} onChange={(e) => setSupport(e.target.value)} placeholder="Funding, mentorship, pilot access..." style={{ ...modalInputStyle, resize: "vertical", minHeight: 70 }} />
+            <label style={modalLabelStyle}>Support Available (Optional, one bullet per line)</label>
+            <textarea value={support} onChange={(e) => setSupport(e.target.value)} placeholder="Pilot sites, datasets, technical experts, mentoring, funding, equipment, testing facilities, policy support." style={{ ...modalInputStyle, resize: "vertical", minHeight: 70 }} />
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div>
