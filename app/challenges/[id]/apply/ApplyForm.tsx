@@ -9,6 +9,7 @@ const DARK = "#141417";
 
 export interface ApplyChallenge {
   id: string;
+  slug?: string;
   title: string;
   orgName: string;
   nextDate?: string;
@@ -143,7 +144,7 @@ export default function ApplyForm({ challenge, bp }: { challenge: ApplyChallenge
           Thanks, {form.contactName.split(" ")[0] || "there"}. {challenge.orgName} will review submissions for &ldquo;{challenge.title}&rdquo; and reach out to shortlisted teams by {challenge.nextDate ?? "the announced date"}.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-          <a href={`${bp}/challenges/${challenge.id}/`} style={{ fontSize: 14, fontWeight: 600, color: DARK, textDecoration: "none", border: "1px solid rgba(20,20,25,0.18)", padding: "12px 22px", borderRadius: 9999 }}>
+          <a href={challenge.slug ? `${bp}/challenges/${challenge.slug}/` : `${bp}/challenges/community/?id=${challenge.id}`} style={{ fontSize: 14, fontWeight: 600, color: DARK, textDecoration: "none", border: "1px solid rgba(20,20,25,0.18)", padding: "12px 22px", borderRadius: 9999 }}>
             Back to challenge
           </a>
           <a href={`${bp}/challenges/`} style={{ fontSize: 14, fontWeight: 600, color: "#fff", textDecoration: "none", background: DARK, padding: "12px 22px", borderRadius: 9999 }}>

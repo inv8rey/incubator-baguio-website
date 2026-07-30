@@ -136,7 +136,7 @@ export default function ChallengesBrowser({ bp }: { bp: string }) {
                     <span style={{ fontSize: 10.5, fontWeight: 600, color: "#9A958B", background: "#F4F2EC", padding: "3px 9px", borderRadius: 9999, marginLeft: "auto" }}>{c.orgType}</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", paddingTop: 16, borderTop: "1px solid rgba(20,20,25,0.08)" }}>
-                    <a href={`${bp}/challenges/${c.id}/`} style={{ fontSize: 13, fontWeight: 600, color: DARK, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <a href={`${bp}/challenges/${c.slug}/`} style={{ fontSize: 13, fontWeight: 600, color: DARK, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}>
                       View challenge <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={DARK} strokeWidth={2.3}><path d="M5 12h14M13 6l6 6-6 6" /></svg>
                     </a>
                   </div>

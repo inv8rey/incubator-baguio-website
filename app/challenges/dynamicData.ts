@@ -1,5 +1,6 @@
 import { supabase } from "../../lib/supabaseClient";
 import { initialsOf, paletteFor } from "../../lib/visualIdentity";
+import { slugify } from "../../lib/slug";
 import type { Challenge, ChallengeCategory, ChallengeOrgType, Solver } from "./data";
 
 function lines(text: string): string[] {
@@ -39,6 +40,7 @@ function mapChallengeRow(r: any): Challenge {
   ];
   return {
     id: r.id,
+    slug: slugify(r.title || r.id),
     category: r.category as ChallengeCategory,
     title: r.title,
     summary: r.summary,
@@ -67,10 +69,11 @@ export async function fetchDynamicChallenges(): Promise<Challenge[]> {
   return (data ?? []).map(mapChallengeRow);
 }
 
-export async function fetchChallengeById(id: string): Promise<Challenge | null> {
+export async function fetchChallengeBySlug(slug: string): Promise<Challenge | null> {
   if (!supabase) return null;
-  const { data } = await supabase.from("challenges").select("*").eq("id", id).maybeSingle();
-  return data ? mapChallengeRow(data) : null;
+  const { data } = await supabase.from("challenges").select("*");
+  const match = (data ?? []).find((r: any) => slugify(r.title || r.id) === slug);
+  return match ? mapChallengeRow(match) : null;
 }
 
 export async function fetchChallengeApplications(challengeId: string): Promise<Solver[]> {

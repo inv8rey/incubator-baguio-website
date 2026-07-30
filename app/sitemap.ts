@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "./seo";
 import { supabase } from "../lib/supabaseClient";
+import { slugify } from "../lib/slug";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -20,9 +21,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/signup/", changeFrequency: "yearly", priority: 0.4 },
   ];
 
-  const { data } = supabase ? await supabase.from("challenges").select("id") : { data: [] };
-  const challengeRoutes = (data ?? []).map((c: { id: string }) => ({
-    path: `/challenges/${c.id}/`,
+  const { data } = supabase ? await supabase.from("challenges").select("id,title") : { data: [] };
+  const challengeRoutes = (data ?? []).map((c: { id: string; title: string }) => ({
+    path: `/challenges/${slugify(c.title || c.id)}/`,
     changeFrequency: "monthly" as const,
     priority: 0.7,
   }));

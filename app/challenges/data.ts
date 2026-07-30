@@ -44,6 +44,7 @@ export interface Solver {
 
 export interface Challenge {
   id: string;
+  slug: string;
   category: ChallengeCategory;
   title: string;
   summary: string;

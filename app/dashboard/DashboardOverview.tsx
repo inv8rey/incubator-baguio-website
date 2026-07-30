@@ -173,7 +173,7 @@ export default function DashboardOverview() {
           tagBg: cat.bg,
           org: c.orgFull,
           deadline: c.deadline,
-          href: `${BP}/challenges/${c.id}/`,
+          href: `${BP}/challenges/${c.slug}/`,
         };
       });
       const { data: submissionRows } = await supabase!

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { fetchChallengeApplications, fetchChallengeById } from "../dynamicData";
+import { fetchChallengeApplications, fetchChallengeBySlug } from "../dynamicData";
 import { categoryInfo } from "../data";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const c = await fetchChallengeById(id);
+  const c = await fetchChallengeBySlug(id);
   if (!c) return { title: "Challenge not found — Incubator Baguio" };
   return {
     title: `${c.title} — Incubator Baguio Challenges`,
@@ -19,10 +19,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function ChallengeDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const c = await fetchChallengeById(id);
+  const c = await fetchChallengeBySlug(id);
   if (!c) return notFound();
   const cat = categoryInfo(c.category);
-  const solvers = await fetchChallengeApplications(id);
+  const solvers = await fetchChallengeApplications(c.id);
   const totalSolvers = solvers.length;
   const visibleSolvers = solvers.slice(0, 5);
 
@@ -63,7 +63,7 @@ export default async function ChallengeDetail({ params }: { params: Promise<{ id
       <span style="font-size:14px;color:rgba(255,255,255,0.7);">Posted by <strong style="color:#fff;font-weight:600;">${c.orgName}</strong></span>
     </div>
     <div style="display:flex;gap:14px;margin-top:30px;flex-wrap:wrap;">
-      <a href="${BP}/challenges/${c.id}/apply/" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15.5px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 14px 36px rgba(242,101,34,0.4);">Apply to this challenge
+      <a href="${BP}/challenges/${c.slug}/apply/" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15.5px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 14px 36px rgba(242,101,34,0.4);">Apply to this challenge
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       <a href="${BP}/challenges" style="display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:15.5px;padding:15px 26px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);">Back to all challenges</a>
     </div>
@@ -123,7 +123,7 @@ export default async function ChallengeDetail({ params }: { params: Promise<{ id
       <div style="background:#141417;border-radius:18px;padding:26px;">
         <div style="font-size:15px;font-weight:600;color:#fff;margin-bottom:8px;">Ready to build this?</div>
         <p style="margin:0 0 18px;font-size:13px;line-height:1.55;color:rgba(255,255,255,0.62);">Submit your team and approach before the deadline.</p>
-        <a href="${BP}/challenges/${c.id}/apply/" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:13px 20px;border-radius:9999px;text-decoration:none;">Start application
+        <a href="${BP}/challenges/${c.slug}/apply/" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:13px 20px;border-radius:9999px;text-decoration:none;">Start application
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       </div>
     </div>
@@ -160,7 +160,7 @@ export default async function ChallengeDetail({ params }: { params: Promise<{ id
           ${s.track ? `<div style="display:flex;gap:6px;"><span style="color:#9A958B;min-width:74px;">Track</span><span style="font-weight:600;color:#141417;">${s.track}</span></div>` : ""}
           <div style="display:flex;gap:6px;"><span style="color:#9A958B;min-width:74px;">Registered</span><span style="font-weight:600;color:#141417;">${s.registered}</span></div>
         </div>
-        <a href="${BP}/challenges/${c.id}/apply/" style="display:flex;align-items:center;justify-content:center;gap:7px;font-size:13.5px;font-weight:600;color:#fff;background:#141417;padding:11px 16px;border-radius:9999px;text-decoration:none;">Collaborate
+        <a href="${BP}/challenges/${c.slug}/apply/" style="display:flex;align-items:center;justify-content:center;gap:7px;font-size:13.5px;font-weight:600;color:#fff;background:#141417;padding:11px 16px;border-radius:9999px;text-decoration:none;">Collaborate
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       </div>`).join("")}
       ${totalSolvers > visibleSolvers.length ? `
@@ -169,7 +169,7 @@ export default async function ChallengeDetail({ params }: { params: Promise<{ id
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9A958B" stroke-width="2.4"><path d="M12 5v14M5 12h14"></path></svg>
         </div>
         <div><div style="font-size:15px;font-weight:700;color:#141417;margin-bottom:6px;">${totalSolvers - visibleSolvers.length} more teams registered</div><p style="margin:0;font-size:13px;line-height:1.55;color:#9A958B;">Full solver list visible to challenge poster and Incubator Baguio staff.</p></div>
-        <a href="${BP}/challenges/${c.id}/apply/" style="font-size:13.5px;font-weight:600;color:#F26522;text-decoration:none;">Join as a solver &rarr;</a>
+        <a href="${BP}/challenges/${c.slug}/apply/" style="font-size:13.5px;font-weight:600;color:#F26522;text-decoration:none;">Join as a solver &rarr;</a>
       </div>` : ""}
     </div>`}
   </div>
