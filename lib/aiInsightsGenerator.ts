@@ -1,6 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
 import { computeAiStats, type MentorRow, type OrgRow, type ProfileRow, type StartupRow, type SubmissionRow } from "./dashboardStats";
-import { CHALLENGES as STATIC_CHALLENGES } from "../app/challenges/data";
 
 const CF_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const CF_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
@@ -22,12 +21,13 @@ export async function generateAndCacheInsights(source: "cron" | "manual") {
   if (!CF_ACCOUNT_ID || !CF_API_TOKEN) throw new Error("AI insights aren't configured yet.");
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const [s, m, o, p, c] = await Promise.all([
+  const [s, m, o, p, c, ch] = await Promise.all([
     supabase.from("startups").select("id,name,sector,lifecycle_stage,tbi_affiliation,funding_raised,created_at"),
     supabase.from("mentors").select("id,name,created_at"),
     supabase.from("organizations").select("id,name,org_type,created_at"),
     supabase.from("profiles").select("id,created_at"),
     supabase.from("challenge_submissions").select("id,title,org_name,created_at"),
+    supabase.from("challenges").select("id", { count: "exact", head: true }),
   ]);
 
   const stats = computeAiStats({
@@ -36,7 +36,7 @@ export async function generateAndCacheInsights(source: "cron" | "manual") {
     orgs: (o.data as OrgRow[]) ?? [],
     profiles: (p.data as ProfileRow[]) ?? [],
     submissions: (c.data as SubmissionRow[]) ?? [],
-    staticChallengesCount: STATIC_CHALLENGES.length,
+    staticChallengesCount: ch.count ?? 0,
   });
 
   const cfRes = await fetch(`https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/ai/run/${CF_MODEL}`, {

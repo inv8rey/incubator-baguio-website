@@ -1,13 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { CHALLENGES, type ChallengeOrgType } from "./data";
+import { useEffect, useMemo, useState } from "react";
+import { supabase } from "../../lib/supabaseClient";
+import { CHALLENGE_CATEGORIES, CHALLENGE_ORG_TYPES, type Challenge, type ChallengeOrgType } from "./data";
+import { fetchDynamicChallenges } from "./dynamicData";
 
 const DARK = "#141417";
 const ORANGE = "#F26522";
-
-const SECTORS = ["Agriculture", "Environment", "Tourism", "Health", "Education", "Govtech", "Other"];
-const ORG_TYPES: ChallengeOrgType[] = ["Government", "Academe", "Private Sector", "Community"];
 
 function Chip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
@@ -21,6 +20,7 @@ function Chip({ label, active, onClick }: { label: string; active: boolean; onCl
         padding: "9px 18px",
         borderRadius: 9999,
         cursor: "pointer",
+        whiteSpace: "nowrap",
       }}
     >
       {label}
@@ -29,19 +29,39 @@ function Chip({ label, active, onClick }: { label: string; active: boolean; onCl
 }
 
 export default function ChallengesBrowser({ bp }: { bp: string }) {
-  const [sector, setSector] = useState<string | null>(null);
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [category, setCategory] = useState<string | null>(null);
   const [orgType, setOrgType] = useState<ChallengeOrgType | null>(null);
   const [query, setQuery] = useState("");
 
+  useEffect(() => {
+    function load() {
+      fetchDynamicChallenges().then((c) => {
+        setChallenges(c);
+        setLoaded(true);
+      });
+    }
+    load();
+    if (!supabase) return;
+    const channel = supabase
+      .channel("public-challenges-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "challenges" }, load)
+      .subscribe();
+    return () => {
+      supabase?.removeChannel(channel);
+    };
+  }, []);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return CHALLENGES.filter((c) => {
-      if (sector && c.sector !== sector) return false;
+    return challenges.filter((c) => {
+      if (category && c.category !== category) return false;
       if (orgType && c.orgType !== orgType) return false;
-      if (q && !`${c.title} ${c.summary} ${c.orgName} ${c.sector}`.toLowerCase().includes(q)) return false;
+      if (q && !`${c.title} ${c.summary} ${c.orgName} ${c.category}`.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [sector, orgType, query]);
+  }, [challenges, category, orgType, query]);
 
   return (
     <div style={{ background: "#fff", padding: "56px 40px 64px", borderTop: "1px solid rgba(20,20,25,0.06)" }}>
@@ -62,13 +82,13 @@ export default function ChallengesBrowser({ bp }: { bp: string }) {
           </div>
         </div>
 
-        {/* SECTOR FILTER */}
+        {/* CATEGORY FILTER */}
         <div style={{ marginBottom: 14 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 10 }}>Startup category</div>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 10 }}>Category</div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Chip label="All sectors" active={sector === null} onClick={() => setSector(null)} />
-            {SECTORS.map((s) => (
-              <Chip key={s} label={s} active={sector === s} onClick={() => setSector(s)} />
+            <Chip label="All categories" active={category === null} onClick={() => setCategory(null)} />
+            {CHALLENGE_CATEGORIES.map((c) => (
+              <Chip key={c.id} label={`${c.emoji} ${c.id}`} active={category === c.id} onClick={() => setCategory(c.id)} />
             ))}
           </div>
         </div>
@@ -78,45 +98,44 @@ export default function ChallengesBrowser({ bp }: { bp: string }) {
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 10 }}>Posted by</div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <Chip label="All organizations" active={orgType === null} onClick={() => setOrgType(null)} />
-            {ORG_TYPES.map((o) => (
+            {CHALLENGE_ORG_TYPES.map((o) => (
               <Chip key={o} label={o} active={orgType === o} onClick={() => setOrgType(o)} />
             ))}
           </div>
         </div>
 
-        {filtered.length === 0 ? (
+        {loaded && filtered.length === 0 ? (
           <p style={{ textAlign: "center", fontSize: 14, color: "#9A958B", padding: "48px 0" }}>No challenges match your filters.</p>
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
-            {filtered.map((c) => (
-              <div key={c.id} className="ib-challenge-hover" style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 24, display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-                  <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: c.sectorColor, background: c.sectorBg, padding: "5px 11px", borderRadius: 9999 }}>{c.sector}</span>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11.5, fontWeight: 600, color: c.deadlineColor }}>
-                    <span style={{ width: 6, height: 6, borderRadius: 9999, background: c.deadlineColor, display: "inline-block" }} />
-                    {c.deadline}
-                  </span>
+            {filtered.map((c) => {
+              const cat = CHALLENGE_CATEGORIES.find((cc) => cc.id === c.category);
+              return (
+                <div key={c.id} className="ib-challenge-hover" style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 24, display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, gap: 10, flexWrap: "wrap" }}>
+                    <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: cat?.color, background: cat?.bg, padding: "5px 11px", borderRadius: 9999 }}>{cat?.emoji} {c.category}</span>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11.5, fontWeight: 600, color: c.deadlineColor }}>
+                      <span style={{ width: 6, height: 6, borderRadius: 9999, background: c.deadlineColor, display: "inline-block" }} />
+                      {c.deadline}
+                    </span>
+                  </div>
+                  <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{c.title}</h3>
+                  <p style={{ margin: "0 0 18px", fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", flex: 1 }}>{c.summary}</p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+                    <div style={{ width: 28, height: 28, borderRadius: 7, background: c.orgColor, display: "flex", alignItems: "center", justifyContent: "center", fontSize: c.orgInitialsFontSize, fontWeight: 700, color: "#fff" }}>{c.orgInitials}</div>
+                    <span style={{ fontSize: 12.5, color: "#9A958B" }}>{c.orgName}</span>
+                    <span style={{ fontSize: 10.5, fontWeight: 600, color: "#9A958B", background: "#F4F2EC", padding: "3px 9px", borderRadius: 9999, marginLeft: "auto" }}>{c.orgType}</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", paddingTop: 16, borderTop: "1px solid rgba(20,20,25,0.08)" }}>
+                    <a href={`${bp}/challenges/${c.id}/`} style={{ fontSize: 13, fontWeight: 600, color: DARK, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      View challenge <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={DARK} strokeWidth={2.3}><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                    </a>
+                  </div>
                 </div>
-                <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{c.title}</h3>
-                <p style={{ margin: "0 0 18px", fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", flex: 1 }}>{c.summary}</p>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-                  <div style={{ width: 28, height: 28, borderRadius: 7, background: c.orgColor, display: "flex", alignItems: "center", justifyContent: "center", fontSize: c.orgInitialsFontSize, fontWeight: 700, color: "#fff" }}>{c.orgInitials}</div>
-                  <span style={{ fontSize: 12.5, color: "#9A958B" }}>{c.orgName}</span>
-                  <span style={{ fontSize: 10.5, fontWeight: 600, color: "#9A958B", background: "#F4F2EC", padding: "3px 9px", borderRadius: 9999, marginLeft: "auto" }}>{c.orgType}</span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", paddingTop: 16, borderTop: "1px solid rgba(20,20,25,0.08)" }}>
-                  <a href={`${bp}/challenges/${c.id}/`} style={{ fontSize: 13, fontWeight: 600, color: DARK, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}>
-                    View challenge <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={DARK} strokeWidth={2.3}><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-                  </a>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
-
-        <div style={{ display: "flex", justifyContent: "center", marginTop: 30 }}>
-          <a href="#" style={{ fontSize: 14, fontWeight: 600, color: DARK, textDecoration: "none", border: "1px solid rgba(20,20,25,0.18)", padding: "13px 28px", borderRadius: 9999 }}>Load more challenges</a>
-        </div>
       </div>
     </div>
   );

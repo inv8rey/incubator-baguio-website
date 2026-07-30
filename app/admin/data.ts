@@ -195,18 +195,3 @@ export const STAGE_BADGE: Record<string, { color: string; bg: string }> = {
   Idea: { color: "#F5A623", bg: "rgba(245,166,35,0.12)" },
 };
 
-// ---- Challenges ----
-export const CHALLENGE_STATS = [
-  { label: "Open Challenges", value: "18", delta: "↑ +6 this quarter", note: null },
-  { label: "Sectors Covered", value: "7", delta: null, note: "Across all categories" },
-  { label: "Registered Solvers", value: "143", delta: "↑ +28 this month", note: null },
-  { label: "Avg. Submissions", value: "7.9", delta: null, note: "Per challenge" },
-];
-
-export const CHALLENGES = [
-  { sector: "Agriculture", sectorColor: "#1A6B3C", sectorBg: "rgba(26,107,60,0.10)", urgency: "9 days left", urgencyColor: "#E23A2E", title: "Cut post-harvest loss for highland vegetable farmers", desc: "Build a cold-chain or logistics solution that keeps Benguet produce fresh to market.", org: "Dept of Agriculture, CAR", orgInitials: "DA", orgColor: "#1A6B3C", submissions: 12 },
-  { sector: "Environment", sectorColor: "#285E7A", sectorBg: "rgba(40,94,122,0.10)", urgency: "21 days left", urgencyColor: "#F5A623", title: "Smart waste segregation for Baguio public markets", desc: "Design a system that improves sorting and diversion at high-traffic market sites.", org: "City Environment Office", orgInitials: "CEPMO", orgColor: ORANGE, submissions: 7 },
-  { sector: "Tourism", sectorColor: "#9E2A52", sectorBg: "rgba(158,42,82,0.10)", urgency: "16 days left", urgencyColor: "#F5A623", title: "Spread tourism beyond peak-season rush", desc: "Create a platform that promotes off-peak travel and local creative experiences.", org: "Baguio Tourism Office", orgInitials: "DOT", orgColor: "#9E2A52", submissions: 5 },
-  { sector: "Industry", sectorColor: ORANGE, sectorBg: "rgba(242,101,34,0.10)", urgency: "21 days left", urgencyColor: "#F5A623", title: "Digital storefronts for public market vendors", desc: "Help Baguio's market vendors reach customers online with an affordable platform.", org: "Baguio MSME Council", orgInitials: "MSME", orgColor: "#285E7A", submissions: 9 },
-  { sector: "Academia", sectorColor: "#3A5FA0", sectorBg: "rgba(58,95,160,0.10)", urgency: "44 days left", urgencyColor: "#F5A623", title: "Commercializing highland crop preservation research", desc: "Partner with BSU to bring crop preservation research to commercial applications.", org: "Benguet State University", orgInitials: "BSU", orgColor: "#3A5FA0", submissions: 3 },
-];

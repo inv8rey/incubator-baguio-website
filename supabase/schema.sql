@@ -391,6 +391,58 @@ create policy "applicants manage their own applications" on public.challenge_app
   for all using (auth.uid() = applicant_id) with check (auth.uid() = applicant_id);
 
 -- ---------------------------------------------------------------------------
+-- challenges: admin-curated Innovation Challenges shown on the main
+-- /challenges page (distinct from challenge_submissions, which are posted
+-- directly by logged-in members). problem/scope/support are stored as
+-- newline-separated text and split into paragraphs/bullets in the UI.
+-- ---------------------------------------------------------------------------
+create table if not exists public.challenges (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  category text not null default 'Environmental Action' check (
+    category in (
+      'Environmental Action',
+      'Social Protection & Inclusivity',
+      'Economic Expansion',
+      'Smart City',
+      'Resilience',
+      'Good Governance'
+    )
+  ),
+  summary text not null default '',
+  problem text not null default '',
+  scope text not null default '',
+  support text not null default '',
+  org_name text not null default '',
+  org_full text not null default '',
+  org_type text not null default 'Government' check (org_type in ('Government', 'Academe', 'Private Sector', 'Community')),
+  org_color text not null default '#141417',
+  org_initials text not null default '',
+  contact_email text not null default '',
+  scope_region text not null default 'Baguio City',
+  status text not null default 'Open' check (status in ('Open', 'Closed')),
+  deadline_date date,
+  shortlist_date date,
+  pitch_date date,
+  pilot_date date,
+  created_at timestamptz not null default now()
+);
+
+alter table public.challenges enable row level security;
+
+drop policy if exists "challenges are publicly readable" on public.challenges;
+create policy "challenges are publicly readable" on public.challenges
+  for select using (true);
+
+drop policy if exists "admins manage challenges" on public.challenges;
+create policy "admins manage challenges" on public.challenges
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+-- ---------------------------------------------------------------------------
 -- storage: startup-logos bucket for "add a way to add a logo"
 -- ---------------------------------------------------------------------------
 insert into storage.buckets (id, name, public)
@@ -572,6 +624,12 @@ begin
     where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'event_submissions'
   ) then
     alter publication supabase_realtime add table public.event_submissions;
+  end if;
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'challenges'
+  ) then
+    alter publication supabase_realtime add table public.challenges;
   end if;
 end $$;
 

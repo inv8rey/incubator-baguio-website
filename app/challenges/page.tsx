@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ChallengesBrowser from "./ChallengesBrowser";
+import ChallengesStats from "./ChallengesStats";
 import CommunityChallenges from "./CommunityChallenges";
 
 export const metadata: Metadata = {
@@ -38,28 +39,12 @@ const CHALLENGES_HTML_TOP = `
   <div style="position:relative;max-width:900px;margin:0 auto;">
     <div style="font-size:12.5px;color:rgba(255,255,255,0.4);margin-bottom:22px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.7);">Innovation Challenges</span></div>
     <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:9999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.03);margin-bottom:26px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,101,34,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:#F26522;"></span></span><span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Open innovation marketplace</span></div>
-    <h1 style="margin:0;font-size:62px;line-height:1.02;font-weight:700;letter-spacing:-0.04em;color:#fff;">Real problems, posted by<br>the city. <span style="color:#F26522;">Solved by you.</span></h1>
-    <p style="margin:26px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:620px;">LGUs, MSMEs, universities, and NGOs post the challenges that matter. Founders, startups, researchers, and students step up to build the solutions.</p>
+    <h1 style="margin:0;font-size:56px;line-height:1.08;font-weight:700;letter-spacing:-0.04em;color:#fff;">Where Baguio&rsquo;s challenges become <span style="color:#F26522;">innovation opportunities.</span></h1>
+    <p style="margin:26px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:660px;">Explore innovation challenges from government agencies, businesses, universities, and community organizations. Collaborate with the people who need solutions and help shape a smarter, more sustainable, and more innovative Baguio.</p>
     <div style="display:flex;gap:12px;justify-content:center;margin-top:36px;flex-wrap:wrap;">
       <a href="#" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15.5px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 16px 40px -14px rgba(242,101,34,0.7);">Browse challenges <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       <a href="${BP}/challenges/post" style="display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:15.5px;padding:15px 28px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.02);">Post a challenge</a>
     </div>
-  </div>
-</div>
-
-<!-- STAT STRIP — seamless dark continuation of the hero -->
-<div style="background:#0B0B0D;padding:0 40px 64px;">
-  <div style="max-width:1080px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:repeat(4,1fr);">
-    ${[
-      ["48", "Open challenges", false],
-      ["7", "Sectors covered", true],
-      ["320", "+", "Solvers registered", true],
-      ["27", "Solutions deployed", true],
-    ].map((s) => {
-      const hasPlus = s.length === 5;
-      const num = s[0]; const plus = hasPlus ? s[1] : ""; const label = hasPlus ? s[2] : s[1]; const divider = hasPlus ? s[3] : s[2];
-      return `<div style="text-align:center;padding:40px 20px 4px;${divider ? "border-left:1px solid rgba(255,255,255,0.08);" : ""}"><div style="font-size:42px;font-weight:700;color:#fff;letter-spacing:-0.03em;line-height:1;">${num}<span style="color:#F26522;">${plus}</span></div><div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.42);margin-top:12px;">${label}</div></div>`;
-    }).join("")}
   </div>
 </div>
 
@@ -208,6 +193,7 @@ export default function Challenges() {
   return (
     <main>
       <div dangerouslySetInnerHTML={{ __html: CHALLENGES_HTML_TOP }} />
+      <ChallengesStats />
       <ChallengesBrowser bp={BP} />
       <CommunityChallenges bp={BP} />
       <div dangerouslySetInnerHTML={{ __html: CHALLENGES_HTML_BOTTOM }} />

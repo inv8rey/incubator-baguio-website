@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "./seo";
-import { CHALLENGES } from "./challenges/data";
+import { supabase } from "../lib/supabaseClient";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const staticRoutes: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number }[] = [
@@ -20,7 +20,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/signup/", changeFrequency: "yearly", priority: 0.4 },
   ];
 
-  const challengeRoutes = CHALLENGES.map((c) => ({
+  const { data } = supabase ? await supabase.from("challenges").select("id") : { data: [] };
+  const challengeRoutes = (data ?? []).map((c: { id: string }) => ({
     path: `/challenges/${c.id}/`,
     changeFrequency: "monthly" as const,
     priority: 0.7,

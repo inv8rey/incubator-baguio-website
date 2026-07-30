@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "../../AuthProvider";
 import { supabase } from "../../../lib/supabaseClient";
+import { CHALLENGE_CATEGORIES } from "../data";
 
 const ORANGE = "#F26522";
 const DARK = "#141417";
@@ -23,7 +24,7 @@ interface FormState {
 }
 
 const ORG_TYPES = ["Government", "Academe", "Corporate", "Community"];
-const SECTORS = ["Agriculture", "Environment", "Tourism", "Health", "Education", "Govtech", "Other"];
+const SECTORS = CHALLENGE_CATEGORIES.map((c) => `${c.emoji} ${c.id}`);
 
 const STEPS = ["Organization & contact", "Challenge details", "Review & submit"];
 
@@ -239,7 +240,7 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
             {errors.title && <p style={{ color: "#E23A2E", fontSize: 12, margin: "6px 0 0" }}>{errors.title}</p>}
           </div>
           <div>
-            <label style={labelStyle}>Sector</label>
+            <label style={labelStyle}>Category</label>
             <select style={{ ...inputStyle, appearance: "auto" }} value={form.sector} onChange={(e) => update("sector", e.target.value)}>
               <option value="" disabled>Select one</option>
               {SECTORS.map((s) => (
@@ -279,7 +280,7 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
               <dt style={{ color: "#9A958B" }}>Title</dt><dd style={{ margin: 0, color: DARK, fontWeight: 600 }}>{form.title || "—"}</dd>
               <dt style={{ color: "#9A958B" }}>Organization</dt><dd style={{ margin: 0, color: DARK }}>{form.orgName || "—"} ({form.orgType || "?"})</dd>
               <dt style={{ color: "#9A958B" }}>Contact</dt><dd style={{ margin: 0, color: DARK }}>{form.contactName || "—"} &middot; {form.email || "—"}</dd>
-              <dt style={{ color: "#9A958B" }}>Sector</dt><dd style={{ margin: 0, color: DARK }}>{form.sector || "—"}</dd>
+              <dt style={{ color: "#9A958B" }}>Category</dt><dd style={{ margin: 0, color: DARK }}>{form.sector || "—"}</dd>
               <dt style={{ color: "#9A958B" }}>Deadline</dt><dd style={{ margin: 0, color: DARK }}>{form.deadline || "—"}</dd>
               <dt style={{ color: "#9A958B" }}>Problem</dt><dd style={{ margin: 0, color: "#44444C", lineHeight: 1.5 }}>{form.problem || "—"}</dd>
               <dt style={{ color: "#9A958B" }}>Scope</dt><dd style={{ margin: 0, color: "#44444C", lineHeight: 1.5 }}>{form.scope || "—"}</dd>

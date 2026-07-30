@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CHALLENGES, getChallenge } from "../data";
+import { fetchChallengeApplications, fetchChallengeById } from "../dynamicData";
+import { categoryInfo } from "../data";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
-export function generateStaticParams() {
-  return CHALLENGES.map((c) => ({ id: c.id }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const c = getChallenge(id);
+  const c = await fetchChallengeById(id);
   if (!c) return { title: "Challenge not found — Incubator Baguio" };
   return {
     title: `${c.title} — Incubator Baguio Challenges`,
@@ -20,8 +19,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function ChallengeDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const c = getChallenge(id);
+  const c = await fetchChallengeById(id);
   if (!c) return notFound();
+  const cat = categoryInfo(c.category);
+  const solvers = await fetchChallengeApplications(id);
+  const totalSolvers = solvers.length;
+  const visibleSolvers = solvers.slice(0, 5);
 
   const HTML = `
 <!-- NAV -->
@@ -50,7 +53,7 @@ export default async function ChallengeDetail({ params }: { params: Promise<{ id
   <div style="position:relative;max-width:880px;margin:0 auto;">
     <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:22px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <a href="${BP}/challenges" style="color:inherit;text-decoration:none;">Innovation Challenges</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.8);">${c.title}</span></div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;">
-      <span style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${c.sectorColor};background:${c.sectorBg};padding:6px 12px;border-radius:9999px;">${c.sector}</span>
+      <span style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${cat.color};background:${cat.bg};padding:6px 12px;border-radius:9999px;">${cat.emoji} ${c.category}</span>
       <span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:${c.deadlineColor};"><span style="width:6px;height:6px;border-radius:9999px;background:${c.deadlineColor};"></span>${c.deadline}</span>
     </div>
     <h1 style="margin:0;font-size:44px;line-height:1.08;font-weight:700;letter-spacing:-0.03em;color:#fff;max-width:760px;">${c.title}</h1>
@@ -96,9 +99,9 @@ export default async function ChallengeDetail({ params }: { params: Promise<{ id
           ${[
             ["Status", `<span style="display:inline-flex;align-items:center;font-size:13px;font-weight:700;color:#1A6B3C;background:rgba(26,107,60,0.12);padding:6px 16px;border-radius:9999px;">${c.status}</span>`],
             ["Deadline", `<span style="font-size:14.5px;font-weight:700;color:#141417;">${c.timeline[0]?.date ?? c.deadline}</span>`],
-            ["Sector", `<span style="font-size:14.5px;font-weight:700;color:#141417;">${c.sector}</span>`],
+            ["Category", `<span style="font-size:14.5px;font-weight:700;color:#141417;">${cat.emoji} ${c.category}</span>`],
             ["Scope", `<span style="font-size:14.5px;font-weight:700;color:#141417;">${c.scopeRegion}</span>`],
-            ["Submissions", `<span style="font-size:14.5px;font-weight:700;color:#141417;">${c.submissions} received</span>`],
+            ["Submissions", `<span style="font-size:14.5px;font-weight:700;color:#141417;">${totalSolvers} received</span>`],
           ].map(([label, value], i, arr) => `
           <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 0;${i < arr.length - 1 ? "border-bottom:1px solid rgba(20,20,25,0.08);" : ""}">
             <span style="font-size:14.5px;color:#9A958B;">${label}</span>
@@ -132,40 +135,40 @@ export default async function ChallengeDetail({ params }: { params: Promise<{ id
         <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:10px;">Registered solvers</div>
         <h2 style="margin:0;font-size:30px;font-weight:700;letter-spacing:-0.02em;color:#141417;">Teams currently working on this</h2>
       </div>
-      <span style="font-size:14px;color:#9A958B;">${c.totalSolvers} group${c.totalSolvers === 1 ? "" : "s"} registered</span>
+      <span style="font-size:14px;color:#9A958B;">${totalSolvers} group${totalSolvers === 1 ? "" : "s"} registered</span>
     </div>
 
+    ${totalSolvers === 0 ? `
+    <div style="border:1.5px dashed rgba(20,20,25,0.18);border-radius:18px;padding:40px 26px;text-align:center;">
+      <p style="margin:0;font-size:14px;color:#9A958B;">No teams have registered yet. Be the first to apply.</p>
+    </div>` : `
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
-      ${c.solvers.map((s) => {
-        const statusGreen = s.status === "Active";
-        return `
+      ${visibleSolvers.map((s) => `
       <div class="ib-challenge-hover" style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:26px;display:flex;flex-direction:column;">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;">
           <div style="display:flex;align-items:center;gap:12px;">
             <div style="width:44px;height:44px;border-radius:11px;background:${s.color};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;">${s.initials}</div>
             <div><div style="font-size:16px;font-weight:700;color:#141417;">${s.name}</div><div style="font-size:12.5px;color:#9A958B;margin-top:2px;">Team &middot; ${s.members} members</div></div>
           </div>
-          <span style="font-size:11.5px;font-weight:700;color:${statusGreen ? "#1A6B3C" : "#B5670E"};background:${statusGreen ? "rgba(26,107,60,0.12)" : "rgba(216,138,10,0.14)"};padding:5px 13px;border-radius:9999px;white-space:nowrap;">${s.status}</span>
         </div>
-        <p style="margin:0 0 18px;font-size:13.5px;line-height:1.6;color:#6B6B73;flex:1;">${s.description}</p>
+        ${s.description ? `<p style="margin:0 0 18px;font-size:13.5px;line-height:1.6;color:#6B6B73;flex:1;">${s.description}</p>` : ""}
         <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;margin-bottom:18px;">
-          <div style="display:flex;gap:6px;"><span style="color:#9A958B;min-width:74px;">School</span><span style="font-weight:600;color:#141417;">${s.school}</span></div>
-          <div style="display:flex;gap:6px;"><span style="color:#9A958B;min-width:74px;">Track</span><span style="font-weight:600;color:#141417;">${s.track}</span></div>
+          ${s.affiliation ? `<div style="display:flex;gap:6px;"><span style="color:#9A958B;min-width:74px;">Affiliation</span><span style="font-weight:600;color:#141417;">${s.affiliation}</span></div>` : ""}
+          ${s.track ? `<div style="display:flex;gap:6px;"><span style="color:#9A958B;min-width:74px;">Track</span><span style="font-weight:600;color:#141417;">${s.track}</span></div>` : ""}
           <div style="display:flex;gap:6px;"><span style="color:#9A958B;min-width:74px;">Registered</span><span style="font-weight:600;color:#141417;">${s.registered}</span></div>
         </div>
         <a href="${BP}/challenges/${c.id}/apply/" style="display:flex;align-items:center;justify-content:center;gap:7px;font-size:13.5px;font-weight:600;color:#fff;background:#141417;padding:11px 16px;border-radius:9999px;text-decoration:none;">Collaborate
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-      </div>`;
-      }).join("")}
-      ${c.totalSolvers > c.solvers.length ? `
+      </div>`).join("")}
+      ${totalSolvers > visibleSolvers.length ? `
       <div style="border:1.5px dashed rgba(20,20,25,0.18);border-radius:18px;padding:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;">
         <div style="width:48px;height:48px;border-radius:9999px;background:#F4F2EC;display:flex;align-items:center;justify-content:center;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9A958B" stroke-width="2.4"><path d="M12 5v14M5 12h14"></path></svg>
         </div>
-        <div><div style="font-size:15px;font-weight:700;color:#141417;margin-bottom:6px;">${c.totalSolvers - c.solvers.length} more teams registered</div><p style="margin:0;font-size:13px;line-height:1.55;color:#9A958B;">Full solver list visible to challenge poster and Incubator Baguio staff.</p></div>
+        <div><div style="font-size:15px;font-weight:700;color:#141417;margin-bottom:6px;">${totalSolvers - visibleSolvers.length} more teams registered</div><p style="margin:0;font-size:13px;line-height:1.55;color:#9A958B;">Full solver list visible to challenge poster and Incubator Baguio staff.</p></div>
         <a href="${BP}/challenges/${c.id}/apply/" style="font-size:13.5px;font-weight:600;color:#F26522;text-decoration:none;">Join as a solver &rarr;</a>
       </div>` : ""}
-    </div>
+    </div>`}
   </div>
 </div>
 

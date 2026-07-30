@@ -1,25 +1,23 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CHALLENGES, getChallenge } from "../../data";
+import { fetchChallengeById } from "../../dynamicData";
 import ApplyForm from "./ApplyForm";
 import RequireAuth from "../../../RequireAuth";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
-export function generateStaticParams() {
-  return CHALLENGES.map((c) => ({ id: c.id }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const c = getChallenge(id);
+  const c = await fetchChallengeById(id);
   if (!c) return { title: "Challenge not found — Incubator Baguio" };
   return { title: `Apply — ${c.title} — Incubator Baguio` };
 }
 
 export default async function ApplyPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const c = getChallenge(id);
+  const c = await fetchChallengeById(id);
   if (!c) return notFound();
 
   const TOP_HTML = `

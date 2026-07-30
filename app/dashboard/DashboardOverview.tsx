@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../AuthProvider";
 import { supabase } from "../../lib/supabaseClient";
 import { cardStyle, DARK, ORANGE } from "./styles";
-import { CHALLENGES as STATIC_CHALLENGES } from "../challenges/data";
+import { categoryInfo } from "../challenges/data";
+import { fetchDynamicChallenges } from "../challenges/dynamicData";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -148,29 +149,33 @@ export default function DashboardOverview() {
   useEffect(() => {
     if (!supabase) return;
     (async () => {
-      const [mentorsCount, orgsCount, startupsCount, submissionsCount] = await Promise.all([
+      const [mentorsCount, orgsCount, startupsCount, submissionsCount, curatedChallenges] = await Promise.all([
         supabase!.from("mentors").select("id", { count: "exact", head: true }),
         supabase!.from("organizations").select("id", { count: "exact", head: true }),
         supabase!.from("startups").select("id", { count: "exact", head: true }),
         supabase!.from("challenge_submissions").select("id", { count: "exact", head: true }),
+        fetchDynamicChallenges(),
       ]);
       setSiteStats({
-        openChallenges: STATIC_CHALLENGES.length + (submissionsCount.count ?? 0),
+        openChallenges: curatedChallenges.length + (submissionsCount.count ?? 0),
         activeMentors: mentorsCount.count ?? 0,
         partnerOrgs: orgsCount.count ?? 0,
         registeredStartups: startupsCount.count ?? 0,
       });
 
-      const staticItems: RecommendedItem[] = STATIC_CHALLENGES.slice(0, 5).map((c) => ({
-        key: c.id,
-        title: c.title,
-        tag: c.sector,
-        tagColor: c.sectorColor,
-        tagBg: c.sectorBg,
-        org: c.orgFull,
-        deadline: c.deadline,
-        href: `${BP}/challenges/${c.id}/`,
-      }));
+      const staticItems: RecommendedItem[] = curatedChallenges.slice(0, 5).map((c) => {
+        const cat = categoryInfo(c.category);
+        return {
+          key: c.id,
+          title: c.title,
+          tag: c.category,
+          tagColor: cat.color,
+          tagBg: cat.bg,
+          org: c.orgFull,
+          deadline: c.deadline,
+          href: `${BP}/challenges/${c.id}/`,
+        };
+      });
       const { data: submissionRows } = await supabase!
         .from("challenge_submissions")
         .select("id,title,org_name,sector,deadline")

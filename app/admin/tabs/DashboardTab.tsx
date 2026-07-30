@@ -5,7 +5,6 @@ import { Sparkline, StageDonut } from "../charts";
 import { DARK, ORANGE, SECTOR_FILTERS, STAGE_BADGE } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
-import { CHALLENGES as STATIC_CHALLENGES } from "../../challenges/data";
 import AiInsightsPanel from "./AiInsightsPanel";
 
 const KPI_ICONS = [
@@ -186,6 +185,10 @@ interface SubmissionRow {
   org_name: string;
   created_at: string;
 }
+interface CuratedChallengeRow {
+  id: string;
+  created_at: string;
+}
 
 export default function DashboardTab() {
   const [startups, setStartups] = useState<StartupRow[]>([]);
@@ -193,6 +196,7 @@ export default function DashboardTab() {
   const [orgs, setOrgs] = useState<OrgRow[]>([]);
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [submissions, setSubmissions] = useState<SubmissionRow[]>([]);
+  const [curatedChallenges, setCuratedChallenges] = useState<CuratedChallengeRow[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [live, setLive] = useState(false);
 
@@ -204,12 +208,13 @@ export default function DashboardTab() {
     let cancelled = false;
 
     async function load() {
-      const [s, m, o, p, c] = await Promise.all([
+      const [s, m, o, p, c, ch] = await Promise.all([
         supabase!.from("startups").select("id,name,sector,lifecycle_stage,tbi_affiliation,funding_raised,created_at").order("created_at", { ascending: false }),
         supabase!.from("mentors").select("id,name,created_at").order("created_at", { ascending: false }),
         supabase!.from("organizations").select("id,name,org_type,created_at").order("created_at", { ascending: false }),
         supabase!.from("profiles").select("id,full_name,created_at").order("created_at", { ascending: false }),
         supabase!.from("challenge_submissions").select("id,title,org_name,created_at").order("created_at", { ascending: false }),
+        supabase!.from("challenges").select("id,created_at").order("created_at", { ascending: false }),
       ]);
       if (cancelled) return;
       setStartups((s.data as StartupRow[]) ?? []);
@@ -217,6 +222,7 @@ export default function DashboardTab() {
       setOrgs((o.data as OrgRow[]) ?? []);
       setProfiles((p.data as ProfileRow[]) ?? []);
       setSubmissions((c.data as SubmissionRow[]) ?? []);
+      setCuratedChallenges((ch.data as CuratedChallengeRow[]) ?? []);
       setLoaded(true);
     }
     load();
@@ -231,6 +237,7 @@ export default function DashboardTab() {
       .on("postgres_changes", { event: "*", schema: "public", table: "organizations" }, load)
       .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, load)
       .on("postgres_changes", { event: "*", schema: "public", table: "challenge_submissions" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "challenges" }, load)
       .subscribe((status) => setLive(status === "SUBSCRIBED"));
 
     return () => {
@@ -242,7 +249,7 @@ export default function DashboardTab() {
   const startupSeries = weeklySeries(startups.map((s) => s.created_at));
   const founderSeries = weeklySeries(profiles.map((p) => p.created_at));
   const mentorSeries = weeklySeries(mentors.map((m) => m.created_at));
-  const challengeSeries = weeklySeries(submissions.map((c) => c.created_at)).map((v) => v + STATIC_CHALLENGES.length);
+  const challengeSeries = weeklySeries(submissions.map((c) => c.created_at)).map((v) => v + curatedChallenges.length);
 
   const totalFunding = startups.reduce((sum, s) => sum + parsePhp(s.funding_raised), 0);
   const fundingSeries = weightedWeeklySeries(
@@ -253,7 +260,7 @@ export default function DashboardTab() {
     { label: "Active Startups", value: String(startups.length), color: ORANGE, bg: "rgba(242,101,34,0.10)", spark: startupSeries, delta: deltaFromSeries(startupSeries) },
     { label: "Registered Founders", value: String(profiles.length), color: ORANGE, bg: "rgba(242,101,34,0.10)", spark: founderSeries, delta: deltaFromSeries(founderSeries) },
     { label: "Funding Raised", value: formatPhp(totalFunding), color: "#9E2A52", bg: "rgba(158,42,82,0.10)", spark: fundingSeries, delta: deltaFromSeries(fundingSeries) },
-    { label: "Open Challenges", value: String(STATIC_CHALLENGES.length + submissions.length), color: "#285E7A", bg: "rgba(40,94,122,0.10)", spark: challengeSeries, delta: deltaFromSeries(challengeSeries) },
+    { label: "Open Challenges", value: String(curatedChallenges.length + submissions.length), color: "#285E7A", bg: "rgba(40,94,122,0.10)", spark: challengeSeries, delta: deltaFromSeries(challengeSeries) },
     { label: "Mentor Pool", value: String(mentors.length), color: "#3A5FA0", bg: "rgba(58,95,160,0.10)", spark: mentorSeries, delta: deltaFromSeries(mentorSeries) },
   ];
 
