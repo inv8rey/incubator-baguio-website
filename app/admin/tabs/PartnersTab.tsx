@@ -9,8 +9,9 @@ import { MENTOR_SPECIALIZATIONS } from "../../ecosystem/data";
 
 const ORG_TYPES = ["TBIs", "Companies", "Service Providers", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
 type OrgType = (typeof ORG_TYPES)[number];
-const CATEGORIES = ["Mentors", ...ORG_TYPES, "Ecosystem Partners"] as const;
+const CATEGORIES = ["Mentors", ...ORG_TYPES, "Ecosystem Partners", "Funded Projects"] as const;
 type Category = (typeof CATEGORIES)[number];
+const PROJECT_STATUSES = ["Ongoing", "Completed", "Upcoming"] as const;
 
 const NAME_MAX = 60;
 const BIO_MAX = 280;
@@ -59,22 +60,34 @@ interface PartnerRow {
   logoUrl: string;
 }
 
+interface FundedProjectRow {
+  id: string;
+  title: string;
+  fundingAgency: string;
+  leadInstitution: string;
+  duration: string;
+  status: string;
+}
+
 const TYPE_MAX = 40;
 const EMPTY_MENTOR = { name: "", position: "", company: "", bio: "", specializations: [] as string[], photoUrl: "", sector: SECTOR_FILTERS[0].label, socialLink: "" };
 const EMPTY_ORG = { name: "", description: "", website: "", contact_email: "", logoUrl: "", coverUrl: "", type: "" };
 const EMPTY_PARTNER = { name: "", logoUrl: "" };
+const EMPTY_FUNDED_PROJECT = { title: "", fundingAgency: "", leadInstitution: "", duration: "", status: PROJECT_STATUSES[0] as string };
 
 export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string }) {
   const [category, setCategory] = useState<Category>("Mentors");
   const [mentors, setMentors] = useState<MentorRow[]>([]);
   const [orgs, setOrgs] = useState<OrgRow[]>([]);
   const [partners, setPartners] = useState<PartnerRow[]>([]);
+  const [fundedProjects, setFundedProjects] = useState<FundedProjectRow[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [mentorForm, setMentorForm] = useState(EMPTY_MENTOR);
   const [orgForm, setOrgForm] = useState(EMPTY_ORG);
   const [partnerForm, setPartnerForm] = useState(EMPTY_PARTNER);
+  const [fundedProjectForm, setFundedProjectForm] = useState(EMPTY_FUNDED_PROJECT);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
@@ -83,10 +96,11 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
       setLoaded(true);
       return;
     }
-    const [{ data: mentorData }, { data: orgData }, { data: partnerData }] = await Promise.all([
+    const [{ data: mentorData }, { data: orgData }, { data: partnerData }, { data: projectData }] = await Promise.all([
       supabase.from("mentors").select("*").order("created_at", { ascending: false }),
       supabase.from("organizations").select("*").order("created_at", { ascending: false }),
       supabase.from("ecosystem_partners").select("*").order("created_at", { ascending: false }),
+      supabase.from("funded_projects").select("*").order("created_at", { ascending: false }),
     ]);
     setMentors(
       (mentorData ?? []).map((m: any) => {
@@ -101,6 +115,9 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
       })
     );
     setPartners((partnerData ?? []).map((p: any) => ({ id: p.id, name: p.name, logoUrl: p.logo_url })));
+    setFundedProjects(
+      (projectData ?? []).map((f: any) => ({ id: f.id, title: f.title, fundingAgency: f.funding_agency || "", leadInstitution: f.lead_institution || "", duration: f.duration || "", status: f.status || "Ongoing" }))
+    );
     setLoaded(true);
   }
 
@@ -112,6 +129,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
       .on("postgres_changes", { event: "*", schema: "public", table: "mentors" }, load)
       .on("postgres_changes", { event: "*", schema: "public", table: "organizations" }, load)
       .on("postgres_changes", { event: "*", schema: "public", table: "ecosystem_partners" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "funded_projects" }, load)
       .subscribe();
     return () => {
       supabase!.removeChannel(channel);
@@ -121,16 +139,19 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
   const q = searchQuery.toLowerCase();
   const isMentors = category === "Mentors";
   const isPartners = category === "Ecosystem Partners";
-  const isOrg = !isMentors && !isPartners;
+  const isFundedProjects = category === "Funded Projects";
+  const isOrg = !isMentors && !isPartners && !isFundedProjects;
   const filteredMentors = mentors.filter((m) => !q || m.name.toLowerCase().includes(q) || m.position.toLowerCase().includes(q) || m.company.toLowerCase().includes(q));
   const filteredOrgs = orgs.filter((o) => o.org_type === category && (!q || o.name.toLowerCase().includes(q) || o.description.toLowerCase().includes(q)));
   const filteredPartners = partners.filter((p) => !q || p.name.toLowerCase().includes(q));
+  const filteredFundedProjects = fundedProjects.filter((f) => !q || f.title.toLowerCase().includes(q) || f.fundingAgency.toLowerCase().includes(q) || f.leadInstitution.toLowerCase().includes(q));
 
   function openAddModal() {
     setEditingId(null);
     setMentorForm(EMPTY_MENTOR);
     setOrgForm(EMPTY_ORG);
     setPartnerForm(EMPTY_PARTNER);
+    setFundedProjectForm(EMPTY_FUNDED_PROJECT);
     setError("");
     setModalOpen(true);
   }
@@ -228,6 +249,13 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     }
   }
 
+  function openEditFundedProject(f: FundedProjectRow) {
+    setEditingId(f.id);
+    setFundedProjectForm({ title: f.title, fundingAgency: f.fundingAgency, leadInstitution: f.leadInstitution, duration: f.duration, status: f.status });
+    setError("");
+    setModalOpen(true);
+  }
+
   function closeModal() {
     setModalOpen(false);
     setEditingId(null);
@@ -257,6 +285,14 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     load();
   }
 
+  async function deleteFundedProject(id: string) {
+    if (!supabase) return;
+    if (!window.confirm("Delete this project? This can't be undone.")) return;
+    const { error: err } = await supabase.from("funded_projects").delete().eq("id", id);
+    if (err) return window.alert(err.message);
+    load();
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!supabase) return;
@@ -277,6 +313,13 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
         ? await supabase.from("ecosystem_partners").update(payload).eq("id", editingId)
         : await supabase.from("ecosystem_partners").insert(payload);
       if (err) return setError(err.message);
+    } else if (isFundedProjects) {
+      if (!fundedProjectForm.title.trim()) return setError("Add a project title.");
+      const payload = { title: fundedProjectForm.title.trim(), funding_agency: fundedProjectForm.fundingAgency.trim(), lead_institution: fundedProjectForm.leadInstitution.trim(), duration: fundedProjectForm.duration.trim(), status: fundedProjectForm.status };
+      const { error: err } = editingId
+        ? await supabase.from("funded_projects").update(payload).eq("id", editingId)
+        : await supabase.from("funded_projects").insert(payload);
+      if (err) return setError(err.message);
     } else {
       if (!orgForm.name.trim()) return setError("Add a name.");
       const payload = { name: orgForm.name.trim(), org_type: category, description: orgForm.description.trim(), website: orgForm.website.trim(), contact_email: orgForm.contact_email.trim(), logo_url: orgForm.logoUrl, cover_url: orgForm.coverUrl, type: orgForm.type.trim() };
@@ -295,7 +338,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
         <div style={{ display: "flex", gap: 6, flex: 1, flexWrap: "wrap" }}>
           {CATEGORIES.map((c) => {
             const active = category === c;
-            const count = c === "Mentors" ? mentors.length : c === "Ecosystem Partners" ? partners.length : orgs.filter((o) => o.org_type === c).length;
+            const count = c === "Mentors" ? mentors.length : c === "Ecosystem Partners" ? partners.length : c === "Funded Projects" ? fundedProjects.length : orgs.filter((o) => o.org_type === c).length;
             return (
               <button
                 key={c}
@@ -324,7 +367,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
           onClick={openAddModal}
           style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 999, fontSize: 13, fontWeight: 600, border: "none", color: "#fff", background: ORANGE, cursor: "pointer" }}
         >
-          + Add {isMentors ? "Mentor" : isPartners ? "Partner logo" : singularCategory(category)}
+          + Add {isMentors ? "Mentor" : isPartners ? "Partner logo" : isFundedProjects ? "Project" : singularCategory(category)}
         </button>
       </div>
 
@@ -385,7 +428,26 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
             </div>
           ))}
 
-        {loaded && ((isMentors && filteredMentors.length === 0) || (isPartners && filteredPartners.length === 0) || (isOrg && filteredOrgs.length === 0)) && (
+        {isFundedProjects &&
+          filteredFundedProjects.map((f) => (
+            <div key={f.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18 }}>
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 8 }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{f.title}</div>
+                <span style={{ fontSize: 10.5, fontWeight: 700, color: "#285E7A", background: "rgba(40,94,122,0.10)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{f.status}</span>
+              </div>
+              <div style={{ fontSize: 11.5, color: "#9A958B", lineHeight: 1.5, marginBottom: 8 }}>
+                {f.fundingAgency && <div>Funding agency: {f.fundingAgency}</div>}
+                {f.leadInstitution && <div>Lead institution: {f.leadInstitution}</div>}
+                {f.duration && <div>Duration: {f.duration}</div>}
+              </div>
+              <div style={{ display: "flex", gap: 12 }}>
+                <button onClick={() => openEditFundedProject(f)} style={{ fontSize: 11.5, fontWeight: 600, color: "#285E7A", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Edit</button>
+                <button onClick={() => deleteFundedProject(f.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Delete</button>
+              </div>
+            </div>
+          ))}
+
+        {loaded && ((isMentors && filteredMentors.length === 0) || (isPartners && filteredPartners.length === 0) || (isFundedProjects && filteredFundedProjects.length === 0) || (isOrg && filteredOrgs.length === 0)) && (
           <div style={{ gridColumn: "1 / -1", padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)" }}>
             No {category.toLowerCase()} yet.
           </div>
@@ -404,7 +466,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div style={{ fontSize: 16.5, fontWeight: 700, color: DARK }}>
-                {editingId ? "Edit" : "Add"} {isMentors ? "mentor" : isPartners ? "partner logo" : singularCategory(category).toLowerCase()}
+                {editingId ? "Edit" : "Add"} {isMentors ? "mentor" : isPartners ? "partner logo" : isFundedProjects ? "funded project" : singularCategory(category).toLowerCase()}
               </div>
               <button type="button" onClick={closeModal} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#9A958B", lineHeight: 1 }}>×</button>
             </div>
@@ -558,6 +620,61 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                     style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
                   />
                   <div style={{ fontSize: 11, color: "#9A958B", marginTop: 4 }}>Used as alt text and shown only if no logo is uploaded.</div>
+                </div>
+              </>
+            ) : isFundedProjects ? (
+              <>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Project title</label>
+                  <input
+                    value={fundedProjectForm.title}
+                    onChange={(e) => setFundedProjectForm((f) => ({ ...f, title: e.target.value }))}
+                    placeholder="e.g. Smart Agriculture for the Cordillera"
+                    required
+                    maxLength={NAME_MAX * 2}
+                    style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Funding agency</label>
+                  <input
+                    value={fundedProjectForm.fundingAgency}
+                    onChange={(e) => setFundedProjectForm((f) => ({ ...f, fundingAgency: e.target.value }))}
+                    placeholder="e.g. DOST-PCAARRD"
+                    style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Lead institution</label>
+                  <input
+                    value={fundedProjectForm.leadInstitution}
+                    onChange={(e) => setFundedProjectForm((f) => ({ ...f, leadInstitution: e.target.value }))}
+                    placeholder="e.g. Benguet State University"
+                    style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                  />
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Duration</label>
+                    <input
+                      value={fundedProjectForm.duration}
+                      onChange={(e) => setFundedProjectForm((f) => ({ ...f, duration: e.target.value }))}
+                      placeholder="e.g. 2024–2026"
+                      style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Status</label>
+                    <select
+                      value={fundedProjectForm.status}
+                      onChange={(e) => setFundedProjectForm((f) => ({ ...f, status: e.target.value }))}
+                      style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box", appearance: "auto" }}
+                    >
+                      {PROJECT_STATUSES.map((s) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </>
             ) : (

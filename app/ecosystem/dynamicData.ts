@@ -4,6 +4,7 @@ import type {
   CommunityEntry,
   CompanyEntry,
   CoworkingEntry,
+  FundedProjectEntry,
   GovernmentEntry,
   MakerspaceEntry,
   MentorEntry,
@@ -79,6 +80,25 @@ export async function fetchDynamicEcosystemPartners(): Promise<EcosystemPartnerE
   if (!supabase) return [];
   const { data } = await supabase.from("ecosystem_partners").select("*").order("created_at", { ascending: true });
   return (data ?? []).map((p: any) => ({ id: p.id, name: p.name, logoUrl: p.logo_url || undefined }));
+}
+
+export async function fetchDynamicFundedProjects(): Promise<FundedProjectEntry[]> {
+  if (!supabase) return [];
+  const { data } = await supabase.from("funded_projects").select("*").order("created_at", { ascending: false });
+  return (data ?? []).map((f: any) => {
+    const p = paletteFor(f.title);
+    return {
+      id: f.id,
+      title: f.title,
+      fundingAgency: f.funding_agency || "",
+      leadInstitution: f.lead_institution || "",
+      duration: f.duration || "",
+      status: f.status || "Ongoing",
+      color: p.color,
+      bg: p.bg,
+      initials: initialsOf(f.title),
+    };
+  });
 }
 
 export async function fetchDynamicOrganizations(): Promise<DynamicOrgBuckets> {

@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import { MENTOR_SPECIALIZATIONS, type EcosystemCategory, type StartupEntry, type TbiEntry, type CompanyEntry, type ServiceProviderEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry } from "./data";
-import { fetchDynamicStartups, fetchDynamicMentors, fetchDynamicOrganizations, type DynamicMentorEntry } from "./dynamicData";
+import { MENTOR_SPECIALIZATIONS, type EcosystemCategory, type StartupEntry, type TbiEntry, type CompanyEntry, type ServiceProviderEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry, type FundedProjectEntry } from "./data";
+import { fetchDynamicStartups, fetchDynamicMentors, fetchDynamicOrganizations, fetchDynamicFundedProjects, type DynamicMentorEntry } from "./dynamicData";
 import ConnectMentorButton from "./ConnectMentorButton";
 
 const EcosystemMap = dynamic(() => import("./EcosystemMap"), {
@@ -182,6 +182,30 @@ function OrgListCard({ name, badge, description, color, bg, initials, logoUrl, w
   );
 }
 
+const PROJECT_STATUS_COLORS: Record<string, { color: string; bg: string }> = {
+  Ongoing: { color: "#1A6B3C", bg: "rgba(26,107,60,0.12)" },
+  Completed: { color: "#285E7A", bg: "rgba(40,94,122,0.10)" },
+  Upcoming: { color: "#D88A0A", bg: "rgba(245,166,35,0.14)" },
+};
+
+function FundedProjectCard({ title, fundingAgency, leadInstitution, duration, status, color, bg, initials }: FundedProjectEntry) {
+  const statusStyle = PROJECT_STATUS_COLORS[status] || { color: "#6B6B73", bg: "#F4F2EC" };
+  return (
+    <div className="ib-card-hover" style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: 24, display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 16 }}>
+        <div style={{ width: 46, height: 46, borderRadius: 12, background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 700, color, flexShrink: 0 }}>{initials}</div>
+        <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: statusStyle.color, background: statusStyle.bg, padding: "5px 11px", borderRadius: 9999, whiteSpace: "nowrap" }}>{status}</span>
+      </div>
+      <h3 style={{ margin: "0 0 14px", fontSize: 16.5, fontWeight: 700, color: DARK, lineHeight: 1.3 }}>{title}</h3>
+      <div style={{ display: "flex", flexDirection: "column", gap: 9, borderTop: "1px solid rgba(20,20,25,0.08)", paddingTop: 14, fontSize: 13, color: "#44444C" }}>
+        <div><span style={{ color: "#9A958B" }}>Funding agency: </span>{fundingAgency || "—"}</div>
+        <div><span style={{ color: "#9A958B" }}>Lead institution: </span>{leadInstitution || "—"}</div>
+        <div><span style={{ color: "#9A958B" }}>Duration: </span>{duration || "—"}</div>
+      </div>
+    </div>
+  );
+}
+
 type ViewMode = "list" | "map";
 
 type SortOrder = "az" | "za";
@@ -212,11 +236,13 @@ export default function EcosystemDirectory() {
     "Coworking Spaces": CoworkingEntry[];
     "Makerspaces & Labs": MakerspaceEntry[];
   }>({ TBIs: [], Companies: [], "Service Providers": [], Government: [], Community: [], "Coworking Spaces": [], "Makerspaces & Labs": [] });
+  const [dynFundedProjects, setDynFundedProjects] = useState<FundedProjectEntry[]>([]);
 
   useEffect(() => {
     fetchDynamicStartups().then(setDynStartups);
     fetchDynamicMentors().then(setDynMentors);
     fetchDynamicOrganizations().then(setDynOrgs);
+    fetchDynamicFundedProjects().then(setDynFundedProjects);
   }, []);
 
   const allStartups = dynStartups;
@@ -228,6 +254,7 @@ export default function EcosystemDirectory() {
   const allCommunity = dynOrgs.Community;
   const allCoworking = dynOrgs["Coworking Spaces"];
   const allMakerspaces = dynOrgs["Makerspaces & Labs"];
+  const allFundedProjects = dynFundedProjects;
 
   const TABS: { id: EcosystemCategory; label: string; count: number }[] = [
     { id: "Startups", label: "Startups", count: allStartups.length },
@@ -239,6 +266,7 @@ export default function EcosystemDirectory() {
     { id: "Community", label: "Community", count: allCommunity.length },
     { id: "Coworking Spaces", label: "Coworking Spaces", count: allCoworking.length },
     { id: "Makerspaces & Labs", label: "Makerspaces & Labs", count: allMakerspaces.length },
+    { id: "Funded Projects", label: "Funded Projects", count: allFundedProjects.length },
   ];
 
   const availableSectors = useMemo(
@@ -266,22 +294,28 @@ export default function EcosystemDirectory() {
       list = allCoworking.filter((c) => matches([c.name, c.type, c.description], query));
     } else if (tab === "Makerspaces & Labs") {
       list = allMakerspaces.filter((m) => matches([m.name, m.type, m.description], query));
+    } else if (tab === "Funded Projects") {
+      list = allFundedProjects.filter((f) => matches([f.title, f.fundingAgency, f.leadInstitution, f.status], query));
     } else {
       list = allCommunity.filter((c) => matches([c.name, c.type, c.description], query));
     }
-    return [...list].sort((a, b) => (sort === "az" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)));
-  }, [tab, query, sort, sectorFilter, specializationFilter, allStartups, allMentors, allTbis, allCompanies, allServiceProviders, allGovernment, allCoworking, allMakerspaces, allCommunity]);
+    return [...list].sort((a, b) => {
+      const an = a.name ?? a.title ?? "";
+      const bn = b.name ?? b.title ?? "";
+      return sort === "az" ? an.localeCompare(bn) : bn.localeCompare(an);
+    });
+  }, [tab, query, sort, sectorFilter, specializationFilter, allStartups, allMentors, allTbis, allCompanies, allServiceProviders, allGovernment, allCoworking, allMakerspaces, allCommunity, allFundedProjects]);
 
   // Normalized pin data for the map placeholder — swap this for real coordinates once a map API is wired up.
   const pins = useMemo(
     () =>
       filtered.map((item: any) => ({
-        key: item.name,
+        key: item.name ?? item.title,
         label: item.initial ?? item.initials,
         color: item.color,
         bg: item.bg,
-        name: item.name,
-        sub: item.sector ?? item.type ?? item.position ?? item.host ?? "",
+        name: item.name ?? item.title,
+        sub: item.sector ?? item.type ?? item.position ?? item.host ?? item.fundingAgency ?? "",
         lat: item.latitude,
         lng: item.longitude,
       })),
@@ -574,6 +608,14 @@ export default function EcosystemDirectory() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as MakerspaceEntry[]).map((m) => (
               <OrgPhotoCard key={m.name} name={m.name} type={m.type} description={m.description} color={m.color} bg={m.bg} initials={m.initials} logoUrl={m.logoUrl} coverUrl={m.coverUrl} website={m.website} />
+            ))}
+          </div>
+        )}
+
+        {view === "list" && tab === "Funded Projects" && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
+            {(filtered as FundedProjectEntry[]).map((f) => (
+              <FundedProjectCard key={f.id} {...f} />
             ))}
           </div>
         )}

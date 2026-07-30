@@ -1022,6 +1022,34 @@ drop policy if exists "authenticated users can delete program images" on storage
 create policy "authenticated users can delete program images" on storage.objects
   for delete to authenticated using (bucket_id = 'program-images');
 
+-- ---------------------------------------------------------------------------
+-- funded_projects: admin-curated research/innovation projects shown on the
+-- Ecosystem directory's "Funded Projects" tab.
+-- ---------------------------------------------------------------------------
+create table if not exists public.funded_projects (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  funding_agency text not null default '',
+  lead_institution text not null default '',
+  duration text not null default '',
+  status text not null default 'Ongoing' check (status in ('Ongoing', 'Completed', 'Upcoming')),
+  created_at timestamptz not null default now()
+);
+
+alter table public.funded_projects enable row level security;
+
+drop policy if exists "funded projects are publicly readable" on public.funded_projects;
+create policy "funded projects are publicly readable" on public.funded_projects
+  for select using (true);
+
+drop policy if exists "admins manage funded projects" on public.funded_projects;
+create policy "admins manage funded projects" on public.funded_projects
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
 do $$
 begin
   if not exists (
@@ -1053,5 +1081,11 @@ begin
     where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'ecosystem_partners'
   ) then
     alter publication supabase_realtime add table public.ecosystem_partners;
+  end if;
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'funded_projects'
+  ) then
+    alter publication supabase_realtime add table public.funded_projects;
   end if;
 end $$;
