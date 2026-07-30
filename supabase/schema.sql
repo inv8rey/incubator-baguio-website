@@ -934,8 +934,11 @@ create table if not exists public.knowledge_resources (
   file_url text not null default '',
   link_url text not null default '',
   source text not null default '',
+  featured boolean not null default false,
   created_at timestamptz not null default now()
 );
+
+alter table public.knowledge_resources add column if not exists featured boolean not null default false;
 
 alter table public.knowledge_resources enable row level security;
 

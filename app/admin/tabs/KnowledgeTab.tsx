@@ -17,6 +17,7 @@ interface ResourceRow {
   file_url: string;
   link_url: string;
   source: string;
+  featured: boolean;
   created_at: string;
 }
 
@@ -28,6 +29,7 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
   const [linkUrl, setLinkUrl] = useState(resource?.link_url ?? "");
   const [fileUrl, setFileUrl] = useState(resource?.file_url ?? "");
   const [source, setSource] = useState(resource?.source ?? "");
+  const [featured, setFeatured] = useState(resource?.featured ?? false);
   const [fileUploading, setFileUploading] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [error, setError] = useState("");
@@ -69,6 +71,7 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
       file_url: fileUrl,
       link_url: linkUrl.trim(),
       source: source.trim(),
+      featured,
     };
     const { error: err } = isEdit
       ? await supabase.from("knowledge_resources").update(payload).eq("id", resource!.id)
@@ -132,6 +135,11 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
             <label style={modalLabelStyle}>Or an external link{fileUrl ? " (optional)" : " *"}</label>
             <input type="url" value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} placeholder="https://…" style={modalInputStyle} />
           </div>
+          <label style={{ display: "flex", alignItems: "center", gap: 9, cursor: "pointer" }}>
+            <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} style={{ width: 16, height: 16, cursor: "pointer" }} />
+            <span style={{ fontSize: 13, fontWeight: 600, color: DARK }}>Feature this resource</span>
+          </label>
+          <div style={{ fontSize: 11.5, color: "#9A958B", marginTop: -8 }}>Featured resources are pinned to the top of the Knowledge Hub, above the rest.</div>
 
           {error && <p style={{ color: "#E23A2E", fontSize: 12.5, margin: 0 }}>{error}</p>}
 
@@ -222,6 +230,9 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
             <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4, flexWrap: "wrap" }}>
                 <span style={{ fontSize: 14.5, fontWeight: 700, color: DARK }}>{r.title}</span>
+                {r.featured && (
+                  <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.02em", color: ORANGE, background: "rgba(242,101,34,0.12)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>★ Featured</span>
+                )}
                 <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.02em", color: "#6B6B73", background: "#F5F4F0", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{r.category}</span>
               </div>
               {r.description && <div style={{ fontSize: 12.5, color: "#6B6B73", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.description}</div>}

@@ -12,5 +12,6 @@ export async function fetchDynamicKnowledgeResources(): Promise<KnowledgeResourc
     fileUrl: r.file_url || undefined,
     linkUrl: r.link_url || undefined,
     source: r.source || undefined,
+    featured: !!r.featured,
   }));
 }

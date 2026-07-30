@@ -39,41 +39,6 @@ const TOP_HTML = `
     <p style="margin:18px auto 0;font-size:17px;line-height:1.6;color:rgba(255,255,255,0.62);max-width:580px;">Baguio&rsquo;s searchable home for startup resources, research and innovation outputs, funding opportunities, and policy reports &mdash; from the city&rsquo;s universities, startups, and government partners.</p>
   </div>
 </div>
-
-<!-- FOUNDATIONAL DOCUMENTS -->
-<div style="background:#FAFAF7;padding:56px 40px 40px;">
-  <div style="max-width:880px;margin:0 auto;">
-    <div style="text-align:center;margin-bottom:32px;">
-      <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">Foundational documents</div>
-      <h2 style="margin:0;font-size:28px;font-weight:700;letter-spacing:-0.025em;color:#141417;">Start here</h2>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;">
-      ${[
-        [
-          `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"></path><path d="M14 3v5h5M8 13h8M8 17h5"></path></svg>`,
-          "rgba(242,101,34,0.12)", "#F26522",
-          "Research &amp; Innovation Agenda",
-          "The framework that guides Baguio&rsquo;s research and innovation priorities &mdash; agriculture, health, tourism, environment, education, and governance.",
-          `${BP}/assets/baguio-research-innovation-agenda.pdf`,
-        ],
-        [
-          `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#285E7A" stroke-width="2"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"></path></svg>`,
-          "rgba(40,94,122,0.12)", "#285E7A",
-          "Ordinance No. 063, s. 2023",
-          "The City Ordinance that established the Baguio City Research and Innovation Alliance &mdash; the legal foundation for Incubator Baguio.",
-          `${BP}/assets/ordinance-no-63-s2023.pdf`,
-        ],
-      ].map((r) => `
-      <div class="ib-challenge-hover" style="background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:18px;padding:28px;display:flex;flex-direction:column;transition:box-shadow .22s ease,transform .22s ease;">
-        <div style="width:50px;height:50px;border-radius:14px;background:${r[1]};display:flex;align-items:center;justify-content:center;margin-bottom:18px;">${r[0]}</div>
-        <h3 style="margin:0 0 8px;font-size:18px;font-weight:600;color:#141417;">${r[3]}</h3>
-        <p style="margin:0 0 22px;font-size:13.5px;line-height:1.55;color:#6B6B73;flex:1;">${r[4]}</p>
-        <a href="${r[5]}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:13.5px;font-weight:600;color:#fff;text-decoration:none;background:${r[2]};padding:12px 20px;border-radius:9999px;">Download PDF
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M12 3v12m0 0 4-4m-4 4-4-4"></path><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"></path></svg></a>
-      </div>`).join("")}
-    </div>
-  </div>
-</div>
 `;
 
 const BOTTOM_HTML = `

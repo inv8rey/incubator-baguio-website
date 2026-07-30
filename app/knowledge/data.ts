@@ -49,4 +49,5 @@ export interface KnowledgeResource {
   fileUrl?: string;
   linkUrl?: string;
   source?: string;
+  featured?: boolean;
 }

@@ -11,6 +11,15 @@ function matches(haystacks: string[], query: string) {
   return haystacks.some((h) => h.toLowerCase().includes(q));
 }
 
+function shuffle<T>(items: T[]): T[] {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 export default function KnowledgeDirectory() {
   const [resources, setResources] = useState<KnowledgeResource[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -20,7 +29,7 @@ export default function KnowledgeDirectory() {
   useEffect(() => {
     function load() {
       fetchDynamicKnowledgeResources().then((r) => {
-        setResources(r);
+        setResources(shuffle(r));
         setLoaded(true);
       });
     }
@@ -36,10 +45,11 @@ export default function KnowledgeDirectory() {
   }, []);
 
   const filtered = useMemo(() => {
-    return resources.filter((r) => {
+    const list = resources.filter((r) => {
       if (tab !== "All" && r.category !== tab) return false;
       return matches([r.title, r.description, r.source ?? ""], query);
     });
+    return [...list].sort((a, b) => Number(!!b.featured) - Number(!!a.featured));
   }, [resources, tab, query]);
 
   const activeInfo = tab !== "All" ? KNOWLEDGE_CATEGORIES.find((c) => c.id === tab) : null;
@@ -110,7 +120,10 @@ export default function KnowledgeDirectory() {
             const cat = KNOWLEDGE_CATEGORIES.find((c) => c.id === r.category);
             const href = r.fileUrl || r.linkUrl;
             return (
-              <div key={r.id} className="ib-card-hover" style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 24, display: "flex", flexDirection: "column" }}>
+              <div key={r.id} className="ib-card-hover" style={{ position: "relative", background: "#fff", border: r.featured ? "1.5px solid rgba(242,101,34,0.35)" : "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 24, display: "flex", flexDirection: "column" }}>
+                {r.featured && (
+                  <span style={{ position: "absolute", top: 14, right: 14, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.02em", color: "#F26522", background: "rgba(242,101,34,0.12)", padding: "4px 10px", borderRadius: 9999, whiteSpace: "nowrap" }}>★ Featured</span>
+                )}
                 {cat && (
                   <span style={{ display: "inline-block", alignSelf: "flex-start", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.02em", color: cat.color, background: cat.bg, padding: "4px 10px", borderRadius: 9999, marginBottom: 12, whiteSpace: "nowrap" }}>
                     {cat.id}
