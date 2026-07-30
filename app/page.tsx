@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import EcosystemModel from "./programs/EcosystemModel";
 import FeaturedStartups from "./FeaturedStartups";
+import HomeOpenChallenges from "./HomeOpenChallenges";
 import EcosystemPartnersMarquee from "./EcosystemPartnersMarquee";
 import NewsletterSignup from "./NewsletterSignup";
 
@@ -101,7 +102,7 @@ const HOME_HTML_BOTTOM_A = `
 </div>
 
 <!-- INNOVATION CHALLENGES -->
-<div style="background:#fff;padding:80px 40px;border-top:1px solid rgba(20,20,25,0.06);">
+<div style="background:#fff;padding:80px 40px 0;border-top:1px solid rgba(20,20,25,0.06);">
   <div style="max-width:1060px;margin:0 auto;">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:32px;margin-bottom:44px;flex-wrap:wrap;">
       <div style="max-width:600px;">
@@ -125,35 +126,6 @@ const HOME_HTML_BOTTOM_A = `
         <p style="margin:0 0 18px;font-size:14.5px;line-height:1.55;color:#6B6B73;">${c[4]}</p>
         <a href="${BP}/challenges" style="margin-top:auto;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:${c[0]};text-decoration:none;">Explore challenges<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${c[0]}" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       </div>`).join("")}
-    </div>
-    <div style="margin-top:36px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#9A958B;">Open challenges</div>
-        <a href="${BP}/challenges" style="display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:#F26522;text-decoration:none;">View all challenges<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
-        ${[
-          ["AGRICULTURE", "#1A6B3C", "rgba(26,107,60,0.1)", "#E23A2E", "9 days left", "Cut post-harvest loss for highland vegetable farmers", "Build a cold-chain or logistics solution that keeps Benguet produce fresh to market.", "DA", "Dept of Agriculture, CAR", "13px", "agri-cold-chain"],
-          ["ENVIRONMENT", "#285E7A", "rgba(40,94,122,0.1)", "#F5A623", "21 days left", "Smart waste segregation for Baguio public markets", "Design a system that improves sorting and diversion at high-traffic market sites.", "CEPMO", "City Environment Office", "11px", "waste-segregation"],
-          ["TOURISM", "#9E2A52", "rgba(158,42,82,0.1)", "#F5A623", "16 days left", "Spread tourism beyond peak-season rush", "Create a platform that promotes off-peak travel and local creative experiences.", "DOT", "Baguio Tourism", "13px", "tourism-offpeak"],
-        ].map((c) => `
-        <div class="ib-card-hover" style="background:#fff;border:1px solid rgba(20,20,25,0.12);border-radius:18px;padding:26px;display:flex;flex-direction:column;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
-            <span style="font-size:11.5px;font-weight:700;letter-spacing:0.1em;color:${c[1]};background:${c[2]};padding:6px 13px;border-radius:9999px;">${c[0]}</span>
-            <span style="display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:700;color:${c[3]};"><span style="width:7px;height:7px;border-radius:9999px;background:${c[3]};"></span>${c[4]}</span>
-          </div>
-          <h3 style="margin:0 0 12px;font-size:23px;font-weight:700;letter-spacing:-0.02em;color:#141417;line-height:1.15;">${c[5]}</h3>
-          <p style="margin:0 0 22px;font-size:15px;line-height:1.5;color:#6B6B73;">${c[6]}</p>
-          <div style="display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:20px;border-top:1px solid rgba(20,20,25,0.1);">
-            <div style="width:42px;height:42px;border-radius:11px;background:${c[1]};display:flex;align-items:center;justify-content:center;font-size:${c[9]};font-weight:700;color:#fff;flex-shrink:0;">${c[7]}</div>
-            <span style="font-size:14px;color:#9A958B;">${c[8]}</span>
-            <a href="${BP}/challenges/${c[10]}" style="margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:14.5px;font-weight:600;color:#141417;text-decoration:none;white-space:nowrap;">View details<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#141417" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-          </div>
-        </div>`).join("")}
-      </div>
-      <div style="margin-top:40px;text-align:center;">
-        <a href="${BP}/challenges" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;">View all challenges<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-      </div>
     </div>
   </div>
 </div>
@@ -303,6 +275,7 @@ export default function Home() {
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_TOP }} />
       <EcosystemModel />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_A }} />
+      <HomeOpenChallenges bp={BP} />
       <FeaturedStartups bp={BP} />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_B1 }} />
       <NewsletterSignup />
