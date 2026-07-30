@@ -25,8 +25,8 @@ export const PARTNERS: Partner[] = [
 
 export const NAV = [
   { id: "dashboard", label: "Dashboard", cnt: null as number | null },
-  { id: "startups", label: "Startups", cnt: 82 },
-  { id: "challenges", label: "Challenges", cnt: 18 },
+  { id: "startups", label: "Startups", cnt: null as number | null },
+  { id: "challenges", label: "Challenges", cnt: null as number | null },
   { id: "events", label: "Events", cnt: null as number | null },
   { id: "knowledge", label: "Knowledge", cnt: null as number | null },
   { id: "signups", label: "Signups", cnt: null as number | null },

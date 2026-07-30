@@ -304,6 +304,7 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
               <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
                 <button onClick={() => setViewing(c)} style={{ flex: 1, fontSize: 12.5, fontWeight: 600, color: "#285E7A", background: "none", border: "1.5px solid rgba(40,94,122,0.3)", borderRadius: 999, padding: "8px 14px", cursor: "pointer" }}>View</button>
                 <button onClick={() => setEditing(c)} style={{ flex: 1, fontSize: 12.5, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(20,20,25,0.14)", borderRadius: 999, padding: "8px 14px", cursor: "pointer" }}>Edit</button>
+                <button onClick={() => remove(c.id)} style={{ fontSize: 12.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "1.5px solid rgba(226,58,46,0.3)", borderRadius: 999, padding: "8px 14px", cursor: "pointer" }}>Delete</button>
               </div>
             </div>
           );

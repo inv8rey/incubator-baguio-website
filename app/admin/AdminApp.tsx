@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "../../lib/supabaseClient";
 import { NAV, ORANGE, SUBS, TITLES, type TabId } from "./data";
 import DashboardTab from "./tabs/DashboardTab";
 import StartupsTab from "./tabs/StartupsTab";
@@ -73,6 +74,27 @@ export default function AdminApp() {
   const [page, setPage] = useState<TabId>("dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [liveCounts, setLiveCounts] = useState<{ startups: number | null; challenges: number | null }>({ startups: null, challenges: null });
+
+  useEffect(() => {
+    if (!supabase) return;
+    async function loadCounts() {
+      const [s, c] = await Promise.all([
+        supabase!.from("startups").select("id", { count: "exact", head: true }),
+        supabase!.from("challenges").select("id", { count: "exact", head: true }),
+      ]);
+      setLiveCounts({ startups: s.count ?? 0, challenges: c.count ?? 0 });
+    }
+    loadCounts();
+    const channel = supabase
+      .channel("admin-sidebar-counts")
+      .on("postgres_changes", { event: "*", schema: "public", table: "startups" }, loadCounts)
+      .on("postgres_changes", { event: "*", schema: "public", table: "challenges" }, loadCounts)
+      .subscribe();
+    return () => {
+      supabase!.removeChannel(channel);
+    };
+  }, []);
 
   const Sidebar = (
     <aside
@@ -102,6 +124,7 @@ export default function AdminApp() {
         <div style={{ fontSize: "9.5px", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, color: "rgba(255,255,255,0.28)", padding: "8px 10px 6px" }}>Main</div>
         {NAV.map((n) => {
           const active = page === n.id;
+          const cnt = n.id === "startups" ? liveCounts.startups : n.id === "challenges" ? liveCounts.challenges : n.cnt;
           return (
             <button
               key={n.id}
@@ -130,7 +153,7 @@ export default function AdminApp() {
                 <NavIcon id={n.id} />
               </span>
               <span style={{ flex: 1 }}>{n.label}</span>
-              {n.cnt != null && (
+              {cnt != null && (
                 <span
                   style={{
                     fontSize: 11,
@@ -141,7 +164,7 @@ export default function AdminApp() {
                     color: active ? ORANGE : "rgba(255,255,255,0.40)",
                   }}
                 >
-                  {n.cnt}
+                  {cnt}
                 </span>
               )}
             </button>
