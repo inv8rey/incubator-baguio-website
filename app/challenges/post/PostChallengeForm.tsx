@@ -250,18 +250,18 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
             {errors.sector && <p style={{ color: "#E23A2E", fontSize: 12, margin: "6px 0 0" }}>{errors.sector}</p>}
           </div>
           <div>
-            <label style={labelStyle}>What&rsquo;s the problem?</label>
-            <textarea style={{ ...inputStyle, minHeight: 110, resize: "vertical" }} value={form.problem} onChange={(e) => update("problem", e.target.value)} placeholder="Describe the real-world problem, who it affects, and why it matters." />
+            <label style={labelStyle}>The Challenge</label>
+            <textarea style={{ ...inputStyle, minHeight: 110, resize: "vertical" }} value={form.problem} onChange={(e) => update("problem", e.target.value)} placeholder="Describe the challenge, why it matters, who is affected, and why current approaches are insufficient." />
             {errors.problem && <p style={{ color: "#E23A2E", fontSize: 12, margin: "6px 0 0" }}>{errors.problem}</p>}
           </div>
           <div>
-            <label style={labelStyle}>What should solvers build?</label>
-            <textarea style={{ ...inputStyle, minHeight: 110, resize: "vertical" }} value={form.scope} onChange={(e) => update("scope", e.target.value)} placeholder="Define the scope and what a successful solution looks like." />
+            <label style={labelStyle}>Desired Outcomes</label>
+            <textarea style={{ ...inputStyle, minHeight: 110, resize: "vertical" }} value={form.scope} onChange={(e) => update("scope", e.target.value)} placeholder="Describe what success looks like. Focus on the outcomes you want to achieve rather than prescribing a specific solution." />
             {errors.scope && <p style={{ color: "#E23A2E", fontSize: 12, margin: "6px 0 0" }}>{errors.scope}</p>}
           </div>
           <div>
-            <label style={labelStyle}>What support can you offer? (optional)</label>
-            <textarea style={{ ...inputStyle, minHeight: 90, resize: "vertical" }} value={form.support} onChange={(e) => update("support", e.target.value)} placeholder="Pilot access, seed funding, data, mentorship, or technical liaison support." />
+            <label style={labelStyle}>Support Available (Optional)</label>
+            <textarea style={{ ...inputStyle, minHeight: 90, resize: "vertical" }} value={form.support} onChange={(e) => update("support", e.target.value)} placeholder="Pilot sites, datasets, technical experts, mentoring, funding, equipment, testing facilities, policy support." />
           </div>
           <div style={{ maxWidth: 260 }}>
             <label style={labelStyle}>Application deadline</label>
