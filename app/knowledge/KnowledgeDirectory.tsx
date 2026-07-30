@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { supabase } from "../../lib/supabaseClient";
 import { DARK, KNOWLEDGE_CATEGORIES, type KnowledgeCategory, type KnowledgeResource } from "./data";
 import { fetchDynamicKnowledgeResources } from "./dynamicData";
 
@@ -17,10 +18,21 @@ export default function KnowledgeDirectory() {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    fetchDynamicKnowledgeResources().then((r) => {
-      setResources(r);
-      setLoaded(true);
-    });
+    function load() {
+      fetchDynamicKnowledgeResources().then((r) => {
+        setResources(r);
+        setLoaded(true);
+      });
+    }
+    load();
+    if (!supabase) return;
+    const channel = supabase
+      .channel("public-knowledge-resources")
+      .on("postgres_changes", { event: "*", schema: "public", table: "knowledge_resources" }, load)
+      .subscribe();
+    return () => {
+      supabase!.removeChannel(channel);
+    };
   }, []);
 
   const filtered = useMemo(() => {
@@ -100,7 +112,7 @@ export default function KnowledgeDirectory() {
             return (
               <div key={r.id} className="ib-card-hover" style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 24, display: "flex", flexDirection: "column" }}>
                 {cat && (
-                  <span style={{ display: "inline-block", alignSelf: "flex-start", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.02em", color: cat.color, background: cat.bg, padding: "4px 10px", borderRadius: 9999, marginBottom: 12 }}>
+                  <span style={{ display: "inline-block", alignSelf: "flex-start", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.02em", color: cat.color, background: cat.bg, padding: "4px 10px", borderRadius: 9999, marginBottom: 12, whiteSpace: "nowrap" }}>
                     {cat.id}
                   </span>
                 )}

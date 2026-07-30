@@ -1030,4 +1030,10 @@ begin
   ) then
     alter publication supabase_realtime add table public.program_step_images;
   end if;
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'knowledge_resources'
+  ) then
+    alter publication supabase_realtime add table public.knowledge_resources;
+  end if;
 end $$;

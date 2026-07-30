@@ -48,7 +48,14 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title.trim() || (!fileUrl && !linkUrl.trim())) return;
+    if (!title.trim()) {
+      setError("Add a title.");
+      return;
+    }
+    if (!fileUrl && !linkUrl.trim()) {
+      setError("Add a file or an external link.");
+      return;
+    }
     if (!supabase) {
       setError("Knowledge Hub isn't configured yet.");
       return;
@@ -207,7 +214,7 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
             <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4, flexWrap: "wrap" }}>
                 <span style={{ fontSize: 14.5, fontWeight: 700, color: DARK }}>{r.title}</span>
-                <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.02em", color: "#6B6B73", background: "#F5F4F0", padding: "3px 9px", borderRadius: 999 }}>{r.category}</span>
+                <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.02em", color: "#6B6B73", background: "#F5F4F0", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{r.category}</span>
               </div>
               {r.description && <div style={{ fontSize: 12.5, color: "#6B6B73", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.description}</div>}
             </div>
