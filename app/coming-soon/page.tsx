@@ -6,9 +6,9 @@ import EcosystemPartnersMarquee from "../EcosystemPartnersMarquee";
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export const metadata: Metadata = {
-  title: "Incubator Baguio — Coming July 2026",
+  title: "Incubator Baguio — Coming August 2026",
   description:
-    "Incubator Baguio is launching this July. Join the ecosystem and be part of Baguio's innovation and startup community from day one.",
+    "Incubator Baguio is launching this August. Join the ecosystem and be part of Baguio's innovation and startup community from day one.",
   robots: { index: false, follow: false },
 };
 
@@ -29,7 +29,7 @@ const TOP_HTML = `
   <div style="position:relative;max-width:820px;margin:0 auto;">
     <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:9999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.03);margin-bottom:28px;">
       <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,101,34,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:#F26522;animation:ibpulse 2.4s ease-in-out infinite;"></span></span>
-      <span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Launching July 2026</span>
+      <span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Launching August 2026</span>
     </div>
     <h1 style="margin:0;font-size:60px;line-height:1.05;font-weight:700;letter-spacing:-0.035em;color:#fff;">The home for Baguio&rsquo;s&nbsp;<span style="color:#F26522;">startup and innovation ecosystem.</span></h1>
     <p style="margin:26px auto 0;font-size:17.5px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:620px;">Incubator Baguio is the digital gateway to the city&rsquo;s innovation ecosystem, connecting people with opportunities, programs, mentors, challenges, funding, and partnerships.</p>
@@ -119,7 +119,7 @@ const BOTTOM_HTML = `
     <img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:26px;width:auto;">
     <div style="font-size:14px;font-weight:600;color:#fff;">Incubator Baguio</div>
   </div>
-  <p style="margin:0;font-size:12.5px;color:rgba(255,255,255,0.4);">&copy; 2026 City Government of Baguio &middot; CPDSO &mdash; Launching July 2026</p>
+  <p style="margin:0;font-size:12.5px;color:rgba(255,255,255,0.4);">&copy; 2026 City Government of Baguio &middot; CPDSO &mdash; Launching August 2026</p>
 </div>
 `;
 
