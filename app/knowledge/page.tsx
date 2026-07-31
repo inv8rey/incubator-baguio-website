@@ -74,7 +74,7 @@ export default function KnowledgeHub() {
   return (
     <main>
       <div dangerouslySetInnerHTML={{ __html: TOP_HTML }} />
-      <div style={{ background: "#FAFAF7", padding: "0 40px 72px" }}>
+      <div style={{ background: "#FAFAF7", padding: "64px 40px 72px" }}>
         <KnowledgeDirectory />
       </div>
       <div dangerouslySetInnerHTML={{ __html: BOTTOM_HTML }} />
