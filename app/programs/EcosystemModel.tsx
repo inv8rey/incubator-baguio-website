@@ -6,9 +6,9 @@ import { supabase } from "../../lib/supabaseClient";
 const ORANGE = "#F26522";
 const DARK = "#141417";
 
-interface InfoItem {
-  icon: string;
-  label: string;
+interface ProgramItem {
+  title: string;
+  description: string;
 }
 
 interface StepData {
@@ -20,116 +20,80 @@ interface StepData {
   color: string;
   bg: string;
   icon: string;
-  whoFor: InfoItem[];
-  whatWeDo: string[];
-  outcomes: InfoItem[];
+  programs: ProgramItem[];
 }
 
 const ICONS = {
-  person: `<circle cx="12" cy="8" r="4"></circle><path d="M5 21v-1a7 7 0 0 1 14 0v1"></path>`,
-  gradCap: `<path d="M22 10 12 5 2 10l10 5 10-5Z"></path><path d="M6 12v5c3 2 9 2 12 0v-5"></path>`,
-  flask: `<path d="M9 2v6l-5 9.5A2 2 0 0 0 5.7 21h12.6a2 2 0 0 0 1.7-3.5L15 8V2"></path><path d="M7.5 14.5h9"></path><path d="M8 2h8"></path>`,
   briefcase: `<rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M16 7V5a2 2 0 0 0-2-2H10a2 2 0 0 0-2 2v2"></path><path d="M3 12h18"></path>`,
-  institution: `<path d="M3 21h18M3 7v1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7H3l2-4h14l2 4M5 21V10.85M19 21V10.85M9 21v-4a3 3 0 0 1 6 0v4"></path>`,
-  coins: `<ellipse cx="9" cy="7" rx="6" ry="3"></ellipse><path d="M3 7v5c0 1.7 2.7 3 6 3s6-1.3 6-3V7"></path><path d="M3 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-2"></path>`,
   people: `<circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><circle cx="17" cy="7" r="2.5"></circle><path d="M21 19c0-2.4-1.8-4.5-4-5"></path>`,
-  chart: `<path d="M3 17 9 11l4 4 8-8"></path><path d="M15 6h6v6"></path>`,
   sprout: `<path d="M12 21V10"></path><path d="M12 10C12 10 7.5 10.5 6 6.5C6 6.5 11 5.5 12 10Z"></path><path d="M12 10C12 10 16.5 10.5 18 6.5C18 6.5 13 5.5 12 10Z"></path>`,
-  refresh: `<path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M3 16v5h5"></path><path d="M21 8V3h-5"></path>`,
   lightbulb: `<path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2.3h6c0-1.1.4-1.8 1-2.3A7 7 0 0 0 12 2Z"></path>`,
-  globe: `<circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18Z"></path>`,
   database: `<ellipse cx="12" cy="5" rx="8" ry="3"></ellipse><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"></path><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"></path>`,
 };
 
 const STEPS: StepData[] = [
   {
-    key: "enable",
+    key: "founder-development",
     number: "01",
-    title: "ENABLE",
-    theme: "Help founders build.",
-    purpose: "We equip aspiring founders and early-stage innovators with the resources, knowledge, and support they need to turn ideas into startups.",
+    title: "FOUNDER DEVELOPMENT",
+    theme: "Equip founders to build with confidence.",
+    purpose: "We support aspiring and early-stage founders with personalized guidance, practical learning, and wellness support throughout their entrepreneurial journey.",
     color: ORANGE,
     bg: "rgba(242,101,34,0.12)",
     icon: ICONS.sprout,
-    whoFor: [
-      { icon: ICONS.person, label: "Aspiring Founders" },
-      { icon: ICONS.gradCap, label: "Students" },
-      { icon: ICONS.flask, label: "Researchers" },
-      { icon: ICONS.briefcase, label: "Early-stage Startups" },
-    ],
-    whatWeDo: ["Founder Discovery", "Founder Education", "Mentorship", "Product Validation", "Business Development", "Startup Resources", "Digital Tools"],
-    outcomes: [
-      { icon: ICONS.lightbulb, label: "More validated ideas" },
-      { icon: ICONS.person, label: "More confident founders" },
-      { icon: ICONS.sprout, label: "More startups created" },
-      { icon: ICONS.briefcase, label: "Stronger early-stage ventures" },
+    programs: [
+      { title: "Founder Office Hours", description: "Weekly one-on-one consultation sessions where founders receive tailored guidance on business validation, product development, funding, legal concerns, marketing, and referrals to appropriate ecosystem partners." },
+      { title: "Founder Learning Series", description: "A recurring learning program featuring workshops, masterclasses, and expert-led sessions on startup fundamentals, including customer discovery, business model development, product validation, fundraising, intellectual property, marketing, finance, and emerging technologies." },
+      { title: "Founder Wellness Sessions", description: "Quarterly sessions focused on mental health, stress management, resilience, productivity, and work-life balance to help founders sustain their entrepreneurial journey." },
     ],
   },
   {
-    key: "engage",
+    key: "ecosystem-building",
     number: "02",
-    title: "ENGAGE",
-    theme: "Bring the ecosystem together.",
-    purpose: "We connect founders, universities, government, industry, investors, and communities into one collaborative innovation ecosystem.",
+    title: "ECOSYSTEM BUILDING",
+    theme: "Connect the people building Baguio's ecosystem.",
+    purpose: "We connect founders, universities, government, industry, and community partners through structured referrals, shared dialogue, and greater visibility.",
     color: "#285E7A",
     bg: "rgba(40,94,122,0.12)",
     icon: ICONS.people,
-    whoFor: [
-      { icon: ICONS.institution, label: "Universities" },
-      { icon: ICONS.institution, label: "Government Agencies" },
-      { icon: ICONS.people, label: "Mentors & Investors" },
-      { icon: ICONS.globe, label: "Community Groups" },
-    ],
-    whatWeDo: ["Community Events", "Startup Meetups", "Ecosystem Mapping", "Partnership Development", "University Engagement", "Government Collaboration", "Corporate Innovation", "Mentor Network"],
-    outcomes: [
-      { icon: ICONS.people, label: "Stronger partnerships" },
-      { icon: ICONS.globe, label: "Better collaboration" },
-      { icon: ICONS.institution, label: "Connected ecosystem" },
+    programs: [
+      { title: "Startup Referral Network", description: "A structured referral system that connects entrepreneurs, startups, researchers, and innovators to the most appropriate Technology Business Incubator, government agency, mentor, or ecosystem partner based on their needs and stage of development." },
+      { title: "Quadruple Helix Roundtable", description: "A quarterly dialogue bringing together representatives from government, academia, industry, and the startup community to discuss ecosystem priorities, identify collaboration opportunities, and generate actionable recommendations." },
+      { title: "Quarterly Startup Showcase with the Mayor", description: "A quarterly platform where selected startups present their innovations, progress, and challenges to city leadership, fostering dialogue, recognition, and opportunities for collaboration and support." },
+      { title: "Innovation Calendar", description: "A centralized calendar that consolidates startup, innovation, entrepreneurship, research, and technology-related events from ecosystem partners, giving the community a single place to discover opportunities for learning, networking, funding, competitions, and collaboration." },
     ],
   },
   {
-    key: "expand",
+    key: "open-innovation",
     number: "03",
-    title: "EXPAND",
-    theme: "Create opportunities for growth.",
-    purpose: "We support startups through capital, markets, talent, and strategic partnerships.",
+    title: "OPEN INNOVATION",
+    theme: "Turn real-world challenges into co-created solutions.",
+    purpose: "We connect government agencies, businesses, and institutions with startups, researchers, and students to solve real problems and shape the city's research and innovation priorities.",
     color: "#9E2A52",
     bg: "rgba(158,42,82,0.12)",
-    icon: ICONS.chart,
-    whoFor: [
-      { icon: ICONS.briefcase, label: "Growing Startups" },
-      { icon: ICONS.coins, label: "Investors" },
-      { icon: ICONS.institution, label: "Corporate Partners" },
-      { icon: ICONS.globe, label: "New Markets" },
-    ],
-    whatWeDo: ["Investment Readiness", "Investor Matching", "Grant Facilitation", "Market Access", "Internationalization", "Talent Development", "Customer Matching"],
-    outcomes: [
-      { icon: ICONS.chart, label: "Growing startups" },
-      { icon: ICONS.coins, label: "Increased investment" },
-      { icon: ICONS.globe, label: "Expanded markets" },
+    icon: ICONS.lightbulb,
+    programs: [
+      { title: "Open Innovation Challenges", description: "A challenge-based innovation platform where government agencies, businesses, universities, and organizations can publish real-world problems and collaborate with startups, researchers, students, and innovators to co-develop practical, scalable solutions." },
+      { title: "Baguio City Annual Research and Innovation Agenda", description: "A collaborative annual initiative to review and refine Baguio City's Research and Innovation Agenda by engaging key ecosystem stakeholders in identifying emerging challenges, validating priority sectors, and recommending strategic research and innovation directions." },
+      { title: "Innovation Pilot Program", description: "A structured pilot program that gives innovative solutions the opportunity for real-world testing and validation, helping organizations evaluate feasibility before wider implementation or scaling." },
     ],
   },
   {
-    key: "evolve",
+    key: "ecosystem-intelligence",
     number: "04",
-    title: "EVOLVE",
-    theme: "Strengthen the ecosystem.",
-    purpose: "We continuously strengthen the ecosystem through collaboration, ecosystem intelligence, policy, data, and shared digital infrastructure.",
+    title: "ECOSYSTEM INTELLIGENCE",
+    theme: "Measure, learn, and strengthen the ecosystem.",
+    purpose: "We track, assess, and share ecosystem data to guide planning, measure progress, and strengthen Baguio's position as a growing innovation hub.",
     color: "#1A6B3C",
     bg: "rgba(26,107,60,0.12)",
-    icon: ICONS.refresh,
-    whoFor: [
-      { icon: ICONS.people, label: "Ecosystem Partners" },
-      { icon: ICONS.institution, label: "Policy Makers" },
-      { icon: ICONS.flask, label: "Research Institutions" },
-      { icon: ICONS.globe, label: "The Whole City" },
-    ],
-    whatWeDo: ["Ecosystem Research", "Policy Development", "Startup Database", "Ecosystem Intelligence", "Impact Measurement", "Digital Platforms", "Annual Ecosystem Report"],
-    outcomes: [
-      { icon: ICONS.refresh, label: "Stronger ecosystem" },
-      { icon: ICONS.institution, label: "Better policies" },
-      { icon: ICONS.database, label: "Data-driven decisions" },
-      { icon: ICONS.sprout, label: "Sustainable ecosystem growth" },
+    icon: ICONS.database,
+    programs: [
+      { title: "Startup Ecosystem Database", description: "A centralized and regularly updated database of startups, entrepreneurs, researchers, mentors, investors, Technology Business Incubators, government agencies, universities, and ecosystem partners that serves as the primary source of ecosystem data for planning, collaboration, referrals, and performance monitoring." },
+      { title: "Startup Ecosystem Dashboard", description: "A centralized digital dashboard that tracks key indicators of Baguio City's startup ecosystem, providing real-time insights into ecosystem performance, startup activity, programs, partnerships, funding, and innovation initiatives." },
+      { title: "Startup Ecosystem Assessment", description: "A continuous assessment initiative that gathers insights from startups and ecosystem stakeholders to identify needs, challenges, opportunities, and ecosystem gaps." },
+      { title: "Annual Startup Ecosystem Report", description: "An annual publication that presents the state of Baguio City's startup ecosystem, including ecosystem trends, key achievements, stakeholder insights, and recommendations for future ecosystem development." },
+      { title: "Knowledge Hub", description: "A digital repository of startup, innovation, entrepreneurship, and research resources, including toolkits, reports, funding opportunities, policies, case studies, publications, and learning materials that support evidence-based decision-making and ecosystem capacity building." },
+      { title: "StartupBlink Ecosystem Development Initiative", description: "A long-term initiative to strengthen Baguio City's startup ecosystem by improving ecosystem data, increasing global visibility, benchmarking performance, and enhancing the city's position in international startup ecosystem rankings." },
     ],
   },
 ];
@@ -160,18 +124,6 @@ function ProgramPhotoStack({ active, images }: { active: number; images: Record<
           </div>
         )
       )}
-    </div>
-  );
-}
-
-function InfoCard({ label, icon, children }: { label: string; icon: string; children: React.ReactNode }) {
-  return (
-    <div style={{ flex: 1, minWidth: 0 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
-        <IconSvg path={icon} size={15} stroke={ORANGE} strokeWidth={2.2} />
-        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B" }}>{label}</span>
-      </div>
-      {children}
     </div>
   );
 }
@@ -254,47 +206,32 @@ export default function EcosystemModel() {
             </div>
 
             {/* Content */}
-            <div style={{ paddingLeft: 56, display: "flex", flexDirection: "column", justifyContent: "center" }} className="ib-4e-content">
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#9A958B", marginBottom: 18 }}>{step.number} / 0{STEPS.length}</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 20 }}>
-                <div style={{ width: 68, height: 68, borderRadius: 9999, background: step.color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 0.5s ease" }}>
-                  <IconSvg path={step.icon} size={32} stroke="#fff" strokeWidth={1.7} />
-                </div>
-                <div>
-                  <h3 style={{ margin: 0, fontSize: 38, fontWeight: 800, letterSpacing: "-0.01em", color: DARK, lineHeight: 1.05 }}>{step.title}</h3>
-                  <div style={{ fontSize: 16, fontWeight: 600, color: step.color, marginTop: 4, transition: "color 0.5s ease" }}>{step.theme}</div>
-                </div>
-              </div>
-              <p style={{ margin: "0 0 30px", fontSize: 15.5, lineHeight: 1.65, color: "#6B6B73", maxWidth: 520 }}>{step.purpose}</p>
-
-              <div style={{ display: "flex", gap: 48, paddingTop: 28, borderTop: "1px solid rgba(20,20,25,0.08)" }} className="ib-4e-cards">
-                <InfoCard label="Who is this for?" icon={ICONS.gradCap}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "9px 20px" }}>
-                    {step.whoFor.map((w) => (
-                      <div key={w.label} style={{ fontSize: 13, color: "#44444C", lineHeight: 1.4 }}>{w.label}</div>
-                    ))}
+            <div style={{ paddingLeft: 56, display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }} className="ib-4e-content">
+              <div style={{ flexShrink: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#9A958B", marginBottom: 18 }}>{step.number} / 0{STEPS.length}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 20 }}>
+                  <div style={{ width: 68, height: 68, borderRadius: 9999, background: step.color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 0.5s ease" }}>
+                    <IconSvg path={step.icon} size={32} stroke="#fff" strokeWidth={1.7} />
                   </div>
-                </InfoCard>
-                <InfoCard label="What we do" icon={ICONS.briefcase}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 20px" }}>
-                    {step.whatWeDo.map((w) => (
-                      <div key={w} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, color: "#44444C", lineHeight: 1.35 }}>
-                        <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke={step.color} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, transition: "stroke 0.5s ease" }}><path d="M20 6 9 17l-5-5" /></svg>
-                        {w}
-                      </div>
-                    ))}
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: 30, fontWeight: 800, letterSpacing: "-0.01em", color: DARK, lineHeight: 1.1 }}>{step.title}</h3>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: step.color, marginTop: 4, transition: "color 0.5s ease" }}>{step.theme}</div>
                   </div>
-                </InfoCard>
+                </div>
+                <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.6, color: "#6B6B73", maxWidth: 520 }}>{step.purpose}</p>
               </div>
 
-              <div style={{ marginTop: 26, paddingTop: 22, borderTop: "1px solid rgba(20,20,25,0.08)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 14 }}>
-                  <IconSvg path={ICONS.chart} size={15} stroke={ORANGE} strokeWidth={2.2} />
-                  <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B" }}>Expected outcomes</span>
+              <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", marginTop: 22, paddingTop: 20, borderTop: "1px solid rgba(20,20,25,0.08)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 14, flexShrink: 0 }}>
+                  <IconSvg path={ICONS.briefcase} size={15} stroke={ORANGE} strokeWidth={2.2} />
+                  <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B" }}>Programs</span>
                 </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-                  {step.outcomes.map((o) => (
-                    <span key={o.label} style={{ fontSize: 13, fontWeight: 600, color: step.color, background: step.bg, padding: "8px 16px", borderRadius: 9999, transition: "color 0.5s ease, background 0.5s ease" }}>{o.label}</span>
+                <div style={{ display: "flex", flexDirection: "column", gap: 16, overflowY: "auto", paddingRight: 8, minHeight: 0 }} className="ib-4e-programs">
+                  {step.programs.map((p) => (
+                    <div key={p.title}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: DARK, marginBottom: 4, lineHeight: 1.3 }}>{p.title}</div>
+                      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: "#6B6B73" }}>{p.description}</p>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -307,6 +244,7 @@ export default function EcosystemModel() {
                   <button
                     onClick={() => goToStep(i)}
                     aria-label={`Go to ${s.title}`}
+                    title={s.title}
                     style={{
                       width: 30,
                       height: 30,
@@ -322,11 +260,11 @@ export default function EcosystemModel() {
                       background: i <= active ? step.color : "#F4F2EC",
                       transition: "background 0.5s ease, color 0.5s ease",
                       flexShrink: 0,
+                      margin: "4px 0",
                     }}
                   >
                     {s.number}
                   </button>
-                  <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.05em", color: i === active ? DARK : "#C9C5BB", margin: "4px 0", transition: "color 0.4s ease" }}>{s.title}</span>
                   {i < STEPS.length - 1 && <span style={{ width: 1.5, height: 26, background: i < active ? step.color : "rgba(20,20,25,0.12)", transition: "background 0.4s ease" }} />}
                 </div>
               ))}
@@ -385,29 +323,13 @@ export default function EcosystemModel() {
               <div style={{ fontSize: 13.5, fontWeight: 600, color: s.color, marginBottom: 10 }}>{s.theme}</div>
               <p style={{ margin: "0 0 16px", fontSize: 13.5, lineHeight: 1.6, color: "#6B6B73" }}>{s.purpose}</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 14, paddingTop: 14, borderTop: "1px solid rgba(20,20,25,0.08)" }}>
-                <div>
-                  <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 8 }}>Who is this for?</div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
-                    {s.whoFor.map((w) => <span key={w.label} style={{ fontSize: 11.5, color: "#44444C", background: "#F4F2EC", padding: "5px 10px", borderRadius: 9999 }}>{w.label}</span>)}
+                <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 2 }}>Programs</div>
+                {s.programs.map((p) => (
+                  <div key={p.title}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: DARK, marginBottom: 3, lineHeight: 1.3 }}>{p.title}</div>
+                    <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.5, color: "#6B6B73" }}>{p.description}</p>
                   </div>
-                </div>
-                <div>
-                  <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 8 }}>What we do</div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 10px" }}>
-                    {s.whatWeDo.map((w) => (
-                      <div key={w} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: "#44444C" }}>
-                        <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke={s.color} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M20 6 9 17l-5-5" /></svg>
-                        {w}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 8 }}>Expected outcomes</div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
-                    {s.outcomes.map((o) => <span key={o.label} style={{ fontSize: 11.5, color: s.color, background: s.bg, padding: "5px 10px", borderRadius: 9999, fontWeight: 600 }}>{o.label}</span>)}
-                  </div>
-                </div>
+                ))}
               </div>
               </div>
             </div>
