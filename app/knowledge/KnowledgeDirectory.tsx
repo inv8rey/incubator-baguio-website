@@ -56,12 +56,12 @@ export default function KnowledgeDirectory() {
 
   return (
     <div style={{ maxWidth: 1080, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: 36 }}>
+      <div style={{ textAlign: "center", marginBottom: 40 }}>
         <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F26522", marginBottom: 12 }}>Resource library</div>
         <h2 style={{ margin: 0, fontSize: 32, fontWeight: 700, letterSpacing: "-0.025em", color: DARK }}>Browse by category</h2>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 28 }} className="ib-knowledge-cat-grid">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 32 }} className="ib-knowledge-cat-grid">
         {KNOWLEDGE_CATEGORIES.map((c) => {
           const active = tab === c.id;
           const count = resources.filter((r) => r.category === c.id).length;
@@ -91,7 +91,7 @@ export default function KnowledgeDirectory() {
         })}
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap", marginBottom: 20 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap", marginBottom: 24 }}>
         <div style={{ position: "relative", flex: 1, minWidth: 220, maxWidth: 360 }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
           <input
@@ -101,10 +101,14 @@ export default function KnowledgeDirectory() {
             style={{ width: "100%", boxSizing: "border-box", fontSize: 13.5, color: DARK, background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.12)", borderRadius: 9999, padding: "11px 16px 11px 36px", outline: "none" }}
           />
         </div>
-        {tab !== "All" && (
+        {tab !== "All" ? (
           <button onClick={() => setTab("All")} style={{ fontSize: 12.5, fontWeight: 600, color: "#6B6B73", background: "#F5F4F0", border: "none", borderRadius: 999, padding: "9px 16px", cursor: "pointer" }}>
             Clear filter &times;
           </button>
+        ) : (
+          <span style={{ fontSize: 12.5, color: "#9A958B" }}>
+            {filtered.length} resource{filtered.length === 1 ? "" : "s"}
+          </span>
         )}
       </div>
 
@@ -115,7 +119,7 @@ export default function KnowledgeDirectory() {
       )}
 
       {filtered.length > 0 ? (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 18 }} className="ib-knowledge-grid">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 24 }} className="ib-knowledge-grid">
           {filtered.map((r) => {
             const cat = KNOWLEDGE_CATEGORIES.find((c) => c.id === r.category);
             const href = r.fileUrl || r.linkUrl;
@@ -130,7 +134,7 @@ export default function KnowledgeDirectory() {
                   </span>
                 )}
                 <h3 style={{ margin: "0 0 8px", fontSize: 16.5, fontWeight: 700, color: DARK, lineHeight: 1.3 }}>{r.title}</h3>
-                <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", flex: 1, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{r.description}</p>
+                <p className="ib-line-clamp-3" style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", flex: 1 }}>{r.description}</p>
                 {r.source && <p style={{ margin: "10px 0 0", fontSize: 12, color: "#9A958B" }}>{r.source}</p>}
                 {href && (
                   <a

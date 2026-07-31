@@ -76,6 +76,14 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
 .ib-cta-orange:hover { background: #FF7A2F !important; transform: translateY(-2px); box-shadow: 0 12px 28px -8px rgba(242,101,34,0.55) !important; }
 .ib-cta-orange:active { transform: translateY(0); }
 
+.ib-line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
 .ib-card-hover, .ib-row-hover, .ib-event-hover, .ib-resource-hover {
   transition: box-shadow .28s cubic-bezier(.22,.61,.36,1), background .28s ease, transform .28s cubic-bezier(.22,.61,.36,1), border-color .28s ease;
 }
