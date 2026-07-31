@@ -133,8 +133,10 @@ export default function KnowledgeDirectory() {
                     {cat.id}
                   </span>
                 )}
-                <h3 style={{ margin: "0 0 8px", fontSize: 16.5, fontWeight: 700, color: DARK, lineHeight: 1.3 }}>{r.title}</h3>
-                <p className="ib-line-clamp-3" style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", flex: 1 }}>{r.description}</p>
+                <div style={{ flex: 1 }}>
+                  <h3 style={{ margin: "0 0 8px", fontSize: 16.5, fontWeight: 700, color: DARK, lineHeight: 1.3 }}>{r.title}</h3>
+                  <p className="ib-line-clamp-3" style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>{r.description}</p>
+                </div>
                 {r.source && <p style={{ margin: "10px 0 0", fontSize: 12, color: "#9A958B" }}>{r.source}</p>}
                 {href && (
                   <a
