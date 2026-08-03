@@ -24,6 +24,15 @@ function matches(haystacks: string[], query: string) {
   return haystacks.some((h) => h.toLowerCase().includes(q));
 }
 
+function shuffle<T>(items: T[]): T[] {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 // Renders a contact email without a static mailto: href or a literal "@" in
 // the markup, so basic scrapers that read raw HTML/attributes (rather than
 // running a real browser) can't harvest it. The address is only assembled
@@ -208,13 +217,13 @@ function FundedProjectCard({ title, fundingAgency, leadInstitution, duration, st
 
 type ViewMode = "list" | "map";
 
-type SortOrder = "az" | "za";
+type SortOrder = "random" | "az" | "za";
 
 export default function EcosystemDirectory() {
   const [tab, setTab] = useState<EcosystemCategory>("Startups");
   const [query, setQuery] = useState("");
   const [view, setView] = useState<ViewMode>("list");
-  const [sort, setSort] = useState<SortOrder>("az");
+  const [sort, setSort] = useState<SortOrder>("random");
   const [sectorFilter, setSectorFilter] = useState<string | null>(null);
   const [specializationFilter, setSpecializationFilter] = useState<string | null>(null);
 
@@ -239,10 +248,20 @@ export default function EcosystemDirectory() {
   const [dynFundedProjects, setDynFundedProjects] = useState<FundedProjectEntry[]>([]);
 
   useEffect(() => {
-    fetchDynamicStartups().then(setDynStartups);
-    fetchDynamicMentors().then(setDynMentors);
-    fetchDynamicOrganizations().then(setDynOrgs);
-    fetchDynamicFundedProjects().then(setDynFundedProjects);
+    fetchDynamicStartups().then((r) => setDynStartups(shuffle(r)));
+    fetchDynamicMentors().then((r) => setDynMentors(shuffle(r)));
+    fetchDynamicOrganizations().then((r) =>
+      setDynOrgs({
+        TBIs: shuffle(r.TBIs),
+        Companies: shuffle(r.Companies),
+        "Service Providers": shuffle(r["Service Providers"]),
+        Government: shuffle(r.Government),
+        Community: shuffle(r.Community),
+        "Coworking Spaces": shuffle(r["Coworking Spaces"]),
+        "Makerspaces & Labs": shuffle(r["Makerspaces & Labs"]),
+      })
+    );
+    fetchDynamicFundedProjects().then((r) => setDynFundedProjects(shuffle(r)));
   }, []);
 
   const allStartups = dynStartups;
@@ -299,6 +318,7 @@ export default function EcosystemDirectory() {
     } else {
       list = allCommunity.filter((c) => matches([c.name, c.type, c.description], query));
     }
+    if (sort === "random") return list;
     return [...list].sort((a, b) => {
       const an = a.name ?? a.title ?? "";
       const bn = b.name ?? b.title ?? "";
@@ -409,6 +429,7 @@ export default function EcosystemDirectory() {
               aria-label="Sort"
               style={{ height: 44, fontSize: 13.5, fontWeight: 600, color: DARK, background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.14)", borderRadius: 9999, padding: "0 16px", outline: "none", appearance: "auto", cursor: "pointer" }}
             >
+              <option value="random">Sort: Random</option>
               <option value="az">Sort: A to Z</option>
               <option value="za">Sort: Z to A</option>
             </select>
