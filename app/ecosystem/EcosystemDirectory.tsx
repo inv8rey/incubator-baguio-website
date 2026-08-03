@@ -461,7 +461,7 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Startups" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as StartupEntry[]).map((s) => (
-              <div key={s.name} className="ib-challenge-hover ib-startup-card" style={{ position: "relative", background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26, paddingBottom: 60, display: "flex", flexDirection: "column" }}>
+              <div key={s.name} className="ib-challenge-hover ib-startup-card" style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26, display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", gap: 14, marginBottom: 16 }}>
                   {s.logoUrl ? (
                     <img src={s.logoUrl} alt={`${s.name} logo`} style={{ width: 52, height: 52, borderRadius: 12, objectFit: "contain", background: "#fff", border: "1px solid rgba(20,20,25,0.08)", flexShrink: 0, padding: 5, boxSizing: "border-box" }} />
@@ -474,21 +474,27 @@ export default function EcosystemDirectory() {
                   </div>
                 </div>
                 <p style={{ margin: "0 0 14px", fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{s.description}</p>
-                {s.contactEmail && <ObfuscatedEmail email={s.contactEmail} />}
-                {s.website && (
-                  <a
-                    href={s.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ib-orglist-btn"
-                    aria-label={`Visit ${s.name}`}
-                    style={{ position: "absolute", right: 16, bottom: 16, height: 34, borderRadius: 9999, background: DARK, color: "#fff", display: "flex", alignItems: "center", justifyContent: "flex-end", overflow: "hidden", textDecoration: "none" }}
-                  >
-                    <span className="ib-orglist-label" style={{ fontSize: 12.5, fontWeight: 600, whiteSpace: "nowrap" }}>View website</span>
-                    <span style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-                    </span>
-                  </a>
+                {(s.contactEmail || s.website) && (
+                  <div style={{ marginTop: "auto", paddingTop: 14, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                    {s.contactEmail ? (
+                      <ObfuscatedEmail email={s.contactEmail} style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }} />
+                    ) : <span />}
+                    {s.website && (
+                      <a
+                        href={s.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ib-orglist-btn"
+                        aria-label={`Visit ${s.name}`}
+                        style={{ height: 34, borderRadius: 9999, background: DARK, color: "#fff", display: "flex", alignItems: "center", justifyContent: "flex-end", overflow: "hidden", textDecoration: "none", flexShrink: 0 }}
+                      >
+                        <span className="ib-orglist-label" style={{ fontSize: 12.5, fontWeight: 600, whiteSpace: "nowrap" }}>View website</span>
+                        <span style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                        </span>
+                      </a>
+                    )}
+                  </div>
                 )}
               </div>
             ))}
