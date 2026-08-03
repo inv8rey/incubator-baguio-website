@@ -461,16 +461,18 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Startups" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as StartupEntry[]).map((s) => (
-              <div key={s.name} className="ib-challenge-hover ib-startup-card" style={{ position: "relative", background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+              <div key={s.name} className="ib-challenge-hover ib-startup-card" style={{ position: "relative", background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26, paddingBottom: 60, display: "flex", flexDirection: "column" }}>
+                <div style={{ display: "flex", gap: 14, marginBottom: 16 }}>
                   {s.logoUrl ? (
-                    <img src={s.logoUrl} alt={`${s.name} logo`} style={{ width: 46, height: 46, borderRadius: 12, objectFit: "cover" }} />
+                    <img src={s.logoUrl} alt={`${s.name} logo`} style={{ width: 52, height: 52, borderRadius: 12, objectFit: "contain", background: "#fff", border: "1px solid rgba(20,20,25,0.08)", flexShrink: 0, padding: 5, boxSizing: "border-box" }} />
                   ) : (
-                    <div style={{ width: 46, height: 46, borderRadius: 12, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 700, color: s.color }}>{s.initial}</div>
+                    <div style={{ width: 52, height: 52, borderRadius: 12, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, fontWeight: 700, color: s.color, flexShrink: 0 }}>{s.initial}</div>
                   )}
-                  <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: s.color, background: s.bg, padding: "5px 11px", borderRadius: 9999 }}>{s.sector}</span>
+                  <div style={{ minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", gap: 6 }}>
+                    <span style={{ display: "inline-block", alignSelf: "flex-start", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.02em", color: s.color, background: s.bg, padding: "4px 10px", borderRadius: 9999, lineHeight: 1.35 }}>{s.sector}</span>
+                    <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: DARK, lineHeight: 1.3 }}>{s.name}</h3>
+                  </div>
                 </div>
-                <h3 style={{ margin: "0 0 6px", fontSize: 18, fontWeight: 600, color: DARK }}>{s.name}</h3>
                 <p style={{ margin: "0 0 14px", fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{s.description}</p>
                 {s.contactEmail && <ObfuscatedEmail email={s.contactEmail} />}
                 {s.website && (
