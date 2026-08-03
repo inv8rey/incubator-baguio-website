@@ -5,6 +5,7 @@ import AuthProvider from "./AuthProvider";
 import AuthNav from "./AuthNav";
 import PageLoader from "./PageLoader";
 import PostHogProvider from "./PostHogProvider";
+import ChatWidget from "./ChatWidget/ChatWidget";
 import { SITE_URL } from "./seo";
 
 const TITLE = "Incubator Baguio | Baguio’s Startup & Innovation Ecosystem Platform";
@@ -76,6 +77,7 @@ export default function RootLayout({
             {children}
             <Interactive />
             <AuthNav />
+            <ChatWidget />
           </AuthProvider>
         </PostHogProvider>
       </body>

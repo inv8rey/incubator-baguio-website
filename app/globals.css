@@ -327,6 +327,24 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
 .ib-backtotop.ib-show { opacity: 1; transform: none; pointer-events: auto; }
 .ib-backtotop:hover { background: #F26522; }
 
+/* Chatbot widget bubble + panel (app/ChatWidget/*) — sits above the
+   back-to-top button (bottom: 22/height 46) so the two never overlap. */
+.ib-chat-bubble { transition: transform .2s ease, box-shadow .2s ease; }
+.ib-chat-bubble:hover { transform: translateY(-2px); box-shadow: 0 16px 34px -8px rgba(242,101,34,0.7); }
+
+@media (max-width: 600px) {
+  .ib-chat-panel {
+    left: 12px !important;
+    right: 12px !important;
+    top: 12px !important;
+    bottom: 12px !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+  .ib-chat-bubble { bottom: 22px !important; }
+}
+
 /* Homepage journey: dashed connector between the step numbers (desktop only) */
 .ib-journey-line {
   position: absolute;

@@ -11,6 +11,7 @@ export const NAV = [
   { id: "signups", label: "Signups", cnt: null as number | null },
   { id: "evaluations", label: "Evaluations", cnt: null as number | null },
   { id: "partners", label: "Partners", cnt: null as number | null },
+  { id: "chatbot-kb", label: "Chatbot KB", cnt: null as number | null },
 ] as const;
 
 export type TabId = (typeof NAV)[number]["id"];
@@ -25,6 +26,7 @@ export const TITLES: Record<TabId, string> = {
   signups: "Ecosystem Signups",
   evaluations: "Consultation Evaluations",
   partners: "Ecosystem Partners",
+  "chatbot-kb": "Chatbot Knowledge Base",
 };
 
 export const SUBS: Record<TabId, string> = {
@@ -37,6 +39,7 @@ export const SUBS: Record<TabId, string> = {
   signups: "Review the temporary public signup form and approve entries into the Ecosystem directory",
   evaluations: "Review feedback from consultation and mentoring visitors",
   partners: "Academic, government, corporate, and community partners",
+  "chatbot-kb": "Private documents the chat assistant can search — never shown on the public site",
 };
 
 // ---- Dashboard ----

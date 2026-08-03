@@ -3,6 +3,7 @@
 -- Safe to re-run: every statement is guarded with IF NOT EXISTS / OR REPLACE.
 
 create extension if not exists pgcrypto;
+create extension if not exists vector;
 
 -- ---------------------------------------------------------------------------
 -- profiles: one row per signed-up user, created client-side right after signup
@@ -1090,5 +1091,174 @@ begin
     where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'funded_projects'
   ) then
     alter publication supabase_realtime add table public.funded_projects;
+  end if;
+end $$;
+
+-- ---------------------------------------------------------------------------
+-- chat_rate_limits: per-IP request counting for the chatbot's Workers AI
+-- calls, so a single visitor (or script) can't run up the (paid) Workers AI
+-- bill. Written only by the server route using the anon key; there is no
+-- legitimate public write path, but the table carries no PII (hashed key
+-- only), so an open policy is acceptable here the same way it is for every
+-- other table in this file.
+-- ---------------------------------------------------------------------------
+create table if not exists public.chat_rate_limits (
+  id uuid primary key default gen_random_uuid(),
+  client_key text not null,
+  window_start timestamptz not null,
+  request_count integer not null default 1,
+  created_at timestamptz not null default now()
+);
+
+create unique index if not exists chat_rate_limits_client_window_idx
+  on public.chat_rate_limits (client_key, window_start);
+
+alter table public.chat_rate_limits enable row level security;
+
+drop policy if exists "chat rate limit rows are usable by anon" on public.chat_rate_limits;
+create policy "chat rate limit rows are usable by anon" on public.chat_rate_limits
+  for all using (true) with check (true);
+
+-- ---------------------------------------------------------------------------
+-- chatbot_documents / chatbot_document_chunks: a PRIVATE, admin-only document
+-- knowledge base the chatbot can search (RAG), separate from the public
+-- Knowledge Hub (knowledge_resources). Neither table has a public read
+-- policy — the chat route reads chunk content only through the
+-- match_chatbot_chunks() security-definer RPC below, never via direct
+-- select, so an anonymous visitor can never browse/list these documents.
+-- ---------------------------------------------------------------------------
+create table if not exists public.chatbot_documents (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  original_filename text not null,
+  storage_path text not null, -- path inside the private chatbot-documents bucket, not a public URL
+  uploaded_by uuid references public.profiles (id) on delete set null,
+  status text not null default 'pending' check (
+    status in ('pending', 'processing', 'ready', 'error')
+  ),
+  error_message text not null default '',
+  chunk_count integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.chatbot_documents enable row level security;
+
+drop policy if exists "admins manage chatbot documents" on public.chatbot_documents;
+create policy "admins manage chatbot documents" on public.chatbot_documents
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+-- Embedding model is Cloudflare Workers AI's @cf/baai/bge-base-en-v1.5 (768 dims).
+create table if not exists public.chatbot_document_chunks (
+  id uuid primary key default gen_random_uuid(),
+  document_id uuid not null references public.chatbot_documents (id) on delete cascade,
+  chunk_index integer not null,
+  content text not null,
+  char_count integer not null,
+  embedding vector(768),
+  created_at timestamptz not null default now(),
+  unique (document_id, chunk_index)
+);
+
+create index if not exists chatbot_document_chunks_document_id_idx
+  on public.chatbot_document_chunks (document_id);
+
+-- No ANN index (ivfflat/hnsw) yet: row counts are expected to stay in the
+-- hundreds/low-thousands initially, where a plain seq scan on
+-- `embedding <=> query` is fast and exact. Add
+--   create index on public.chatbot_document_chunks
+--     using hnsw (embedding vector_cosine_ops);
+-- once chunk volume grows into the tens of thousands and query latency
+-- becomes measurable (hnsw preferred over ivfflat here — no retrain step,
+-- better for an insert-heavy admin-driven table).
+
+alter table public.chatbot_document_chunks enable row level security;
+
+drop policy if exists "admins manage chatbot document chunks" on public.chatbot_document_chunks;
+create policy "admins manage chatbot document chunks" on public.chatbot_document_chunks
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+-- Similarity search RPC: raw `<=>` (cosine distance) queries aren't
+-- expressible through the JS query builder, and the chunks table is
+-- intentionally admin-only in RLS, so the public chat route calls this
+-- security-definer function instead of selecting the table directly. It only
+-- ever returns chunk content/metadata for documents whose processing
+-- finished successfully ('ready'), nothing else about the tables is exposed.
+create or replace function public.match_chatbot_chunks(
+  query_embedding vector(768),
+  match_count int default 5
+)
+returns table (
+  id uuid,
+  document_id uuid,
+  chunk_index int,
+  content text,
+  similarity float
+)
+language sql stable
+security definer
+set search_path = public
+as $$
+  select
+    c.id,
+    c.document_id,
+    c.chunk_index,
+    c.content,
+    1 - (c.embedding <=> query_embedding) as similarity
+  from public.chatbot_document_chunks c
+  join public.chatbot_documents d on d.id = c.document_id
+  where d.status = 'ready'
+  order by c.embedding <=> query_embedding
+  limit least(match_count, 20);
+$$;
+
+revoke all on function public.match_chatbot_chunks(vector, int) from public;
+grant execute on function public.match_chatbot_chunks(vector, int) to anon, authenticated;
+
+-- ---------------------------------------------------------------------------
+-- storage: chatbot-documents bucket for the private knowledge base PDFs.
+-- Unlike every other bucket in this file, this one is NOT public — no
+-- anonymous select policy at all, since these documents must never be
+-- reachable from the public site.
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('chatbot-documents', 'chatbot-documents', false)
+on conflict (id) do nothing;
+
+drop policy if exists "admins read chatbot documents" on storage.objects;
+create policy "admins read chatbot documents" on storage.objects
+  for select using (
+    bucket_id = 'chatbot-documents'
+    and exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+drop policy if exists "admins upload chatbot documents" on storage.objects;
+create policy "admins upload chatbot documents" on storage.objects
+  for insert to authenticated with check (
+    bucket_id = 'chatbot-documents'
+    and exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+drop policy if exists "admins delete chatbot documents" on storage.objects;
+create policy "admins delete chatbot documents" on storage.objects
+  for delete to authenticated using (
+    bucket_id = 'chatbot-documents'
+    and exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+do $$ begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'chatbot_documents'
+  ) then
+    alter publication supabase_realtime add table public.chatbot_documents;
   end if;
 end $$;

@@ -12,6 +12,7 @@ import ProgramsTab from "./tabs/ProgramsTab";
 import EcosystemSignupsTab from "./tabs/EcosystemSignupsTab";
 import EvaluationsTab from "./tabs/EvaluationsTab";
 import PartnersTab from "./tabs/PartnersTab";
+import ChatbotKnowledgeTab from "./tabs/ChatbotKnowledgeTab";
 
 const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
   dashboard: (
@@ -66,6 +67,13 @@ const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
       <circle cx={7} cy={7} r={3} />
       <circle cx={17} cy={7} r={3} />
       <path d="M2 21c0-3.3 2.2-5.5 5-5.5S12 17.7 12 21M12 21c0-3.3 2.2-5.5 5-5.5S22 17.7 22 21" />
+    </>
+  ),
+  "chatbot-kb": (
+    <>
+      <rect x={5} y={11} width={14} height={10} rx={2} />
+      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+      <circle cx={12} cy={16} r={1.4} fill="currentColor" stroke="none" />
     </>
   ),
 };
@@ -250,6 +258,7 @@ export default function AdminApp() {
         {page === "signups" && <EcosystemSignupsTab searchQuery={searchQuery} />}
         {page === "evaluations" && <EvaluationsTab searchQuery={searchQuery} />}
         {page === "partners" && <PartnersTab searchQuery={searchQuery} />}
+        {page === "chatbot-kb" && <ChatbotKnowledgeTab searchQuery={searchQuery} />}
       </main>
     </div>
   );
