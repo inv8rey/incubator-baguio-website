@@ -84,6 +84,15 @@ export default function ChatWidget() {
     sendRequest(withoutError);
   }
 
+  function resetChat() {
+    if (loading) return;
+    setMessages([]);
+    setInput("");
+    try {
+      sessionStorage.removeItem(HISTORY_KEY);
+    } catch {}
+  }
+
   return (
     <>
       {!open && <ChatBubble onClick={openWidget} showPulse={showPulse} />}
@@ -97,6 +106,7 @@ export default function ChatWidget() {
           onClose={() => setOpen(false)}
           onQuickPick={(prompt) => send(prompt)}
           onRetry={retry}
+          onReset={resetChat}
         />
       )}
     </>

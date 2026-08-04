@@ -14,9 +14,10 @@ interface ChatPanelProps {
   onClose: () => void;
   onQuickPick: (prompt: string) => void;
   onRetry: () => void;
+  onReset: () => void;
 }
 
-export default function ChatPanel({ messages, loading, input, onInputChange, onSend, onClose, onQuickPick, onRetry }: ChatPanelProps) {
+export default function ChatPanel({ messages, loading, input, onInputChange, onSend, onClose, onQuickPick, onRetry, onReset }: ChatPanelProps) {
   const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,14 +60,31 @@ export default function ChatPanel({ messages, loading, input, onInputChange, onS
           <div style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>Incubator Baguio Assistant</div>
           <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.5)" }}>Find opportunities, mentors &amp; resources faster</div>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close chat"
-          style={{ background: "none", border: "none", color: "rgba(255,255,255,0.6)", cursor: "pointer", padding: 4 }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          {messages.length > 0 && (
+            <button
+              type="button"
+              onClick={onReset}
+              disabled={loading}
+              aria-label="Reset chat"
+              title="Reset chat"
+              style={{ background: "none", border: "none", color: "rgba(255,255,255,0.6)", cursor: loading ? "default" : "pointer", padding: 4, opacity: loading ? 0.4 : 1 }}
+            >
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+                <path d="M21 4v6h-6" />
+              </svg>
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close chat"
+            style={{ background: "none", border: "none", color: "rgba(255,255,255,0.6)", cursor: "pointer", padding: 4 }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+          </button>
+        </div>
       </div>
 
       <div ref={listRef} aria-live="polite" style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
