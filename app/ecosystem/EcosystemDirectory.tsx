@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { MENTOR_SPECIALIZATIONS, type EcosystemCategory, type StartupEntry, type TbiEntry, type CompanyEntry, type ServiceProviderEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry, type FundedProjectEntry } from "./data";
 import { fetchDynamicStartups, fetchDynamicMentors, fetchDynamicOrganizations, fetchDynamicFundedProjects, type DynamicMentorEntry } from "./dynamicData";
@@ -226,13 +226,29 @@ export default function EcosystemDirectory() {
   const [sort, setSort] = useState<SortOrder>("random");
   const [sectorFilter, setSectorFilter] = useState<string | null>(null);
   const [specializationFilter, setSpecializationFilter] = useState<string | null>(null);
+  const [highlightId, setHighlightId] = useState<string | null>(null);
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   function selectTab(next: EcosystemCategory) {
     setTab(next);
     setQuery("");
     setSectorFilter(null);
     setSpecializationFilter(null);
+    setHighlightId(null);
   }
+
+  // Deep-link support for "/ecosystem?tab=mentors&id=<id>" (used by the
+  // chat widget's result cards) — jumps straight to the right tab and
+  // scrolls/highlights the matching card once its data has loaded.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get("tab");
+    const id = params.get("id");
+    if (!id) return;
+    if (tabParam === "mentors") setTab("Mentors");
+    else if (tabParam === "startups") setTab("Startups");
+    setHighlightId(id);
+  }, []);
 
   const [dynStartups, setDynStartups] = useState<StartupEntry[]>([]);
   const [dynMentors, setDynMentors] = useState<DynamicMentorEntry[]>([]);
@@ -263,6 +279,14 @@ export default function EcosystemDirectory() {
     );
     fetchDynamicFundedProjects().then((r) => setDynFundedProjects(shuffle(r)));
   }, []);
+
+  useEffect(() => {
+    if (!highlightId) return;
+    const el = cardRefs.current[highlightId];
+    if (!el) return;
+    const timer = setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "center" }), 80);
+    return () => clearTimeout(timer);
+  }, [highlightId, dynMentors, dynStartups, tab]);
 
   const allStartups = dynStartups;
   const allMentors = dynMentors;
@@ -461,7 +485,22 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Startups" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as StartupEntry[]).map((s) => (
-              <div key={s.name} className="ib-challenge-hover ib-startup-card" style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, padding: 26, display: "flex", flexDirection: "column" }}>
+              <div
+                key={s.name}
+                ref={(el) => {
+                  if (s.id) cardRefs.current[s.id] = el;
+                }}
+                className="ib-challenge-hover ib-startup-card"
+                style={{
+                  background: "#FAFAF7",
+                  border: s.id && highlightId === s.id ? `2px solid ${ORANGE}` : "1px solid rgba(20,20,25,0.10)",
+                  boxShadow: s.id && highlightId === s.id ? "0 0 0 4px rgba(242,101,34,0.16)" : undefined,
+                  borderRadius: 18,
+                  padding: 26,
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
                 <div style={{ display: "flex", gap: 14, marginBottom: 16 }}>
                   {s.logoUrl ? (
                     <img src={s.logoUrl} alt={`${s.name} logo`} style={{ width: 52, height: 52, borderRadius: 12, objectFit: "contain", background: "#fff", border: "1px solid rgba(20,20,25,0.08)", flexShrink: 0, padding: 5, boxSizing: "border-box" }} />
@@ -505,8 +544,20 @@ export default function EcosystemDirectory() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as DynamicMentorEntry[]).map((m) => {
               const photoUrl = m.photoUrl;
+              const isHighlighted = highlightId === m.id;
               return (
-                <div key={m.name} className="ib-mentor-flip" style={{ height: 300, borderRadius: 18 }}>
+                <div
+                  key={m.name}
+                  ref={(el) => {
+                    cardRefs.current[m.id] = el;
+                  }}
+                  className="ib-mentor-flip"
+                  style={{
+                    height: 300,
+                    borderRadius: 18,
+                    boxShadow: isHighlighted ? `0 0 0 3px ${ORANGE}, 0 0 0 7px rgba(242,101,34,0.16)` : undefined,
+                  }}
+                >
                   <div className="ib-mentor-flip-inner">
                     {/* FRONT */}
                     <div

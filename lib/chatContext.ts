@@ -289,7 +289,7 @@ export function hydrateMatches(matches: { type: ChatEntityType; id: string; reas
         title: row.name,
         subtitle: [row.position, row.company].filter(Boolean).join(" · "),
         description: row.bio,
-        href: "/ecosystem",
+        href: `/ecosystem?tab=mentors&id=${row.id}`,
       });
     } else if (m.type === "startup") {
       cards.push({
@@ -299,7 +299,7 @@ export function hydrateMatches(matches: { type: ChatEntityType; id: string; reas
         title: row.name,
         subtitle: [row.sector, row.lifecycle_stage].filter(Boolean).join(" · "),
         description: row.tagline || row.description,
-        href: "/ecosystem",
+        href: `/ecosystem?tab=startups&id=${row.id}`,
       });
     } else if (m.type === "resource") {
       cards.push({

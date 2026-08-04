@@ -1,6 +1,7 @@
 export type EcosystemCategory = "Startups" | "Mentors" | "TBIs" | "Companies" | "Service Providers" | "Government" | "Community" | "Coworking Spaces" | "Makerspaces & Labs" | "Funded Projects";
 
 export interface StartupEntry {
+  id?: string;
   name: string;
   sector: string;
   contactEmail: string;

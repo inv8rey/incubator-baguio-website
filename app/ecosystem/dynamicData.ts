@@ -23,6 +23,7 @@ export async function fetchDynamicStartups(): Promise<StartupEntry[]> {
   return (data ?? []).map((s: any) => {
     const p = paletteFor(s.name);
     return {
+      id: s.id,
       name: s.name,
       sector: s.sector,
       contactEmail: s.contact_email || "",
