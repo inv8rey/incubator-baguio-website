@@ -9,6 +9,7 @@ const DARK = "#141417";
 interface ProgramItem {
   title: string;
   description: string;
+  tagline: string;
 }
 
 interface StepData {
@@ -42,9 +43,9 @@ const STEPS: StepData[] = [
     bg: "rgba(242,101,34,0.12)",
     icon: ICONS.sprout,
     programs: [
-      { title: "Founder Office Hours", description: "Weekly one-on-one consultation sessions where founders receive tailored guidance on business validation, product development, funding, legal concerns, marketing, and referrals to appropriate ecosystem partners." },
-      { title: "Founder Learning Series", description: "A recurring learning program featuring workshops, masterclasses, and expert-led sessions on startup fundamentals, including customer discovery, business model development, product validation, fundraising, intellectual property, marketing, finance, and emerging technologies." },
-      { title: "Founder Wellness Sessions", description: "Quarterly sessions focused on mental health, stress management, resilience, productivity, and work-life balance to help founders sustain their entrepreneurial journey." },
+      { title: "Founder Office Hours", tagline: "One-on-one guidance on validation, funding, legal, and more.", description: "Weekly one-on-one consultation sessions where founders receive tailored guidance on business validation, product development, funding, legal concerns, marketing, and referrals to appropriate ecosystem partners." },
+      { title: "Founder Learning Series", tagline: "Workshops and masterclasses on the core skills of building a startup.", description: "A recurring learning program featuring workshops, masterclasses, and expert-led sessions on startup fundamentals, including customer discovery, business model development, product validation, fundraising, intellectual property, marketing, finance, and emerging technologies." },
+      { title: "Founder Wellness Sessions", tagline: "Quarterly sessions on resilience, balance, and founder mental health.", description: "Quarterly sessions focused on mental health, stress management, resilience, productivity, and work-life balance to help founders sustain their entrepreneurial journey." },
     ],
   },
   {
@@ -57,10 +58,10 @@ const STEPS: StepData[] = [
     bg: "rgba(40,94,122,0.12)",
     icon: ICONS.people,
     programs: [
-      { title: "Startup Referral Network", description: "A structured referral system that connects entrepreneurs, startups, researchers, and innovators to the most appropriate Technology Business Incubator, government agency, mentor, or ecosystem partner based on their needs and stage of development." },
-      { title: "Quadruple Helix Roundtable", description: "A quarterly dialogue bringing together representatives from government, academia, industry, and the startup community to discuss ecosystem priorities, identify collaboration opportunities, and generate actionable recommendations." },
-      { title: "Quarterly Startup Showcase with the Mayor", description: "A quarterly platform where selected startups present their innovations, progress, and challenges to city leadership, fostering dialogue, recognition, and opportunities for collaboration and support." },
-      { title: "Innovation Calendar", description: "A centralized calendar that consolidates startup, innovation, entrepreneurship, research, and technology-related events from ecosystem partners, giving the community a single place to discover opportunities for learning, networking, funding, competitions, and collaboration." },
+      { title: "Startup Referral Network", tagline: "Connecting founders to the right TBIs, mentors, and partners.", description: "A structured referral system that connects entrepreneurs, startups, researchers, and innovators to the most appropriate Technology Business Incubator, government agency, mentor, or ecosystem partner based on their needs and stage of development." },
+      { title: "Quadruple Helix Roundtable", tagline: "Quarterly dialogue across government, academe, industry, and startups.", description: "A quarterly dialogue bringing together representatives from government, academia, industry, and the startup community to discuss ecosystem priorities, identify collaboration opportunities, and generate actionable recommendations." },
+      { title: "Quarterly Startup Showcase with the Mayor", tagline: "Selected startups present to city leadership each quarter.", description: "A quarterly platform where selected startups present their innovations, progress, and challenges to city leadership, fostering dialogue, recognition, and opportunities for collaboration and support." },
+      { title: "Innovation Calendar", tagline: "One shared calendar for all ecosystem events across the city.", description: "A centralized calendar that consolidates startup, innovation, entrepreneurship, research, and technology-related events from ecosystem partners, giving the community a single place to discover opportunities for learning, networking, funding, competitions, and collaboration." },
     ],
   },
   {
@@ -73,9 +74,9 @@ const STEPS: StepData[] = [
     bg: "rgba(158,42,82,0.12)",
     icon: ICONS.lightbulb,
     programs: [
-      { title: "Open Innovation Challenges", description: "A challenge-based innovation platform where government agencies, businesses, universities, and organizations can publish real-world problems and collaborate with startups, researchers, students, and innovators to co-develop practical, scalable solutions." },
-      { title: "Baguio City Annual Research and Innovation Agenda", description: "A collaborative annual initiative to review and refine Baguio City's Research and Innovation Agenda by engaging key ecosystem stakeholders in identifying emerging challenges, validating priority sectors, and recommending strategic research and innovation directions." },
-      { title: "Innovation Pilot Program", description: "A structured pilot program that gives innovative solutions the opportunity for real-world testing and validation, helping organizations evaluate feasibility before wider implementation or scaling." },
+      { title: "Open Innovation Challenges", tagline: "Organizations post real problems; innovators co-develop solutions.", description: "A challenge-based innovation platform where government agencies, businesses, universities, and organizations can publish real-world problems and collaborate with startups, researchers, students, and innovators to co-develop practical, scalable solutions." },
+      { title: "Baguio City Annual Research and Innovation Agenda", tagline: "Stakeholder-driven process to set the city's R&I priorities each year.", description: "A collaborative annual initiative to review and refine Baguio City's Research and Innovation Agenda by engaging key ecosystem stakeholders in identifying emerging challenges, validating priority sectors, and recommending strategic research and innovation directions." },
+      { title: "Innovation Pilot Program", tagline: "Real-world testing ground for solutions before city-wide scaling.", description: "A structured pilot program that gives innovative solutions the opportunity for real-world testing and validation, helping organizations evaluate feasibility before wider implementation or scaling." },
     ],
   },
   {
@@ -88,12 +89,12 @@ const STEPS: StepData[] = [
     bg: "rgba(26,107,60,0.12)",
     icon: ICONS.database,
     programs: [
-      { title: "Startup Ecosystem Database", description: "A centralized and regularly updated database of startups, entrepreneurs, researchers, mentors, investors, Technology Business Incubators, government agencies, universities, and ecosystem partners that serves as the primary source of ecosystem data for planning, collaboration, referrals, and performance monitoring." },
-      { title: "Startup Ecosystem Dashboard", description: "A centralized digital dashboard that tracks key indicators of Baguio City's startup ecosystem, providing real-time insights into ecosystem performance, startup activity, programs, partnerships, funding, and innovation initiatives." },
-      { title: "Startup Ecosystem Assessment", description: "A continuous assessment initiative that gathers insights from startups and ecosystem stakeholders to identify needs, challenges, opportunities, and ecosystem gaps." },
-      { title: "Annual Startup Ecosystem Report", description: "An annual publication that presents the state of Baguio City's startup ecosystem, including ecosystem trends, key achievements, stakeholder insights, and recommendations for future ecosystem development." },
-      { title: "Knowledge Hub", description: "A digital repository of startup, innovation, entrepreneurship, and research resources, including toolkits, reports, funding opportunities, policies, case studies, publications, and learning materials that support evidence-based decision-making and ecosystem capacity building." },
-      { title: "StartupBlink Ecosystem Development Initiative", description: "A long-term initiative to strengthen Baguio City's startup ecosystem by improving ecosystem data, increasing global visibility, benchmarking performance, and enhancing the city's position in international startup ecosystem rankings." },
+      { title: "Startup Ecosystem Database", tagline: "Centralized directory of startups, mentors, TBIs, and partners.", description: "A centralized and regularly updated database of startups, entrepreneurs, researchers, mentors, investors, Technology Business Incubators, government agencies, universities, and ecosystem partners that serves as the primary source of ecosystem data for planning, collaboration, referrals, and performance monitoring." },
+      { title: "Startup Ecosystem Dashboard", tagline: "Live metrics on startup activity, funding, and ecosystem health.", description: "A centralized digital dashboard that tracks key indicators of Baguio City's startup ecosystem, providing real-time insights into ecosystem performance, startup activity, programs, partnerships, funding, and innovation initiatives." },
+      { title: "Startup Ecosystem Assessment", tagline: "Continuous surveys to surface gaps and opportunities citywide.", description: "A continuous assessment initiative that gathers insights from startups and ecosystem stakeholders to identify needs, challenges, opportunities, and ecosystem gaps." },
+      { title: "Annual Startup Ecosystem Report", tagline: "Yearly publication on the state of Baguio's innovation economy.", description: "An annual publication that presents the state of Baguio City's startup ecosystem, including ecosystem trends, key achievements, stakeholder insights, and recommendations for future ecosystem development." },
+      { title: "Knowledge Hub", tagline: "Open repository of toolkits, research, policies, and resources.", description: "A digital repository of startup, innovation, entrepreneurship, and research resources, including toolkits, reports, funding opportunities, policies, case studies, publications, and learning materials that support evidence-based decision-making and ecosystem capacity building." },
+      { title: "StartupBlink Ecosystem Development Initiative", tagline: "Improving Baguio's visibility and ranking on global startup indexes.", description: "A long-term initiative to strengthen Baguio City's startup ecosystem by improving ecosystem data, increasing global visibility, benchmarking performance, and enhancing the city's position in international startup ecosystem rankings." },
     ],
   },
 ];
@@ -228,9 +229,9 @@ export default function EcosystemModel() {
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 16, overflowY: "auto", paddingRight: 8, minHeight: 0 }} className="ib-4e-programs">
                   {step.programs.map((p) => (
-                    <div key={p.title}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: DARK, marginBottom: 4, lineHeight: 1.3 }}>{p.title}</div>
-                      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: "#6B6B73" }}>{p.description}</p>
+                    <div key={p.title} style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: DARK, lineHeight: 1.3 }}>{p.title}</div>
+                      <div style={{ fontSize: 12.5, color: "#9A958B", lineHeight: 1.45 }}>{p.tagline}</div>
                     </div>
                   ))}
                 </div>
@@ -325,9 +326,9 @@ export default function EcosystemModel() {
               <div style={{ display: "flex", flexDirection: "column", gap: 14, paddingTop: 14, borderTop: "1px solid rgba(20,20,25,0.08)" }}>
                 <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 2 }}>Programs</div>
                 {s.programs.map((p) => (
-                  <div key={p.title}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: DARK, marginBottom: 3, lineHeight: 1.3 }}>{p.title}</div>
-                    <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.5, color: "#6B6B73" }}>{p.description}</p>
+                  <div key={p.title} style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: DARK, lineHeight: 1.3 }}>{p.title}</div>
+                    <div style={{ fontSize: 12, color: "#9A958B", lineHeight: 1.45 }}>{p.tagline}</div>
                   </div>
                 ))}
               </div>

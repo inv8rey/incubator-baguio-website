@@ -182,8 +182,7 @@ const PROGRAMS_HTML_BOTTOM = `
         <div style="width:56px;height:56px;border-radius:9999px;background:${p.bg};display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p.icon}</svg>
         </div>
-        <h3 style="margin:0 0 8px;font-size:19px;font-weight:700;color:#141417;letter-spacing:-0.01em;">${p.title}</h3>
-        <p style="margin:0 0 18px;font-size:14px;line-height:1.55;color:#6B6B73;">${p.desc}</p>
+        <h3 style="margin:0 0 18px;font-size:19px;font-weight:700;color:#141417;letter-spacing:-0.01em;">${p.title}</h3>
         <div style="display:grid;grid-template-columns:${wide ? "repeat(2,1fr)" : "1fr"};gap:9px 18px;padding-top:16px;border-top:1px solid rgba(20,20,25,0.07);margin-bottom:24px;flex:1;">
           ${p.items.map((it) => `<div style="display:flex;align-items:center;gap:9px;font-size:13.5px;color:#44444C;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M20 6 9 17l-5-5"></path></svg>${it}</div>`).join("")}
         </div>
