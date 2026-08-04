@@ -41,20 +41,13 @@ export default function ChatWidget() {
     } catch {}
   }
 
-  async function send(text: string) {
-    const trimmed = text.trim();
-    if (!trimmed || loading) return;
-
-    const nextMessages: ChatUiMessage[] = [...messages, { role: "user", content: trimmed }];
-    setMessages(nextMessages);
-    setInput("");
+  async function sendRequest(history: ChatUiMessage[]) {
     setLoading(true);
-
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextMessages.map((m) => ({ role: m.role, content: m.content })) }),
+        body: JSON.stringify({ messages: history.map((m) => ({ role: m.role, content: m.content })) }),
       });
       const data = await res.json();
 
@@ -72,6 +65,25 @@ export default function ChatWidget() {
     }
   }
 
+  async function send(text: string) {
+    const trimmed = text.trim();
+    if (!trimmed || loading) return;
+
+    const nextMessages: ChatUiMessage[] = [...messages, { role: "user", content: trimmed }];
+    setMessages(nextMessages);
+    setInput("");
+    await sendRequest(nextMessages);
+  }
+
+  function retry() {
+    if (loading) return;
+    const last = messages[messages.length - 1];
+    if (!last || last.role !== "assistant" || !last.error) return;
+    const withoutError = messages.slice(0, -1);
+    setMessages(withoutError);
+    sendRequest(withoutError);
+  }
+
   return (
     <>
       {!open && <ChatBubble onClick={openWidget} showPulse={showPulse} />}
@@ -84,6 +96,7 @@ export default function ChatWidget() {
           onSend={() => send(input)}
           onClose={() => setOpen(false)}
           onQuickPick={(prompt) => send(prompt)}
+          onRetry={retry}
         />
       )}
     </>

@@ -13,9 +13,10 @@ interface ChatPanelProps {
   onSend: () => void;
   onClose: () => void;
   onQuickPick: (prompt: string) => void;
+  onRetry: () => void;
 }
 
-export default function ChatPanel({ messages, loading, input, onInputChange, onSend, onClose, onQuickPick }: ChatPanelProps) {
+export default function ChatPanel({ messages, loading, input, onInputChange, onSend, onClose, onQuickPick, onRetry }: ChatPanelProps) {
   const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -75,7 +76,11 @@ export default function ChatPanel({ messages, loading, input, onInputChange, onS
           </div>
         )}
         {messages.map((m, i) => (
-          <MessageBubble key={i} message={m} />
+          <MessageBubble
+            key={i}
+            message={m}
+            onRetry={!loading && i === messages.length - 1 && m.error ? onRetry : undefined}
+          />
         ))}
         {loading && (
           <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", fontStyle: "italic" }}>Thinking…</div>
