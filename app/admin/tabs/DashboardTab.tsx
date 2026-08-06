@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sparkline, StageDonut } from "../charts";
+import { BreakdownBars, Sparkline, StageDonut } from "../charts";
 import { DARK, ORANGE, SECTOR_FILTERS, STAGE_BADGE } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
 import AiInsightsPanel from "./AiInsightsPanel";
+import AnalyticsPanel from "./AnalyticsPanel";
 
 const KPI_ICONS = [
   // Active Startups — rocket
@@ -114,44 +115,6 @@ function deltaFromSeries(series: number[]): { text: string; positive: boolean | 
   const pct = ((cur - prev) / prev) * 100;
   if (pct === 0) return { text: "No change", positive: null };
   return { text: `${pct >= 0 ? "↑" : "↓"} ${Math.abs(pct).toFixed(1)}%`, positive: pct >= 0 };
-}
-
-function BreakdownBars({
-  data,
-  labelWidth = 190,
-}: {
-  data: { label: string; count: number; pct: number; color: string }[];
-  labelWidth?: number;
-}) {
-  if (data.length === 0) {
-    return <div style={{ fontSize: 12.5, color: "#8B8479", padding: "12px 0" }}>No data yet.</div>;
-  }
-  return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      {data.map((s, i) => (
-        <div
-          key={s.label}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            padding: "8px 0",
-            borderBottom: i < data.length - 1 ? "1px solid rgba(64,50,34,0.05)" : "none",
-          }}
-        >
-          <div style={{ width: 26, height: 26, borderRadius: 7, background: `${s.color}1F`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <span style={{ width: 8, height: 8, borderRadius: "50%", background: s.color, display: "inline-block" }} />
-          </div>
-          <span style={{ fontSize: 12.5, fontWeight: 500, color: "#44444C", width: labelWidth, flexShrink: 0, lineHeight: 1.3 }}>{s.label}</span>
-          <div style={{ flex: 1, height: 7, background: "rgba(64,50,34,0.09)", borderRadius: 999, overflow: "hidden" }}>
-            <div style={{ width: `${s.pct}%`, height: "100%", background: s.color, borderRadius: 999 }} />
-          </div>
-          <span style={{ fontSize: 12, fontWeight: 600, color: DARK, width: 22, textAlign: "right", flexShrink: 0 }}>{s.count}</span>
-          <span style={{ fontSize: 11, color: "#8B8479", width: 44, textAlign: "right", flexShrink: 0 }}>{s.pct}%</span>
-        </div>
-      ))}
-    </div>
-  );
 }
 
 interface StartupRow {
@@ -331,6 +294,7 @@ export default function DashboardTab() {
       )}
 
       <AiInsightsPanel ready={loaded} />
+      <AnalyticsPanel ready={loaded} />
 
       {/* KPI ROW */}
       <div className="ib-admin-grid-5" style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 16 }}>

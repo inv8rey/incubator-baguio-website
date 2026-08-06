@@ -29,6 +29,88 @@ export function Sparkline({
   );
 }
 
+export function BreakdownBars({
+  data,
+  labelWidth = 190,
+}: {
+  data: { label: string; count: number; pct: number; color: string }[];
+  labelWidth?: number;
+}) {
+  if (data.length === 0) {
+    return <div style={{ fontSize: 12.5, color: "#8B8479", padding: "12px 0" }}>No data yet.</div>;
+  }
+  return (
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      {data.map((s, i) => (
+        <div
+          key={s.label}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            padding: "8px 0",
+            borderBottom: i < data.length - 1 ? "1px solid rgba(64,50,34,0.05)" : "none",
+          }}
+        >
+          <div style={{ width: 26, height: 26, borderRadius: 7, background: `${s.color}1F`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: s.color, display: "inline-block" }} />
+          </div>
+          <span style={{ fontSize: 12.5, fontWeight: 500, color: "#44444C", width: labelWidth, flexShrink: 0, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.label}</span>
+          <div style={{ flex: 1, height: 7, background: "rgba(64,50,34,0.09)", borderRadius: 999, overflow: "hidden" }}>
+            <div style={{ width: `${s.pct}%`, height: "100%", background: s.color, borderRadius: 999 }} />
+          </div>
+          <span style={{ fontSize: 12, fontWeight: 600, color: DARK, width: 34, textAlign: "right", flexShrink: 0 }}>{s.count}</span>
+          <span style={{ fontSize: 11, color: "#8B8479", width: 44, textAlign: "right", flexShrink: 0 }}>{s.pct}%</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function TrendChart({
+  data,
+  color = ORANGE,
+  height = 120,
+}: {
+  data: { label: string; value: number }[];
+  color?: string;
+  height?: number;
+}) {
+  if (!data.length) return null;
+  const w = 100;
+  const max = Math.max(...data.map((d) => d.value), 1);
+  const barGap = w / data.length;
+  const axisH = height - 18;
+  return (
+    <div>
+      <svg viewBox={`0 0 ${w} ${height}`} width="100%" height={height} preserveAspectRatio="none" style={{ display: "block", overflow: "visible" }}>
+        <line x1={0} y1={axisH} x2={w} y2={axisH} stroke="rgba(64,50,34,0.09)" strokeWidth={0.5} />
+        {data.map((d, i) => {
+          const barH = (d.value / max) * (axisH - 6);
+          const x = i * barGap;
+          const barW = Math.max(barGap * 0.62, 0.4);
+          return (
+            <rect
+              key={i}
+              x={x + (barGap - barW) / 2}
+              y={axisH - barH}
+              width={barW}
+              height={Math.max(barH, d.value > 0 ? 1 : 0)}
+              rx={0.6}
+              fill={color}
+              opacity={0.85}
+            />
+          );
+        })}
+      </svg>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#8B8479", marginTop: 6 }}>
+        <span>{data[0]?.label}</span>
+        <span>{data[data.length - 1]?.label}</span>
+      </div>
+    </div>
+  );
+}
+
 export function StageDonut({ data, total }: { data: { label: string; count: number; color: string }[]; total: number }) {
   const r = 58;
   const thick = 18;
