@@ -8,6 +8,18 @@ import { CATEGORY_COLORS, EVENT_FORMATS, ORGANIZER_TYPES, type EventCategory, ty
 
 const EVENT_CATEGORIES = Object.keys(CATEGORY_COLORS) as EventCategory[];
 
+async function authedFetch(path: string, body: unknown): Promise<Response | null> {
+  if (!supabase) return null;
+  const { data: sessionData } = await supabase.auth.getSession();
+  const token = sessionData.session?.access_token;
+  if (!token) return null;
+  return fetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify(body),
+  });
+}
+
 const modalInputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "10px 14px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", fontSize: 13.5, color: DARK, outline: "none", fontFamily: "inherit" };
 const modalLabelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 5, display: "block" };
 
@@ -268,6 +280,24 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
     load();
   }
 
+  // Approving goes through the API route rather than a direct client update,
+  // since it also has to send the confirmation email — that requires the
+  // Resend API key, which stays server-side and is never exposed to the browser.
+  async function approveAndNotify(id: string) {
+    const res = await authedFetch("/api/admin/events/approve", { id });
+    if (!res) return window.alert("Couldn't reach the server. Try again.");
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) return window.alert(body.error || "Couldn't approve this event.");
+    if (!body.emailSent) {
+      // Approval still succeeded -- the event is live either way -- but the
+      // admin should know the confirmation email didn't go out so they can
+      // follow up manually if it matters (e.g. Resend isn't configured yet).
+      window.alert(`Event approved and live on the calendar, but the confirmation email couldn't be sent (${body.emailSkippedReason || "unknown reason"}).`);
+    }
+    setViewing(null);
+    load();
+  }
+
   async function remove(id: string) {
     if (!supabase) return;
     if (!window.confirm("Delete this submission permanently? This can't be undone.")) return;
@@ -335,7 +365,7 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
                 <button onClick={() => setViewing(e)} style={{ fontSize: 12, fontWeight: 600, color: "#285E7A", background: "none", border: "1.5px solid rgba(40,94,122,0.3)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>View</button>
                 <button onClick={() => setEditing(e)} style={{ fontSize: 12, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Edit</button>
                 {e.status !== "approved" && (
-                  <button onClick={() => setEventStatus(e.id, "approved")} style={{ fontSize: 12, fontWeight: 600, color: "#fff", background: "#1A6B3C", border: "none", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Approve</button>
+                  <button onClick={() => approveAndNotify(e.id)} style={{ fontSize: 12, fontWeight: 600, color: "#fff", background: "#1A6B3C", border: "none", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Approve</button>
                 )}
                 {e.status !== "rejected" && (
                   <button onClick={() => setEventStatus(e.id, "rejected")} style={{ fontSize: 12, fontWeight: 600, color: "#E23A2E", background: "none", border: "1.5px solid rgba(226,58,46,0.3)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Reject</button>
@@ -385,7 +415,7 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
             <div style={{ display: "flex", gap: 8, marginTop: 6, flexWrap: "wrap" }}>
               <button onClick={() => { setEditing(viewing); setViewing(null); }} style={{ fontSize: 13, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}>Edit</button>
               {viewing.status !== "approved" && (
-                <button onClick={() => setEventStatus(viewing.id, "approved")} style={{ fontSize: 13, fontWeight: 600, color: "#fff", background: "#1A6B3C", border: "none", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}>Approve</button>
+                <button onClick={() => approveAndNotify(viewing.id)} style={{ fontSize: 13, fontWeight: 600, color: "#fff", background: "#1A6B3C", border: "none", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}>Approve</button>
               )}
               {viewing.status !== "rejected" && (
                 <button onClick={() => setEventStatus(viewing.id, "rejected")} style={{ fontSize: 13, fontWeight: 600, color: "#E23A2E", background: "none", border: "1.5px solid rgba(226,58,46,0.3)", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}>Reject</button>

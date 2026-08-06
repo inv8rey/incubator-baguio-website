@@ -80,6 +80,10 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
 .ib-cta-orange:hover { background: #FF7A2F !important; transform: translateY(-2px); box-shadow: 0 12px 28px -8px rgba(242,101,34,0.55) !important; }
 .ib-cta-orange:active { transform: translateY(0); }
 
+/* Newsletter email field sits on a solid orange background; the browser's
+   default placeholder grey has almost no contrast there. */
+.ib-newsletter-input::placeholder { color: rgba(255,255,255,0.75); }
+
 .ib-line-clamp-3 {
   overflow: hidden;
   display: -webkit-box;

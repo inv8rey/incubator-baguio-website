@@ -81,6 +81,7 @@ export default function NewsletterSignup() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
+                className="ib-newsletter-input"
                 style={{ flex: 1, minWidth: 240, fontSize: 15, padding: "14px 20px", borderRadius: 9999, border: "1px solid rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.12)", color: "#fff", outline: "none" }}
               />
               <button
