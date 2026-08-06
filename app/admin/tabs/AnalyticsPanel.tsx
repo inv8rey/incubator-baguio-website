@@ -128,10 +128,15 @@ export default function AnalyticsPanel({ ready }: { ready: boolean }) {
 
       {!error && configured === false && (
         <div style={{ border: "1.5px dashed rgba(64,50,34,0.18)", borderRadius: 12, padding: "18px 20px" }}>
-          <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, marginBottom: 6 }}>Not connected yet</div>
+          <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, marginBottom: 6 }}>This dashboard can&rsquo;t read PostHog yet</div>
+          <p style={{ margin: "0 0 8px", fontSize: 12.5, lineHeight: 1.6, color: "#5A544B" }}>
+            The site is already sending every pageview to PostHog using its public key (<code>NEXT_PUBLIC_POSTHOG_KEY</code>) &mdash; that part has been working the whole time. But
+            that key can only send data in, not read it back out, so it can&rsquo;t power this card.
+          </p>
           <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.6, color: "#5A544B" }}>
-            The site already sends every pageview to PostHog. To show that data here, add <code>POSTHOG_PERSONAL_API_KEY</code> (create one under your PostHog account&rsquo;s Settings
-            &rarr; Personal API Keys, with read access) and <code>POSTHOG_PROJECT_ID</code> (found on Project Settings &rarr; General) to the environment, then refresh.
+            Reading it back needs a second, separate credential: create a <strong>Personal API Key</strong> (with read access) under your PostHog account&rsquo;s Settings &rarr; Personal
+            API Keys, then add it as <code>POSTHOG_PERSONAL_API_KEY</code> along with <code>POSTHOG_PROJECT_ID</code> (Project Settings &rarr; General) to this project&rsquo;s environment
+            variables, and refresh.
           </p>
         </div>
       )}
