@@ -18,14 +18,14 @@ export default function EcosystemPartnersMarquee() {
   const repeats = partners ? Math.max(4, Math.ceil(16 / partners.length)) : 4;
 
   return (
-    <div style={{ background: "#fff", padding: "56px 0 48px", borderTop: "1px solid rgba(20,20,25,0.06)", overflow: "hidden" }}>
+    <div style={{ background: "#FCFAF6", padding: "56px 0 48px", borderTop: "1px solid rgba(64,50,34,0.09)", overflow: "hidden" }}>
       <div style={{ textAlign: "center", marginBottom: 30 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#9A958B" }}>Ecosystem partners</div>
+        <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#8B8479" }}>Ecosystem partners</div>
       </div>
       {!partners ? (
         <div style={{ display: "flex", justifyContent: "center", gap: 18 }}>
           {[0, 1, 2, 3, 4, 5].map((i) => (
-            <div key={i} style={{ width: 140, height: 88, borderRadius: 16, background: "#F4F2EC" }} />
+            <div key={i} style={{ width: 140, height: 88, borderRadius: 16, background: "#F6F2EA" }} />
           ))}
         </div>
       ) : (
@@ -37,12 +37,12 @@ export default function EcosystemPartnersMarquee() {
                   <div
                     key={`${copy}-${p.id ?? i}`}
                     className="ib-partner-tile"
-                    style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "#F4F2EC", border: "1px solid rgba(20,20,25,0.09)", borderRadius: 16, padding: "16px 26px", height: 88, minWidth: 140 }}
+                    style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.11)", borderRadius: 16, padding: "16px 26px", height: 88, minWidth: 140 }}
                   >
                     {p.logoUrl ? (
                       <img src={p.logoUrl} alt={p.name} style={{ maxHeight: 56, maxWidth: 170, objectFit: "contain", display: "block" }} />
                     ) : (
-                      <span style={{ fontSize: 14, fontWeight: 600, color: "#141417", whiteSpace: "nowrap" }}>{p.name}</span>
+                      <span style={{ fontSize: 14, fontWeight: 600, color: "#1A1714", whiteSpace: "nowrap" }}>{p.name}</span>
                     )}
                   </div>
                 ))}

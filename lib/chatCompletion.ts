@@ -41,8 +41,27 @@ export interface ChatMessage {
   content: string;
 }
 
+// Thrown with a message that is always safe to show a visitor as-is — the
+// route handler forwards `message` and `status` straight to the client
+// without further sanitizing, so anything provider-specific (raw error
+// bodies, quota codes, stack traces) must be logged here instead, never
+// embedded in the message text.
+export class ChatServiceError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ChatServiceError";
+    this.status = status;
+  }
+}
+
+const UNAVAILABLE_MESSAGE =
+  "The assistant is temporarily unavailable. Please try again shortly, or explore Programs, Challenges, or the Knowledge Hub in the meantime.";
+const QUOTA_MESSAGE =
+  "The assistant has reached its usage capacity for today. Please check back tomorrow, or explore Programs, Challenges, or the Knowledge Hub in the meantime.";
+
 export async function requestChatCompletion(messages: ChatMessage[]): Promise<string> {
-  if (!CF_ACCOUNT_ID || !CF_API_TOKEN) throw new Error("Chat isn't configured yet.");
+  if (!CF_ACCOUNT_ID || !CF_API_TOKEN) throw new ChatServiceError(UNAVAILABLE_MESSAGE, 503);
 
   const res = await fetch(`https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/ai/run/${CF_MODEL}`, {
     method: "POST",
@@ -52,11 +71,13 @@ export async function requestChatCompletion(messages: ChatMessage[]): Promise<st
 
   if (!res.ok) {
     const detail = await res.text().catch(() => "");
-    throw new Error(`Workers AI request failed (${res.status}). ${detail}`);
+    console.error(`Workers AI request failed (${res.status}): ${detail}`);
+    if (res.status === 429) throw new ChatServiceError(QUOTA_MESSAGE, 429);
+    throw new ChatServiceError(UNAVAILABLE_MESSAGE, 502);
   }
 
   const data = await res.json();
   const text: string | undefined = data?.result?.response;
-  if (!text) throw new Error("Workers AI returned no response.");
+  if (!text) throw new ChatServiceError(UNAVAILABLE_MESSAGE, 502);
   return text;
 }

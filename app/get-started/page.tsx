@@ -103,7 +103,7 @@ const STATS: { color: string; icon: string; title: string; desc: string }[] = [
 
 const HTML = `
 <!-- NAV -->
-<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:#0E0E10;position:sticky;top:0;z-index:50;">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:#131110;position:sticky;top:0;z-index:50;">
   <a href="${BP}/" style="display:flex;align-items:center;gap:11px;text-decoration:none;"><img src="${BP}/assets/city-of-baguio-seal.png" alt="City of Baguio" style="height:46px;width:auto;"><img src="${BP}/assets/cpdso-logo.png" alt="CPDSO" style="height:46px;width:auto;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:32px;width:auto;"><div style="font-size:16px;font-weight:600;color:#fff;">Incubator Baguio</div></a>
   <div style="display:flex;align-items:center;gap:28px;">
     <div style="display:flex;gap:22px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.72);">
@@ -123,22 +123,22 @@ const HTML = `
 </div>
 
 <!-- ROUTER -->
-<div style="background:#0B0B0D;padding:40px;">
+<div style="background:#100D0B;padding:40px;">
   <div style="max-width:1180px;margin:0 auto;">
     <div class="ib-getstarted-grid" style="display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr 1fr;gap:18px;align-items:stretch;">
 
       <!-- HERO PANEL -->
-      <div style="grid-column:1;grid-row:1;position:relative;background:linear-gradient(160deg,#1A0F08 0%,#0B0B0D 70%);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:22px 20px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;">
+      <div style="grid-column:1;grid-row:1;position:relative;background:linear-gradient(160deg,#1A0F08 0%,#100D0B 70%);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:22px 20px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;">
         <div style="position:absolute;top:-80px;left:-60px;width:280px;height:280px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.22),transparent 65%);pointer-events:none;"></div>
         <div style="position:relative;">
           <div style="font-size:11px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F26522;margin-bottom:10px;">Welcome to Incubator Baguio</div>
-          <h1 style="margin:0;font-size:22px;line-height:1.2;font-weight:700;letter-spacing:-0.02em;color:#fff;">What are you looking for today?<span style="color:#F26522;">.</span></h1>
+          <h1 style="margin:0;font-size:22px;line-height:1.2;font-weight:600;letter-spacing:-0.02em;color:#fff;">What are you looking for today?<span style="color:#F26522;">.</span></h1>
           <p style="margin:10px 0 0;font-size:13px;line-height:1.5;color:rgba(255,255,255,0.6);">Tell us more so we can guide you to the right support and partners.</p>
         </div>
       </div>
 
       <!-- NOT SURE PANEL -->
-      <div style="grid-column:1;grid-row:2;background:#141417;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:22px 24px;display:flex;gap:16px;align-items:flex-start;">
+      <div style="grid-column:1;grid-row:2;background:#1A1714;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:22px 24px;display:flex;gap:16px;align-items:flex-start;">
         <div style="width:42px;height:42px;border-radius:9999px;background:rgba(242,101,34,0.16);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v5Z"></path><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v5Z"></path></svg>
         </div>
@@ -154,7 +154,7 @@ const HTML = `
         const col = (i % 4) + 2;
         const row = i < 4 ? 1 : 2;
         return `
-      <a href="${c.href}" class="ib-getstarted-card" style="grid-column:${col};grid-row:${row};text-decoration:none;background:#141417;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:22px 20px;display:flex;flex-direction:column;">
+      <a href="${c.href}" class="ib-getstarted-card" style="grid-column:${col};grid-row:${row};text-decoration:none;background:#1A1714;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:22px 20px;display:flex;flex-direction:column;">
         <div style="width:46px;height:46px;border-radius:9999px;background:${c.bg};display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c.color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${c.icon}</svg>
         </div>
@@ -168,8 +168,8 @@ const HTML = `
     </div>
 
     <!-- STAT STRIP -->
-    <div class="ib-getstarted-stripwrap" style="margin-top:18px;background:#141417;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px 32px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
-      <div style="font-size:17px;font-weight:700;letter-spacing:-0.01em;color:#fff;line-height:1.4;flex-shrink:0;">WE CONNECT.<br>WE EMPOWER.<br><span style="color:#F26522;">WE GROW BAGUIO.</span></div>
+    <div class="ib-getstarted-stripwrap" style="margin-top:18px;background:#1A1714;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px 32px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
+      <div style="font-size:17px;font-weight:600;letter-spacing:-0.01em;color:#fff;line-height:1.4;flex-shrink:0;">WE CONNECT.<br>WE EMPOWER.<br><span style="color:#F26522;">WE GROW BAGUIO.</span></div>
       <div style="width:1px;height:64px;background:rgba(255,255,255,0.1);flex-shrink:0;" class="ib-getstarted-divider"></div>
       <div class="ib-getstarted-stats" style="flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;min-width:0;">
         ${STATS.map((s) => `
@@ -191,7 +191,7 @@ const HTML = `
 </div>
 
 <!-- FOOTER -->
-<div style="background:#0B0B0D;padding:0 40px 36px;">
+<div style="background:#100D0B;padding:0 40px 36px;">
   <div style="max-width:1180px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.08);padding-top:40px;border-top:1px solid rgba(255,255,255,0.08);">
       <div>

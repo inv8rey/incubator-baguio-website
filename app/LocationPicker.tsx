@@ -112,20 +112,20 @@ export default function LocationPicker({ value, onChange }: { value: LocationVal
             }
           }}
           placeholder="e.g. Session Road, Baguio City"
-          style={{ flex: 1, fontSize: 13.5, padding: "9px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+          style={{ flex: 1, fontSize: 13.5, padding: "9px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
         />
         <button
           type="button"
           onClick={search}
           disabled={searching}
-          style={{ fontSize: 12.5, fontWeight: 600, color: "#fff", background: "#141417", border: "none", borderRadius: 9, padding: "0 16px", cursor: searching ? "default" : "pointer", opacity: searching ? 0.7 : 1 }}
+          style={{ fontSize: 12.5, fontWeight: 600, color: "#fff", background: "#1A1714", border: "none", borderRadius: 9, padding: "0 16px", cursor: searching ? "default" : "pointer", opacity: searching ? 0.7 : 1 }}
         >
           {searching ? "Searching…" : "Search"}
         </button>
       </div>
       {error && <p style={{ color: "#E23A2E", fontSize: 11.5, margin: "0 0 8px" }}>{error}</p>}
-      <div ref={containerRef} style={{ width: "100%", height: 220, borderRadius: 12, overflow: "hidden", border: "1.5px solid rgba(20,20,25,0.12)" }} />
-      <div style={{ fontSize: 11, color: "#9A958B", marginTop: 6 }}>
+      <div ref={containerRef} style={{ width: "100%", height: 220, borderRadius: 12, overflow: "hidden", border: "1.5px solid rgba(64,50,34,0.14)" }} />
+      <div style={{ fontSize: 11, color: "#8B8479", marginTop: 6 }}>
         Search an address or click/drag the pin to set the exact spot. {value ? `Currently at ${value.lat.toFixed(5)}, ${value.lng.toFixed(5)}.` : "No location set yet — defaults to Baguio center on the map."}
       </div>
     </div>

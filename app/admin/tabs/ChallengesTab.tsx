@@ -6,7 +6,7 @@ import { supabase } from "../../../lib/supabaseClient";
 import { acronymOf, paletteFor } from "../../../lib/visualIdentity";
 import { CHALLENGE_CATEGORIES, CHALLENGE_ORG_TYPES, type ChallengeCategory, type ChallengeOrgType } from "../../challenges/data";
 
-const modalInputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "10px 14px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.14)", fontSize: 13.5, color: DARK, outline: "none", fontFamily: "inherit" };
+const modalInputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "10px 14px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", fontSize: 13.5, color: DARK, outline: "none", fontFamily: "inherit" };
 const modalLabelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 5, display: "block" };
 
 interface ChallengeRow {
@@ -102,10 +102,10 @@ function ChallengeFormModal({ challenge, onClose, onSaved }: { challenge: Challe
       <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, padding: "32px 36px", width: "100%", maxWidth: 600, boxShadow: "0 24px 64px rgba(0,0,0,0.18)", display: "flex", flexDirection: "column", gap: 18, maxHeight: "88vh", overflowY: "auto" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>{isEdit ? "Edit challenge" : "Add challenge"}</div>
-            <div style={{ fontSize: 12.5, color: "#9A958B", marginTop: 3 }}>Goes live on the Challenges page immediately.</div>
+            <div style={{ fontSize: 20, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{isEdit ? "Edit challenge" : "Add challenge"}</div>
+            <div style={{ fontSize: 12.5, color: "#8B8479", marginTop: 3 }}>Goes live on the Challenges page immediately.</div>
           </div>
-          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#6B6B73", flexShrink: 0 }}>&times;</button>
+          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#5A544B", flexShrink: 0 }}>&times;</button>
         </div>
 
         <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -174,7 +174,7 @@ function ChallengeFormModal({ challenge, onClose, onSaved }: { challenge: Challe
               <input value={scopeRegion} onChange={(e) => setScopeRegion(e.target.value)} placeholder="e.g. Baguio City" style={modalInputStyle} />
             </div>
           </div>
-          <div style={{ borderTop: "1px solid rgba(20,20,25,0.08)", paddingTop: 14 }}>
+          <div style={{ borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 14 }}>
             <div style={{ fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 10 }}>Timeline</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <div>
@@ -199,7 +199,7 @@ function ChallengeFormModal({ challenge, onClose, onSaved }: { challenge: Challe
           {error && <p style={{ color: "#E23A2E", fontSize: 12.5, margin: 0 }}>{error}</p>}
 
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", paddingTop: 4 }}>
-            <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
+            <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
             <button type="submit" disabled={saving} style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: saving ? 0.7 : 1 }}>
               {saving ? "Saving…" : isEdit ? "Save changes" : "Add challenge"}
             </button>
@@ -280,9 +280,9 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
           { label: "Total Applications", value: String(stats.totalApplications) },
           { label: "Avg. Applications", value: stats.avgApplications },
         ].map((s) => (
-          <div key={s.label} style={{ background: "#fff", border: "1.5px solid rgba(20,20,25,0.09)", borderRadius: 14, padding: "16px 18px" }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "#9A958B", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{s.label}</div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: DARK }}>{s.value}</div>
+          <div key={s.label} style={{ background: "#fff", border: "1.5px solid rgba(64,50,34,0.12)", borderRadius: 14, padding: "16px 18px" }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: "#8B8479", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{s.label}</div>
+            <div style={{ fontSize: 24, fontWeight: 600, color: DARK }}>{s.value}</div>
           </div>
         ))}
       </div>
@@ -295,27 +295,27 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
         {filtered.map((c) => {
           const cat = CHALLENGE_CATEGORIES.find((cc) => cc.id === c.category);
           return (
-            <div key={c.id} style={{ background: "#fff", border: "1.5px solid rgba(20,20,25,0.09)", borderRadius: 18, padding: 24, display: "flex", flexDirection: "column" }}>
+            <div key={c.id} style={{ background: "#fff", border: "1.5px solid rgba(64,50,34,0.12)", borderRadius: 18, padding: 24, display: "flex", flexDirection: "column" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, gap: 8, flexWrap: "wrap" }}>
-                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.02em", color: cat?.color, background: cat?.bg, padding: "5px 12px", borderRadius: 999, whiteSpace: "nowrap" }}>
+                <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.02em", color: cat?.color, background: cat?.bg, padding: "5px 12px", borderRadius: 999, whiteSpace: "nowrap" }}>
                   {cat?.emoji} {c.category}
                 </span>
-                <span style={{ fontSize: 11, fontWeight: 700, color: c.status === "Open" ? "#1A6B3C" : "#9A958B", background: c.status === "Open" ? "rgba(26,107,60,0.12)" : "rgba(154,149,139,0.14)", padding: "4px 10px", borderRadius: 999 }}>{c.status}</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: c.status === "Open" ? "#1A6B3C" : "#8B8479", background: c.status === "Open" ? "rgba(26,107,60,0.12)" : "rgba(154,149,139,0.14)", padding: "4px 10px", borderRadius: 999 }}>{c.status}</span>
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: DARK, letterSpacing: "-0.02em", lineHeight: 1.2, marginBottom: 10 }}>{c.title}</h3>
-              <p style={{ fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73", marginBottom: 18, flex: 1 }}>{c.summary}</p>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, paddingTop: 16, borderTop: "1px solid rgba(20,20,25,0.08)" }}>
-                <div style={{ width: 38, height: 38, borderRadius: 10, background: c.org_color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "#fff", flexShrink: 0 }}>
+              <h3 style={{ fontSize: 18, fontWeight: 600, color: DARK, letterSpacing: "-0.02em", lineHeight: 1.2, marginBottom: 10 }}>{c.title}</h3>
+              <p style={{ fontSize: 13.5, lineHeight: 1.55, color: "#5A544B", marginBottom: 18, flex: 1 }}>{c.summary}</p>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, paddingTop: 16, borderTop: "1px solid rgba(64,50,34,0.11)" }}>
+                <div style={{ width: 38, height: 38, borderRadius: 10, background: c.org_color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 600, color: "#fff", flexShrink: 0 }}>
                   {c.org_initials}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: DARK, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.org_name}</div>
-                  <div style={{ fontSize: 11, color: "#9A958B", marginTop: 1 }}>{applicationCounts[c.id] ?? 0} applications</div>
+                  <div style={{ fontSize: 11, color: "#8B8479", marginTop: 1 }}>{applicationCounts[c.id] ?? 0} applications</div>
                 </div>
               </div>
               <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
                 <button onClick={() => setViewing(c)} style={{ flex: 1, fontSize: 12.5, fontWeight: 600, color: "#285E7A", background: "none", border: "1.5px solid rgba(40,94,122,0.3)", borderRadius: 999, padding: "8px 14px", cursor: "pointer" }}>View</button>
-                <button onClick={() => setEditing(c)} style={{ flex: 1, fontSize: 12.5, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(20,20,25,0.14)", borderRadius: 999, padding: "8px 14px", cursor: "pointer" }}>Edit</button>
+                <button onClick={() => setEditing(c)} style={{ flex: 1, fontSize: 12.5, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "8px 14px", cursor: "pointer" }}>Edit</button>
                 <button onClick={() => remove(c.id)} style={{ fontSize: 12.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "1.5px solid rgba(226,58,46,0.3)", borderRadius: 999, padding: "8px 14px", cursor: "pointer" }}>Delete</button>
               </div>
             </div>
@@ -326,7 +326,7 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
           onClick={() => setAdding(true)}
           style={{
             background: "#F5F4F0",
-            border: "1.5px dashed rgba(20,20,25,0.16)",
+            border: "1.5px dashed rgba(64,50,34,0.16)",
             borderRadius: 18,
             padding: 24,
             display: "flex",
@@ -339,16 +339,16 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
           }}
         >
           <div style={{ width: 48, height: 48, borderRadius: 999, background: "#EDEAE5", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
-            <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2} strokeLinecap="round">
+            <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} strokeLinecap="round">
               <path d="M12 5v14M5 12h14" />
             </svg>
           </div>
           <div style={{ fontSize: 15, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Add a new challenge</div>
-          <p style={{ fontSize: 13.5, color: "#9A958B", lineHeight: 1.4, maxWidth: 200 }}>Curated challenges shown on the public Challenges page.</p>
+          <p style={{ fontSize: 13.5, color: "#8B8479", lineHeight: 1.4, maxWidth: 200 }}>Curated challenges shown on the public Challenges page.</p>
         </div>
 
         {loaded && filtered.length === 0 && challenges.length > 0 && (
-          <div style={{ gridColumn: "1 / -1", padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)" }}>
+          <div style={{ gridColumn: "1 / -1", padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             No challenges match your search.
           </div>
         )}
@@ -362,37 +362,37 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
                 {(() => {
                   const cat = CHALLENGE_CATEGORIES.find((cc) => cc.id === viewing.category);
                   return (
-                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.02em", color: cat?.color, background: cat?.bg, padding: "4px 10px", borderRadius: 999, whiteSpace: "nowrap" }}>
+                    <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.02em", color: cat?.color, background: cat?.bg, padding: "4px 10px", borderRadius: 999, whiteSpace: "nowrap" }}>
                       {cat?.emoji} {viewing.category}
                     </span>
                   );
                 })()}
               </div>
-              <button onClick={() => setViewing(null)} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#6B6B73", flexShrink: 0 }}>&times;</button>
+              <button onClick={() => setViewing(null)} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#5A544B", flexShrink: 0 }}>&times;</button>
             </div>
-            <h2 style={{ fontSize: 22, fontWeight: 700, color: DARK, letterSpacing: "-0.025em", lineHeight: 1.2, margin: 0 }}>{viewing.title}</h2>
-            <p style={{ fontSize: 14, lineHeight: 1.6, color: "#6B6B73", margin: 0 }}>{viewing.summary}</p>
+            <h2 style={{ fontSize: 22, fontWeight: 600, color: DARK, letterSpacing: "-0.025em", lineHeight: 1.2, margin: 0 }}>{viewing.title}</h2>
+            <p style={{ fontSize: 14, lineHeight: 1.6, color: "#5A544B", margin: 0 }}>{viewing.summary}</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               <div style={{ background: "#F5F4F0", borderRadius: 10, padding: "12px 14px" }}>
-                <div style={{ fontSize: 11, color: "#9A958B", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Applications</div>
-                <div style={{ fontSize: 22, fontWeight: 700, color: DARK }}>{applicationCounts[viewing.id] ?? 0}</div>
+                <div style={{ fontSize: 11, color: "#8B8479", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Applications</div>
+                <div style={{ fontSize: 22, fontWeight: 600, color: DARK }}>{applicationCounts[viewing.id] ?? 0}</div>
               </div>
               <div style={{ background: "#F5F4F0", borderRadius: 10, padding: "12px 14px" }}>
-                <div style={{ fontSize: 11, color: "#9A958B", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Applications close</div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: DARK }}>{viewing.deadline_date || "—"}</div>
+                <div style={{ fontSize: 11, color: "#8B8479", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Applications close</div>
+                <div style={{ fontSize: 16, fontWeight: 600, color: DARK }}>{viewing.deadline_date || "—"}</div>
               </div>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 4, borderTop: "1px solid rgba(20,20,25,0.08)" }}>
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: viewing.org_color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "#fff", flexShrink: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 4, borderTop: "1px solid rgba(64,50,34,0.11)" }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: viewing.org_color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 600, color: "#fff", flexShrink: 0 }}>
                 {viewing.org_initials}
               </div>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{viewing.org_name}</div>
-                <div style={{ fontSize: 12, color: "#9A958B", marginTop: 2 }}>{viewing.org_type}</div>
+                <div style={{ fontSize: 12, color: "#8B8479", marginTop: 2 }}>{viewing.org_type}</div>
               </div>
             </div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              <button onClick={() => { setEditing(viewing); setViewing(null); }} style={{ fontSize: 13, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(20,20,25,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}>Edit</button>
+              <button onClick={() => { setEditing(viewing); setViewing(null); }} style={{ fontSize: 13, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}>Edit</button>
               <button onClick={() => remove(viewing.id)} style={{ fontSize: 13, fontWeight: 600, color: "#E23A2E", background: "none", border: "1.5px solid rgba(226,58,46,0.3)", borderRadius: 999, padding: "9px 18px", cursor: "pointer", marginLeft: "auto" }}>Delete</button>
             </div>
           </div>

@@ -37,7 +37,7 @@ export default function NewsletterSignup() {
   }
 
   return (
-    <div style={{ background: "#FAFAF7", padding: "80px 40px" }}>
+    <div style={{ background: "#F6F2EA", padding: "80px 40px" }}>
       <div
         style={{
           maxWidth: 1180,
@@ -63,7 +63,7 @@ export default function NewsletterSignup() {
             </span>
             <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.9)" }}>Stay in the loop</span>
           </div>
-          <h2 style={{ margin: "0 0 14px", fontSize: 44, fontWeight: 700, letterSpacing: "-0.032em", color: "#fff", lineHeight: 1.04 }}>Get Baguio&rsquo;s innovation news in your inbox.</h2>
+          <h2 style={{ margin: "0 0 14px", fontSize: 42, fontWeight: 500, letterSpacing: "-0.032em", color: "#fff", lineHeight: 1.04 }}>Get Baguio&rsquo;s innovation news in your inbox.</h2>
           <p style={{ margin: "0 0 32px", fontSize: 17, lineHeight: 1.55, color: "rgba(255,255,255,0.88)" }}>New challenges, events, and ecosystem updates — no spam, unsubscribe anytime.</p>
         </div>
 
@@ -87,7 +87,7 @@ export default function NewsletterSignup() {
                 type="submit"
                 disabled={status === "loading"}
                 className="ib-cta-orange"
-                style={{ background: "#0B0B0D", color: "#fff", fontWeight: 600, fontSize: 15, padding: "14px 26px", borderRadius: 9999, border: "none", cursor: "pointer", boxShadow: "0 12px 26px -12px rgba(0,0,0,0.6)", opacity: status === "loading" ? 0.7 : 1, whiteSpace: "nowrap" }}
+                style={{ background: "#100D0B", color: "#fff", fontWeight: 600, fontSize: 15, padding: "14px 26px", borderRadius: 9999, border: "none", cursor: "pointer", boxShadow: "0 12px 26px -12px rgba(0,0,0,0.6)", opacity: status === "loading" ? 0.7 : 1, whiteSpace: "nowrap" }}
               >
                 {status === "loading" ? "Subscribing…" : "Subscribe"}
               </button>

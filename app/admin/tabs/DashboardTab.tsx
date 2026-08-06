@@ -124,7 +124,7 @@ function BreakdownBars({
   labelWidth?: number;
 }) {
   if (data.length === 0) {
-    return <div style={{ fontSize: 12.5, color: "#9A958B", padding: "12px 0" }}>No data yet.</div>;
+    return <div style={{ fontSize: 12.5, color: "#8B8479", padding: "12px 0" }}>No data yet.</div>;
   }
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -136,18 +136,18 @@ function BreakdownBars({
             alignItems: "center",
             gap: 10,
             padding: "8px 0",
-            borderBottom: i < data.length - 1 ? "1px solid rgba(20,20,25,0.05)" : "none",
+            borderBottom: i < data.length - 1 ? "1px solid rgba(64,50,34,0.05)" : "none",
           }}
         >
           <div style={{ width: 26, height: 26, borderRadius: 7, background: `${s.color}1F`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: s.color, display: "inline-block" }} />
           </div>
           <span style={{ fontSize: 12.5, fontWeight: 500, color: "#44444C", width: labelWidth, flexShrink: 0, lineHeight: 1.3 }}>{s.label}</span>
-          <div style={{ flex: 1, height: 7, background: "rgba(20,20,25,0.06)", borderRadius: 999, overflow: "hidden" }}>
+          <div style={{ flex: 1, height: 7, background: "rgba(64,50,34,0.09)", borderRadius: 999, overflow: "hidden" }}>
             <div style={{ width: `${s.pct}%`, height: "100%", background: s.color, borderRadius: 999 }} />
           </div>
           <span style={{ fontSize: 12, fontWeight: 600, color: DARK, width: 22, textAlign: "right", flexShrink: 0 }}>{s.count}</span>
-          <span style={{ fontSize: 11, color: "#9A958B", width: 44, textAlign: "right", flexShrink: 0 }}>{s.pct}%</span>
+          <span style={{ fontSize: 11, color: "#8B8479", width: 44, textAlign: "right", flexShrink: 0 }}>{s.pct}%</span>
         </div>
       ))}
     </div>
@@ -272,7 +272,7 @@ export default function DashboardTab() {
   const sectorTotal = startups.length || 1;
   const sectorRows = [...sectorCounts.entries()]
     .sort((a, b) => b[1] - a[1])
-    .map(([label, count]) => ({ label, count, pct: Math.round((count / sectorTotal) * 1000) / 10, color: SECTOR_COLOR_MAP[label] ?? "#9A958B" }));
+    .map(([label, count]) => ({ label, count, pct: Math.round((count / sectorTotal) * 1000) / 10, color: SECTOR_COLOR_MAP[label] ?? "#8B8479" }));
 
   const stageCounts = new Map<string, number>();
   startups.forEach((s) => {
@@ -280,8 +280,8 @@ export default function DashboardTab() {
     stageCounts.set(key, (stageCounts.get(key) ?? 0) + 1);
   });
   const stageRows = [
-    ...STAGE_ORDER.filter((label) => stageCounts.has(label)).map((label) => ({ label, count: stageCounts.get(label)!, color: STAGE_BADGE[label]?.color ?? "#9A958B" })),
-    ...[...stageCounts.entries()].filter(([label]) => !STAGE_ORDER.includes(label)).map(([label, count]) => ({ label, count, color: "#9A958B" })),
+    ...STAGE_ORDER.filter((label) => stageCounts.has(label)).map((label) => ({ label, count: stageCounts.get(label)!, color: STAGE_BADGE[label]?.color ?? "#8B8479" })),
+    ...[...stageCounts.entries()].filter(([label]) => !STAGE_ORDER.includes(label)).map(([label, count]) => ({ label, count, color: "#8B8479" })),
   ];
   const stageTotal = startups.length;
 
@@ -300,7 +300,7 @@ export default function DashboardTab() {
     orgCounts.set(key, (orgCounts.get(key) ?? 0) + 1);
   });
   const orgTotal = orgs.length;
-  const orgRows = [...orgCounts.entries()].sort((a, b) => b[1] - a[1]).map(([label, count]) => ({ label, count, color: ORG_TYPE_COLORS[label] ?? "#9A958B" }));
+  const orgRows = [...orgCounts.entries()].sort((a, b) => b[1] - a[1]).map(([label, count]) => ({ label, count, color: ORG_TYPE_COLORS[label] ?? "#8B8479" }));
 
   const topFunded = startups
     .map((s) => ({ name: s.name, amount: parsePhp(s.funding_raised), display: s.funding_raised }))
@@ -324,7 +324,7 @@ export default function DashboardTab() {
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 20 }}>
       {supabase && (
-        <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, fontWeight: 600, color: live ? "#1A6B3C" : "#9A958B" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, fontWeight: 600, color: live ? "#1A6B3C" : "#8B8479" }}>
           <span style={{ width: 7, height: 7, borderRadius: "50%", background: live ? "#22C55E" : "#C9C5BB", display: "inline-block" }} />
           {live ? "Live — updates automatically" : "Connecting…"}
         </div>
@@ -335,18 +335,18 @@ export default function DashboardTab() {
       {/* KPI ROW */}
       <div className="ib-admin-grid-5" style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 16 }}>
         {kpis.map((k, idx) => (
-          <div key={k.label} style={{ background: "#fff", borderRadius: 16, padding: "20px 22px", border: "1.5px solid rgba(20,20,25,0.09)", display: "flex", gap: 14, alignItems: "flex-start" }}>
+          <div key={k.label} style={{ background: "#fff", borderRadius: 16, padding: "20px 22px", border: "1.5px solid rgba(64,50,34,0.12)", display: "flex", gap: 14, alignItems: "flex-start" }}>
             <div style={{ width: 44, height: 44, borderRadius: 12, background: k.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke={k.color} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
                 {KPI_ICONS[idx]}
               </svg>
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 11.5, color: "#9A958B", fontWeight: 500, marginBottom: 4 }}>{k.label}</div>
-              <div style={{ fontSize: 28, fontWeight: 700, color: DARK, letterSpacing: "-0.025em", lineHeight: 1.1 }}>{loaded ? k.value : "—"}</div>
+              <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 4 }}>{k.label}</div>
+              <div style={{ fontSize: 28, fontWeight: 600, color: DARK, letterSpacing: "-0.025em", lineHeight: 1.1 }}>{loaded ? k.value : "—"}</div>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
-                <span style={{ fontSize: 11.5, fontWeight: 600, color: k.delta.positive === null ? "#9A958B" : k.delta.positive ? "#22C55E" : "#E23A2E" }}>{loaded ? k.delta.text : ""}</span>
-                <span style={{ fontSize: 11, color: "#9A958B" }}>{loaded && k.delta.text !== "—" ? "last 8 weeks" : ""}</span>
+                <span style={{ fontSize: 11.5, fontWeight: 600, color: k.delta.positive === null ? "#8B8479" : k.delta.positive ? "#22C55E" : "#E23A2E" }}>{loaded ? k.delta.text : ""}</span>
+                <span style={{ fontSize: 11, color: "#8B8479" }}>{loaded && k.delta.text !== "—" ? "last 8 weeks" : ""}</span>
               </div>
               <div style={{ marginTop: 8 }}>
                 <Sparkline data={k.spark} color={k.color} />
@@ -358,39 +358,39 @@ export default function DashboardTab() {
 
       {/* MIDDLE ROW — Startups by Sector / Stage / TBI */}
       <div className="ib-admin-grid-3-mid" style={{ display: "grid", gridTemplateColumns: "2fr 1.2fr 1.5fr", gap: 16, alignItems: "start" }}>
-        <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(20,20,25,0.09)" }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: DARK, marginBottom: 3 }}>Startups by Sector</div>
-          <div style={{ fontSize: 11.5, color: "#9A958B", marginBottom: 18 }}>{startups.length} startups across {sectorCounts.size} sectors</div>
+        <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Startups by Sector</div>
+          <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 18 }}>{startups.length} startups across {sectorCounts.size} sectors</div>
           <BreakdownBars data={sectorRows} />
         </div>
 
-        <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(20,20,25,0.09)" }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: DARK, marginBottom: 3 }}>Startups by Stage</div>
-          <div style={{ fontSize: 11.5, color: "#9A958B", marginBottom: 18 }}>Distribution by development stage</div>
-          {stageTotal > 0 ? <StageDonut data={stageRows} total={stageTotal} /> : <div style={{ fontSize: 12.5, color: "#9A958B", padding: "12px 0" }}>No startups yet.</div>}
+        <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Startups by Stage</div>
+          <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 18 }}>Distribution by development stage</div>
+          {stageTotal > 0 ? <StageDonut data={stageRows} total={stageTotal} /> : <div style={{ fontSize: 12.5, color: "#8B8479", padding: "12px 0" }}>No startups yet.</div>}
         </div>
 
-        <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(20,20,25,0.09)" }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: DARK, marginBottom: 3 }}>Startups by TBI</div>
-          <div style={{ fontSize: 11.5, color: "#9A958B", marginBottom: 18 }}>Including independently operating startups</div>
+        <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Startups by TBI</div>
+          <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 18 }}>Including independently operating startups</div>
           <BreakdownBars data={tbiRows} labelWidth={170} />
         </div>
       </div>
 
       {/* ACTIVITY FEED */}
-      <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(20,20,25,0.09)" }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: DARK, marginBottom: 3 }}>Recent Activity</div>
-        <div style={{ fontSize: 11.5, color: "#9A958B", marginBottom: 16 }}>Latest updates from the ecosystem</div>
+      <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Recent Activity</div>
+        <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 16 }}>Latest updates from the ecosystem</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-          {activity.length === 0 && <div style={{ fontSize: 12.5, color: "#9A958B", padding: "8px 0" }}>No activity yet.</div>}
+          {activity.length === 0 && <div style={{ fontSize: 12.5, color: "#8B8479", padding: "8px 0" }}>No activity yet.</div>}
           {activity.map((a, i) => (
-            <div key={a.key} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0", borderBottom: i < activity.length - 1 ? "1px solid rgba(20,20,25,0.05)" : "none" }}>
-              <div style={{ width: 36, height: 36, borderRadius: "50%", background: a.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>{a.initials}</div>
+            <div key={a.key} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0", borderBottom: i < activity.length - 1 ? "1px solid rgba(64,50,34,0.05)" : "none" }}>
+              <div style={{ width: 36, height: 36, borderRadius: "50%", background: a.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 600, flexShrink: 0 }}>{a.initials}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: DARK }}>{a.name}</span>
-                <span style={{ fontSize: 13, color: "#6B6B73" }}> {a.note}</span>
+                <span style={{ fontSize: 13, color: "#5A544B" }}> {a.note}</span>
               </div>
-              <span style={{ fontSize: 11.5, color: "#9A958B", flexShrink: 0 }}>{a.time}</span>
+              <span style={{ fontSize: 11.5, color: "#8B8479", flexShrink: 0 }}>{a.time}</span>
             </div>
           ))}
         </div>
@@ -398,17 +398,17 @@ export default function DashboardTab() {
 
       {/* BOTTOM ROW — Top Funded Startups / Ecosystem Partners by Type */}
       <div className="ib-admin-grid-2-bottom" style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 16, alignItems: "start" }}>
-        <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(20,20,25,0.09)" }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: DARK, marginBottom: 3 }}>Top Funded Startups</div>
-          <div style={{ fontSize: 11.5, color: "#9A958B", marginBottom: 10 }}>By total funding raised on record</div>
-          <div style={{ fontSize: 30, fontWeight: 800, color: DARK, letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 16 }}>{formatPhp(totalFunding)}</div>
+        <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Top Funded Startups</div>
+          <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 10 }}>By total funding raised on record</div>
+          <div style={{ fontSize: 30, fontWeight: 600, color: DARK, letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 16 }}>{formatPhp(totalFunding)}</div>
           {topFunded.length === 0 ? (
-            <div style={{ fontSize: 12.5, color: "#9A958B" }}>No funding recorded yet.</div>
+            <div style={{ fontSize: 12.5, color: "#8B8479" }}>No funding recorded yet.</div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {topFunded.map((f) => (
                 <div key={f.name} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5 }}>
-                  <span style={{ color: "#6B6B73", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{f.name}</span>
+                  <span style={{ color: "#5A544B", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{f.name}</span>
                   <span style={{ fontWeight: 600, color: DARK }}>{f.display}</span>
                 </div>
               ))}
@@ -416,10 +416,10 @@ export default function DashboardTab() {
           )}
         </div>
 
-        <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(20,20,25,0.09)" }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: DARK, marginBottom: 3 }}>Ecosystem Partners by Type</div>
-          <div style={{ fontSize: 11.5, color: "#9A958B", marginBottom: 16 }}>TBIs, corporate, government, and community orgs</div>
-          {orgTotal > 0 ? <StageDonut data={orgRows} total={orgTotal} /> : <div style={{ fontSize: 12.5, color: "#9A958B", padding: "12px 0" }}>No organizations yet.</div>}
+        <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Ecosystem Partners by Type</div>
+          <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 16 }}>TBIs, corporate, government, and community orgs</div>
+          {orgTotal > 0 ? <StageDonut data={orgRows} total={orgTotal} /> : <div style={{ fontSize: 12.5, color: "#8B8479", padding: "12px 0" }}>No organizations yet.</div>}
         </div>
       </div>
     </div>

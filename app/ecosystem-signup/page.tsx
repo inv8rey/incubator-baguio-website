@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 
 export default function EcosystemSignupPage() {
   return (
-    <main style={{ minHeight: "100vh", background: "#FAFAF7" }}>
+    <main style={{ minHeight: "100vh", background: "#F6F2EA" }}>
       <VisitTracker />
-      <div style={{ background: "#0B0B0D", padding: "20px 40px" }}>
+      <div style={{ background: "#100D0B", padding: "20px 40px" }}>
         <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", alignItems: "center", gap: 11 }}>
           <img src={`${BP}/assets/city-of-baguio-seal.png`} alt="City of Baguio" style={{ height: 42, width: "auto" }} />
           <img src={`${BP}/assets/cpdso-logo.png`} alt="CPDSO" style={{ height: 42, width: "auto" }} />
@@ -26,8 +26,8 @@ export default function EcosystemSignupPage() {
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <div style={{ marginBottom: 32 }}>
             <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "#F26522", marginBottom: 12 }}>Join the ecosystem</div>
-            <h1 style={{ margin: "0 0 10px", fontSize: 32, fontWeight: 700, letterSpacing: "-0.025em", color: "#141417" }}>Tell us about you</h1>
-            <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.6, color: "#6B6B73", maxWidth: 560 }}>
+            <h1 style={{ margin: "0 0 10px", fontSize: 32, fontWeight: 600, letterSpacing: "-0.025em", color: "#1A1714" }}>Tell us about you</h1>
+            <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.6, color: "#5A544B", maxWidth: 560 }}>
               Submit your startup, mentor profile, or organization to be featured in the Incubator Baguio Ecosystem directory. Every submission is reviewed before it goes live.
             </p>
           </div>

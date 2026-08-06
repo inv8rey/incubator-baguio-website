@@ -12,7 +12,7 @@ const iconBtnStyle: React.CSSProperties = {
   height: 38,
   borderRadius: 9999,
   background: "#fff",
-  color: "#141417",
+  color: "#1A1714",
   border: "none",
   display: "flex",
   alignItems: "center",
@@ -98,14 +98,14 @@ export default function ConnectMentorButton({ mentorId, mentorName, variant = "p
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         placeholder={`Say hello to ${mentorName}…`}
-        style={{ width: "100%", fontSize: 12.5, color: "#141417", background: "#fff", border: "1.5px solid rgba(20,20,25,0.14)", borderRadius: 10, padding: "8px 10px", outline: "none", fontFamily: "inherit", boxSizing: "border-box", minHeight: 60, resize: "vertical" }}
+        style={{ width: "100%", fontSize: 12.5, color: "#1A1714", background: "#fff", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 10, padding: "8px 10px", outline: "none", fontFamily: "inherit", boxSizing: "border-box", minHeight: 60, resize: "vertical" }}
       />
       {error && <p style={{ color: "#E23A2E", fontSize: 11, margin: "4px 0 0" }}>{error}</p>}
       <div style={{ display: "flex", gap: 6, marginTop: 6, justifyContent: variant === "icon" ? "flex-start" : "center" }}>
         <button onClick={send} disabled={busy} style={{ fontSize: 11.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 9999, padding: "6px 12px", cursor: "pointer", opacity: busy ? 0.7 : 1 }}>
           {busy ? "Sending…" : "Send request"}
         </button>
-        <button onClick={() => setOpen(false)} style={{ fontSize: 11.5, fontWeight: 600, color: "#6B6B73", background: "none", border: "none", cursor: "pointer" }}>
+        <button onClick={() => setOpen(false)} style={{ fontSize: 11.5, fontWeight: 600, color: "#5A544B", background: "none", border: "none", cursor: "pointer" }}>
           Cancel
         </button>
       </div>

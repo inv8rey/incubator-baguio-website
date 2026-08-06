@@ -37,7 +37,7 @@ export default function ChatPanel({ messages, loading, input, onInputChange, onS
         width: 380,
         maxHeight: 600,
         height: "70vh",
-        background: "#0B0B0D",
+        background: "#100D0B",
         borderRadius: 20,
         border: "1px solid rgba(255,255,255,0.12)",
         boxShadow: "0 24px 60px -12px rgba(0,0,0,0.5)",
@@ -57,7 +57,7 @@ export default function ChatPanel({ messages, loading, input, onInputChange, onS
         }}
       >
         <div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>Incubator Baguio Assistant</div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>Incubator Baguio Assistant</div>
           <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.5)" }}>Find opportunities, mentors &amp; resources faster</div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>

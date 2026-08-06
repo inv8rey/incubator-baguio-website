@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-const DARK = "#141417";
+const DARK = "#1A1714";
 
 // Baguio City center. Entries don't have real geocoded addresses yet, so
 // each pin gets a small, deterministic (name-hash based) offset from here —
@@ -82,11 +82,11 @@ export default function EcosystemMap({ pins }: { pins: MapPin[] }) {
         }
 
         const el = document.createElement("div");
-        el.style.cssText = `width:34px;height:34px;border-radius:9999px;background:${p.bg};color:${p.color};font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.25);cursor:pointer;`;
+        el.style.cssText = `width:34px;height:34px;border-radius:9999px;background:${p.bg};color:${p.color};font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.25);cursor:pointer;`;
         el.textContent = p.label;
 
         const popup = new maplibregl.Popup({ offset: 20, closeButton: false }).setHTML(
-          `<div style="font-family:inherit;padding:2px 2px;"><div style="font-size:13px;font-weight:700;color:${DARK};margin-bottom:2px;">${escapeHtml(p.name)}</div>${p.sub ? `<div style="font-size:12px;color:#6B6B73;">${escapeHtml(p.sub)}</div>` : ""}</div>`
+          `<div style="font-family:inherit;padding:2px 2px;"><div style="font-size:13px;font-weight:600;color:${DARK};margin-bottom:2px;">${escapeHtml(p.name)}</div>${p.sub ? `<div style="font-size:12px;color:#5A544B;">${escapeHtml(p.sub)}</div>` : ""}</div>`
         );
 
         const marker = new maplibregl.Marker({ element: el }).setLngLat(lngLat).setPopup(popup).addTo(map);
@@ -106,7 +106,7 @@ export default function EcosystemMap({ pins }: { pins: MapPin[] }) {
   return (
     <div
       ref={containerRef}
-      style={{ width: "100%", height: 480, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(20,20,25,0.10)" }}
+      style={{ width: "100%", height: 480, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(64,50,34,0.13)" }}
     />
   );
 }

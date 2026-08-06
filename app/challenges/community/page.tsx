@@ -11,7 +11,7 @@ const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 const NAV_HTML = `
 <!-- NAV -->
-<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:#0E0E10;position:sticky;top:0;z-index:50;">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:#131110;position:sticky;top:0;z-index:50;">
   <a href="${BP}/" style="display:flex;align-items:center;gap:11px;text-decoration:none;"><img src="${BP}/assets/city-of-baguio-seal.png" alt="City of Baguio" style="height:46px;width:auto;"><img src="${BP}/assets/cpdso-logo.png" alt="CPDSO" style="height:46px;width:auto;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:32px;width:auto;"><div style="font-size:16px;font-weight:600;color:#fff;">Incubator Baguio</div></a>
   <div style="display:flex;align-items:center;gap:28px;">
     <div style="display:flex;gap:22px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.72);">
@@ -33,7 +33,7 @@ const NAV_HTML = `
 
 const FOOTER_HTML = `
 <!-- FOOTER -->
-<div style="background:#0B0B0D;padding:56px 40px 36px;">
+<div style="background:#100D0B;padding:56px 40px 36px;">
   <div style="max-width:1180px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.08);">
       <div>
@@ -56,7 +56,7 @@ export default function CommunityChallengePage() {
   return (
     <main>
       <div dangerouslySetInnerHTML={{ __html: NAV_HTML }} />
-      <Suspense fallback={<div style={{ background: "#FAFAF7", padding: "64px 40px" }} />}>
+      <Suspense fallback={<div style={{ background: "#F6F2EA", padding: "64px 40px" }} />}>
         <CommunityChallengeDetail bp={BP} />
       </Suspense>
       <div dangerouslySetInnerHTML={{ __html: FOOTER_HTML }} />

@@ -12,7 +12,7 @@ export default function NotFound() {
     <main
       style={{
         minHeight: "100vh",
-        background: "#0B0B0D",
+        background: "#100D0B",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -62,7 +62,7 @@ export default function NotFound() {
         <div
           style={{
             fontSize: 120,
-            fontWeight: 700,
+            fontWeight: 600,
             letterSpacing: "-0.05em",
             lineHeight: 1,
             background: "linear-gradient(135deg,#F26522 20%,#F5A623 80%)",
@@ -75,7 +75,7 @@ export default function NotFound() {
           404
         </div>
 
-        <h1 style={{ margin: "0 0 14px", fontSize: 30, fontWeight: 700, letterSpacing: "-0.025em", color: "#fff" }}>
+        <h1 style={{ margin: "0 0 14px", fontSize: 30, fontWeight: 600, letterSpacing: "-0.025em", color: "#fff" }}>
           This trail doesn&rsquo;t exist
         </h1>
         <p style={{ margin: "0 auto 34px", fontSize: 15.5, lineHeight: 1.65, color: "rgba(255,255,255,0.6)", maxWidth: 420 }}>

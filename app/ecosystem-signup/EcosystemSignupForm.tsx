@@ -183,8 +183,8 @@ export default function EcosystemSignupForm() {
         <div style={{ width: 56, height: 56, borderRadius: 9999, background: "rgba(26,107,60,0.12)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A6B3C" strokeWidth={2.6}><path d="M20 6 9 17l-5-5" /></svg>
         </div>
-        <h2 style={{ margin: "0 0 10px", fontSize: 22, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Thanks — submitted for review</h2>
-        <p style={{ margin: "0 auto", fontSize: 14.5, lineHeight: 1.6, color: "#6B6B73", maxWidth: 420 }}>
+        <h2 style={{ margin: "0 0 10px", fontSize: 22, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>Thanks — submitted for review</h2>
+        <p style={{ margin: "0 auto", fontSize: 14.5, lineHeight: 1.6, color: "#5A544B", maxWidth: 420 }}>
           We&rsquo;ll take a look and reach out at {email} once it&rsquo;s approved and live in the Ecosystem directory.
         </p>
       </div>
@@ -208,8 +208,8 @@ export default function EcosystemSignupForm() {
                   fontWeight: 600,
                   padding: "10px 20px",
                   borderRadius: 9999,
-                  border: active ? "1.5px solid " + ORANGE : "1.5px solid rgba(20,20,25,0.12)",
-                  color: active ? ORANGE : "#6B6B73",
+                  border: active ? "1.5px solid " + ORANGE : "1.5px solid rgba(64,50,34,0.14)",
+                  color: active ? ORANGE : "#5A544B",
                   background: active ? "rgba(242,101,34,0.08)" : "#fff",
                   cursor: "pointer",
                 }}
@@ -227,7 +227,7 @@ export default function EcosystemSignupForm() {
           {logoUrl ? (
             <img src={logoUrl} alt="" style={{ width: 52, height: 52, borderRadius: entityType === "mentor" ? 9999 : 12, objectFit: "cover" }} />
           ) : (
-            <div style={{ width: 52, height: 52, borderRadius: entityType === "mentor" ? 9999 : 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10, textAlign: "center" }}>
+            <div style={{ width: 52, height: 52, borderRadius: entityType === "mentor" ? 9999 : 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10, textAlign: "center" }}>
               No {entityType === "mentor" ? "photo" : "logo"}
             </div>
           )}
@@ -236,7 +236,7 @@ export default function EcosystemSignupForm() {
               {uploading ? "Uploading…" : `Upload ${entityType === "mentor" ? "photo" : "logo"}`}
               <input type="file" accept="image/*" onChange={handleLogoChange} disabled={uploading} style={{ display: "none" }} />
             </label>
-            <div style={{ fontSize: 11, color: "#9A958B", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
+            <div style={{ fontSize: 11, color: "#8B8479", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
           </div>
         </div>
       </div>
@@ -264,7 +264,7 @@ export default function EcosystemSignupForm() {
                       textAlign: "left",
                       padding: "12px 14px",
                       borderRadius: 12,
-                      border: active ? `1.5px solid ${ORANGE}` : "1.5px solid rgba(20,20,25,0.12)",
+                      border: active ? `1.5px solid ${ORANGE}` : "1.5px solid rgba(64,50,34,0.14)",
                       background: active ? "rgba(242,101,34,0.06)" : "#fff",
                       cursor: "pointer",
                     }}
@@ -274,7 +274,7 @@ export default function EcosystemSignupForm() {
                         width: 17,
                         height: 17,
                         borderRadius: 9999,
-                        border: active ? `5px solid ${ORANGE}` : "1.5px solid rgba(20,20,25,0.25)",
+                        border: active ? `5px solid ${ORANGE}` : "1.5px solid rgba(64,50,34,0.25)",
                         flexShrink: 0,
                         marginTop: 2,
                         boxSizing: "border-box",
@@ -282,7 +282,7 @@ export default function EcosystemSignupForm() {
                     />
                     <span>
                       <span style={{ display: "block", fontSize: 13.5, fontWeight: 600, color: DARK }}>{s.label}</span>
-                      <span style={{ display: "block", fontSize: 12.5, lineHeight: 1.5, color: "#6B6B73", marginTop: 2 }}>{s.description}</span>
+                      <span style={{ display: "block", fontSize: 12.5, lineHeight: 1.5, color: "#5A544B", marginTop: 2 }}>{s.description}</span>
                     </span>
                   </button>
                 );
@@ -303,7 +303,7 @@ export default function EcosystemSignupForm() {
           </div>
           <div>
             <label style={labelStyle}>What is your biggest challenge today?</label>
-            <p style={{ margin: "-2px 0 8px", fontSize: 12, lineHeight: 1.5, color: "#9A958B" }}>
+            <p style={{ margin: "-2px 0 8px", fontSize: 12, lineHeight: 1.5, color: "#8B8479" }}>
               Tell us the biggest challenge you&rsquo;re currently facing so we can better connect you with the right opportunities and support.
             </p>
             <textarea style={textareaStyle} value={suChallenge} onChange={(e) => setSuChallenge(e.target.value)} placeholder="e.g. Finding customers, raising funding, building the team..." />
@@ -337,7 +337,7 @@ export default function EcosystemSignupForm() {
                       type="button"
                       onClick={() => removeFounder(i)}
                       aria-label="Remove founder"
-                      style={{ width: 34, height: 34, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", color: "#9A958B", cursor: "pointer", fontSize: 16, lineHeight: 1 }}
+                      style={{ width: 34, height: 34, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", color: "#8B8479", cursor: "pointer", fontSize: 16, lineHeight: 1 }}
                     >
                       &times;
                     </button>
@@ -375,7 +375,7 @@ export default function EcosystemSignupForm() {
           <div>
             <label style={{ ...labelStyle, display: "flex", justifyContent: "space-between" }}>
               <span>Specialization</span>
-              <span style={{ color: "#9A958B", fontWeight: 500 }}>{mSpecializations.length}/{MAX_SPECIALIZATIONS}</span>
+              <span style={{ color: "#8B8479", fontWeight: 500 }}>{mSpecializations.length}/{MAX_SPECIALIZATIONS}</span>
             </label>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {MENTOR_SPECIALIZATIONS.map((s) => {
@@ -392,8 +392,8 @@ export default function EcosystemSignupForm() {
                       fontWeight: 600,
                       padding: "6px 12px",
                       borderRadius: 999,
-                      border: active ? "1.5px solid " + ORANGE : "1.5px solid rgba(20,20,25,0.12)",
-                      color: active ? ORANGE : disabled ? "#C9C5BB" : "#6B6B73",
+                      border: active ? "1.5px solid " + ORANGE : "1.5px solid rgba(64,50,34,0.14)",
+                      color: active ? ORANGE : disabled ? "#C9C5BB" : "#5A544B",
                       background: active ? "rgba(242,101,34,0.08)" : "#fff",
                       cursor: disabled ? "default" : "pointer",
                     }}
@@ -412,7 +412,7 @@ export default function EcosystemSignupForm() {
                   <option key={s.label} value={s.label}>{s.label}</option>
                 ))}
               </select>
-              <div style={{ fontSize: 11, color: "#9A958B", marginTop: 4 }}>Which sector is your expertise in?</div>
+              <div style={{ fontSize: 11, color: "#8B8479", marginTop: 4 }}>Which sector is your expertise in?</div>
             </div>
           )}
           <div>
@@ -463,7 +463,7 @@ export default function EcosystemSignupForm() {
                 {coverUrl ? (
                   <img src={coverUrl} alt="" style={{ width: 84, height: 52, borderRadius: 10, objectFit: "cover" }} />
                 ) : (
-                  <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10, textAlign: "center" }}>
+                  <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10, textAlign: "center" }}>
                     No cover
                   </div>
                 )}
@@ -472,7 +472,7 @@ export default function EcosystemSignupForm() {
                     {uploadingCover ? "Uploading…" : "Upload cover photo"}
                     <input type="file" accept="image/*" onChange={handleCoverChange} disabled={uploadingCover} style={{ display: "none" }} />
                   </label>
-                  <div style={{ fontSize: 11, color: "#9A958B", marginTop: 2 }}>Shown as the banner on your Ecosystem directory card.</div>
+                  <div style={{ fontSize: 11, color: "#8B8479", marginTop: 2 }}>Shown as the banner on your Ecosystem directory card.</div>
                 </div>
               </div>
             </div>
@@ -480,7 +480,7 @@ export default function EcosystemSignupForm() {
         </>
       )}
 
-      <div style={{ borderTop: "1px solid rgba(20,20,25,0.08)", paddingTop: 18, display: "grid", gridTemplateColumns: entityType === "mentor" ? "1fr" : "1fr 1fr", gap: 16 }}>
+      <div style={{ borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 18, display: "grid", gridTemplateColumns: entityType === "mentor" ? "1fr" : "1fr 1fr", gap: 16 }}>
         {entityType !== "mentor" && (
           <div>
             <label style={labelStyle}>Your name</label>

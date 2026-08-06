@@ -121,14 +121,14 @@ export default function StartupManager() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <div style={cardStyle}>
-        <h2 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 700, color: DARK }}>Add a startup profile</h2>
-        <p style={{ margin: "0 0 22px", fontSize: 13.5, color: "#6B6B73" }}>Published immediately to the Ecosystem directory under Startups.</p>
+        <h2 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 600, color: DARK }}>Add a startup profile</h2>
+        <p style={{ margin: "0 0 22px", fontSize: 13.5, color: "#5A544B" }}>Published immediately to the Ecosystem directory under Startups.</p>
         <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             {form.logo_url ? (
               <img src={form.logo_url} alt="" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
             ) : (
-              <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F4F2EC", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10.5, textAlign: "center" }}>
+              <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10.5, textAlign: "center" }}>
                 No logo
               </div>
             )}
@@ -137,7 +137,7 @@ export default function StartupManager() {
                 {uploading ? "Uploading…" : "Upload logo"}
                 <input type="file" accept="image/*" onChange={handleLogoChange} disabled={uploading} style={{ display: "none" }} />
               </label>
-              <div style={{ fontSize: 11.5, color: "#9A958B", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
+              <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
@@ -167,7 +167,7 @@ export default function StartupManager() {
           <div>
             <label style={{ ...labelStyle, display: "flex", justifyContent: "space-between" }}>
               <span>Description</span>
-              <span style={{ fontWeight: 500, color: "#9A958B" }}>{form.description.length}/{DESCRIPTION_MAX}</span>
+              <span style={{ fontWeight: 500, color: "#8B8479" }}>{form.description.length}/{DESCRIPTION_MAX}</span>
             </label>
             <textarea style={{ ...inputStyle, minHeight: 90, resize: "vertical" }} maxLength={DESCRIPTION_MAX} value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="What does this startup do?" />
           </div>
@@ -206,7 +206,7 @@ export default function StartupManager() {
                       type="button"
                       onClick={() => removeFounder(i)}
                       aria-label="Remove founder"
-                      style={{ width: 34, height: 34, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", color: "#9A958B", cursor: "pointer", fontSize: 16, lineHeight: 1 }}
+                      style={{ width: 34, height: 34, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", color: "#8B8479", cursor: "pointer", fontSize: 16, lineHeight: 1 }}
                     >
                       &times;
                     </button>
@@ -236,9 +236,9 @@ export default function StartupManager() {
       </div>
 
       <div style={cardStyle}>
-        <h2 style={{ margin: "0 0 18px", fontSize: 18, fontWeight: 700, color: DARK }}>Your startups ({startups.length})</h2>
+        <h2 style={{ margin: "0 0 18px", fontSize: 18, fontWeight: 600, color: DARK }}>Your startups ({startups.length})</h2>
         {startups.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 13.5, color: "#9A958B" }}>No startup profiles yet.</p>
+          <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>No startup profiles yet.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {startups.map((s) => (
@@ -247,11 +247,11 @@ export default function StartupManager() {
                   {s.logo_url ? (
                     <img src={s.logo_url} alt="" style={{ width: 34, height: 34, borderRadius: 9, objectFit: "cover" }} />
                   ) : (
-                    <div style={{ width: 34, height: 34, borderRadius: 9, background: "#F4F2EC" }} />
+                    <div style={{ width: 34, height: 34, borderRadius: 9, background: "#F6F2EA" }} />
                   )}
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{s.name}</div>
-                    <div style={{ fontSize: 12.5, color: "#9A958B" }}>{s.sector}{s.lifecycle_stage ? ` · ${s.lifecycle_stage}` : ""}</div>
+                    <div style={{ fontSize: 12.5, color: "#8B8479" }}>{s.sector}{s.lifecycle_stage ? ` · ${s.lifecycle_stage}` : ""}</div>
                   </div>
                 </div>
                 <button onClick={() => remove(s.id)} style={{ fontSize: 12.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer" }}>

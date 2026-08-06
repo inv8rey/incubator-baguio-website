@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 const ORANGE = "#F26522";
-const DARK = "#141417";
+const DARK = "#1A1714";
 
 const REASONS = [
   "General inquiry",
@@ -27,8 +27,8 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   fontSize: 14.5,
   color: DARK,
-  background: "#FAFAF7",
-  border: "1.5px solid rgba(20,20,25,0.12)",
+  background: "#F6F2EA",
+  border: "1.5px solid rgba(64,50,34,0.14)",
   borderRadius: 10,
   padding: "12px 14px",
   outline: "none",
@@ -65,12 +65,12 @@ export default function ContactForm() {
 
   if (submitted) {
     return (
-      <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "56px 40px", textAlign: "center" }}>
+      <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "56px 40px", textAlign: "center" }}>
         <div style={{ width: 56, height: 56, borderRadius: 9999, background: "rgba(26,107,60,0.12)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 22px" }}>
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A6B3C" strokeWidth={2.6}><path d="M20 6 9 17l-5-5" /></svg>
         </div>
-        <h2 style={{ margin: "0 0 10px", fontSize: 24, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Message sent</h2>
-        <p style={{ margin: "0 auto", fontSize: 14.5, lineHeight: 1.6, color: "#6B6B73", maxWidth: 420 }}>
+        <h2 style={{ margin: "0 0 10px", fontSize: 24, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>Message sent</h2>
+        <p style={{ margin: "0 auto", fontSize: 14.5, lineHeight: 1.6, color: "#5A544B", maxWidth: 420 }}>
           Thanks, {form.name.split(" ")[0] || "there"}. The Incubator Baguio team will get back to you at {form.email} within 2&ndash;3 business days.
         </p>
       </div>
@@ -78,7 +78,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={submit} style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "36px 40px", display: "flex", flexDirection: "column", gap: 18 }}>
+    <form onSubmit={submit} style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "36px 40px", display: "flex", flexDirection: "column", gap: 18 }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         <div>
           <label style={labelStyle}>Full name</label>

@@ -6,7 +6,7 @@ import { supabase } from "../../../lib/supabaseClient";
 import { uploadKnowledgeResourceFile } from "../../../lib/uploadFile";
 import { KNOWLEDGE_CATEGORIES, type KnowledgeCategory } from "../../knowledge/data";
 
-const modalInputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "10px 14px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.14)", fontSize: 13.5, color: DARK, outline: "none", fontFamily: "inherit" };
+const modalInputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "10px 14px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", fontSize: 13.5, color: DARK, outline: "none", fontFamily: "inherit" };
 const modalLabelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 5, display: "block" };
 
 interface ResourceRow {
@@ -89,10 +89,10 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
       <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, padding: "32px 36px", width: "100%", maxWidth: 520, boxShadow: "0 24px 64px rgba(0,0,0,0.18)", display: "flex", flexDirection: "column", gap: 18, maxHeight: "88vh", overflowY: "auto" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>{isEdit ? "Edit resource" : "Add resource"}</div>
-            <div style={{ fontSize: 12.5, color: "#9A958B", marginTop: 3 }}>Goes live on the Knowledge Hub immediately.</div>
+            <div style={{ fontSize: 20, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{isEdit ? "Edit resource" : "Add resource"}</div>
+            <div style={{ fontSize: 12.5, color: "#8B8479", marginTop: 3 }}>Goes live on the Knowledge Hub immediately.</div>
           </div>
-          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#6B6B73", flexShrink: 0 }}>&times;</button>
+          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#5A544B", flexShrink: 0 }}>&times;</button>
         </div>
 
         <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -125,8 +125,8 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
               </label>
               {fileUrl && (
                 <>
-                  <a href={fileUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12.5, color: "#9A958B" }}>View current file</a>
-                  <button type="button" onClick={() => setFileUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#9A958B", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
+                  <a href={fileUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12.5, color: "#8B8479" }}>View current file</a>
+                  <button type="button" onClick={() => setFileUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#8B8479", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
                 </>
               )}
             </div>
@@ -139,12 +139,12 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
             <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} style={{ width: 16, height: 16, cursor: "pointer" }} />
             <span style={{ fontSize: 13, fontWeight: 600, color: DARK }}>Feature this resource</span>
           </label>
-          <div style={{ fontSize: 11.5, color: "#9A958B", marginTop: -8 }}>Featured resources are pinned to the top of the Knowledge Hub, above the rest.</div>
+          <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: -8 }}>Featured resources are pinned to the top of the Knowledge Hub, above the rest.</div>
 
           {error && <p style={{ color: "#E23A2E", fontSize: 12.5, margin: 0 }}>{error}</p>}
 
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", paddingTop: 4 }}>
-            <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
+            <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
             <button type="submit" disabled={status === "loading" || fileUploading} style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: status === "loading" ? 0.7 : 1 }}>
               {status === "loading" ? "Saving…" : isEdit ? "Save changes" : "Add resource"}
             </button>
@@ -197,11 +197,11 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
 
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
-      <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(20,20,25,0.09)", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+      <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(64,50,34,0.12)", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <div style={{ display: "flex", gap: 6, flex: 1, flexWrap: "wrap" }}>
           <button
             onClick={() => setTab("All")}
-            style={{ fontSize: 12.5, fontWeight: tab === "All" ? 600 : 500, padding: "6px 14px", borderRadius: 999, border: "none", color: tab === "All" ? "#fff" : "#6B6B73", background: tab === "All" ? "#0E0E10" : "#F5F4F0", cursor: "pointer" }}
+            style={{ fontSize: 12.5, fontWeight: tab === "All" ? 600 : 500, padding: "6px 14px", borderRadius: 999, border: "none", color: tab === "All" ? "#fff" : "#5A544B", background: tab === "All" ? "#131110" : "#F5F4F0", cursor: "pointer" }}
           >
             All
             <span style={{ fontSize: 10, opacity: 0.7, marginLeft: 6 }}>{resources.length}</span>
@@ -213,7 +213,7 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
               <button
                 key={c.id}
                 onClick={() => setTab(c.id)}
-                style={{ fontSize: 12.5, fontWeight: active ? 600 : 500, padding: "6px 14px", borderRadius: 999, border: "none", color: active ? "#fff" : "#6B6B73", background: active ? "#0E0E10" : "#F5F4F0", cursor: "pointer" }}
+                style={{ fontSize: 12.5, fontWeight: active ? 600 : 500, padding: "6px 14px", borderRadius: 999, border: "none", color: active ? "#fff" : "#5A544B", background: active ? "#131110" : "#F5F4F0", cursor: "pointer" }}
               >
                 {c.id}
                 <span style={{ fontSize: 10, opacity: 0.7, marginLeft: 6 }}>{count}</span>
@@ -226,29 +226,29 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {filtered.map((r) => (
-          <div key={r.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18, display: "flex", gap: 16, alignItems: "flex-start" }}>
+          <div key={r.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", padding: 18, display: "flex", gap: 16, alignItems: "flex-start" }}>
             <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4, flexWrap: "wrap" }}>
-                <span style={{ fontSize: 14.5, fontWeight: 700, color: DARK }}>{r.title}</span>
+                <span style={{ fontSize: 14.5, fontWeight: 600, color: DARK }}>{r.title}</span>
                 {r.featured && (
-                  <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.02em", color: ORANGE, background: "rgba(242,101,34,0.12)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>★ Featured</span>
+                  <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: ORANGE, background: "rgba(242,101,34,0.12)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>★ Featured</span>
                 )}
-                <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.02em", color: "#6B6B73", background: "#F5F4F0", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{r.category}</span>
+                <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: "#5A544B", background: "#F5F4F0", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{r.category}</span>
               </div>
-              {r.description && <div style={{ fontSize: 12.5, color: "#6B6B73", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.description}</div>}
+              {r.description && <div style={{ fontSize: 12.5, color: "#5A544B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.description}</div>}
             </div>
             <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
               {(r.file_url || r.link_url) && (
-                <a href={r.file_url || r.link_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: "#9A958B", background: "none", border: "1.5px solid rgba(20,20,25,0.12)", borderRadius: 999, padding: "7px 14px", cursor: "pointer", textDecoration: "none" }}>View</a>
+                <a href={r.file_url || r.link_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: "#8B8479", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "7px 14px", cursor: "pointer", textDecoration: "none" }}>View</a>
               )}
-              <button onClick={() => setEditing(r)} style={{ fontSize: 12, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(20,20,25,0.14)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Edit</button>
+              <button onClick={() => setEditing(r)} style={{ fontSize: 12, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Edit</button>
               <button onClick={() => remove(r.id)} style={{ fontSize: 12, fontWeight: 600, color: "#E23A2E", background: "none", border: "1.5px solid rgba(226,58,46,0.3)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Delete</button>
             </div>
           </div>
         ))}
 
         {loaded && filtered.length === 0 && (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)" }}>
+          <div style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             No resources yet.
           </div>
         )}

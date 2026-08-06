@@ -46,19 +46,19 @@ function StepCard({ step, title, theme, color, imageUrl, onSaved }: { step: stri
   }
 
   return (
-    <div style={{ background: "#fff", border: "1.5px solid rgba(20,20,25,0.09)", borderRadius: 18, padding: 22, display: "flex", flexDirection: "column", gap: 14 }}>
+    <div style={{ background: "#fff", border: "1.5px solid rgba(64,50,34,0.12)", borderRadius: 18, padding: 22, display: "flex", flexDirection: "column", gap: 14 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <span style={{ width: 34, height: 34, borderRadius: 9999, background: color, flexShrink: 0 }} />
         <div>
-          <div style={{ fontSize: 15.5, fontWeight: 700, color: DARK }}>{title}</div>
-          <div style={{ fontSize: 12, color: "#9A958B", marginTop: 1 }}>{theme}</div>
+          <div style={{ fontSize: 15.5, fontWeight: 600, color: DARK }}>{title}</div>
+          <div style={{ fontSize: 12, color: "#8B8479", marginTop: 1 }}>{theme}</div>
         </div>
       </div>
 
       {imageUrl ? (
-        <img src={imageUrl} alt="" style={{ width: "100%", height: 160, borderRadius: 12, objectFit: "cover", border: "1px solid rgba(20,20,25,0.1)" }} />
+        <img src={imageUrl} alt="" style={{ width: "100%", height: 160, borderRadius: 12, objectFit: "cover", border: "1px solid rgba(64,50,34,0.13)" }} />
       ) : (
-        <div style={{ width: "100%", height: 160, borderRadius: 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12.5, color: "#9A958B" }}>
+        <div style={{ width: "100%", height: 160, borderRadius: 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12.5, color: "#8B8479" }}>
           No photo uploaded — the scroll section falls back to the default illustration
         </div>
       )}
@@ -103,7 +103,7 @@ export default function ProgramsTab() {
 
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 20 }}>
-      <p style={{ margin: 0, fontSize: 13.5, color: "#6B6B73", maxWidth: 640 }}>
+      <p style={{ margin: 0, fontSize: 13.5, color: "#5A544B", maxWidth: 640 }}>
         Upload one photo per step. It replaces the illustration on the left side of the &ldquo;Our Programs&rdquo; scrolling section on the homepage and /programs page. Recommended: a landscape photo, at least 900px wide.
       </p>
       <div className="ib-admin-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16 }}>

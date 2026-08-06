@@ -78,7 +78,7 @@ const selectStyle: React.CSSProperties = {
   fontWeight: 600,
   color: "#44444C",
   background: "#fff",
-  border: "1.5px solid rgba(20,20,25,0.12)",
+  border: "1.5px solid rgba(64,50,34,0.14)",
   borderRadius: 9999,
   padding: "10px 30px 10px 16px",
   cursor: "pointer",
@@ -94,7 +94,7 @@ function Select({ value, onChange, options, allLabel }: { value: string | null; 
           <option key={o} value={o}>{o}</option>
         ))}
       </select>
-      <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2.4} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
+      <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2.4} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
         <path d="m6 9 6 6 6-6" />
       </svg>
     </div>
@@ -131,7 +131,7 @@ function EventRow({ e }: { e: CityEvent }) {
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{ borderBottom: "1px solid rgba(20,20,25,0.06)", overflow: "hidden", borderRadius: hovered ? 12 : 0, margin: hovered ? "6px 0" : "0", transition: "margin 0.18s ease, border-radius 0.18s ease" }}
+      style={{ borderBottom: "1px solid rgba(64,50,34,0.09)", overflow: "hidden", borderRadius: hovered ? 12 : 0, margin: hovered ? "6px 0" : "0", transition: "margin 0.18s ease, border-radius 0.18s ease" }}
     >
       <div style={{
         height: hovered ? 88 : 0,
@@ -150,31 +150,31 @@ function EventRow({ e }: { e: CityEvent }) {
             <path d={CATEGORY_COVER_PATTERNS[e.category]} />
           </svg>
         )}
-        <span style={{ position: "absolute", top: 10, left: 12, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 8px", borderRadius: 9999 }}>{e.category}</span>
-        <span style={{ position: "absolute", top: 10, right: 12, fontSize: 10.5, color: "#9A958B" }}>{MONTH_NAMES[m - 1].slice(0, 3)} {String(d).padStart(2, "0")}</span>
-        <div style={{ position: "absolute", bottom: 10, left: 12, right: 12, fontSize: 13, fontWeight: 700, color: DARK, lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{e.title}</div>
+        <span style={{ position: "absolute", top: 10, left: 12, fontSize: 9.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 8px", borderRadius: 9999 }}>{e.category}</span>
+        <span style={{ position: "absolute", top: 10, right: 12, fontSize: 10.5, color: "#8B8479" }}>{MONTH_NAMES[m - 1].slice(0, 3)} {String(d).padStart(2, "0")}</span>
+        <div style={{ position: "absolute", bottom: 10, left: 12, right: 12, fontSize: 13, fontWeight: 600, color: DARK, lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{e.title}</div>
       </div>
 
       <div style={{ padding: "13px 0 13px" }}>
         {!hovered && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 7px", borderRadius: 9999, flexShrink: 0 }}>{e.category}</span>
-            <span style={{ fontSize: 11, color: "#9A958B" }}>{e.time}</span>
+            <span style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 7px", borderRadius: 9999, flexShrink: 0 }}>{e.category}</span>
+            <span style={{ fontSize: 11, color: "#8B8479" }}>{e.time}</span>
             <span style={{ fontSize: 11, color: "#C9C5BB", marginLeft: "auto", flexShrink: 0 }}>{MONTH_NAMES[m - 1].slice(0, 3)} {String(d).padStart(2, "0")}</span>
           </div>
         )}
         {hovered && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-            <span style={{ fontSize: 11, color: "#9A958B" }}>{e.time}</span>
+            <span style={{ fontSize: 11, color: "#8B8479" }}>{e.time}</span>
           </div>
         )}
         <div style={{ fontSize: 14, fontWeight: 600, color: DARK, lineHeight: 1.3, marginBottom: 5 }}>{e.title}</div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-          <span style={{ fontSize: 11.5, color: "#9A958B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{e.venue}</span>
+          <span style={{ fontSize: 11.5, color: "#8B8479", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{e.venue}</span>
           <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
             <a href={e.registrationLink || "#"} target={e.registrationLink ? "_blank" : undefined} rel={e.registrationLink ? "noopener noreferrer" : undefined} onClick={(ev) => { if (!e.registrationLink) ev.preventDefault(); }} style={{ background: DARK, color: "#fff", fontWeight: 600, fontSize: 11.5, padding: "7px 13px", borderRadius: 9999, textDecoration: "none", whiteSpace: "nowrap" }}>{e.cta}</a>
-            <button aria-label="Save event" style={{ width: 27, height: 27, borderRadius: 8, border: "1.5px solid rgba(20,20,25,0.1)", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
-              <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2}><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
+            <button aria-label="Save event" style={{ width: 27, height: 27, borderRadius: 8, border: "1.5px solid rgba(64,50,34,0.13)", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
+              <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2}><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
             </button>
           </div>
         </div>
@@ -187,17 +187,17 @@ function MentorRow({ s, booked, onBook }: { s: MentorSlot; booked: boolean; onBo
   const cc = MENTOR_EXPERTISE_COLORS[s.expertise];
   const [, m, d] = s.date.split("-").map(Number);
   return (
-    <div style={{ padding: "14px 0", borderBottom: "1px solid rgba(20,20,25,0.06)", display: "flex", gap: 12 }}>
-      <div style={{ width: 40, height: 40, borderRadius: 9999, background: s.color, color: "#fff", fontSize: 13, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{s.initials}</div>
+    <div style={{ padding: "14px 0", borderBottom: "1px solid rgba(64,50,34,0.09)", display: "flex", gap: 12 }}>
+      <div style={{ width: 40, height: 40, borderRadius: 9999, background: s.color, color: "#fff", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{s.initials}</div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
-          <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 7px", borderRadius: 9999, flexShrink: 0 }}>{s.expertise}</span>
-          <span style={{ fontSize: 11, color: "#9A958B" }}>{s.time} &middot; {s.duration}</span>
+          <span style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 7px", borderRadius: 9999, flexShrink: 0 }}>{s.expertise}</span>
+          <span style={{ fontSize: 11, color: "#8B8479" }}>{s.time} &middot; {s.duration}</span>
           <span style={{ fontSize: 11, color: "#C9C5BB", marginLeft: "auto", flexShrink: 0 }}>{MONTH_NAMES[m - 1].slice(0, 3)} {String(d).padStart(2, "0")}</span>
         </div>
         <div style={{ fontSize: 14, fontWeight: 600, color: DARK, lineHeight: 1.3, marginBottom: 5 }}>{s.mentorName}</div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-          <span style={{ fontSize: 11.5, color: "#9A958B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{s.venue}</span>
+          <span style={{ fontSize: 11.5, color: "#8B8479", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{s.venue}</span>
           {booked ? (
             <span style={{ fontSize: 11.5, fontWeight: 600, color: "#1A6B3C", background: "rgba(26,107,60,0.10)", padding: "7px 13px", borderRadius: 9999, whiteSpace: "nowrap" }}>Booked &#10003;</span>
           ) : (
@@ -209,7 +209,7 @@ function MentorRow({ s, booked, onBook }: { s: MentorSlot; booked: boolean; onBo
   );
 }
 
-const modalInputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "10px 14px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.14)", fontSize: 13.5, color: DARK, outline: "none", fontFamily: "inherit" };
+const modalInputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "10px 14px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", fontSize: 13.5, color: DARK, outline: "none", fontFamily: "inherit" };
 const modalLabelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 5, display: "block" };
 
 function BookingModal({ availableSlots, preselected, onClose, onConfirm }: { availableSlots: MentorSlot[]; preselected: MentorSlot | null; onClose: () => void; onConfirm: (slot: MentorSlot, topic: string, name: string, email: string) => void }) {
@@ -230,17 +230,17 @@ function BookingModal({ availableSlots, preselected, onClose, onConfirm }: { ava
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, padding: "32px 36px", width: "100%", maxWidth: 480, boxShadow: "0 24px 64px rgba(0,0,0,0.18)", display: "flex", flexDirection: "column", gap: 18 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ fontSize: 20, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Book a mentoring session</div>
-          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#6B6B73" }}>&times;</button>
+          <div style={{ fontSize: 20, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>Book a mentoring session</div>
+          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#5A544B" }}>&times;</button>
         </div>
 
         <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {preselected ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 12, background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.08)", borderRadius: 12, padding: "12px 14px" }}>
-              <div style={{ width: 38, height: 38, borderRadius: 9999, background: preselected.color, color: "#fff", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{preselected.initials}</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.11)", borderRadius: 12, padding: "12px 14px" }}>
+              <div style={{ width: 38, height: 38, borderRadius: 9999, background: preselected.color, color: "#fff", fontSize: 12, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{preselected.initials}</div>
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 700, color: DARK }}>{preselected.mentorName}</div>
-                <div style={{ fontSize: 12, color: "#9A958B" }}>{preselected.expertise} &middot; {formatLong(preselected.date)}, {preselected.time}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK }}>{preselected.mentorName}</div>
+                <div style={{ fontSize: 12, color: "#8B8479" }}>{preselected.expertise} &middot; {formatLong(preselected.date)}, {preselected.time}</div>
               </div>
             </div>
           ) : (
@@ -271,7 +271,7 @@ function BookingModal({ availableSlots, preselected, onClose, onConfirm }: { ava
           </div>
 
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", paddingTop: 4 }}>
-            <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
+            <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
             <button type="submit" disabled={!slot} style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: slot ? ORANGE : "#DEDAD2", color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: slot ? "pointer" : "default" }}>Confirm booking</button>
           </div>
         </form>
@@ -338,8 +338,8 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
           <div style={{ width: 52, height: 52, borderRadius: 9999, background: "rgba(26,107,60,0.12)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 18px" }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A6B3C" strokeWidth={2.6}><path d="M20 6 9 17l-5-5" /></svg>
           </div>
-          <div style={{ fontSize: 19, fontWeight: 700, color: DARK, marginBottom: 8 }}>Event submitted</div>
-          <p style={{ margin: "0 0 22px", fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>Thanks — your event is pending admin review and will appear on the calendar once approved.</p>
+          <div style={{ fontSize: 19, fontWeight: 600, color: DARK, marginBottom: 8 }}>Event submitted</div>
+          <p style={{ margin: "0 0 22px", fontSize: 13.5, lineHeight: 1.55, color: "#5A544B" }}>Thanks — your event is pending admin review and will appear on the calendar once approved.</p>
           <button onClick={onClose} style={{ padding: "10px 24px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer" }}>Done</button>
         </div>
       </div>
@@ -351,10 +351,10 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
       <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, padding: "32px 36px", width: "100%", maxWidth: 560, boxShadow: "0 24px 64px rgba(0,0,0,0.18)", display: "flex", flexDirection: "column", gap: 18, maxHeight: "88vh", overflowY: "auto" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Submit an event</div>
-            <div style={{ fontSize: 12.5, color: "#9A958B", marginTop: 3 }}>Reviewed by an admin before it goes live on the calendar.</div>
+            <div style={{ fontSize: 20, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>Submit an event</div>
+            <div style={{ fontSize: 12.5, color: "#8B8479", marginTop: 3 }}>Reviewed by an admin before it goes live on the calendar.</div>
           </div>
-          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#6B6B73", flexShrink: 0 }}>&times;</button>
+          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#5A544B", flexShrink: 0 }}>&times;</button>
         </div>
 
         <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -416,7 +416,7 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
             <label style={modalLabelStyle}>Registration link</label>
             <input type="url" value={registrationLink} onChange={(e) => setRegistrationLink(e.target.value)} placeholder="https://forms.gle/…" style={modalInputStyle} />
           </div>
-          <div style={{ borderTop: "1px solid rgba(20,20,25,0.08)", paddingTop: 14, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div style={{ borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 14, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div>
               <label style={modalLabelStyle}>Your name *</label>
               <input value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder="Juan Dela Cruz" style={modalInputStyle} required />
@@ -434,7 +434,7 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
           {error && <p style={{ color: "#E23A2E", fontSize: 12.5, margin: 0 }}>{error}</p>}
 
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", paddingTop: 4 }}>
-            <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
+            <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
             <button type="submit" disabled={status === "loading"} style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: status === "loading" ? 0.7 : 1 }}>
               {status === "loading" ? "Submitting…" : "Submit for review"}
             </button>
@@ -479,8 +479,8 @@ function SubscribeModal({ onClose }: { onClose: () => void }) {
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, padding: "32px 36px", width: "100%", maxWidth: 420, boxShadow: "0 24px 64px rgba(0,0,0,0.18)", display: "flex", flexDirection: "column", gap: 16 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ fontSize: 20, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Subscribe to updates</div>
-          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#6B6B73", flexShrink: 0 }}>&times;</button>
+          <div style={{ fontSize: 20, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>Subscribe to updates</div>
+          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#5A544B", flexShrink: 0 }}>&times;</button>
         </div>
         {status === "done" ? (
           <div style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(26,107,60,0.08)", border: "1px solid rgba(26,107,60,0.2)", borderRadius: 12, padding: "14px 16px" }}>
@@ -489,7 +489,7 @@ function SubscribeModal({ onClose }: { onClose: () => void }) {
           </div>
         ) : (
           <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#6B6B73" }}>Get notified by email whenever a new event is added to the calendar.</p>
+            <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#5A544B" }}>Get notified by email whenever a new event is added to the calendar.</p>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" style={modalInputStyle} required />
             {error && <p style={{ color: "#E23A2E", fontSize: 12.5, margin: 0 }}>{error}</p>}
             <button type="submit" disabled={status === "loading"} style={{ padding: "11px 22px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: status === "loading" ? 0.7 : 1 }}>
@@ -664,21 +664,21 @@ export default function CalendarClient() {
   const availableForModal = MENTOR_SLOTS.filter((s) => !bookedIds.has(s.id));
 
   return (
-    <div style={{ background: "#FAFAF7", padding: "24px 32px 56px" }}>
+    <div style={{ background: "#F6F2EA", padding: "24px 32px 56px" }}>
       <div style={{ maxWidth: 1440, margin: "0 auto" }}>
         {/* MODE TOGGLE + ACTIONS */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, marginBottom: 18, flexWrap: "wrap" }}>
-          <div style={{ display: "flex", background: "#F4F2EC", borderRadius: 9999, padding: 3, gap: 2 }}>
+          <div style={{ display: "flex", background: "#F6F2EA", borderRadius: 9999, padding: 3, gap: 2 }}>
             <button
               onClick={() => switchMode("events")}
-              style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9999, border: "none", cursor: "pointer", color: mode === "events" ? "#fff" : "#6B6B73", background: mode === "events" ? DARK : "transparent" }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9999, border: "none", cursor: "pointer", color: mode === "events" ? "#fff" : "#5A544B", background: mode === "events" ? DARK : "transparent" }}
             >
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><rect x={3} y={4} width={18} height={17} rx={2} /><path d="M3 9h18M8 2v4M16 2v4" /></svg>
               Events
             </button>
             <button
               onClick={() => switchMode("mentoring")}
-              style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9999, border: "none", cursor: "pointer", color: mode === "mentoring" ? "#fff" : "#6B6B73", background: mode === "mentoring" ? ORANGE : "transparent" }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9999, border: "none", cursor: "pointer", color: mode === "mentoring" ? "#fff" : "#5A544B", background: mode === "mentoring" ? ORANGE : "transparent" }}
             >
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><path d="M22 10 12 5 2 10l10 5 10-5Z" /><path d="M6 12v5c3 2 9 2 12 0v-5" /></svg>
               Mentoring
@@ -688,7 +688,7 @@ export default function CalendarClient() {
             {mode === "events" ? (
               <>
                 <button onClick={() => setSubmitEventOpen(true)} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: ORANGE, background: "none", textDecoration: "none", border: "1.5px solid rgba(242,101,34,0.4)", padding: "11px 18px", borderRadius: 9999, cursor: "pointer" }}>+ Submit Event</button>
-                <button onClick={() => setSubscribeOpen(true)} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: DARK, background: "none", textDecoration: "none", border: "1.5px solid rgba(20,20,25,0.14)", padding: "11px 18px", borderRadius: 9999, cursor: "pointer" }}>
+                <button onClick={() => setSubscribeOpen(true)} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13.5, fontWeight: 600, color: DARK, background: "none", textDecoration: "none", border: "1.5px solid rgba(64,50,34,0.14)", padding: "11px 18px", borderRadius: 9999, cursor: "pointer" }}>
                   <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={DARK} strokeWidth={2}><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>
                   Subscribe
                 </button>
@@ -705,7 +705,7 @@ export default function CalendarClient() {
         <div className="ib-events-filterbar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, marginBottom: 20, flexWrap: "wrap" }}>
           <div className="ib-events-filters" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", flex: 1, minWidth: 0 }}>
             <div style={{ position: "relative", minWidth: 220 }}>
-              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#9A958B" strokeWidth={2} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }}>
+              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }}>
                 <circle cx={11} cy={11} r={7} />
                 <path d="m20 20-3.5-3.5" />
               </svg>
@@ -713,7 +713,7 @@ export default function CalendarClient() {
                 value={query}
                 onChange={(e) => { setQuery(e.target.value); setSelectedIso(null); }}
                 placeholder={mode === "events" ? "Search events, topics, or organizers..." : "Search mentors or expertise..."}
-                style={{ width: "100%", boxSizing: "border-box", fontSize: 13, color: DARK, background: "#fff", border: "1.5px solid rgba(20,20,25,0.12)", borderRadius: 9999, padding: "10px 14px 10px 36px", outline: "none" }}
+                style={{ width: "100%", boxSizing: "border-box", fontSize: 13, color: DARK, background: "#fff", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 9999, padding: "10px 14px 10px 36px", outline: "none" }}
               />
             </div>
             {mode === "events" && (
@@ -739,12 +739,12 @@ export default function CalendarClient() {
               allLabel="All Formats"
             />
           </div>
-          <div className="ib-events-viewtoggle" style={{ display: "flex", background: "#F4F2EC", borderRadius: 9999, padding: 3, gap: 2, flexShrink: 0 }}>
+          <div className="ib-events-viewtoggle" style={{ display: "flex", background: "#F6F2EA", borderRadius: 9999, padding: 3, gap: 2, flexShrink: 0 }}>
             {VIEWS.map((v) => (
               <button
                 key={v}
                 onClick={() => setView(v)}
-                style={{ fontSize: 12.5, fontWeight: 600, padding: "8px 16px", borderRadius: 9999, border: "none", cursor: "pointer", color: view === v ? "#fff" : "#6B6B73", background: view === v ? ORANGE : "transparent" }}
+                style={{ fontSize: 12.5, fontWeight: 600, padding: "8px 16px", borderRadius: 9999, border: "none", cursor: "pointer", color: view === v ? "#fff" : "#5A544B", background: view === v ? ORANGE : "transparent" }}
               >
                 {v}
               </button>
@@ -755,19 +755,19 @@ export default function CalendarClient() {
         <div style={{ display: "grid", gridTemplateColumns: "2.2fr 0.85fr", gap: 20, alignItems: "start" }} className="ib-events-grid">
           {/* CALENDAR / AGENDA */}
           {view !== "Agenda" ? (
-            <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "24px 24px 18px" }}>
+            <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "24px 24px 18px" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
-                <div style={{ fontSize: 19, fontWeight: 700, color: DARK, letterSpacing: "-0.01em" }}>
+                <div style={{ fontSize: 19, fontWeight: 600, color: DARK, letterSpacing: "-0.01em" }}>
                   {view === "Week" ? `Week of ${formatLong(isoOf(weekCells[0]))}` : `${MONTH_NAMES[month]} ${year}`}
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
-                  <button onClick={() => step(-1)} aria-label="Previous" style={{ width: 32, height: 32, borderRadius: 9999, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <button onClick={() => step(-1)} aria-label="Previous" style={{ width: 32, height: 32, borderRadius: 9999, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#44444C" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                   </button>
-                  <button onClick={() => { setCursor(new Date(TODAY.getFullYear(), TODAY.getMonth(), 1)); setSelectedIso(null); }} style={{ fontSize: 12, fontWeight: 600, color: "#6B6B73", border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", borderRadius: 9999, padding: "0 14px", cursor: "pointer" }}>
+                  <button onClick={() => { setCursor(new Date(TODAY.getFullYear(), TODAY.getMonth(), 1)); setSelectedIso(null); }} style={{ fontSize: 12, fontWeight: 600, color: "#5A544B", border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", borderRadius: 9999, padding: "0 14px", cursor: "pointer" }}>
                     Today
                   </button>
-                  <button onClick={() => step(1)} aria-label="Next" style={{ width: 32, height: 32, borderRadius: 9999, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <button onClick={() => step(1)} aria-label="Next" style={{ width: 32, height: 32, borderRadius: 9999, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#44444C" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
                   </button>
                 </div>
@@ -775,13 +775,13 @@ export default function CalendarClient() {
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4, marginBottom: 6 }}>
                 {WEEKDAYS.map((w) => (
-                  <div key={w} style={{ textAlign: "center", fontSize: 10.5, fontWeight: 600, color: "#9A958B", padding: "4px 0" }}>{w}</div>
+                  <div key={w} style={{ textAlign: "center", fontSize: 10.5, fontWeight: 600, color: "#8B8479", padding: "4px 0" }}>{w}</div>
                 ))}
               </div>
 
               <div className="ib-events-monthgrid" style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6 }}>
                 {cells.map((date, i) => {
-                  if (!date) return <div key={i} style={{ minHeight: view === "Week" ? 150 : 92, borderRadius: 12, border: "1.5px solid rgba(20,20,25,0.04)", background: "#FAFAF7" }} />;
+                  if (!date) return <div key={i} style={{ minHeight: view === "Week" ? 150 : 92, borderRadius: 12, border: "1.5px solid rgba(64,50,34,0.04)", background: "#F6F2EA" }} />;
                   const iso = isoOf(date);
                   const dayItems = mode === "events" ? eventsOnDayFiltered(date) : slotsOnDayFiltered(date);
                   const dayChips: ChipData[] = mode === "events"
@@ -800,7 +800,7 @@ export default function CalendarClient() {
                       style={{
                         minHeight: view === "Week" ? 150 : 92,
                         borderRadius: 12,
-                        border: isSelected ? `1.5px solid ${ORANGE}` : "1.5px solid rgba(20,20,25,0.07)",
+                        border: isSelected ? `1.5px solid ${ORANGE}` : "1.5px solid rgba(64,50,34,0.10)",
                         background: isSelected ? "rgba(242,101,34,0.06)" : "#fff",
                         cursor: dayItems.length > 0 ? "pointer" : "default",
                         display: "flex",
@@ -813,7 +813,7 @@ export default function CalendarClient() {
                     >
                       {isToday ? (
                         <>
-                          <span style={{ width: 22, height: 22, borderRadius: 9999, background: ORANGE, color: "#fff", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{date.getDate()}</span>
+                          <span style={{ width: 22, height: 22, borderRadius: 9999, background: ORANGE, color: "#fff", fontSize: 12, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center" }}>{date.getDate()}</span>
                           {dayItems.length > 0 && (
                             <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: "center" }}>
                               <span style={{ fontSize: 11, fontWeight: 600, color: ORANGE }}>{dayItems.length} {dayItems.length === 1 ? itemsLabel.slice(0, -1) : itemsLabel}</span>
@@ -825,7 +825,7 @@ export default function CalendarClient() {
                           <span style={{ fontSize: 12, fontWeight: 500, color: dayItems.length > 0 ? DARK : "#C9C5BB", padding: "1px 2px" }}>{date.getDate()}</span>
                           <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                             {visible.map((c) => <DayChip key={c.key} data={c} compact={view !== "Week"} />)}
-                            {extra > 0 && <span style={{ fontSize: 10, fontWeight: 600, color: "#9A958B", padding: "1px 4px" }}>+{extra} more</span>}
+                            {extra > 0 && <span style={{ fontSize: 10, fontWeight: 600, color: "#8B8479", padding: "1px 4px" }}>+{extra} more</span>}
                           </div>
                         </>
                       )}
@@ -834,89 +834,89 @@ export default function CalendarClient() {
                 })}
               </div>
 
-              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 18, paddingTop: 16, borderTop: "1px solid rgba(20,20,25,0.07)" }}>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 18, paddingTop: 16, borderTop: "1px solid rgba(64,50,34,0.10)" }}>
                 {mode === "events"
                   ? CATEGORIES.map((cat) => (
                       <div key={cat} style={{ display: "flex", alignItems: "center", gap: 5 }}>
                         <span style={{ width: 7, height: 7, borderRadius: 9999, background: CATEGORY_COLORS[cat].color, display: "inline-block" }} />
-                        <span style={{ fontSize: 11, color: "#6B6B73" }}>{cat}</span>
+                        <span style={{ fontSize: 11, color: "#5A544B" }}>{cat}</span>
                       </div>
                     ))
                   : MENTOR_EXPERTISE_LIST.map((exp) => (
                       <div key={exp} style={{ display: "flex", alignItems: "center", gap: 5 }}>
                         <span style={{ width: 7, height: 7, borderRadius: 9999, background: MENTOR_EXPERTISE_COLORS[exp].color, display: "inline-block" }} />
-                        <span style={{ fontSize: 11, color: "#6B6B73" }}>{exp}</span>
+                        <span style={{ fontSize: 11, color: "#5A544B" }}>{exp}</span>
                       </div>
                     ))}
               </div>
             </div>
           ) : (
-            <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "24px 28px" }}>
-              <div style={{ fontSize: 17, fontWeight: 700, color: DARK, marginBottom: 14 }}>All upcoming {itemsLabel}</div>
+            <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "24px 28px" }}>
+              <div style={{ fontSize: 17, fontWeight: 600, color: DARK, marginBottom: 14 }}>All upcoming {itemsLabel}</div>
               {mode === "events" ? (
                 <>
                   {filteredEvents.filter((e) => (e.endDate ? e.endDate >= todayIso : e.date >= todayIso)).sort((a, b) => a.date.localeCompare(b.date)).map((e) => <EventRow key={e.id} e={e} />)}
-                  {filteredEvents.length === 0 && <p style={{ fontSize: 13.5, color: "#9A958B", padding: "12px 0" }}>No events match your filters.</p>}
+                  {filteredEvents.length === 0 && <p style={{ fontSize: 13.5, color: "#8B8479", padding: "12px 0" }}>No events match your filters.</p>}
                 </>
               ) : (
                 <>
                   {filteredSlots.filter((s) => s.date >= todayIso).sort((a, b) => a.date.localeCompare(b.date)).map((s) => <MentorRow key={s.id} s={s} booked={bookedIds.has(s.id)} onBook={openBooking} />)}
-                  {filteredSlots.length === 0 && <p style={{ fontSize: 13.5, color: "#9A958B", padding: "12px 0" }}>No mentoring sessions match your filters.</p>}
+                  {filteredSlots.length === 0 && <p style={{ fontSize: 13.5, color: "#8B8479", padding: "12px 0" }}>No mentoring sessions match your filters.</p>}
                 </>
               )}
             </div>
           )}
 
           {/* SIDEBAR */}
-          <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "22px 24px" }}>
+          <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "22px 24px" }}>
             {mode === "events" ? (
               daySelection ? (
                 <>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                    <div style={{ fontSize: 14.5, fontWeight: 700, color: DARK, textTransform: "uppercase", letterSpacing: "0.04em" }}>{formatLong(selectedIso!)}</div>
+                    <div style={{ fontSize: 14.5, fontWeight: 600, color: DARK, textTransform: "uppercase", letterSpacing: "0.04em" }}>{formatLong(selectedIso!)}</div>
                     <button onClick={() => setSelectedIso(null)} style={{ fontSize: 12, fontWeight: 600, color: ORANGE, background: "none", border: "none", cursor: "pointer" }}>Clear ✕</button>
                   </div>
-                  {daySelection.length === 0 && <p style={{ fontSize: 13, color: "#9A958B" }}>No events on this date.</p>}
+                  {daySelection.length === 0 && <p style={{ fontSize: 13, color: "#8B8479" }}>No events on this date.</p>}
                   {daySelection.map((e) => <EventRow key={e.id} e={e} />)}
                 </>
               ) : (
                 <>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                    <div style={{ fontSize: 14.5, fontWeight: 700, color: DARK, textTransform: "uppercase", letterSpacing: "0.04em" }}>{hasActiveFilters ? "Filtered events" : "Upcoming events"}</div>
+                    <div style={{ fontSize: 14.5, fontWeight: 600, color: DARK, textTransform: "uppercase", letterSpacing: "0.04em" }}>{hasActiveFilters ? "Filtered events" : "Upcoming events"}</div>
                     {!hasActiveFilters && <button onClick={() => setView("Agenda")} style={{ fontSize: 12, fontWeight: 600, color: ORANGE, background: "none", border: "none", cursor: "pointer" }}>View all</button>}
                   </div>
 
                   {grouped.today.length === 0 && grouped.thisWeek.length === 0 && grouped.thisMonth.length === 0 && grouped.later.length === 0 && (
-                    <p style={{ fontSize: 13, color: "#9A958B", padding: "12px 0" }}>No events match your filters.</p>
+                    <p style={{ fontSize: 13, color: "#8B8479", padding: "12px 0" }}>No events match your filters.</p>
                   )}
 
                   {grouped.today.length > 0 && (
                     <div>
-                      <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 6 }}>Today &middot; {formatLong(todayIso).split(",")[0]}</div>
+                      <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>Today &middot; {formatLong(todayIso).split(",")[0]}</div>
                       {grouped.today.map((e) => <EventRow key={e.id} e={e} />)}
                     </div>
                   )}
                   {grouped.thisWeek.length > 0 && (
                     <div style={{ marginTop: 18 }}>
-                      <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 6 }}>This week</div>
+                      <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>This week</div>
                       {grouped.thisWeek.map((e) => <EventRow key={e.id} e={e} />)}
                     </div>
                   )}
                   {grouped.thisMonth.length > 0 && (
                     <div style={{ marginTop: 18 }}>
-                      <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 6 }}>This month</div>
+                      <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>This month</div>
                       {grouped.thisMonth.map((e) => <EventRow key={e.id} e={e} />)}
                     </div>
                   )}
                   {grouped.later.length > 0 && (
                     <div style={{ marginTop: 18 }}>
                       {!showLater ? (
-                        <button onClick={() => setShowLater(true)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontSize: 12.5, fontWeight: 600, color: "#6B6B73", background: "#FAFAF7", border: "none", borderRadius: 10, padding: "10px 0", cursor: "pointer" }}>
-                          More events coming up <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#6B6B73" strokeWidth={2.4}><path d="m6 9 6 6 6-6" /></svg>
+                        <button onClick={() => setShowLater(true)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontSize: 12.5, fontWeight: 600, color: "#5A544B", background: "#F6F2EA", border: "none", borderRadius: 10, padding: "10px 0", cursor: "pointer" }}>
+                          More events coming up <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#5A544B" strokeWidth={2.4}><path d="m6 9 6 6 6-6" /></svg>
                         </button>
                       ) : (
                         <>
-                          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 6 }}>Later</div>
+                          <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>Later</div>
                           {grouped.later.map((e) => <EventRow key={e.id} e={e} />)}
                         </>
                       )}
@@ -927,50 +927,50 @@ export default function CalendarClient() {
             ) : daySlotSelection ? (
               <>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                  <div style={{ fontSize: 14.5, fontWeight: 700, color: DARK, textTransform: "uppercase", letterSpacing: "0.04em" }}>{formatLong(selectedIso!)}</div>
+                  <div style={{ fontSize: 14.5, fontWeight: 600, color: DARK, textTransform: "uppercase", letterSpacing: "0.04em" }}>{formatLong(selectedIso!)}</div>
                   <button onClick={() => setSelectedIso(null)} style={{ fontSize: 12, fontWeight: 600, color: ORANGE, background: "none", border: "none", cursor: "pointer" }}>Clear ✕</button>
                 </div>
-                {daySlotSelection.length === 0 && <p style={{ fontSize: 13, color: "#9A958B" }}>No mentoring sessions on this date.</p>}
+                {daySlotSelection.length === 0 && <p style={{ fontSize: 13, color: "#8B8479" }}>No mentoring sessions on this date.</p>}
                 {daySlotSelection.map((s) => <MentorRow key={s.id} s={s} booked={bookedIds.has(s.id)} onBook={openBooking} />)}
               </>
             ) : (
               <>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                  <div style={{ fontSize: 14.5, fontWeight: 700, color: DARK, textTransform: "uppercase", letterSpacing: "0.04em" }}>{hasActiveFilters ? "Filtered sessions" : "Upcoming sessions"}</div>
+                  <div style={{ fontSize: 14.5, fontWeight: 600, color: DARK, textTransform: "uppercase", letterSpacing: "0.04em" }}>{hasActiveFilters ? "Filtered sessions" : "Upcoming sessions"}</div>
                   {!hasActiveFilters && <button onClick={() => setView("Agenda")} style={{ fontSize: 12, fontWeight: 600, color: ORANGE, background: "none", border: "none", cursor: "pointer" }}>View all</button>}
                 </div>
 
                 {groupedSlots.today.length === 0 && groupedSlots.thisWeek.length === 0 && groupedSlots.thisMonth.length === 0 && groupedSlots.later.length === 0 && (
-                  <p style={{ fontSize: 13, color: "#9A958B", padding: "12px 0" }}>No mentoring sessions match your filters.</p>
+                  <p style={{ fontSize: 13, color: "#8B8479", padding: "12px 0" }}>No mentoring sessions match your filters.</p>
                 )}
 
                 {groupedSlots.today.length > 0 && (
                   <div>
-                    <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 6 }}>Today &middot; {formatLong(todayIso).split(",")[0]}</div>
+                    <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>Today &middot; {formatLong(todayIso).split(",")[0]}</div>
                     {groupedSlots.today.map((s) => <MentorRow key={s.id} s={s} booked={bookedIds.has(s.id)} onBook={openBooking} />)}
                   </div>
                 )}
                 {groupedSlots.thisWeek.length > 0 && (
                   <div style={{ marginTop: 18 }}>
-                    <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 6 }}>This week</div>
+                    <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>This week</div>
                     {groupedSlots.thisWeek.map((s) => <MentorRow key={s.id} s={s} booked={bookedIds.has(s.id)} onBook={openBooking} />)}
                   </div>
                 )}
                 {groupedSlots.thisMonth.length > 0 && (
                   <div style={{ marginTop: 18 }}>
-                    <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 6 }}>This month</div>
+                    <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>This month</div>
                     {groupedSlots.thisMonth.map((s) => <MentorRow key={s.id} s={s} booked={bookedIds.has(s.id)} onBook={openBooking} />)}
                   </div>
                 )}
                 {groupedSlots.later.length > 0 && (
                   <div style={{ marginTop: 18 }}>
                     {!showLater ? (
-                      <button onClick={() => setShowLater(true)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontSize: 12.5, fontWeight: 600, color: "#6B6B73", background: "#FAFAF7", border: "none", borderRadius: 10, padding: "10px 0", cursor: "pointer" }}>
-                        More sessions coming up <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#6B6B73" strokeWidth={2.4}><path d="m6 9 6 6 6-6" /></svg>
+                      <button onClick={() => setShowLater(true)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontSize: 12.5, fontWeight: 600, color: "#5A544B", background: "#F6F2EA", border: "none", borderRadius: 10, padding: "10px 0", cursor: "pointer" }}>
+                        More sessions coming up <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#5A544B" strokeWidth={2.4}><path d="m6 9 6 6 6-6" /></svg>
                       </button>
                     ) : (
                       <>
-                        <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 6 }}>Later</div>
+                        <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>Later</div>
                         {groupedSlots.later.map((s) => <MentorRow key={s.id} s={s} booked={bookedIds.has(s.id)} onBook={openBooking} />)}
                       </>
                     )}

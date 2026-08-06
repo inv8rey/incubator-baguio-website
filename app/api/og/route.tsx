@@ -19,7 +19,7 @@ export async function GET() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0B0B0D",
+          background: "#100D0B",
           position: "relative",
         }}
       >
@@ -48,7 +48,7 @@ export async function GET() {
             flexWrap: "wrap",
             justifyContent: "center",
             fontSize: 62,
-            fontWeight: 700,
+            fontWeight: 600,
             color: "#fff",
             letterSpacing: "-0.03em",
             textAlign: "center",

@@ -63,17 +63,17 @@ export function StageDonut({ data, total }: { data: { label: string; count: numb
           {arcs}
         </svg>
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ fontSize: 26, fontWeight: 700, color: DARK, letterSpacing: "-0.02em", lineHeight: 1 }}>{total}</div>
-          <div style={{ fontSize: 10, color: "#9A958B", fontWeight: 500, marginTop: 2 }}>Total</div>
+          <div style={{ fontSize: 26, fontWeight: 600, color: DARK, letterSpacing: "-0.02em", lineHeight: 1 }}>{total}</div>
+          <div style={{ fontSize: 10, color: "#8B8479", fontWeight: 500, marginTop: 2 }}>Total</div>
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 9, marginTop: 16 }}>
         {data.map((d) => (
           <div key={d.label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5 }}>
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: d.color, flexShrink: 0, display: "inline-block" }} />
-            <span style={{ color: "#6B6B73", flex: 1 }}>{d.label}</span>
+            <span style={{ color: "#5A544B", flex: 1 }}>{d.label}</span>
             <span style={{ fontWeight: 600, color: DARK }}>{d.count}</span>
-            <span style={{ fontSize: 11, color: "#9A958B", marginLeft: 2 }}>({((d.count / total) * 100).toFixed(1)}%)</span>
+            <span style={{ fontSize: 11, color: "#8B8479", marginLeft: 2 }}>({((d.count / total) * 100).toFixed(1)}%)</span>
           </div>
         ))}
       </div>
@@ -115,7 +115,7 @@ export function RadarChart({ axes }: { axes: { label: string; val: number }[] })
       {axes.map((a, i) => {
         const [x, y] = pt(i, R + 15);
         return (
-          <text key={`l${i}`} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fontSize={9} fill="#9A958B" fontWeight={500}>
+          <text key={`l${i}`} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fontSize={9} fill="#8B8479" fontWeight={500}>
             {a.label}
           </text>
         );

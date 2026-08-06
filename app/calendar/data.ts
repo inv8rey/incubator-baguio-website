@@ -1,5 +1,5 @@
 export const ORANGE = "#F26522";
-export const DARK = "#141417";
+export const DARK = "#1A1714";
 
 export type EventCategory =
   | "Workshop"
@@ -19,7 +19,7 @@ export const CATEGORY_COLORS: Record<EventCategory, { color: string; bg: string 
   Networking: { color: "#E23A2E", bg: "rgba(226,58,46,0.10)" },
   Competition: { color: "#F5A623", bg: "rgba(245,166,35,0.14)" },
   Government: { color: "#5B9BC0", bg: "rgba(91,155,192,0.12)" },
-  Other: { color: "#9A958B", bg: "rgba(154,149,139,0.14)" },
+  Other: { color: "#8B8479", bg: "rgba(154,149,139,0.14)" },
 };
 
 export type OrganizerType =

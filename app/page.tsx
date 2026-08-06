@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import EcosystemModel from "./programs/EcosystemModel";
+import WhoWeAre from "./WhoWeAre";
 import FeaturedStartups from "./FeaturedStartups";
 import HomeOpenChallenges from "./HomeOpenChallenges";
+import HomeEvents from "./HomeEvents";
+import HomeGallery from "./HomeGallery";
 import EcosystemPartnersMarquee from "./EcosystemPartnersMarquee";
 import NewsletterSignup from "./NewsletterSignup";
 
@@ -13,7 +16,7 @@ const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 const HOME_HTML_TOP = `
 <!-- NAV -->
-<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 40px;background:#0B0B0D;position:sticky;top:0;z-index:50;">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 40px;background:#100D0B;position:sticky;top:0;z-index:50;">
   <div style="display:flex;align-items:center;gap:11px;">
     <img src="${BP}/assets/city-of-baguio-seal.png" alt="City of Baguio" style="height:48px;width:auto;display:block;">
     <img src="${BP}/assets/cpdso-logo.png" alt="CPDSO" style="height:48px;width:auto;display:block;">
@@ -38,7 +41,7 @@ const HOME_HTML_TOP = `
 </div>
 
 <!-- HERO -->
-<div style="position:relative;background:#0B0B0D;padding:96px 40px 60px;overflow:hidden;text-align:center;">
+<div style="position:relative;background:#100D0B;padding:96px 40px 60px;overflow:hidden;text-align:center;">
   <div style="position:absolute;bottom:-160px;left:50%;transform:translateX(-50%);width:640px;height:600px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.26) 0%,transparent 62%);pointer-events:none;animation:ibglow 8s ease-in-out infinite;"></div>
   <svg style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);opacity:0.12;" width="760" height="430" viewBox="0 0 120 104" fill="none" preserveAspectRatio="none"><polyline points="6,40 60,8 114,40" stroke="#F5A623" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,62 60,30 114,62" stroke="#E23A2E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,84 60,52 114,84" stroke="#9E2A52" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,106 60,74 114,106" stroke="#285E7A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
   <div style="position:relative;max-width:900px;margin:0 auto;">
@@ -46,7 +49,7 @@ const HOME_HTML_TOP = `
       <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,101,34,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:#F26522;animation:ibpulse 2.4s ease-in-out infinite;"></span></span>
       <span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Baguio&rsquo;s Startup &amp; Innovation Gateway</span>
     </div>
-    <h1 style="margin:0;font-size:76px;line-height:1.0;font-weight:700;letter-spacing:-0.042em;color:#fff;">Building Baguio&rsquo;s Innovation and&nbsp;<span style="color:#F26522;">Startup Ecosystem.</span></h1>
+    <h1 style="margin:0;font-size:74px;line-height:1.02;font-weight:500;letter-spacing:-0.042em;color:#fff;">Building Baguio&rsquo;s Innovation and&nbsp;<span style="color:#F26522;">Startup Ecosystem.</span></h1>
     <p style="margin:28px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:580px;">Incubator Baguio connects startups, universities, Technology Business Incubators, government agencies, investors, and industry partners to accelerate innovation across the city.</p>
     <div style="display:flex;gap:12px;justify-content:center;margin-top:38px;flex-wrap:wrap;">
       <a href="${BP}/programs" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15.5px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 16px 40px -14px rgba(242,101,34,0.7);">Find Startup Support
@@ -57,26 +60,28 @@ const HOME_HTML_TOP = `
 </div>
 
 <!-- STAT BAND — seamless dark continuation of the hero, restrained accents -->
-<div style="background:#0B0B0D;padding:0 40px 72px;">
+<div style="background:#100D0B;padding:0 40px 72px;">
   <div style="max-width:1120px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:repeat(4,1fr);">
     ${[
       ["9", "+", "Active startups", false],
       ["8", "+", "Ecosystem partners", true],
       ["4", "", "TBIs", true],
       ["&#8734;", "", "Opportunities to build", true],
-    ].map((s) => `<div style="text-align:center;padding:44px 20px 4px;${s[3] ? "border-left:1px solid rgba(255,255,255,0.08);" : ""}"><div style="font-size:48px;font-weight:700;color:#fff;letter-spacing:-0.03em;line-height:1;">${s[0]}<span style="color:#F26522;">${s[1]}</span></div><div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.42);margin-top:12px;">${s[2]}</div></div>`).join("")}
+    ].map((s) => `<div style="text-align:center;padding:44px 20px 4px;${s[3] ? "border-left:1px solid rgba(255,255,255,0.08);" : ""}"><div style="font-size:46px;font-weight:500;color:#fff;letter-spacing:-0.03em;line-height:1;">${s[0]}<span style="color:#F26522;">${s[1]}</span></div><div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.42);margin-top:12px;">${s[2]}</div></div>`).join("")}
   </div>
 </div>
 `;
 
-const HOME_HTML_BOTTOM_A = `
+// Parked at the City's request — not rendered. Kept intact so it can be dropped
+// back into <main> below whenever the signup flow is ready to promote again.
+const HOME_HTML_HOW_IT_WORKS = `
 <!-- HOW IT WORKS -->
-<div style="background:#FAFAF7;padding:84px 40px;border-top:1px solid rgba(20,20,25,0.06);">
+<div style="background:#F6F2EA;padding:84px 40px;border-top:1px solid rgba(64,50,34,0.09);">
   <div style="max-width:1060px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:56px;">
       <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">How it works</div>
-      <h2 style="margin:0;font-size:40px;font-weight:700;letter-spacing:-0.03em;color:#141417;line-height:1.08;">From idea to launch, guided at every step</h2>
-      <p style="margin:14px auto 0;font-size:15.5px;line-height:1.6;color:#6B6B73;max-width:520px;">One free account plugs you into every incubator, mentor, and opportunity in the city.</p>
+      <h2 style="margin:0;font-size:40px;font-weight:500;letter-spacing:-0.03em;color:#1A1714;line-height:1.08;">From idea to launch, guided at every step</h2>
+      <p style="margin:14px auto 0;font-size:15.5px;line-height:1.6;color:#5A544B;max-width:520px;">One free account plugs you into every incubator, mentor, and opportunity in the city.</p>
     </div>
     <div style="position:relative;">
       <div class="ib-journey-line"></div>
@@ -88,111 +93,69 @@ const HOME_HTML_BOTTOM_A = `
           ["04", "#1A6B3C", "rgba(26,107,60,0.1)", "Grow with Baguio", "Join programs, workshops, and Startup Week to scale alongside the whole ecosystem."],
         ].map((s) => `
         <div style="text-align:center;padding:0 6px;">
-          <div style="width:62px;height:62px;border-radius:9999px;background:#fff;border:2px solid ${s[1]};color:${s[1]};display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;margin:0 auto 18px;box-shadow:0 0 0 8px #FAFAF7,var(--ib-shadow-sm);position:relative;">${s[0]}</div>
-          <h3 style="margin:0 0 8px;font-size:17.5px;font-weight:700;letter-spacing:-0.01em;color:#141417;">${s[3]}</h3>
-          <p style="margin:0;font-size:13.5px;line-height:1.6;color:#6B6B73;">${s[4]}</p>
+          <div style="width:62px;height:62px;border-radius:9999px;background:#fff;border:2px solid ${s[1]};color:${s[1]};display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:600;margin:0 auto 18px;box-shadow:0 0 0 8px #F6F2EA,var(--ib-shadow-sm);position:relative;">${s[0]}</div>
+          <h3 style="margin:0 0 8px;font-size:17.5px;font-weight:600;letter-spacing:-0.01em;color:#1A1714;">${s[3]}</h3>
+          <p style="margin:0;font-size:13.5px;line-height:1.6;color:#5A544B;">${s[4]}</p>
         </div>`).join("")}
       </div>
     </div>
     <div style="display:flex;align-items:center;justify-content:center;gap:18px;margin-top:52px;flex-wrap:wrap;">
       <a href="${BP}/signup" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;">Create your free account<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-      <a href="${BP}/get-started" style="font-size:14.5px;font-weight:600;color:#141417;text-decoration:none;border-bottom:2px solid rgba(242,101,34,0.4);padding-bottom:2px;">or tell us what you need</a>
+      <a href="${BP}/get-started" style="font-size:14.5px;font-weight:600;color:#1A1714;text-decoration:none;border-bottom:2px solid rgba(242,101,34,0.4);padding-bottom:2px;">or tell us what you need</a>
     </div>
   </div>
 </div>
+`;
 
-<!-- INNOVATION CHALLENGES -->
-<div style="background:#fff;padding:80px 40px 0;border-top:1px solid rgba(20,20,25,0.06);">
-  <div style="max-width:1060px;margin:0 auto;">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:32px;margin-bottom:44px;flex-wrap:wrap;">
-      <div style="max-width:600px;">
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">Innovation Challenges</div>
-        <h2 style="margin:0;font-size:40px;font-weight:700;letter-spacing:-0.03em;color:#141417;line-height:1.08;">Problem statements from government, industry, and academia</h2>
+const HOME_HTML_BOTTOM_A = `
+<!-- INNOVATION CHALLENGES — who the problems come from -->
+<div style="background:#FCFAF6;padding:92px 40px 0;">
+  <div style="max-width:1120px;margin:0 auto;">
+    <div style="max-width:620px;margin-bottom:52px;">
+      <div style="display:inline-flex;align-items:center;gap:9px;margin-bottom:16px;">
+        <span style="width:22px;height:1px;background:rgba(242,101,34,0.5);"></span>
+        <span style="font-size:11.5px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:#F26522;">Innovation Challenges</span>
       </div>
-      <div style="flex-shrink:0;width:118px;height:96px;position:relative;">
-        <svg width="118" height="96" viewBox="0 0 118 96" fill="none"><polyline points="6,40 40,14 74,40" stroke="#F5A623" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="30,52 64,26 98,52" stroke="#F26522" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,72 40,46 74,72" stroke="#9E2A52" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><circle cx="98" cy="20" r="9" fill="rgba(242,101,34,0.16)"></circle></svg>
-      </div>
+      <h2 style="margin:0 0 16px;font-size:40px;font-weight:500;letter-spacing:-0.032em;color:#1A1714;line-height:1.14;">Problem statements from across the Quadruple Helix</h2>
+      <p style="margin:0;font-size:16px;line-height:1.68;color:#5A544B;">Every sector of the city brings its own open problems. Anyone in the ecosystem can pick one up and build against it.</p>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
+    <div class="ib-challenge-cats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
       ${[
-        ["#285E7A", "rgba(40,94,122,0.07)", "Government", "Smarter public services", "LGUs post operational challenges in transport, waste, tourism, and digital governance for the community to solve."],
-        ["#F26522", "rgba(242,101,34,0.07)", "Industry", "MSME growth problems", "Local businesses surface bottlenecks in operations, supply chains, and market access that startups can address."],
-        ["#9E2A52", "rgba(158,42,82,0.07)", "Academia", "Research to market", "Universities open up applied research questions and technologies seeking commercialization partners."],
-        ["#6B5BD6", "rgba(107,91,214,0.07)", "Society", "Community-led solutions", "Civic groups and community organizations surface local needs and social challenges for innovators to solve."],
+        ["#22596F", "Government", "Smarter public services", "LGUs post operational challenges in transport, waste, tourism, and digital governance for the community to solve."],
+        ["#D9531E", "Industry", "MSME growth problems", "Local businesses surface bottlenecks in operations, supply chains, and market access that startups can address."],
+        ["#8E2749", "Academia", "Research to market", "Universities open up applied research questions and technologies seeking commercialization partners."],
+        ["#5A4BC4", "Society", "Community-led solutions", "Civic groups and community organizations surface local needs and social challenges for innovators to solve."],
       ].map((c) => `
-      <div class="ib-card-hover" style="background:${c[1]};border:1px solid rgba(20,20,25,0.08);border-radius:18px;padding:28px;border-top:3px solid ${c[0]};display:flex;flex-direction:column;">
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${c[0]};margin-bottom:12px;">${c[2]}</div>
-        <h3 style="margin:0 0 8px;font-size:19px;font-weight:600;color:#141417;">${c[3]}</h3>
-        <p style="margin:0 0 18px;font-size:14.5px;line-height:1.55;color:#6B6B73;">${c[4]}</p>
-        <a href="${BP}/challenges" style="margin-top:auto;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:${c[0]};text-decoration:none;">Explore challenges<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${c[0]}" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <div class="ib-card-hover ib-helix-card" style="background:#fff;border:1px solid rgba(64,50,34,0.1);border-radius:18px;padding:26px 24px 22px;display:flex;flex-direction:column;box-shadow:var(--ib-shadow-sm);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+          <span style="width:7px;height:7px;border-radius:9999px;background:${c[0]};flex-shrink:0;"></span>
+          <span style="font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:${c[0]};">${c[1]}</span>
+        </div>
+        <h3 style="margin:0 0 9px;font-size:18.5px;font-weight:600;letter-spacing:-0.016em;color:#1A1714;line-height:1.25;">${c[2]}</h3>
+        <p style="margin:0 0 22px;font-size:14px;line-height:1.6;color:#5A544B;">${c[3]}</p>
+        <a href="${BP}/challenges" style="margin-top:auto;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:${c[0]};text-decoration:none;">Explore challenges<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${c[0]}" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       </div>`).join("")}
     </div>
   </div>
 </div>
 `;
 
-const HOME_HTML_BOTTOM_B1 = `
-<!-- VOICES FROM THE ECOSYSTEM -->
-<div style="background:#0E0E10;padding:84px 40px;position:relative;overflow:hidden;">
-  <div style="position:absolute;top:-140px;left:-100px;width:460px;height:460px;border-radius:9999px;background:radial-gradient(circle,rgba(242,101,34,0.14),transparent 65%);pointer-events:none;"></div>
-  <div style="position:relative;max-width:1060px;margin:0 auto;">
-    <div style="text-align:center;margin-bottom:48px;">
-      <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#FFB489;margin-bottom:12px;">Voices from the ecosystem</div>
-      <h2 style="margin:0;font-size:40px;font-weight:700;letter-spacing:-0.025em;color:#fff;line-height:1.08;">Built with the community,<br>for the community</h2>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
-      ${[
-        ["The alliance connected us to our first mentor and our first pilot customer in the same month. That kind of access simply didn&rsquo;t exist in Baguio before.", "MS", "#F26522", "rgba(242,101,34,0.16)", "Maria Santos", "Founder, early-stage startup"],
-        ["As a mentor I finally have one place to meet founders who actually need my expertise &mdash; and the connection requests come with real context.", "JD", "#5B9BC0", "rgba(91,155,192,0.16)", "James Dela Cruz", "Startup mentor &amp; CTO"],
-        ["Posting our operational problem as an open challenge brought us solutions we would never have found inside our own walls.", "AR", "#3F9E4D", "rgba(126,217,87,0.16)", "Anna Reyes", "Program officer, LGU partner"],
-      ].map((t) => `
-      <div class="ib-card-hover" style="background:#161619;border:1px solid rgba(255,255,255,0.09);border-radius:20px;padding:30px 28px;display:flex;flex-direction:column;">
-        <svg width="30" height="22" viewBox="0 0 30 22" fill="none" style="margin-bottom:18px;flex-shrink:0;"><path d="M0 22V13.2C0 5.9 4.3 1.2 11.6 0l1.5 3.4c-4 1.3-6 3.6-6.3 6.6H12V22H0Zm18 0V13.2C18 5.9 22.3 1.2 29.6 0L31 3.4c-4 1.3-6 3.6-6.3 6.6H30V22H18Z" fill="#F26522" opacity="0.85" transform="scale(0.95)"/></svg>
-        <p style="margin:0 0 24px;font-size:15px;line-height:1.65;color:rgba(255,255,255,0.82);flex:1;">${t[0]}</p>
-        <div style="display:flex;align-items:center;gap:12px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.08);">
-          <div style="width:42px;height:42px;border-radius:9999px;background:${t[3]};color:${t[2]};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;">${t[1]}</div>
-          <div>
-            <div style="font-size:14px;font-weight:600;color:#fff;">${t[4]}</div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.45);margin-top:2px;">${t[5]}</div>
-          </div>
-        </div>
-      </div>`).join("")}
-    </div>
-  </div>
-</div>
+// The testimonials that used to sit here were placeholder quotes, so they were
+// removed. <HomeGallery /> takes this slot with real, admin-uploaded photos.
 
-<!-- UPCOMING EVENTS -->
-<div style="background:#fff;padding:80px 40px;">
-  <div style="max-width:1060px;margin:0 auto;">
-    <div style="margin-bottom:40px;max-width:640px;">
-      <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">Events</div>
-      <h2 style="margin:0;font-size:40px;font-weight:700;letter-spacing:-0.03em;color:#141417;line-height:1.08;">Workshops, forums, and community activities</h2>
-    </div>
-    <div style="display:flex;flex-direction:column;">
-      ${[
-        ["Jul", "12", "Founder Foundations Workshop", "Idea validation and lean startup basics &middot; Incubator Baguio Hub"],
-        ["Jul", "24", "Innovation Forum: Highland Futures", "Cross-sector panel on regional innovation &middot; Saint Louis University"],
-        ["Aug", "07", "Community Demo Night", "Open showcase of incubator startups &middot; Baguio Convention Center"],
-      ].map((e, i, arr) => `
-      <div class="ib-event-hover" style="display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:28px;align-items:center;padding:24px 8px;border-top:1px solid rgba(20,20,25,0.12);${i === arr.length - 1 ? 'border-bottom:1px solid rgba(20,20,25,0.12);' : ''}">
-        <div style="text-align:center;"><div style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#F26522;">${e[0]}</div><div style="font-size:30px;font-weight:700;color:#141417;letter-spacing:-0.02em;">${e[1]}</div></div>
-        <div><h3 style="margin:0 0 4px;font-size:19px;font-weight:600;color:#141417;">${e[2]}</h3><p style="margin:0;font-size:14px;color:#6B6B73;">${e[3]}</p></div>
-        <a href="${BP}/calendar" style="background:#141417;color:#fff;font-weight:600;font-size:13.5px;padding:10px 20px;border-radius:9999px;text-decoration:none;white-space:nowrap;transition:background .2s ease;" onmouseover="this.style.background='#F26522'" onmouseout="this.style.background='#141417'">RSVP</a>
-      </div>`).join("")}
-    </div>
-  </div>
-</div>
+// Events now render from Supabase via <HomeEvents />, which slots in here.
 
+const HOME_HTML_STARTUP_WEEK = `
 <!-- STARTUP WEEK FEATURE -->
-<div style="background:#0E0E10;padding:0 40px;">
+<div style="background:#131110;padding:0 40px;">
   <div style="max-width:1060px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;align-items:stretch;">
     <div style="padding:72px 40px 72px 0;display:flex;flex-direction:column;justify-content:center;">
       <span style="display:inline-block;width:fit-content;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#FFB489;padding:6px 12px;border-radius:9999px;border:1px solid rgba(242,101,34,0.4);background:rgba(242,101,34,0.12);margin-bottom:20px;">Flagship event &middot; 3rd week of April</span>
-      <h2 style="margin:0 0 14px;font-size:40px;font-weight:700;letter-spacing:-0.025em;color:#fff;line-height:1.08;">Innovation Startup Week 2026</h2>
+      <h2 style="margin:0 0 14px;font-size:40px;font-weight:500;letter-spacing:-0.025em;color:#fff;line-height:1.08;">Innovation Startup Week 2026</h2>
       <p style="margin:0 0 26px;font-size:16px;line-height:1.6;color:rgba(255,255,255,0.62);max-width:420px;">A full week of pitching, demos, and matchmaking. 10+ startups, investors, mentors, and the public, all in one place.</p>
-      <div style="display:flex;gap:12px;"><a href="${BP}/calendar" class="ib-cta-orange" style="background:#F26522;color:#fff;font-weight:600;font-size:15px;padding:14px 26px;border-radius:9999px;text-decoration:none;">Register now</a><a href="${BP}/calendar" class="ib-cta-ghost" style="color:#fff;font-weight:600;font-size:15px;padding:14px 24px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);">View schedule</a></div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;"><a href="${BP}/calendar" class="ib-cta-orange" style="background:#F26522;color:#fff;font-weight:600;font-size:15px;padding:14px 26px;border-radius:9999px;text-decoration:none;white-space:nowrap;">Register now</a><a href="${BP}/calendar" class="ib-cta-ghost" style="color:#fff;font-weight:600;font-size:15px;padding:14px 24px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);white-space:nowrap;">View schedule</a></div>
     </div>
-    <div style="position:relative;background:radial-gradient(120% 90% at 70% 15%,#1c1c22 0%,#121216 60%);min-height:440px;display:flex;align-items:center;justify-content:center;border-left:1px solid rgba(255,255,255,0.06);overflow:hidden;">
+    <div style="position:relative;background:radial-gradient(120% 90% at 70% 15%,#221E19 0%,#16130F 60%);min-height:440px;display:flex;align-items:center;justify-content:center;border-left:1px solid rgba(255,255,255,0.06);overflow:hidden;">
       <div style="position:absolute;inset:0;background:linear-gradient(160deg,rgba(242,101,34,0.14),transparent 50%);"></div>
       <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.035) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(circle at 60% 40%,#000 30%,transparent 72%);-webkit-mask-image:radial-gradient(circle at 60% 40%,#000 30%,transparent 72%);"></div>
       <div style="position:absolute;top:32px;right:32px;text-align:right;">
@@ -216,7 +179,7 @@ const HOME_HTML_BOTTOM_B1 = `
 
 const HOME_HTML_BOTTOM_B2 = `
 <!-- FOOTER -->
-<div style="background:#0B0B0D;padding:56px 40px 36px;">
+<div style="background:#100D0B;padding:56px 40px 36px;">
   <div style="max-width:1180px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.08);">
       <div>
@@ -273,11 +236,14 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_JSON_LD) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }} />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_TOP }} />
+      <WhoWeAre />
       <EcosystemModel />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_A }} />
       <HomeOpenChallenges bp={BP} />
       <FeaturedStartups bp={BP} />
-      <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_B1 }} />
+      <HomeGallery bp={BP} />
+      <HomeEvents bp={BP} />
+      <div dangerouslySetInnerHTML={{ __html: HOME_HTML_STARTUP_WEEK }} />
       <NewsletterSignup />
       <EcosystemPartnersMarquee />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_B2 }} />

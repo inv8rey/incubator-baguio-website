@@ -53,11 +53,11 @@ export default function ChallengesStats() {
   ];
 
   return (
-    <div style={{ background: "#0B0B0D", padding: "0 40px 64px" }}>
+    <div style={{ background: "#100D0B", padding: "0 40px 64px" }}>
       <div style={{ maxWidth: 1080, margin: "0 auto", borderTop: "1px solid rgba(255,255,255,0.08)", display: "grid", gridTemplateColumns: "repeat(4,1fr)" }} className="ib-ecosystem-grid">
         {cells.map((c, i) => (
           <div key={c.label} style={{ textAlign: "center", padding: "40px 20px 4px", borderLeft: i > 0 ? "1px solid rgba(255,255,255,0.08)" : undefined }}>
-            <div style={{ fontSize: 42, fontWeight: 700, color: "#fff", letterSpacing: "-0.03em", lineHeight: 1 }}>{c.value}</div>
+            <div style={{ fontSize: 42, fontWeight: 500, color: "#fff", letterSpacing: "-0.03em", lineHeight: 1 }}>{c.value}</div>
             <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.42)", marginTop: 12 }}>{c.label}</div>
           </div>
         ))}

@@ -226,7 +226,7 @@ export default function Interactive() {
       if (!/background:#F26522/.test(bg)) return;
       d.querySelectorAll<HTMLElement>("div").forEach((n) => {
         const s = n.getAttribute("style") || "";
-        if (/font-size:(44|38)px/.test(s) && /font-weight:700/.test(s)) {
+        if (/font-size:(44|38)px/.test(s) && /font-weight:600/.test(s)) {
           statNumbers.push(n);
         }
       });

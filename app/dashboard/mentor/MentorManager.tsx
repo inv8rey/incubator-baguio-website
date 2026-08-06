@@ -105,8 +105,8 @@ export default function MentorManager() {
 
   return (
     <div style={cardStyle}>
-      <h2 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 700, color: DARK }}>{mentor ? "Your mentor profile" : "Become a mentor"}</h2>
-      <p style={{ margin: "0 0 22px", fontSize: 13.5, color: "#6B6B73" }}>
+      <h2 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 600, color: DARK }}>{mentor ? "Your mentor profile" : "Become a mentor"}</h2>
+      <p style={{ margin: "0 0 22px", fontSize: 13.5, color: "#5A544B" }}>
         {mentor ? "Editing updates what founders see on the Ecosystem directory." : "Share your expertise and appear on the Ecosystem directory so founders can connect with you."}
       </p>
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -114,7 +114,7 @@ export default function MentorManager() {
           {form.photo_url ? (
             <img src={form.photo_url} alt="" style={{ width: 56, height: 56, borderRadius: 9999, objectFit: "cover" }} />
           ) : (
-            <div style={{ width: 56, height: 56, borderRadius: 9999, background: "#F4F2EC", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10.5, textAlign: "center" }}>
+            <div style={{ width: 56, height: 56, borderRadius: 9999, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10.5, textAlign: "center" }}>
               No photo
             </div>
           )}
@@ -123,7 +123,7 @@ export default function MentorManager() {
               {uploading ? "Uploading…" : "Upload photo"}
               <input type="file" accept="image/*" onChange={handlePhotoChange} disabled={uploading} style={{ display: "none" }} />
             </label>
-            <div style={{ fontSize: 11.5, color: "#9A958B", marginTop: 2 }}>Shown as your card background on the Ecosystem directory.</div>
+            <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 2 }}>Shown as your card background on the Ecosystem directory.</div>
           </div>
         </div>
         <div>
@@ -143,7 +143,7 @@ export default function MentorManager() {
         <div>
           <label style={{ ...labelStyle, display: "flex", justifyContent: "space-between" }}>
             <span>Specialization</span>
-            <span style={{ fontWeight: 500, color: "#9A958B" }}>{form.specializations.length}/{MAX_SPECIALIZATIONS}</span>
+            <span style={{ fontWeight: 500, color: "#8B8479" }}>{form.specializations.length}/{MAX_SPECIALIZATIONS}</span>
           </label>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {MENTOR_SPECIALIZATIONS.map((s) => {
@@ -160,9 +160,9 @@ export default function MentorManager() {
                     fontWeight: 600,
                     padding: "7px 13px",
                     borderRadius: 999,
-                    border: active ? `1.5px solid ${ORANGE}` : "1.5px solid rgba(20,20,25,0.12)",
-                    color: active ? ORANGE : disabled ? "#C9C5BB" : "#6B6B73",
-                    background: active ? "rgba(242,101,34,0.08)" : "#FAFAF7",
+                    border: active ? `1.5px solid ${ORANGE}` : "1.5px solid rgba(64,50,34,0.14)",
+                    color: active ? ORANGE : disabled ? "#C9C5BB" : "#5A544B",
+                    background: active ? "rgba(242,101,34,0.08)" : "#F6F2EA",
                     cursor: disabled ? "default" : "pointer",
                   }}
                 >
@@ -180,7 +180,7 @@ export default function MentorManager() {
                 <option key={s.label} value={s.label}>{s.label}</option>
               ))}
             </select>
-            <div style={{ fontSize: 11, color: "#9A958B", marginTop: 4 }}>Which sector is your expertise in?</div>
+            <div style={{ fontSize: 11, color: "#8B8479", marginTop: 4 }}>Which sector is your expertise in?</div>
           </div>
         )}
         <div>
@@ -200,7 +200,7 @@ export default function MentorManager() {
         </div>
       </form>
       {mentor && (
-        <p style={{ marginTop: 18, fontSize: 12.5, color: "#9A958B" }}>
+        <p style={{ marginTop: 18, fontSize: 12.5, color: "#8B8479" }}>
           Requests from founders show up under <a href={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/dashboard/connections/`} style={{ color: ORANGE, fontWeight: 600, textDecoration: "none" }}>Connections</a>.
         </p>
       )}

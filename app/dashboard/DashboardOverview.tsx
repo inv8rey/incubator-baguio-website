@@ -185,7 +185,7 @@ export default function DashboardOverview() {
         key: c.id,
         title: c.title,
         tag: c.sector || "General",
-        tagColor: "#9A958B",
+        tagColor: "#8B8479",
         tagBg: "rgba(154,149,139,0.14)",
         org: c.org_name,
         deadline: c.deadline ? `Due ${c.deadline}` : "",
@@ -215,10 +215,10 @@ export default function DashboardOverview() {
 
   return (
     <div>
-      <h2 style={{ margin: "0 0 6px", fontSize: 24, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>
+      <h2 style={{ margin: "0 0 6px", fontSize: 24, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>
         Welcome back{firstName ? `, ${firstName}` : ""}! <span aria-hidden>👋</span>
       </h2>
-      <p style={{ margin: "0 0 24px", fontSize: 14, color: "#6B6B73" }}>Here's what you can do as a logged-in member of Incubator Baguio.</p>
+      <p style={{ margin: "0 0 24px", fontSize: 14, color: "#5A544B" }}>Here's what you can do as a logged-in member of Incubator Baguio.</p>
 
       {counts && counts.connectionsReceived > 0 && (
         <div style={{ marginBottom: 24, background: "rgba(226,58,46,0.06)", border: "1px solid rgba(226,58,46,0.2)", borderRadius: 14, padding: "16px 20px", fontSize: 13.5, color: DARK }}>
@@ -247,8 +247,8 @@ export default function DashboardOverview() {
                   <div style={{ width: 34, height: 34, borderRadius: 9, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
                     <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={c.color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">{c.icon}</svg>
                   </div>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: DARK, letterSpacing: "-0.02em", marginBottom: 2 }}>{value}</div>
-                  <div style={{ fontSize: 12, color: "#9A958B" }}>{c.title}</div>
+                  <div style={{ fontSize: 20, fontWeight: 600, color: DARK, letterSpacing: "-0.02em", marginBottom: 2 }}>{value}</div>
+                  <div style={{ fontSize: 12, color: "#8B8479" }}>{c.title}</div>
                 </a>
               );
             })}
@@ -257,11 +257,11 @@ export default function DashboardOverview() {
           {/* RECOMMENDED FOR YOU */}
           <div style={cardStyle}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: DARK }}>Recommended for you</div>
+              <div style={{ fontSize: 16, fontWeight: 600, color: DARK }}>Recommended for you</div>
               <a href={`${BP}/challenges/`} style={{ fontSize: 12.5, fontWeight: 600, color: ORANGE, textDecoration: "none" }}>View all</a>
             </div>
             {recommended.length === 0 ? (
-              <div style={{ fontSize: 13, color: "#9A958B" }}>No open challenges right now.</div>
+              <div style={{ fontSize: 13, color: "#8B8479" }}>No open challenges right now.</div>
             ) : (
               <ScrollCarousel>
                 {recommended.map((r) => (
@@ -269,14 +269,14 @@ export default function DashboardOverview() {
                     key={r.key}
                     href={r.href}
                     className="ib-challenge-hover"
-                    style={{ scrollSnapAlign: "start", flex: "0 0 240px", display: "block", background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 14, padding: 18, textDecoration: "none" }}
+                    style={{ scrollSnapAlign: "start", flex: "0 0 240px", display: "block", background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 14, padding: 18, textDecoration: "none" }}
                   >
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10, gap: 6 }}>
-                      <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: r.tagColor, background: r.tagBg, padding: "4px 9px", borderRadius: 9999 }}>{r.tag}</span>
+                      <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: r.tagColor, background: r.tagBg, padding: "4px 9px", borderRadius: 9999 }}>{r.tag}</span>
                     </div>
                     <h3 style={{ margin: "0 0 6px", fontSize: 14, fontWeight: 600, color: DARK, lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{r.title}</h3>
-                    <div style={{ fontSize: 11.5, color: "#9A958B", marginBottom: 4 }}>{r.org}</div>
-                    {r.deadline && <div style={{ fontSize: 11.5, color: "#6B6B73" }}>{r.deadline}</div>}
+                    <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 4 }}>{r.org}</div>
+                    {r.deadline && <div style={{ fontSize: 11.5, color: "#5A544B" }}>{r.deadline}</div>}
                   </a>
                 ))}
               </ScrollCarousel>
@@ -285,37 +285,37 @@ export default function DashboardOverview() {
 
           {/* NEXT STEPS */}
           <div style={cardStyle}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: DARK, marginBottom: 16 }}>Your next steps</div>
+            <div style={{ fontSize: 16, fontWeight: 600, color: DARK, marginBottom: 16 }}>Your next steps</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: DARK }}>{doneStartup ? "Manage your startup" : "Create your startup profile"}</div>
-                  <div style={{ fontSize: 11.5, color: "#9A958B" }}>{doneStartup ? "Keep your listing up to date." : "Get discovered by mentors and programs."}</div>
+                  <div style={{ fontSize: 11.5, color: "#8B8479" }}>{doneStartup ? "Keep your listing up to date." : "Get discovered by mentors and programs."}</div>
                 </div>
-                <a href={`${BP}/dashboard/startup/`} style={{ fontSize: 12, fontWeight: 600, color: doneStartup ? DARK : "#fff", background: doneStartup ? "none" : ORANGE, border: doneStartup ? "1.5px solid rgba(20,20,25,0.15)" : "none", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>
+                <a href={`${BP}/dashboard/startup/`} style={{ fontSize: 12, fontWeight: 600, color: doneStartup ? DARK : "#fff", background: doneStartup ? "none" : ORANGE, border: doneStartup ? "1.5px solid rgba(64,50,34,0.17)" : "none", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>
                   {doneStartup ? "Manage" : "Start now"}
                 </a>
               </div>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: DARK }}>Find a co-founder</div>
-                  <div style={{ fontSize: 11.5, color: "#9A958B" }}>Browse founders looking to team up.</div>
+                  <div style={{ fontSize: 11.5, color: "#8B8479" }}>Browse founders looking to team up.</div>
                 </div>
-                <a href={`${BP}/dashboard/cofounder/`} style={{ fontSize: 12, fontWeight: 600, color: DARK, background: "none", border: "1.5px solid rgba(20,20,25,0.15)", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>Find one</a>
+                <a href={`${BP}/dashboard/cofounder/`} style={{ fontSize: 12, fontWeight: 600, color: DARK, background: "none", border: "1.5px solid rgba(64,50,34,0.17)", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>Find one</a>
               </div>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: DARK }}>Explore open challenges</div>
-                  <div style={{ fontSize: 11.5, color: "#9A958B" }}>Find problems to solve and opportunities.</div>
+                  <div style={{ fontSize: 11.5, color: "#8B8479" }}>Find problems to solve and opportunities.</div>
                 </div>
-                <a href={`${BP}/challenges/`} style={{ fontSize: 12, fontWeight: 600, color: DARK, background: "none", border: "1.5px solid rgba(20,20,25,0.15)", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>Explore</a>
+                <a href={`${BP}/challenges/`} style={{ fontSize: 12, fontWeight: 600, color: DARK, background: "none", border: "1.5px solid rgba(64,50,34,0.17)", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>Explore</a>
               </div>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: DARK }}>Connect with mentors</div>
-                  <div style={{ fontSize: 11.5, color: "#9A958B" }}>Request guidance from experts.</div>
+                  <div style={{ fontSize: 11.5, color: "#8B8479" }}>Request guidance from experts.</div>
                 </div>
-                <a href={`${BP}/ecosystem/`} style={{ fontSize: 12, fontWeight: 600, color: DARK, background: "none", border: "1.5px solid rgba(20,20,25,0.15)", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>Find mentors</a>
+                <a href={`${BP}/ecosystem/`} style={{ fontSize: 12, fontWeight: 600, color: DARK, background: "none", border: "1.5px solid rgba(64,50,34,0.17)", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>Find mentors</a>
               </div>
             </div>
           </div>
@@ -324,7 +324,7 @@ export default function DashboardOverview() {
         {/* SIDEBAR */}
         <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
           <div style={cardStyle}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: DARK, marginBottom: 16 }}>Grow your presence</div>
+            <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 16 }}>Grow your presence</div>
             <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
               <div
                 style={{
@@ -332,15 +332,15 @@ export default function DashboardOverview() {
                   height: 56,
                   borderRadius: "50%",
                   flexShrink: 0,
-                  background: `conic-gradient(${ORANGE} ${setupPct * 3.6}deg, rgba(20,20,25,0.08) 0deg)`,
+                  background: `conic-gradient(${ORANGE} ${setupPct * 3.6}deg, rgba(64,50,34,0.11) 0deg)`,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <div style={{ width: 42, height: 42, borderRadius: "50%", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12.5, fontWeight: 700, color: DARK }}>{setupPct}%</div>
+                <div style={{ width: 42, height: 42, borderRadius: "50%", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12.5, fontWeight: 600, color: DARK }}>{setupPct}%</div>
               </div>
-              <div style={{ fontSize: 12.5, lineHeight: 1.5, color: "#6B6B73" }}>
+              <div style={{ fontSize: 12.5, lineHeight: 1.5, color: "#5A544B" }}>
                 {setupDoneCount === 3
                   ? "You've set up your startup, mentor, and organization presence."
                   : "Set up your presence to unlock more opportunities."}
@@ -352,8 +352,8 @@ export default function DashboardOverview() {
                 { label: "Mentor profile", done: doneMentor },
                 { label: "Organization listing", done: doneOrg },
               ].map((item) => (
-                <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: item.done ? DARK : "#9A958B" }}>
-                  <span style={{ width: 16, height: 16, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: item.done ? "#1A6B3C" : "rgba(20,20,25,0.08)" }}>
+                <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: item.done ? DARK : "#8B8479" }}>
+                  <span style={{ width: 16, height: 16, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: item.done ? "#1A6B3C" : "rgba(64,50,34,0.11)" }}>
                     {item.done && (
                       <svg width={9} height={9} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={3}><path d="M20 6 9 17l-5-5" /></svg>
                     )}
@@ -366,11 +366,11 @@ export default function DashboardOverview() {
 
           <div style={cardStyle}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: DARK }}>Upcoming events</div>
+              <div style={{ fontSize: 15, fontWeight: 600, color: DARK }}>Upcoming events</div>
               <a href={`${BP}/calendar/`} style={{ fontSize: 12, fontWeight: 600, color: ORANGE, textDecoration: "none" }}>View calendar</a>
             </div>
             {events.length === 0 ? (
-              <div style={{ fontSize: 12.5, color: "#9A958B" }}>No upcoming events yet — check the calendar.</div>
+              <div style={{ fontSize: 12.5, color: "#8B8479" }}>No upcoming events yet — check the calendar.</div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {events.map((e) => {
@@ -378,12 +378,12 @@ export default function DashboardOverview() {
                   return (
                     <div key={e.id} style={{ display: "flex", gap: 12, alignItems: "center" }}>
                       <div style={{ width: 42, textAlign: "center", flexShrink: 0 }}>
-                        <div style={{ fontSize: 10, fontWeight: 700, color: ORANGE, letterSpacing: "0.04em" }}>{month}</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: DARK, lineHeight: 1.1 }}>{day}</div>
+                        <div style={{ fontSize: 10, fontWeight: 600, color: ORANGE, letterSpacing: "0.04em" }}>{month}</div>
+                        <div style={{ fontSize: 16, fontWeight: 600, color: DARK, lineHeight: 1.1 }}>{day}</div>
                       </div>
                       <div style={{ minWidth: 0 }}>
                         <div style={{ fontSize: 12.5, fontWeight: 600, color: DARK, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{e.title}</div>
-                        <div style={{ fontSize: 11, color: "#9A958B" }}>{e.venue}{e.event_time ? ` · ${e.event_time}` : ""}</div>
+                        <div style={{ fontSize: 11, color: "#8B8479" }}>{e.venue}{e.event_time ? ` · ${e.event_time}` : ""}</div>
                       </div>
                     </div>
                   );
@@ -394,7 +394,7 @@ export default function DashboardOverview() {
 
           <div style={cardStyle}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: DARK }}>Opportunities at a glance</div>
+              <div style={{ fontSize: 15, fontWeight: 600, color: DARK }}>Opportunities at a glance</div>
               <a href={`${BP}/ecosystem/`} style={{ fontSize: 12, fontWeight: 600, color: ORANGE, textDecoration: "none" }}>View all</a>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -405,8 +405,8 @@ export default function DashboardOverview() {
                 { label: "Startups", value: siteStats?.registeredStartups, color: "#F26522", bg: "rgba(242,101,34,0.12)" },
               ].map((s) => (
                 <div key={s.label} style={{ background: s.bg, borderRadius: 10, padding: "10px 12px" }}>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: s.color }}>{s.value ?? "…"}</div>
-                  <div style={{ fontSize: 10.5, color: "#6B6B73" }}>{s.label}</div>
+                  <div style={{ fontSize: 16, fontWeight: 600, color: s.color }}>{s.value ?? "…"}</div>
+                  <div style={{ fontSize: 10.5, color: "#5A544B" }}>{s.label}</div>
                 </div>
               ))}
             </div>

@@ -44,7 +44,7 @@ export default function ResultCards({ cards }: { cards: ChatCard[] }) {
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: 12,
-                fontWeight: 700,
+                fontWeight: 600,
                 flexShrink: 0,
               }}
             >
@@ -52,11 +52,11 @@ export default function ResultCards({ cards }: { cards: ChatCard[] }) {
             </div>
             <div style={{ minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-                <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#F26522" }}>
+                <span style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#F26522" }}>
                   {TYPE_LABEL[c.type]}
                 </span>
               </div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", lineHeight: 1.3, marginBottom: 2 }}>{c.title}</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#fff", lineHeight: 1.3, marginBottom: 2 }}>{c.title}</div>
               {c.subtitle && <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginBottom: 2 }}>{c.subtitle}</div>}
               {c.reason && <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.72)", lineHeight: 1.4 }}>{c.reason}</div>}
             </div>

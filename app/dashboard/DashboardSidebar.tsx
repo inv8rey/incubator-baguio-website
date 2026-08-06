@@ -69,7 +69,7 @@ export default function DashboardSidebar({ active, onNavigate }: { active: strin
     <aside
       className="ib-userdash-sidebar"
       style={{
-        background: "#0E0E10",
+        background: "#131110",
         display: "flex",
         flexDirection: "column",
         borderRight: "1px solid rgba(255,255,255,0.06)",
@@ -84,7 +84,7 @@ export default function DashboardSidebar({ active, onNavigate }: { active: strin
         <a href={`${BP}/`} style={{ display: "flex", alignItems: "center", gap: 11, textDecoration: "none" }}>
           <img src={`${BP}/assets/ib-icon.png`} alt="Incubator Baguio" style={{ width: 36, height: 36, borderRadius: 9, objectFit: "contain" }} />
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", lineHeight: 1.2 }}>Incubator Baguio</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#fff", lineHeight: 1.2 }}>Incubator Baguio</div>
             <div style={{ fontSize: 10.5, color: "rgba(255,255,255,0.35)", marginTop: 2 }}>Member Dashboard</div>
           </div>
         </a>
@@ -126,7 +126,7 @@ export default function DashboardSidebar({ active, onNavigate }: { active: strin
       </div>
       <div style={{ padding: "14px 20px 20px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 34, height: 34, borderRadius: "50%", background: `linear-gradient(135deg,${ORANGE},#FF9A6C)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
+          <div style={{ width: 34, height: 34, borderRadius: "50%", background: `linear-gradient(135deg,${ORANGE},#FF9A6C)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 600, flexShrink: 0 }}>
             {initials}
           </div>
           <div style={{ minWidth: 0 }}>

@@ -96,7 +96,7 @@ function ConnectButton({ target, onSent }: { target: CofounderProfile; onSent: (
         <button onClick={send} disabled={busy} style={{ fontSize: 12, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 9999, padding: "8px 16px", cursor: "pointer", opacity: busy ? 0.7 : 1 }}>
           {busy ? "Sending…" : "Send request"}
         </button>
-        <button onClick={() => setOpen(false)} style={{ fontSize: 12, fontWeight: 600, color: "#6B6B73", background: "none", border: "none", cursor: "pointer" }}>
+        <button onClick={() => setOpen(false)} style={{ fontSize: 12, fontWeight: 600, color: "#5A544B", background: "none", border: "none", cursor: "pointer" }}>
           Cancel
         </button>
       </div>
@@ -210,8 +210,8 @@ export default function CofounderFinder() {
 
   return (
     <div>
-      <h2 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Co-Founder Finder</h2>
-      <p style={{ margin: "0 0 20px", fontSize: 14, color: "#6B6B73" }}>Browse founders looking to team up, or list yourself so others can find you.</p>
+      <h2 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>Co-Founder Finder</h2>
+      <p style={{ margin: "0 0 20px", fontSize: 14, color: "#5A544B" }}>Browse founders looking to team up, or list yourself so others can find you.</p>
 
       <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
         {[
@@ -226,7 +226,7 @@ export default function CofounderFinder() {
               fontSize: 13,
               fontWeight: 600,
               color: view === t.id ? "#fff" : "#44444C",
-              background: view === t.id ? DARK : "#F4F2EC",
+              background: view === t.id ? DARK : "#F6F2EA",
               border: "none",
               padding: "9px 16px",
               borderRadius: 9999,
@@ -257,7 +257,7 @@ export default function CofounderFinder() {
 
           {filteredDirectory.length === 0 ? (
             <div style={cardStyle}>
-              <p style={{ margin: 0, fontSize: 13.5, color: "#9A958B" }}>No one matches those filters yet. Check back soon, or create your own listing so others can find you.</p>
+              <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>No one matches those filters yet. Check back soon, or create your own listing so others can find you.</p>
             </div>
           ) : (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 16 }}>
@@ -265,15 +265,15 @@ export default function CofounderFinder() {
                 <div key={d.id} style={{ ...cardStyle, padding: 22, display: "flex", flexDirection: "column", gap: 10 }}>
                   <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
                     <div>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: DARK }}>{d.name}</div>
-                      {d.sector && <div style={{ fontSize: 12, color: "#9A958B" }}>{d.sector}</div>}
+                      <div style={{ fontSize: 15, fontWeight: 600, color: DARK }}>{d.name}</div>
+                      {d.sector && <div style={{ fontSize: 12, color: "#8B8479" }}>{d.sector}</div>}
                     </div>
-                    <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: ORANGE, background: "rgba(242,101,34,0.10)", padding: "4px 9px", borderRadius: 9999, flexShrink: 0 }}>
+                    <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: ORANGE, background: "rgba(242,101,34,0.10)", padding: "4px 9px", borderRadius: 9999, flexShrink: 0 }}>
                       {d.commitment}
                     </span>
                   </div>
                   {d.building && <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: "#44444C" }}>{d.building}</p>}
-                  <div style={{ fontSize: 12, color: "#6B6B73" }}>
+                  <div style={{ fontSize: 12, color: "#5A544B" }}>
                     Looking for a <strong style={{ color: DARK }}>{d.role_needed}</strong> co-founder
                     {d.looking_for && <span> — {d.looking_for}</span>}
                   </div>
@@ -289,8 +289,8 @@ export default function CofounderFinder() {
 
       {view === "profile" && (
         <div style={cardStyle}>
-          <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 700, color: DARK }}>{myProfile ? "Your listing" : "Create your listing"}</h3>
-          <p style={{ margin: "0 0 20px", fontSize: 13, color: "#9A958B" }}>Shown to other members browsing the Co-Founder Finder.</p>
+          <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600, color: DARK }}>{myProfile ? "Your listing" : "Create your listing"}</h3>
+          <p style={{ margin: "0 0 20px", fontSize: 13, color: "#8B8479" }}>Shown to other members browsing the Co-Founder Finder.</p>
           <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
               <label style={labelStyle}>Your name</label>
@@ -356,10 +356,10 @@ export default function CofounderFinder() {
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           {myProfile && (
             <div style={cardStyle}>
-              <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 700, color: DARK }}>Requests received</h3>
-              <p style={{ margin: "0 0 18px", fontSize: 13, color: "#9A958B" }}>People who want to team up with you.</p>
+              <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600, color: DARK }}>Requests received</h3>
+              <p style={{ margin: "0 0 18px", fontSize: 13, color: "#8B8479" }}>People who want to team up with you.</p>
               {received.length === 0 ? (
-                <p style={{ margin: 0, fontSize: 13.5, color: "#9A958B" }}>No requests yet.</p>
+                <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>No requests yet.</p>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {received.map((r) => (
@@ -367,7 +367,7 @@ export default function CofounderFinder() {
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
                         <div>
                           <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{r.profiles?.full_name || "Unknown"}</div>
-                          <div style={{ fontSize: 12.5, color: "#9A958B" }}>{r.profiles?.email}</div>
+                          <div style={{ fontSize: 12.5, color: "#8B8479" }}>{r.profiles?.email}</div>
                         </div>
                         <StatusBadge status={r.status} />
                       </div>
@@ -377,7 +377,7 @@ export default function CofounderFinder() {
                           <button onClick={() => respond(r.id, "accepted")} style={{ fontSize: 12.5, fontWeight: 600, color: "#fff", background: "#1A6B3C", border: "none", borderRadius: 9999, padding: "8px 16px", cursor: "pointer" }}>
                             Accept
                           </button>
-                          <button onClick={() => respond(r.id, "declined")} style={{ fontSize: 12.5, fontWeight: 600, color: "#44444C", background: "#F4F2EC", border: "none", borderRadius: 9999, padding: "8px 16px", cursor: "pointer" }}>
+                          <button onClick={() => respond(r.id, "declined")} style={{ fontSize: 12.5, fontWeight: 600, color: "#44444C", background: "#F6F2EA", border: "none", borderRadius: 9999, padding: "8px 16px", cursor: "pointer" }}>
                             Decline
                           </button>
                         </div>
@@ -390,17 +390,17 @@ export default function CofounderFinder() {
           )}
 
           <div style={cardStyle}>
-            <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 700, color: DARK }}>Requests you've sent</h3>
-            <p style={{ margin: "0 0 18px", fontSize: 13, color: "#9A958B" }}>Founders you've reached out to from the directory.</p>
+            <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600, color: DARK }}>Requests you've sent</h3>
+            <p style={{ margin: "0 0 18px", fontSize: 13, color: "#8B8479" }}>Founders you've reached out to from the directory.</p>
             {sent.length === 0 ? (
-              <p style={{ margin: 0, fontSize: 13.5, color: "#9A958B" }}>You haven't reached out to anyone yet.</p>
+              <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>You haven't reached out to anyone yet.</p>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {sent.map((s) => (
                   <div key={s.id} style={rowItemStyle}>
                     <div>
                       <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{s.cofounder_profiles?.name || "Founder"}</div>
-                      {s.message && <div style={{ fontSize: 12.5, color: "#9A958B" }}>{s.message}</div>}
+                      {s.message && <div style={{ fontSize: 12.5, color: "#8B8479" }}>{s.message}</div>}
                     </div>
                     <StatusBadge status={s.status} />
                   </div>

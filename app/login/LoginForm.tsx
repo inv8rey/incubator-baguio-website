@@ -5,14 +5,14 @@ import { useSearchParams } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
 
 const ORANGE = "#F26522";
-const DARK = "#141417";
+const DARK = "#1A1714";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
   fontSize: 14.5,
   color: DARK,
-  background: "#FAFAF7",
-  border: "1.5px solid rgba(20,20,25,0.12)",
+  background: "#F6F2EA",
+  border: "1.5px solid rgba(64,50,34,0.14)",
   borderRadius: 10,
   padding: "12px 14px",
   outline: "none",
@@ -54,9 +54,9 @@ export default function LoginForm({ bp }: { bp: string }) {
   }
 
   return (
-    <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "36px 40px" }}>
-      <h2 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Log in</h2>
-      <p style={{ margin: "0 0 26px", fontSize: 13.5, color: "#6B6B73" }}>
+    <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "36px 40px" }}>
+      <h2 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>Log in</h2>
+      <p style={{ margin: "0 0 26px", fontSize: 13.5, color: "#5A544B" }}>
         New here? <a href={`${bp}/signup/${params.get("redirect") ? `?redirect=${encodeURIComponent(params.get("redirect")!)}` : ""}`} style={{ color: ORANGE, fontWeight: 600, textDecoration: "none" }}>Create an account</a>
       </p>
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>

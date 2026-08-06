@@ -220,7 +220,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
         ))}
       </div>
 
-      <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(20,20,25,0.09)", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+      <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(64,50,34,0.12)", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <div style={{ display: "flex", background: "#F5F4F0", borderRadius: 999, padding: 3, gap: 2 }}>
           {STAGE_FILTERS.map((s) => {
             const active = stage === s;
@@ -233,15 +233,15 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                   borderRadius: 999,
                   fontSize: 12.5,
                   fontWeight: active ? 600 : 500,
-                  color: active ? "#fff" : "#6B6B73",
-                  background: active ? "#0E0E10" : "transparent",
+                  color: active ? "#fff" : "#5A544B",
+                  background: active ? "#131110" : "transparent",
                   border: "none",
                   cursor: "pointer",
                 }}
               >
                 {s}
                 {s === "All" && (
-                  <span style={{ fontSize: 10, background: active ? "rgba(255,255,255,0.2)" : "rgba(20,20,25,0.08)", padding: "1px 5px", borderRadius: 999, marginLeft: 4 }}>
+                  <span style={{ fontSize: 10, background: active ? "rgba(255,255,255,0.2)" : "rgba(64,50,34,0.11)", padding: "1px 5px", borderRadius: 999, marginLeft: 4 }}>
                     {startups.length}
                   </span>
                 )}
@@ -249,7 +249,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
             );
           })}
         </div>
-        <div style={{ width: 1, height: 26, background: "rgba(20,20,25,0.08)" }} />
+        <div style={{ width: 1, height: 26, background: "rgba(64,50,34,0.11)" }} />
         <div style={{ display: "flex", gap: 6, flex: 1, flexWrap: "wrap" }}>
           {SECTOR_FILTERS.map((f) => {
             const active = sector === f.label;
@@ -262,8 +262,8 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                   fontWeight: 500,
                   padding: "5px 11px",
                   borderRadius: 999,
-                  border: active ? `1.5px solid ${f.color}4D` : "1.5px solid rgba(20,20,25,0.09)",
-                  color: active ? f.color : "#6B6B73",
+                  border: active ? `1.5px solid ${f.color}4D` : "1.5px solid rgba(64,50,34,0.12)",
+                  color: active ? f.color : "#5A544B",
                   background: active ? `${f.color}14` : "#fff",
                   cursor: "pointer",
                 }}
@@ -281,7 +281,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
         </button>
       </div>
 
-      <div className="ib-admin-table" style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", overflow: "hidden", overflowX: "auto" }}>
+      <div className="ib-admin-table" style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", overflow: "hidden", overflowX: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 760 }}>
           <thead>
             <tr style={{ background: "#F5F4F0" }}>
@@ -294,9 +294,9 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                     textTransform: "uppercase",
                     letterSpacing: "0.05em",
                     fontWeight: 600,
-                    color: "#9A958B",
+                    color: "#8B8479",
                     padding: i === 0 ? "12px 14px 12px 20px" : "12px 14px",
-                    borderBottom: "1.5px solid rgba(20,20,25,0.09)",
+                    borderBottom: "1.5px solid rgba(64,50,34,0.12)",
                   }}
                 >
                   {h}
@@ -308,13 +308,13 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
             {loaded && filtered.map((s, i) => {
               const badge = STAGE_BADGE[s.stage] ?? STAGE_BADGE.Idea;
               return (
-                <tr key={s.id} style={{ borderBottom: i < filtered.length - 1 ? "1px solid rgba(20,20,25,0.06)" : "none" }}>
+                <tr key={s.id} style={{ borderBottom: i < filtered.length - 1 ? "1px solid rgba(64,50,34,0.09)" : "none" }}>
                   <td style={{ padding: "13px 14px 13px 20px", verticalAlign: "middle" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       {s.logoUrl ? (
                         <img src={s.logoUrl} alt="" style={{ width: 32, height: 32, borderRadius: 9, objectFit: "cover", flexShrink: 0 }} />
                       ) : (
-                        <div style={{ width: 32, height: 32, borderRadius: 9, background: s.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
+                        <div style={{ width: 32, height: 32, borderRadius: 9, background: s.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 600, flexShrink: 0 }}>
                           {s.initials}
                         </div>
                       )}
@@ -323,12 +323,12 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                       </div>
                     </div>
                   </td>
-                  <td style={{ padding: "13px 14px", verticalAlign: "middle", color: "#6B6B73" }}>{s.sector}</td>
+                  <td style={{ padding: "13px 14px", verticalAlign: "middle", color: "#5A544B" }}>{s.sector}</td>
                   <td style={{ padding: "13px 14px", verticalAlign: "middle" }}>
                     <span style={{ fontSize: 10.5, fontWeight: 600, padding: "3px 9px", borderRadius: 999, color: badge.color, background: badge.bg }}>● {s.stage}</span>
                   </td>
                   <td style={{ padding: "13px 14px", verticalAlign: "middle", fontWeight: 600, color: DARK }}>{s.funding || "—"}</td>
-                  <td style={{ padding: "13px 14px", verticalAlign: "middle", color: "#9A958B" }}>{s.since || "—"}</td>
+                  <td style={{ padding: "13px 14px", verticalAlign: "middle", color: "#8B8479" }}>{s.since || "—"}</td>
                   <td style={{ padding: "13px 14px", verticalAlign: "middle" }}>
                     <div style={{ display: "flex", gap: 12 }}>
                       <button onClick={() => openEditModal(s)} style={{ fontSize: 12, fontWeight: 600, color: "#285E7A", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
@@ -344,7 +344,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
             })}
             {loaded && filtered.length === 0 && (
               <tr>
-                <td colSpan={6} style={{ padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13 }}>
+                <td colSpan={6} style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13 }}>
                   {startups.length === 0 ? "No startups yet — add the first one." : "No startups match these filters."}
                 </td>
               </tr>
@@ -364,8 +364,8 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
             style={{ background: "#fff", borderRadius: 18, padding: 26, width: "100%", maxWidth: 440, display: "flex", flexDirection: "column", gap: 16, maxHeight: "90vh", overflowY: "auto" }}
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div style={{ fontSize: 16.5, fontWeight: 700, color: DARK }}>{editingId ? "Edit startup" : "Add startup"}</div>
-              <button type="button" onClick={closeModal} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#9A958B", lineHeight: 1 }}>
+              <div style={{ fontSize: 16.5, fontWeight: 600, color: DARK }}>{editingId ? "Edit startup" : "Add startup"}</div>
+              <button type="button" onClick={closeModal} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#8B8479", lineHeight: 1 }}>
                 ×
               </button>
             </div>
@@ -374,7 +374,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
               {form.logoUrl ? (
                 <img src={form.logoUrl} alt="" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
               ) : (
-                <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10.5, textAlign: "center" }}>
+                <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10.5, textAlign: "center" }}>
                   No logo
                 </div>
               )}
@@ -383,7 +383,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                   {uploading ? "Uploading…" : "Upload logo"}
                   <input type="file" accept="image/*" onChange={handleLogoChange} disabled={uploading} style={{ display: "none" }} />
                 </label>
-                <div style={{ fontSize: 11, color: "#9A958B", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
+                <div style={{ fontSize: 11, color: "#8B8479", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
               </div>
             </div>
 
@@ -395,21 +395,21 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                 placeholder="e.g. ColdTrail"
                 required
                 maxLength={NAME_MAX}
-                style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
               />
             </div>
 
             <div>
               <label style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>
                 <span>Description</span>
-                <span style={{ color: "#9A958B", fontWeight: 500 }}>{form.description.length}/{DESCRIPTION_MAX}</span>
+                <span style={{ color: "#8B8479", fontWeight: 500 }}>{form.description.length}/{DESCRIPTION_MAX}</span>
               </label>
               <textarea
                 value={form.description}
                 onChange={(e) => update("description", e.target.value)}
                 placeholder="One or two sentences for the public card."
                 maxLength={DESCRIPTION_MAX}
-                style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box", minHeight: 74, resize: "vertical", fontFamily: "inherit" }}
+                style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box", minHeight: 74, resize: "vertical", fontFamily: "inherit" }}
               />
             </div>
 
@@ -419,7 +419,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                 <select
                   value={form.sector}
                   onChange={(e) => update("sector", e.target.value)}
-                  style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                  style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
                 >
                   {SECTOR_FILTERS.map((f) => (
                     <option key={f.label} value={f.label}>{f.label}</option>
@@ -431,7 +431,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                 <select
                   value={form.stage}
                   onChange={(e) => update("stage", e.target.value)}
-                  style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                  style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
                 >
                   {STAGE_FILTERS.filter((s) => s !== "All").map((s) => (
                     <option key={s} value={s}>{s}</option>
@@ -447,9 +447,9 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                 value={form.website}
                 onChange={(e) => update("website", e.target.value)}
                 placeholder="https://facebook.com/... or https://..."
-                style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
               />
-              <div style={{ fontSize: 11, color: "#9A958B", marginTop: 4 }}>Shown as a link button on the startup's public card.</div>
+              <div style={{ fontSize: 11, color: "#8B8479", marginTop: 4 }}>Shown as a link button on the startup's public card.</div>
             </div>
 
             <div>
@@ -463,13 +463,13 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                 {founders.map((f, i) => (
                   <div key={i} style={{ display: "flex", gap: 8, alignItems: "center" }}>
                     <input
-                      style={{ flex: 1, fontSize: 13.5, padding: "9px 11px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                      style={{ flex: 1, fontSize: 13.5, padding: "9px 11px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
                       value={f.name}
                       onChange={(e) => updateFounder(i, { name: e.target.value })}
                       placeholder={i === 0 ? "Founder name" : "Additional founder name"}
                     />
                     <select
-                      style={{ width: 160, flexShrink: 0, fontSize: 13, padding: "9px 10px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box", appearance: "auto" }}
+                      style={{ width: 160, flexShrink: 0, fontSize: 13, padding: "9px 10px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box", appearance: "auto" }}
                       value={f.status}
                       onChange={(e) => updateFounder(i, { status: e.target.value as FounderRow["status"] })}
                     >
@@ -482,7 +482,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                         type="button"
                         onClick={() => removeFounder(i)}
                         aria-label="Remove founder"
-                        style={{ width: 30, height: 30, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", color: "#9A958B", cursor: "pointer", fontSize: 15, lineHeight: 1 }}
+                        style={{ width: 30, height: 30, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", color: "#8B8479", cursor: "pointer", fontSize: 15, lineHeight: 1 }}
                       >
                         &times;
                       </button>
@@ -506,7 +506,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                   value={form.funding}
                   onChange={(e) => update("funding", e.target.value)}
                   placeholder="₱500K"
-                  style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                  style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
                 />
               </div>
               <div>
@@ -516,7 +516,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                   onChange={(e) => update("since", e.target.value)}
                   placeholder="2024"
                   maxLength={4}
-                  style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", outline: "none", boxSizing: "border-box" }}
+                  style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
                 />
               </div>
             </div>

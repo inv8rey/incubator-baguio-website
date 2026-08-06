@@ -1,16 +1,20 @@
 @import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap');
 
 :root {
-  /* Ink ramp */
-  --ib-ink: #151517;
-  --ib-ink-2: #55555f;
-  --ib-ink-3: #8b8b95;
+  /* Ink ramp — warm-shifted: a brown-black reads softer than a blue-black */
+  --ib-ink: #1a1714;
+  --ib-ink-2: #5a544b;
+  --ib-ink-3: #8b8479;
   /* Brand */
   --ib-orange: #f26522;
-  --ib-orange-deep: #d9531a;
-  /* Surfaces */
+  --ib-orange-deep: #d9531e;
+  /* Surfaces — cream rather than pure white, so nothing reads clinical */
+  --ib-cream: #fcfaf6;
+  --ib-sand: #f6f2ea;
   --ib-paper: #f5f3ee;
-  --ib-hair: rgba(20, 20, 25, 0.08);
+  /* Hairlines carry the same warm cast as the ink */
+  --ib-hair: rgba(64, 50, 34, 0.1);
+  --ib-hair-2: rgba(64, 50, 34, 0.16);
   /* Elevation — soft, layered shadows are the premium signal */
   --ib-shadow-sm: 0 1px 2px rgba(17, 17, 20, 0.04), 0 1px 3px rgba(17, 17, 20, 0.05);
   --ib-shadow-md: 0 6px 16px rgba(17, 17, 20, 0.05), 0 2px 6px rgba(17, 17, 20, 0.04);
@@ -21,8 +25,8 @@
 
 html, body {
   font-family: 'General Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #fff;
-  color: #151517;
+  background: var(--ib-cream);
+  color: var(--ib-ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -37,7 +41,7 @@ p { text-wrap: pretty; }
 
 a { color: inherit; }
 
-::selection { background: rgba(242, 101, 34, 0.18); color: #151517; }
+::selection { background: rgba(242, 101, 34, 0.18); color: #1A1714; }
 
 html { scroll-behavior: smooth; }
 
@@ -87,9 +91,9 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
 .ib-card-hover, .ib-row-hover, .ib-event-hover, .ib-resource-hover {
   transition: box-shadow .28s cubic-bezier(.22,.61,.36,1), background .28s ease, transform .28s cubic-bezier(.22,.61,.36,1), border-color .28s ease;
 }
-.ib-card-hover:hover { box-shadow: var(--ib-shadow-lg); transform: translateY(-4px); border-color: rgba(20,20,25,0.05); }
+.ib-card-hover:hover { box-shadow: var(--ib-shadow-lg); transform: translateY(-4px); border-color: rgba(64,50,34,0.07); }
 .ib-row-hover:hover { background: #fff; }
-.ib-event-hover:hover { background: #FAFAF7; }
+.ib-event-hover:hover { background: #F6F2EA; }
 .ib-resource-hover:hover { box-shadow: var(--ib-shadow-lg); transform: translateY(-3px); }
 .ib-challenge-hover { transition: box-shadow .28s cubic-bezier(.22,.61,.36,1), transform .28s cubic-bezier(.22,.61,.36,1), border-color .28s ease; }
 .ib-challenge-hover:hover { box-shadow: var(--ib-shadow-lg); transform: translateY(-4px); }
@@ -119,7 +123,7 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
   .ib-mentor-flip-back { display: none; }
 }
 .ib-getstarted-card { transition: border-color .2s ease, transform .2s ease, background .2s ease; }
-.ib-getstarted-card:hover { border-color: rgba(242,101,34,0.4) !important; background: #181819 !important; transform: translateY(-3px); }
+.ib-getstarted-card:hover { border-color: rgba(242,101,34,0.4) !important; background: #1C1917 !important; transform: translateY(-3px); }
 
 .ib-startup-link-btn { opacity: 0; transform: translateY(6px) scale(0.9); transition: opacity .18s ease, transform .18s ease; }
 .ib-startup-card:hover .ib-startup-link-btn { opacity: 1; transform: translateY(0) scale(1); }
@@ -141,7 +145,7 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
 /* FAQ accordion (native <details>/<summary>) */
 .ib-faq-summary { list-style: none; transition: background .18s ease; }
 .ib-faq-summary::-webkit-details-marker { display: none; }
-.ib-faq-summary:hover { background: rgba(20,20,25,0.03); }
+.ib-faq-summary:hover { background: rgba(64,50,34,0.05); }
 .ib-faq-arrow { transition: transform .25s ease; }
 .ib-faq-item[open] .ib-faq-arrow { transform: rotate(180deg); }
 
@@ -245,7 +249,7 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
   position: fixed;
   inset: 0;
   z-index: 300;
-  background: #0B0B0D;
+  background: #100D0B;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -311,7 +315,7 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
   width: 46px;
   height: 46px;
   border-radius: 9999px;
-  background: #141417;
+  background: #1A1714;
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.14);
   display: flex;
@@ -352,7 +356,7 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
   left: 12%;
   right: 12%;
   height: 2px;
-  background: repeating-linear-gradient(90deg, rgba(20,20,25,0.16) 0 8px, transparent 8px 18px);
+  background: repeating-linear-gradient(90deg, rgba(64,50,34,0.18) 0 8px, transparent 8px 18px);
 }
 @media (max-width: 900px) {
   .ib-journey-line { display: none; }
@@ -376,6 +380,58 @@ img { max-width: 100%; height: auto; }
    Pages are authored with inline styles, so we override them
    here via attribute selectors matching the inline-style strings.
    ============================================================ */
+
+/* Homepage gallery mosaic. The lead tile spans 2x2 on desktop; below tablet the
+   grid halves and the lead gives up its row span so tiles stay a sane height. */
+.ib-gallery-tile { transition: transform .35s cubic-bezier(.22,.61,.36,1), border-color .35s ease; }
+.ib-gallery-tile:hover { transform: translateY(-3px); border-color: rgba(242,101,34,0.5) !important; }
+.ib-gallery-tile img { transition: transform .5s cubic-bezier(.22,.61,.36,1); }
+.ib-gallery-tile:hover img { transform: scale(1.05); }
+
+@media (max-width: 900px) {
+  .ib-gallery-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-auto-rows: 150px !important;
+  }
+}
+@media (max-width: 520px) {
+  .ib-gallery-grid {
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: 200px !important;
+  }
+  /* Single column: the lead tile spanning 2 columns/rows would stretch oddly. */
+  .ib-gallery-grid > .ib-gallery-tile:first-child {
+    grid-column: span 1 !important;
+    grid-row: span 1 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ib-gallery-tile, .ib-gallery-tile img { transition: none; }
+  .ib-gallery-tile:hover img { transform: none; }
+}
+
+/* Homepage event rows: date | details | CTA works down to about tablet width,
+   then the CTA starts crowding the title. Below that, drop the button onto its
+   own full-width row instead of letting the three tracks fight each other. */
+@media (max-width: 720px) {
+  .ib-event-row {
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    gap: 16px !important;
+    padding: 16px !important;
+  }
+  .ib-event-row > a {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+}
+
+/* The four Quadruple Helix cards carry a heading plus a paragraph each, so they
+   run out of room earlier than the numeric stat band that shares their
+   repeat(4,1fr) shape — drop just these to a 2x2 while the stats stay 4-up. */
+@media (max-width: 1100px) {
+  .ib-challenge-cats { grid-template-columns: repeat(2, 1fr) !important; }
+}
 
 /* ---- Tablet / small-desktop (<= 900px) ---- */
 @media (max-width: 900px) {
@@ -447,14 +503,10 @@ img { max-width: 100%; height: auto; }
     text-align: center;
   }
 
-  /* Swap the desktop links for the hamburger */
-  .ib-burger { display: flex !important; }
-  .ib-navlinks { display: none !important; }
-  .ib-desktop-cta { display: none !important; }
 
-  /* 4E Ecosystem Model: swap the sticky scrollytelling for a stacked fallback */
-  .ib-4e-wrap { display: none !important; }
-  .ib-4e-mobile { display: block !important; }
+  /* Programs sticky card stack: swap for a plain stacked fallback */
+  .ib-stack-wrap { display: none !important; }
+  .ib-stack-mobile { display: block !important; }
 
   /* User dashboard overview: sidebar drops below the main column and the
      stat row goes 3-up. */
@@ -470,6 +522,15 @@ img { max-width: 100%; height: auto; }
    visible scrollbar, since the row already implies more content off-screen. */
 .ib-hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
 .ib-hide-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Swap the desktop links for the hamburger. This breaks earlier than the
+   general 900px tablet rules on purpose: the full nav (six links plus three
+   buttons) starts wrapping to two lines well before 900px is reached. */
+@media (max-width: 1080px) {
+  .ib-burger { display: flex !important; }
+  .ib-navlinks { display: none !important; }
+  .ib-desktop-cta { display: none !important; }
+}
 
 /* ---- Hamburger menu (built at runtime by Interactive.tsx) ---- */
 .ib-burger {
@@ -505,7 +566,7 @@ img { max-width: 100%; height: auto; }
   left: 0;
   right: 0;
   flex-direction: column;
-  background: #0B0B0D;
+  background: #100D0B;
   border-top: 1px solid rgba(255,255,255,0.08);
   padding: 14px 22px 22px;
   z-index: 60;
@@ -549,6 +610,7 @@ img { max-width: 100%; height: auto; }
   .ib-ecosystem-grid,
   .ib-brings-grid,
   .ib-knowledge-cat-grid,
+  .ib-knowledge-grid,
   div.ib-teaser-grid {
     grid-template-columns: 1fr !important;
   }
@@ -622,7 +684,9 @@ img { max-width: 100%; height: auto; }
      column, not the 2x2 used for numeric stat bands. */
   .ib-getstarted-stats,
   .ib-about-functions,
-  .ib-journey-grid {
+  .ib-journey-grid,
+  .ib-challenge-cats,
+  .ib-helix-grid {
     grid-template-columns: 1fr !important;
   }
   /* The "WE CONNECT / WE EMPOWER / WE GROW BAGUIO" tagline is flex-shrink:0,
@@ -633,8 +697,22 @@ img { max-width: 100%; height: auto; }
     align-items: flex-start !important;
   }
 
-  /* Tighten the generous 40px side padding on every section */
-  main > div {
+  /* Tighten the generous 40px side padding on every section. Pages built
+     from raw HTML strings via dangerouslySetInnerHTML render one extra,
+     attribute-less wrapper div between <main> and the actual section divs
+     (which carry the real padding one level deeper) — reducing padding on
+     `main > div` alone was hitting that inert wrapper and stacking on top
+     of the section's own 40px instead of replacing it. Zero the wrapper,
+     then apply the reduction to whichever div actually owns the padding:
+     either the wrapper's child (string-rendered pages) or `main`'s own
+     child directly (pages whose top-level section is a real component,
+     e.g. EcosystemDirectory, which has no such wrapper). */
+  main > div:not([style]) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  main > div:not([style]) > div,
+  main > div[style] {
     padding-left: 18px !important;
     padding-right: 18px !important;
   }
@@ -646,16 +724,24 @@ img { max-width: 100%; height: auto; }
 
   /* Scale down oversized type */
   [style*="font-size:78px"] { font-size: 38px !important; }
+  [style*="font-size:76px"] { font-size: 38px !important; }
+  [style*="font-size:74px"] { font-size: 38px !important; }
   [style*="font-size:62px"] { font-size: 34px !important; }
   [style*="font-size:60px"] { font-size: 34px !important; }
   [style*="font-size:56px"] { font-size: 32px !important; }
+  [style*="font-size:54px"] { font-size: 31px !important; }
   [style*="font-size:52px"] { font-size: 31px !important; }
   [style*="font-size:50px"] { font-size: 30px !important; }
+  [style*="font-size:48px"] { font-size: 30px !important; }
   [style*="font-size:46px"] { font-size: 29px !important; }
   [style*="font-size:44px"] { font-size: 30px !important; }
+  [style*="font-size:42px"] { font-size: 28px !important; }
   [style*="font-size:40px"] { font-size: 27px !important; }
   [style*="font-size:38px"] { font-size: 26px !important; }
   [style*="font-size:36px"] { font-size: 25px !important; }
+  [style*="font-size:34px"] { font-size: 24px !important; }
+  [style*="font-size:32px"] { font-size: 23px !important; }
+  [style*="font-size:30px"] { font-size: 22px !important; }
 
   /* Hero paragraphs / CTAs breathe a bit less */
   main h1, main h2 { word-break: break-word; }
@@ -705,7 +791,7 @@ img { max-width: 100%; height: auto; }
 .evaluation-kicker {
   color: rgba(255, 255, 255, 0.54);
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.22em;
   margin-bottom: 16px;
   text-transform: uppercase;
@@ -714,7 +800,7 @@ img { max-width: 100%; height: auto; }
 .evaluation-hero h1 {
   color: #fff;
   font-size: clamp(36px, 4vw, 54px);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1.08;
   margin: 0 auto;
@@ -773,11 +859,11 @@ img { max-width: 100%; height: auto; }
 
 .evaluation-question {
   align-items: flex-start;
-  color: #151517;
+  color: #1A1714;
   column-gap: 18px;
   display: grid;
   font-size: 21px;
-  font-weight: 700;
+  font-weight: 600;
   grid-column: 1 / -1;
   grid-template-columns: 34px minmax(0, 1fr);
   line-height: 1.28;
@@ -837,7 +923,7 @@ img { max-width: 100%; height: auto; }
   color: #44444c;
   display: block;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 8px;
 }
 
@@ -877,7 +963,7 @@ img { max-width: 100%; height: auto; }
   background: #fafaf7;
   border: 1.5px solid rgba(20, 20, 25, 0.12);
   border-radius: 8px;
-  color: #151517;
+  color: #1A1714;
   font: inherit;
   font-size: 14.5px;
   outline: none;
@@ -910,10 +996,10 @@ img { max-width: 100%; height: auto; }
 }
 
 .evaluation-rating-head {
-  background: #151517;
+  background: #1A1714;
   color: #fff;
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 14px 18px;
 }
 
@@ -944,7 +1030,7 @@ img { max-width: 100%; height: auto; }
   color: #44444c;
   display: block;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 8px;
 }
 
@@ -963,7 +1049,7 @@ img { max-width: 100%; height: auto; }
   cursor: pointer;
   font: inherit;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   margin: 28px 54px 46px 106px;
   padding: 14px 28px;
 }
@@ -995,7 +1081,7 @@ img { max-width: 100%; height: auto; }
 }
 
 .evaluation-thanks h2 {
-  color: #151517;
+  color: #1A1714;
   font-size: 30px;
   letter-spacing: 0;
   margin: 0 0 12px;

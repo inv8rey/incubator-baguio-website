@@ -1262,3 +1262,66 @@ do $$ begin
     alter publication supabase_realtime add table public.chatbot_documents;
   end if;
 end $$;
+
+-- ---------------------------------------------------------------------------
+-- gallery_photos: admin-curated photos of ecosystem activities shown in the
+-- homepage "From the ecosystem" gallery (app/HomeGallery.tsx). Publicly
+-- readable; only admins can add/edit/remove. `sort_order` drives the display
+-- order so the gallery can be arranged without renaming or re-uploading.
+-- ---------------------------------------------------------------------------
+create table if not exists public.gallery_photos (
+  id uuid primary key default gen_random_uuid(),
+  image_url text not null,
+  caption text not null default '',
+  credit text not null default '',
+  sort_order int not null default 0,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists gallery_photos_sort_idx on public.gallery_photos (sort_order, created_at desc);
+
+alter table public.gallery_photos enable row level security;
+
+drop policy if exists "gallery photos are publicly readable" on public.gallery_photos;
+create policy "gallery photos are publicly readable" on public.gallery_photos
+  for select using (true);
+
+drop policy if exists "admins manage gallery photos" on public.gallery_photos;
+create policy "admins manage gallery photos" on public.gallery_photos
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+-- ---------------------------------------------------------------------------
+-- storage: gallery-photos bucket for the homepage gallery images.
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('gallery-photos', 'gallery-photos', true)
+on conflict (id) do nothing;
+
+drop policy if exists "gallery photo files are publicly readable" on storage.objects;
+create policy "gallery photo files are publicly readable" on storage.objects
+  for select using (bucket_id = 'gallery-photos');
+
+drop policy if exists "authenticated users can upload gallery photos" on storage.objects;
+create policy "authenticated users can upload gallery photos" on storage.objects
+  for insert to authenticated with check (bucket_id = 'gallery-photos');
+
+drop policy if exists "authenticated users can update gallery photos" on storage.objects;
+create policy "authenticated users can update gallery photos" on storage.objects
+  for update to authenticated using (bucket_id = 'gallery-photos');
+
+drop policy if exists "authenticated users can delete gallery photos" on storage.objects;
+create policy "authenticated users can delete gallery photos" on storage.objects
+  for delete to authenticated using (bucket_id = 'gallery-photos');
+
+do $$ begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'gallery_photos'
+  ) then
+    alter publication supabase_realtime add table public.gallery_photos;
+  end if;
+end $$;

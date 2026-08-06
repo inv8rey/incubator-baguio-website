@@ -52,3 +52,7 @@ export function uploadEventPoster(file: File): Promise<string> {
 export function uploadProgramImage(file: File): Promise<string> {
   return uploadImage(file, "program-images");
 }
+
+export function uploadGalleryPhoto(file: File): Promise<string> {
+  return uploadImage(file, "gallery-photos");
+}

@@ -102,8 +102,8 @@ export default function OrganizationManager() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <div style={cardStyle}>
-        <h2 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 700, color: DARK }}>Publish an organization</h2>
-        <p style={{ margin: "0 0 22px", fontSize: 13.5, color: "#6B6B73" }}>
+        <h2 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 600, color: DARK }}>Publish an organization</h2>
+        <p style={{ margin: "0 0 22px", fontSize: 13.5, color: "#5A544B" }}>
           Published immediately to the Ecosystem directory under the matching category.
         </p>
         <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -111,7 +111,7 @@ export default function OrganizationManager() {
             {form.logo_url ? (
               <img src={form.logo_url} alt="" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
             ) : (
-              <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F4F2EC", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10.5, textAlign: "center" }}>
+              <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10.5, textAlign: "center" }}>
                 No logo
               </div>
             )}
@@ -120,7 +120,7 @@ export default function OrganizationManager() {
                 {uploading ? "Uploading…" : "Upload logo"}
                 <input type="file" accept="image/*" onChange={handleLogoChange} disabled={uploading} style={{ display: "none" }} />
               </label>
-              <div style={{ fontSize: 11.5, color: "#9A958B", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
+              <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
@@ -150,7 +150,7 @@ export default function OrganizationManager() {
                 {form.cover_url ? (
                   <img src={form.cover_url} alt="" style={{ width: 84, height: 52, borderRadius: 10, objectFit: "cover" }} />
                 ) : (
-                  <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F4F2EC", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A958B", fontSize: 10, textAlign: "center" }}>
+                  <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10, textAlign: "center" }}>
                     No cover
                   </div>
                 )}
@@ -159,7 +159,7 @@ export default function OrganizationManager() {
                     {uploadingCover ? "Uploading…" : "Upload cover photo"}
                     <input type="file" accept="image/*" onChange={handleCoverChange} disabled={uploadingCover} style={{ display: "none" }} />
                   </label>
-                  <div style={{ fontSize: 11.5, color: "#9A958B", marginTop: 2 }}>Shown as the banner on your Ecosystem directory card.</div>
+                  <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 2 }}>Shown as the banner on your Ecosystem directory card.</div>
                 </div>
               </div>
             </div>
@@ -188,9 +188,9 @@ export default function OrganizationManager() {
       </div>
 
       <div style={cardStyle}>
-        <h2 style={{ margin: "0 0 18px", fontSize: 18, fontWeight: 700, color: DARK }}>Your organizations ({orgs.length})</h2>
+        <h2 style={{ margin: "0 0 18px", fontSize: 18, fontWeight: 600, color: DARK }}>Your organizations ({orgs.length})</h2>
         {orgs.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 13.5, color: "#9A958B" }}>No organizations published yet.</p>
+          <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>No organizations published yet.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {orgs.map((o) => (
@@ -199,11 +199,11 @@ export default function OrganizationManager() {
                   {o.logo_url ? (
                     <img src={o.logo_url} alt="" style={{ width: 34, height: 34, borderRadius: 9, objectFit: "cover" }} />
                   ) : (
-                    <div style={{ width: 34, height: 34, borderRadius: 9, background: "#F4F2EC" }} />
+                    <div style={{ width: 34, height: 34, borderRadius: 9, background: "#F6F2EA" }} />
                   )}
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{o.name}</div>
-                    <div style={{ fontSize: 12.5, color: "#9A958B" }}>{o.org_type}</div>
+                    <div style={{ fontSize: 12.5, color: "#8B8479" }}>{o.org_type}</div>
                   </div>
                 </div>
                 <button onClick={() => remove(o.id)} style={{ fontSize: 12.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer" }}>

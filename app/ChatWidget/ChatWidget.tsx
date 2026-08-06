@@ -52,7 +52,7 @@ export default function ChatWidget() {
       const data = await res.json();
 
       if (!res.ok) {
-        const friendly = res.status === 429 ? data.error : data.error || "Couldn't get a response. Please try again.";
+        const friendly = data.error || "Couldn't get a response. Please try again.";
         setMessages((prev) => [...prev, { role: "assistant", content: friendly, error: true }]);
         return;
       }

@@ -38,7 +38,7 @@ export default function ChatBubble({ onClick, showPulse }: { onClick: () => void
             height: 14,
             borderRadius: 9999,
             background: "#1A6B3C",
-            border: "2px solid #FAFAF7",
+            border: "2px solid #F6F2EA",
           }}
         />
       )}

@@ -11,7 +11,7 @@ const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export default function AdminLoginPage() {
   return (
-    <main style={{ minHeight: "100vh", background: "#0B0B0D", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+    <main style={{ minHeight: "100vh", background: "#100D0B", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div style={{ width: "100%", maxWidth: 420 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 28, justifyContent: "center" }}>
           <img src={`${BP}/assets/city-of-baguio-seal.png`} alt="City of Baguio" style={{ height: 46, width: "auto" }} />

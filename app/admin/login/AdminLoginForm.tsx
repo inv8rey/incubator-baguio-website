@@ -59,8 +59,8 @@ export default function AdminLoginForm({ bp }: { bp: string }) {
   }
 
   return (
-    <div style={{ background: "#141417", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "36px 40px" }}>
-      <h2 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>Admin log in</h2>
+    <div style={{ background: "#1A1714", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "36px 40px" }}>
+      <h2 style={{ margin: "0 0 6px", fontSize: 22, fontWeight: 600, color: "#fff", letterSpacing: "-0.02em" }}>Admin log in</h2>
       <p style={{ margin: "0 0 26px", fontSize: 13.5, color: "rgba(255,255,255,0.5)" }}>Restricted to accounts with admin access.</p>
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
         <div>

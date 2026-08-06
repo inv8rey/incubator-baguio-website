@@ -83,10 +83,10 @@ export default function ConnectionsManager() {
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       {isMentor && (
         <div style={cardStyle}>
-          <h2 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 700, color: DARK }}>Requests received</h2>
-          <p style={{ margin: "0 0 18px", fontSize: 13, color: "#9A958B" }}>Founders who want to connect with you as a mentor.</p>
+          <h2 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600, color: DARK }}>Requests received</h2>
+          <p style={{ margin: "0 0 18px", fontSize: 13, color: "#8B8479" }}>Founders who want to connect with you as a mentor.</p>
           {received.length === 0 ? (
-            <p style={{ margin: 0, fontSize: 13.5, color: "#9A958B" }}>No requests yet.</p>
+            <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>No requests yet.</p>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {received.map((r) => (
@@ -94,7 +94,7 @@ export default function ConnectionsManager() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
                     <div>
                       <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{r.profiles?.full_name || "Unknown"}</div>
-                      <div style={{ fontSize: 12.5, color: "#9A958B" }}>{r.profiles?.email}</div>
+                      <div style={{ fontSize: 12.5, color: "#8B8479" }}>{r.profiles?.email}</div>
                     </div>
                     <StatusBadge status={r.status} />
                   </div>
@@ -104,7 +104,7 @@ export default function ConnectionsManager() {
                       <button onClick={() => respond(r.id, "accepted")} style={{ fontSize: 12.5, fontWeight: 600, color: "#fff", background: "#1A6B3C", border: "none", borderRadius: 9999, padding: "8px 16px", cursor: "pointer" }}>
                         Accept
                       </button>
-                      <button onClick={() => respond(r.id, "declined")} style={{ fontSize: 12.5, fontWeight: 600, color: "#44444C", background: "#F4F2EC", border: "none", borderRadius: 9999, padding: "8px 16px", cursor: "pointer" }}>
+                      <button onClick={() => respond(r.id, "declined")} style={{ fontSize: 12.5, fontWeight: 600, color: "#44444C", background: "#F6F2EA", border: "none", borderRadius: 9999, padding: "8px 16px", cursor: "pointer" }}>
                         Decline
                       </button>
                     </div>
@@ -117,17 +117,17 @@ export default function ConnectionsManager() {
       )}
 
       <div style={cardStyle}>
-        <h2 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 700, color: DARK }}>Requests you've sent</h2>
-        <p style={{ margin: "0 0 18px", fontSize: 13, color: "#9A958B" }}>Mentors you've asked to connect with from the Ecosystem directory.</p>
+        <h2 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600, color: DARK }}>Requests you've sent</h2>
+        <p style={{ margin: "0 0 18px", fontSize: 13, color: "#8B8479" }}>Mentors you've asked to connect with from the Ecosystem directory.</p>
         {sent.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 13.5, color: "#9A958B" }}>You haven't reached out to any mentors yet.</p>
+          <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>You haven't reached out to any mentors yet.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {sent.map((s) => (
               <div key={s.id} style={rowItemStyle}>
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{s.mentors?.name || "Mentor"}</div>
-                  {s.message && <div style={{ fontSize: 12.5, color: "#9A958B" }}>{s.message}</div>}
+                  {s.message && <div style={{ fontSize: 12.5, color: "#8B8479" }}>{s.message}</div>}
                 </div>
                 <StatusBadge status={s.status} />
               </div>

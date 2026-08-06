@@ -6,7 +6,7 @@ import { supabase } from "../../../lib/supabaseClient";
 import { CHALLENGE_CATEGORIES } from "../data";
 
 const ORANGE = "#F26522";
-const DARK = "#141417";
+const DARK = "#1A1714";
 
 interface FormState {
   orgName: string;
@@ -32,8 +32,8 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   fontSize: 14.5,
   color: DARK,
-  background: "#FAFAF7",
-  border: "1.5px solid rgba(20,20,25,0.12)",
+  background: "#F6F2EA",
+  border: "1.5px solid rgba(64,50,34,0.14)",
   borderRadius: 10,
   padding: "12px 14px",
   outline: "none",
@@ -131,16 +131,16 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
 
   if (submitted) {
     return (
-      <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "56px 40px", textAlign: "center" }}>
+      <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "56px 40px", textAlign: "center" }}>
         <div style={{ width: 56, height: 56, borderRadius: 9999, background: "rgba(26,107,60,0.12)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 22px" }}>
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A6B3C" strokeWidth={2.6}><path d="M20 6 9 17l-5-5" /></svg>
         </div>
-        <h2 style={{ margin: "0 0 10px", fontSize: 24, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Challenge posted</h2>
-        <p style={{ margin: "0 auto 28px", fontSize: 14.5, lineHeight: 1.6, color: "#6B6B73", maxWidth: 460 }}>
+        <h2 style={{ margin: "0 0 10px", fontSize: 24, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>Challenge posted</h2>
+        <p style={{ margin: "0 auto 28px", fontSize: 14.5, lineHeight: 1.6, color: "#5A544B", maxWidth: 460 }}>
           Thanks, {form.contactName.split(" ")[0] || "there"}. &ldquo;{form.title}&rdquo; is now live under Community-posted challenges, and the Incubator Baguio team may follow up at {form.email}.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-          <a href={`${bp}/challenges/`} style={{ fontSize: 14, fontWeight: 600, color: DARK, textDecoration: "none", border: "1px solid rgba(20,20,25,0.18)", padding: "12px 22px", borderRadius: 9999 }}>
+          <a href={`${bp}/challenges/`} style={{ fontSize: 14, fontWeight: 600, color: DARK, textDecoration: "none", border: "1px solid rgba(64,50,34,0.18)", padding: "12px 22px", borderRadius: 9999 }}>
             Back to challenges
           </a>
           <a href={`${bp}/`} style={{ fontSize: 14, fontWeight: 600, color: "#fff", textDecoration: "none", background: DARK, padding: "12px 22px", borderRadius: 9999 }}>
@@ -152,10 +152,10 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
   }
 
   return (
-    <div style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, padding: "36px 40px" }}>
+    <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "36px 40px" }}>
       {/* Compact step indicator (mobile only) */}
       <div className="ib-apply-mobile-step" style={{ display: "none", alignItems: "center", gap: 10, marginBottom: 24 }}>
-        <span style={{ width: 26, height: 26, borderRadius: 9999, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12.5, fontWeight: 700, color: "#fff", background: ORANGE }}>
+        <span style={{ width: 26, height: 26, borderRadius: 9999, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12.5, fontWeight: 600, color: "#fff", background: ORANGE }}>
           {step + 1}
         </span>
         <span style={{ fontSize: 13, fontWeight: 600, color: DARK }}>
@@ -178,16 +178,16 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: 12.5,
-                  fontWeight: 700,
-                  color: i <= step ? "#fff" : "#9A958B",
-                  background: i <= step ? ORANGE : "#F4F2EC",
+                  fontWeight: 600,
+                  color: i <= step ? "#fff" : "#8B8479",
+                  background: i <= step ? ORANGE : "#F6F2EA",
                 }}
               >
                 {i < step ? "✓" : i + 1}
               </span>
-              <span style={{ fontSize: 13, fontWeight: 600, color: i === step ? DARK : "#9A958B", whiteSpace: "nowrap" }}>{label}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: i === step ? DARK : "#8B8479", whiteSpace: "nowrap" }}>{label}</span>
             </div>
-            {i < STEPS.length - 1 && <span style={{ flex: 1, height: 1.5, background: i < step ? ORANGE : "rgba(20,20,25,0.1)", margin: "0 14px" }} />}
+            {i < STEPS.length - 1 && <span style={{ flex: 1, height: 1.5, background: i < step ? ORANGE : "rgba(64,50,34,0.13)", margin: "0 14px" }} />}
           </div>
         ))}
       </div>
@@ -274,17 +274,17 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
       {/* Step 2 */}
       {step === 2 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <div style={{ background: "#FAFAF7", border: "1px solid rgba(20,20,25,0.08)", borderRadius: 14, padding: "20px 22px" }}>
-            <div style={{ fontSize: 11.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "#9A958B", marginBottom: 14 }}>Review your challenge</div>
+          <div style={{ background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.11)", borderRadius: 14, padding: "20px 22px" }}>
+            <div style={{ fontSize: 11.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "#8B8479", marginBottom: 14 }}>Review your challenge</div>
             <dl style={{ margin: 0, display: "grid", gridTemplateColumns: "140px 1fr", rowGap: 10, columnGap: 12, fontSize: 13.5 }}>
-              <dt style={{ color: "#9A958B" }}>Title</dt><dd style={{ margin: 0, color: DARK, fontWeight: 600 }}>{form.title || "—"}</dd>
-              <dt style={{ color: "#9A958B" }}>Organization</dt><dd style={{ margin: 0, color: DARK }}>{form.orgName || "—"} ({form.orgType || "?"})</dd>
-              <dt style={{ color: "#9A958B" }}>Contact</dt><dd style={{ margin: 0, color: DARK }}>{form.contactName || "—"} &middot; {form.email || "—"}</dd>
-              <dt style={{ color: "#9A958B" }}>Category</dt><dd style={{ margin: 0, color: DARK }}>{form.sector || "—"}</dd>
-              <dt style={{ color: "#9A958B" }}>Deadline</dt><dd style={{ margin: 0, color: DARK }}>{form.deadline || "—"}</dd>
-              <dt style={{ color: "#9A958B" }}>Problem</dt><dd style={{ margin: 0, color: "#44444C", lineHeight: 1.5 }}>{form.problem || "—"}</dd>
-              <dt style={{ color: "#9A958B" }}>Scope</dt><dd style={{ margin: 0, color: "#44444C", lineHeight: 1.5 }}>{form.scope || "—"}</dd>
-              {form.support.trim() && (<><dt style={{ color: "#9A958B" }}>Support offered</dt><dd style={{ margin: 0, color: "#44444C", lineHeight: 1.5 }}>{form.support}</dd></>)}
+              <dt style={{ color: "#8B8479" }}>Title</dt><dd style={{ margin: 0, color: DARK, fontWeight: 600 }}>{form.title || "—"}</dd>
+              <dt style={{ color: "#8B8479" }}>Organization</dt><dd style={{ margin: 0, color: DARK }}>{form.orgName || "—"} ({form.orgType || "?"})</dd>
+              <dt style={{ color: "#8B8479" }}>Contact</dt><dd style={{ margin: 0, color: DARK }}>{form.contactName || "—"} &middot; {form.email || "—"}</dd>
+              <dt style={{ color: "#8B8479" }}>Category</dt><dd style={{ margin: 0, color: DARK }}>{form.sector || "—"}</dd>
+              <dt style={{ color: "#8B8479" }}>Deadline</dt><dd style={{ margin: 0, color: DARK }}>{form.deadline || "—"}</dd>
+              <dt style={{ color: "#8B8479" }}>Problem</dt><dd style={{ margin: 0, color: "#44444C", lineHeight: 1.5 }}>{form.problem || "—"}</dd>
+              <dt style={{ color: "#8B8479" }}>Scope</dt><dd style={{ margin: 0, color: "#44444C", lineHeight: 1.5 }}>{form.scope || "—"}</dd>
+              {form.support.trim() && (<><dt style={{ color: "#8B8479" }}>Support offered</dt><dd style={{ margin: 0, color: "#44444C", lineHeight: 1.5 }}>{form.support}</dd></>)}
             </dl>
           </div>
           <label style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 13.5, color: "#44444C", cursor: "pointer" }}>
@@ -297,7 +297,7 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
       )}
 
       {/* Nav buttons */}
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 30, paddingTop: 22, borderTop: "1px solid rgba(20,20,25,0.08)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 30, paddingTop: 22, borderTop: "1px solid rgba(64,50,34,0.11)" }}>
         <button
           onClick={back}
           disabled={step === 0}

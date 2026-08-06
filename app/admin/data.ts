@@ -1,5 +1,5 @@
 export const ORANGE = "#F26522";
-export const DARK = "#141417";
+export const DARK = "#1A1714";
 
 export const NAV = [
   { id: "dashboard", label: "Dashboard", cnt: null as number | null },
@@ -8,6 +8,7 @@ export const NAV = [
   { id: "events", label: "Events", cnt: null as number | null },
   { id: "knowledge", label: "Knowledge", cnt: null as number | null },
   { id: "programs", label: "Programs", cnt: null as number | null },
+  { id: "gallery", label: "Gallery", cnt: null as number | null },
   { id: "signups", label: "Signups", cnt: null as number | null },
   { id: "evaluations", label: "Evaluations", cnt: null as number | null },
   { id: "partners", label: "Partners", cnt: null as number | null },
@@ -23,6 +24,7 @@ export const TITLES: Record<TabId, string> = {
   events: "Calendar Events",
   knowledge: "Knowledge Hub",
   programs: "Our Programs",
+  gallery: "Homepage Gallery",
   signups: "Ecosystem Signups",
   evaluations: "Consultation Evaluations",
   partners: "Ecosystem Partners",
@@ -36,6 +38,7 @@ export const SUBS: Record<TabId, string> = {
   events: "Review and approve events submitted to the public calendar",
   knowledge: "Manage the Knowledge Hub resource library",
   programs: "Upload the photo shown for each of the 4 Our Programs steps",
+  gallery: "Photos shown in the homepage \u201cMoments from the ecosystem\u201d gallery",
   signups: "Review the temporary public signup form and approve entries into the Ecosystem directory",
   evaluations: "Review feedback from consultation and mentoring visitors",
   partners: "Academic, government, corporate, and community partners",
@@ -104,7 +107,7 @@ export const SECTORS = [
   { label: "Manufacturing", count: 4, pct: 4.9, color: "#8B4513" },
   { label: "Transportation & Logistics", count: 4, pct: 4.9, color: "#0E5C44" },
   { label: "Government & Public Services", count: 2, pct: 2.4, color: "#009B8D" },
-  { label: "Real Estate & Construction", count: 2, pct: 2.4, color: "#9A958B" },
+  { label: "Real Estate & Construction", count: 2, pct: 2.4, color: "#8B8479" },
 ];
 
 export const STAGE_MIX = [
@@ -115,7 +118,7 @@ export const STAGE_MIX = [
 ];
 
 export const TBI_BREAKDOWN = [
-  { label: "Independent / Non-TBI Affiliated", count: 28, pct: 34.1, color: "#9A958B" },
+  { label: "Independent / Non-TBI Affiliated", count: 28, pct: 34.1, color: "#8B8479" },
   { label: "UC InTTO", count: 14, pct: 17.1, color: "#285E7A" },
   { label: "SLU SIRIB", count: 13, pct: 15.9, color: "#F5A623" },
   { label: "UPB SILBI", count: 11, pct: 13.4, color: "#9E2A52" },
@@ -159,9 +162,9 @@ export const SECTOR_FILTERS = [
   { label: "Transportation & Logistics", color: "#0E5C44" },
   { label: "Environment & Sustainability", color: "#2A8A52" },
   { label: "Government & Public Services", color: "#009B8D" },
-  { label: "Real Estate & Construction", color: "#9A958B" },
+  { label: "Real Estate & Construction", color: "#8B8479" },
   { label: "Artificial Intelligence & Emerging Technologies", color: "#3A5FA0" },
-  { label: "Others", color: "#6B6B73" },
+  { label: "Others", color: "#5A544B" },
 ];
 
 export const STAGE_BADGE: Record<string, { color: string; bg: string }> = {

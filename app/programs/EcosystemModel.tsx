@@ -1,16 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 
-const ORANGE = "#F26522";
-const DARK = "#141417";
-
-interface ProgramItem {
-  title: string;
-  description: string;
-  tagline: string;
-}
+const DARK = "#1A1714";
+const MUTED = "#5F5C57";
+const FAINT = "#8E8A84";
 
 interface StepData {
   key: string;
@@ -18,16 +13,19 @@ interface StepData {
   title: string;
   theme: string;
   purpose: string;
+  /** Accent used for the numeral, sub-head, chevron watermark and markers. */
   color: string;
+  /** Card field — a warm off-white, not a pastel. */
   bg: string;
+  /** Deeper tone the visual panel fades out of. */
+  bgDeep: string;
   icon: string;
-  programs: ProgramItem[];
+  highlights: string[];
 }
 
 const ICONS = {
-  briefcase: `<rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M16 7V5a2 2 0 0 0-2-2H10a2 2 0 0 0-2 2v2"></path><path d="M3 12h18"></path>`,
-  people: `<circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><circle cx="17" cy="7" r="2.5"></circle><path d="M21 19c0-2.4-1.8-4.5-4-5"></path>`,
   sprout: `<path d="M12 21V10"></path><path d="M12 10C12 10 7.5 10.5 6 6.5C6 6.5 11 5.5 12 10Z"></path><path d="M12 10C12 10 16.5 10.5 18 6.5C18 6.5 13 5.5 12 10Z"></path>`,
+  people: `<circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><circle cx="17" cy="7" r="2.5"></circle><path d="M21 19c0-2.4-1.8-4.5-4-5"></path>`,
   lightbulb: `<path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2.3h6c0-1.1.4-1.8 1-2.3A7 7 0 0 0 12 2Z"></path>`,
   database: `<ellipse cx="12" cy="5" rx="8" ry="3"></ellipse><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"></path><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"></path>`,
 };
@@ -36,66 +34,54 @@ const STEPS: StepData[] = [
   {
     key: "founder-development",
     number: "01",
-    title: "FOUNDER DEVELOPMENT",
-    theme: "Equip founders to build with confidence.",
-    purpose: "We support aspiring and early-stage founders with personalized guidance, practical learning, and wellness support throughout their entrepreneurial journey.",
-    color: ORANGE,
-    bg: "rgba(242,101,34,0.12)",
+    title: "Founder Development",
+    theme: "Helping entrepreneurs turn ideas into sustainable ventures.",
+    purpose:
+      "We equip founders with the knowledge, mentorship, and connections they need to validate ideas, build innovative businesses, and navigate the startup journey with confidence.",
+    color: "#D9531E",
+    bg: "#FBF3EC",
+    bgDeep: "#F3DFCD",
     icon: ICONS.sprout,
-    programs: [
-      { title: "Founder Office Hours", tagline: "One-on-one guidance on validation, funding, legal, and more.", description: "Weekly one-on-one consultation sessions where founders receive tailored guidance on business validation, product development, funding, legal concerns, marketing, and referrals to appropriate ecosystem partners." },
-      { title: "Founder Learning Series", tagline: "Workshops and masterclasses on the core skills of building a startup.", description: "A recurring learning program featuring workshops, masterclasses, and expert-led sessions on startup fundamentals, including customer discovery, business model development, product validation, fundraising, intellectual property, marketing, finance, and emerging technologies." },
-      { title: "Founder Wellness Sessions", tagline: "Quarterly sessions on resilience, balance, and founder mental health.", description: "Quarterly sessions focused on mental health, stress management, resilience, productivity, and work-life balance to help founders sustain their entrepreneurial journey." },
-    ],
+    highlights: ["Founder Office Hours", "Founder Learning Series", "Founder Wellness Sessions"],
   },
   {
     key: "ecosystem-building",
     number: "02",
-    title: "ECOSYSTEM BUILDING",
-    theme: "Connect the people building Baguio's ecosystem.",
-    purpose: "We connect founders, universities, government, industry, and community partners through structured referrals, shared dialogue, and greater visibility.",
-    color: "#285E7A",
-    bg: "rgba(40,94,122,0.12)",
+    title: "Ecosystem Building",
+    theme: "Connecting people, organizations, and opportunities.",
+    purpose:
+      "Innovation thrives through collaboration. We bring together government, universities, industry, startups, and ecosystem partners to build meaningful partnerships and strengthen the City's innovation network.",
+    color: "#22596F",
+    bg: "#EEF3F6",
+    bgDeep: "#D5E3EA",
     icon: ICONS.people,
-    programs: [
-      { title: "Startup Referral Network", tagline: "Connecting founders to the right TBIs, mentors, and partners.", description: "A structured referral system that connects entrepreneurs, startups, researchers, and innovators to the most appropriate Technology Business Incubator, government agency, mentor, or ecosystem partner based on their needs and stage of development." },
-      { title: "Quadruple Helix Roundtable", tagline: "Quarterly dialogue across government, academe, industry, and startups.", description: "A quarterly dialogue bringing together representatives from government, academia, industry, and the startup community to discuss ecosystem priorities, identify collaboration opportunities, and generate actionable recommendations." },
-      { title: "Quarterly Startup Showcase with the Mayor", tagline: "Selected startups present to city leadership each quarter.", description: "A quarterly platform where selected startups present their innovations, progress, and challenges to city leadership, fostering dialogue, recognition, and opportunities for collaboration and support." },
-      { title: "Innovation Calendar", tagline: "One shared calendar for all ecosystem events across the city.", description: "A centralized calendar that consolidates startup, innovation, entrepreneurship, research, and technology-related events from ecosystem partners, giving the community a single place to discover opportunities for learning, networking, funding, competitions, and collaboration." },
-    ],
+    highlights: ["Startup Referral Network", "Quadruple Helix Roundtable", "Startup Showcase", "Innovation Calendar"],
   },
   {
     key: "open-innovation",
     number: "03",
-    title: "OPEN INNOVATION",
-    theme: "Turn real-world challenges into co-created solutions.",
-    purpose: "We connect government agencies, businesses, and institutions with startups, researchers, and students to solve real problems and shape the city's research and innovation priorities.",
-    color: "#9E2A52",
-    bg: "rgba(158,42,82,0.12)",
+    title: "Open Innovation",
+    theme: "Turning real-world challenges into collaborative solutions.",
+    purpose:
+      "We connect organizations with startups, researchers, and innovators to co-develop practical solutions that address the City's priorities and create lasting impact.",
+    color: "#8E2749",
+    bg: "#F8F0F3",
+    bgDeep: "#EDD6DE",
     icon: ICONS.lightbulb,
-    programs: [
-      { title: "Open Innovation Challenges", tagline: "Organizations post real problems; innovators co-develop solutions.", description: "A challenge-based innovation platform where government agencies, businesses, universities, and organizations can publish real-world problems and collaborate with startups, researchers, students, and innovators to co-develop practical, scalable solutions." },
-      { title: "Baguio City Annual Research and Innovation Agenda", tagline: "Stakeholder-driven process to set the city's R&I priorities each year.", description: "A collaborative annual initiative to review and refine Baguio City's Research and Innovation Agenda by engaging key ecosystem stakeholders in identifying emerging challenges, validating priority sectors, and recommending strategic research and innovation directions." },
-      { title: "Innovation Pilot Program", tagline: "Real-world testing ground for solutions before city-wide scaling.", description: "A structured pilot program that gives innovative solutions the opportunity for real-world testing and validation, helping organizations evaluate feasibility before wider implementation or scaling." },
-    ],
+    highlights: ["Open Innovation Challenges", "Innovation Pilot Program", "Research & Innovation Agenda"],
   },
   {
     key: "ecosystem-intelligence",
     number: "04",
-    title: "ECOSYSTEM INTELLIGENCE",
-    theme: "Measure, learn, and strengthen the ecosystem.",
-    purpose: "We track, assess, and share ecosystem data to guide planning, measure progress, and strengthen Baguio's position as a growing innovation hub.",
-    color: "#1A6B3C",
-    bg: "rgba(26,107,60,0.12)",
+    title: "Ecosystem Intelligence",
+    theme: "Enabling better decisions through data and insights.",
+    purpose:
+      "We collect, organize, and analyze ecosystem data to support evidence-based planning, measure progress, and guide the future of innovation in Baguio.",
+    color: "#17603A",
+    bg: "#EFF4F1",
+    bgDeep: "#D6E6DC",
     icon: ICONS.database,
-    programs: [
-      { title: "Startup Ecosystem Database", tagline: "Centralized directory of startups, mentors, TBIs, and partners.", description: "A centralized and regularly updated database of startups, entrepreneurs, researchers, mentors, investors, Technology Business Incubators, government agencies, universities, and ecosystem partners that serves as the primary source of ecosystem data for planning, collaboration, referrals, and performance monitoring." },
-      { title: "Startup Ecosystem Dashboard", tagline: "Live metrics on startup activity, funding, and ecosystem health.", description: "A centralized digital dashboard that tracks key indicators of Baguio City's startup ecosystem, providing real-time insights into ecosystem performance, startup activity, programs, partnerships, funding, and innovation initiatives." },
-      { title: "Startup Ecosystem Assessment", tagline: "Continuous surveys to surface gaps and opportunities citywide.", description: "A continuous assessment initiative that gathers insights from startups and ecosystem stakeholders to identify needs, challenges, opportunities, and ecosystem gaps." },
-      { title: "Annual Startup Ecosystem Report", tagline: "Yearly publication on the state of Baguio's innovation economy.", description: "An annual publication that presents the state of Baguio City's startup ecosystem, including ecosystem trends, key achievements, stakeholder insights, and recommendations for future ecosystem development." },
-      { title: "Knowledge Hub", tagline: "Open repository of toolkits, research, policies, and resources.", description: "A digital repository of startup, innovation, entrepreneurship, and research resources, including toolkits, reports, funding opportunities, policies, case studies, publications, and learning materials that support evidence-based decision-making and ecosystem capacity building." },
-      { title: "StartupBlink Ecosystem Development Initiative", tagline: "Improving Baguio's visibility and ranking on global startup indexes.", description: "A long-term initiative to strengthen Baguio City's startup ecosystem by improving ecosystem data, increasing global visibility, benchmarking performance, and enhancing the city's position in international startup ecosystem rankings." },
-    ],
+    highlights: ["Ecosystem Database", "Ecosystem Dashboard", "Annual Ecosystem Report", "Knowledge Hub"],
   },
 ];
 
@@ -105,34 +91,212 @@ function IconSvg({ path, size = 20, stroke = "currentColor", strokeWidth = 1.9 }
   );
 }
 
-function ProgramPhotoStack({ active, images }: { active: number; images: Record<string, string> }) {
+/** The four-ridge Cordillera chevron used across the site, tinted to one accent. */
+function ChevronMark({ color, width = 300, opacity = 0.16 }: { color: string; width?: number; opacity?: number }) {
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", borderRadius: 20, overflow: "hidden", background: "#F5F4F0" }}>
-      {STEPS.map((s, i) =>
-        images[s.key] ? (
-          <img
-            key={s.key}
-            src={images[s.key]}
-            alt={s.title}
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: i === active ? 1 : 0, transition: "opacity 0.7s ease" }}
-          />
-        ) : (
+    <svg width={width} height={width * 0.867} viewBox="0 0 120 104" fill="none" style={{ opacity }} aria-hidden>
+      {[40, 60, 80, 100].map((y) => (
+        <polyline key={y} points={`12,${y} 60,${y - 28} 108,${y}`} stroke={color} strokeWidth={7} strokeLinecap="round" strokeLinejoin="round" />
+      ))}
+    </svg>
+  );
+}
+
+/**
+ * The right-hand panel. A Supabase-managed photo wins when one exists; otherwise
+ * we compose a branded graphic (masked grid, accent bloom, chevron watermark,
+ * ringed medallion) so an unset image still reads as designed rather than blank.
+ */
+function StepVisual({ step, image, count, compact = false }: { step: StepData; image?: string; count: number; compact?: boolean }) {
+  const medallion = compact ? 74 : 104;
+  const ringOuter = compact ? 152 : 214;
+  const ringInner = compact ? 112 : 156;
+  return (
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        borderRadius: 22,
+        overflow: "hidden",
+        background: image ? step.bgDeep : `linear-gradient(155deg, ${step.bgDeep} 0%, ${step.bg} 52%, #FFFFFF 100%)`,
+        border: "1px solid rgba(64,50,34,0.10)",
+        boxShadow: "0 30px 60px -34px rgba(17,17,20,0.30), 0 2px 6px -2px rgba(17,17,20,0.06)",
+      }}
+    >
+      {image ? (
+        <img src={image} alt={step.title} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+      ) : (
+        <>
           <div
-            key={s.key}
-            style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(135deg, ${s.color}22, ${s.color}0a)`, opacity: i === active ? 1 : 0, transition: "opacity 0.7s ease" }}
-          >
-            <IconSvg path={s.icon} size={72} stroke={s.color} strokeWidth={1.2} />
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage:
+                "linear-gradient(rgba(64,50,34,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(64,50,34,0.05) 1px, transparent 1px)",
+              backgroundSize: "42px 42px",
+              maskImage: "radial-gradient(circle at 60% 40%, #000 18%, transparent 72%)",
+              WebkitMaskImage: "radial-gradient(circle at 60% 40%, #000 18%, transparent 72%)",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: -90,
+              right: -70,
+              width: 340,
+              height: 340,
+              borderRadius: 9999,
+              background: `radial-gradient(circle, ${step.color}26, transparent 68%)`,
+            }}
+          />
+          <div style={{ position: "absolute", bottom: compact ? -52 : -74, left: compact ? -44 : -62, transform: "rotate(-8deg)" }}>
+            <ChevronMark color={step.color} width={compact ? 168 : 236} opacity={0.09} />
           </div>
-        )
+
+          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ position: "absolute", width: ringOuter, height: ringOuter, borderRadius: 9999, border: `1px solid ${step.color}1A` }} />
+              <span style={{ position: "absolute", width: ringInner, height: ringInner, borderRadius: 9999, border: `1px solid ${step.color}2B` }} />
+              <div
+                style={{
+                  position: "relative",
+                  width: medallion,
+                  height: medallion,
+                  borderRadius: 9999,
+                  background: "rgba(255,255,255,0.78)",
+                  backdropFilter: "blur(6px)",
+                  WebkitBackdropFilter: "blur(6px)",
+                  border: "1px solid rgba(255,255,255,0.9)",
+                  boxShadow: "0 18px 34px -16px rgba(17,17,20,0.24)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconSvg path={step.icon} size={compact ? 34 : 50} stroke={step.color} strokeWidth={1.6} />
+              </div>
+            </div>
+          </div>
+
+          <div
+            style={{
+              position: "absolute",
+              top: compact ? 14 : 22,
+              left: compact ? 14 : 22,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: compact ? 6 : 8,
+              padding: compact ? "5px 10px" : "7px 13px",
+              borderRadius: 9999,
+              background: "rgba(255,255,255,0.8)",
+              backdropFilter: "blur(6px)",
+              WebkitBackdropFilter: "blur(6px)",
+              border: "1px solid rgba(64,50,34,0.09)",
+              boxShadow: "0 6px 16px -8px rgba(17,17,20,0.18)",
+            }}
+          >
+            <span style={{ width: compact ? 5 : 6, height: compact ? 5 : 6, borderRadius: 9999, background: step.color }} />
+            <span style={{ fontSize: compact ? 10 : 11.5, fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: MUTED }}>
+              {count} programs
+            </span>
+          </div>
+        </>
       )}
     </div>
   );
 }
 
+function CardBody({ step, compact = false }: { step: StepData; compact?: boolean }) {
+  return (
+    <>
+      <div>
+        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: compact ? 16 : 24 }}>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minWidth: 42,
+              height: 26,
+              padding: "0 11px",
+              borderRadius: 9999,
+              background: step.color,
+              color: "#fff",
+              fontSize: 11.5,
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+            }}
+          >
+            {step.number}
+          </span>
+          <span style={{ flex: 1, height: 1, background: `${step.color}26` }} />
+        </div>
+
+        <h3
+          style={{
+            margin: "0 0 12px",
+            fontSize: compact ? 23 : 37,
+            fontWeight: 600,
+            letterSpacing: "-0.026em",
+            color: DARK,
+            lineHeight: 1.12,
+          }}
+        >
+          {step.title}
+        </h3>
+        <p
+          style={{
+            margin: `0 0 ${compact ? 12 : 18}px`,
+            fontSize: compact ? 14.5 : 18,
+            fontWeight: 600,
+            lineHeight: 1.4,
+            letterSpacing: "-0.008em",
+            color: step.color,
+            maxWidth: 430,
+          }}
+        >
+          {step.theme}
+        </p>
+        <p style={{ margin: 0, fontSize: compact ? 13.5 : 15.5, lineHeight: 1.68, color: MUTED, maxWidth: 468 }}>{step.purpose}</p>
+      </div>
+
+      <div style={{ marginTop: compact ? 20 : 34, paddingTop: compact ? 16 : 24, borderTop: "1px solid rgba(64,50,34,0.12)" }}>
+        <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: FAINT, marginBottom: 13 }}>
+          Highlights
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {step.highlights.map((h) => (
+            <span
+              key={h}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 7,
+                padding: compact ? "7px 12px" : "8px 14px",
+                borderRadius: 9999,
+                background: "rgba(255,255,255,0.92)",
+                border: "1px solid rgba(64,50,34,0.11)",
+                boxShadow: "0 1px 2px rgba(17,17,20,0.04)",
+                fontSize: compact ? 12.5 : 13.5,
+                fontWeight: 600,
+                letterSpacing: "-0.005em",
+                color: DARK,
+              }}
+            >
+              <span style={{ width: 5, height: 5, borderRadius: 9999, background: step.color, flexShrink: 0 }} />
+              {h}
+            </span>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
 export default function EcosystemModel() {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
   const [images, setImages] = useState<Record<string, string>>({});
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     if (!supabase) return;
@@ -154,184 +318,124 @@ export default function EcosystemModel() {
     };
   }, []);
 
+  // Each pinned card recedes — scales back and dims — as the next one slides
+  // over it, so the stack reads as a physical deck instead of a hard swap.
+  const syncDepth = useCallback(() => {
+    const vh = window.innerHeight;
+    cardRefs.current.forEach((card, i) => {
+      if (!card) return;
+      const next = cardRefs.current[i + 1];
+      const covered = next ? 1 - Math.min(Math.max(next.getBoundingClientRect().top / vh, 0), 1) : 0;
+      const eased = covered * covered * (3 - 2 * covered);
+      card.style.transform = `scale(${1 - eased * 0.055}) translateY(${-eased * 16}px)`;
+      const veil = card.firstElementChild as HTMLElement | null;
+      if (veil) veil.style.opacity = String(eased * 0.5);
+    });
+  }, []);
+
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let queued = false;
     function onScroll() {
-      const el = wrapRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const total = rect.height - window.innerHeight;
-      if (total <= 0) {
-        setActive(0);
-        return;
-      }
-      const scrolled = Math.min(Math.max(-rect.top, 0), total);
-      const p = scrolled / total;
-      const idx = Math.min(STEPS.length - 1, Math.floor(p * STEPS.length + 0.0001));
-      setActive(idx);
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        syncDepth();
+      });
     }
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
-    onScroll();
+    syncDepth();
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
-
-  function goToStep(i: number) {
-    const el = wrapRef.current;
-    if (!el) return;
-    const total = el.getBoundingClientRect().height - window.innerHeight;
-    const targetP = (i + 0.25) / STEPS.length;
-    const targetScroll = window.scrollY + el.getBoundingClientRect().top + targetP * total;
-    window.scrollTo({ top: targetScroll, behavior: "smooth" });
-  }
-
-  const step = STEPS[active];
+  }, [syncDepth]);
 
   return (
     <>
-      {/* DESKTOP: sticky scrollytelling */}
-      <section ref={wrapRef} className="ib-4e-wrap" style={{ position: "relative", height: `${STEPS.length * 100}vh`, background: "#fff" }}>
-        <div className="ib-4e-sticky" style={{ position: "sticky", top: 0, height: "100vh", background: "#fff", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-          <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1.1fr", gap: 0, minHeight: 0, maxWidth: 1320, width: "100%", margin: "0 auto", padding: "40px 40px 0", alignItems: "stretch", position: "relative" }}>
-            {/* Illustration */}
-            <div style={{ height: "100%", position: "relative", display: "flex", flexDirection: "column" }}>
-              <div style={{ flexShrink: 0, marginBottom: 8 }}>
-                <div style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: ORANGE, marginBottom: 10 }}>Our Programs</div>
-                <h2 style={{ margin: 0, fontSize: 30, fontWeight: 800, letterSpacing: "-0.02em", color: DARK, lineHeight: 1.15 }}>Programs Built Around the <span style={{ color: ORANGE }}>Startup Journey.</span></h2>
+      {/* DESKTOP: sticky stacking deck */}
+      <section className="ib-stack-wrap" style={{ position: "relative", marginTop: 64, background: "#fff" }}>
+        {STEPS.map((s, i) => (
+          <div
+            key={s.key}
+            ref={(el) => {
+              cardRefs.current[i] = el;
+            }}
+            style={{
+              position: "sticky",
+              top: 0,
+              zIndex: i + 1,
+              minHeight: "100vh",
+              display: "flex",
+              alignItems: "center",
+              background: s.bg,
+              borderRadius: "30px 30px 0 0",
+              borderTop: "1px solid rgba(255,255,255,0.7)",
+              boxShadow: "0 -30px 60px -30px rgba(17,17,20,0.22)",
+              transformOrigin: "center top",
+              willChange: "transform",
+            }}
+          >
+            {/* Recede veil — opacity driven by syncDepth. */}
+            <div
+              aria-hidden
+              style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: "30px 30px 0 0",
+                background: "rgba(18,18,22,0.16)",
+                opacity: 0,
+                pointerEvents: "none",
+                zIndex: 2,
+              }}
+            />
+            <div
+              style={{
+                position: "relative",
+                zIndex: 1,
+                maxWidth: 1200,
+                width: "100%",
+                margin: "0 auto",
+                // Fluid so a short viewport can't push the pinned card past 100vh.
+                padding: "clamp(44px, 7vh, 76px) 48px",
+                display: "grid",
+                gridTemplateColumns: "1fr 1.04fr",
+                gap: 72,
+                alignItems: "center",
+              }}
+            >
+              <div>
+                <CardBody step={s} />
               </div>
-              <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
-                <ProgramPhotoStack active={active} images={images} />
+              <div style={{ height: "clamp(300px, 55vh, 452px)" }}>
+                <StepVisual step={s} image={images[s.key]} count={s.highlights.length} />
               </div>
-            </div>
-
-            {/* Content */}
-            <div style={{ paddingLeft: 56, display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }} className="ib-4e-content">
-              <div style={{ flexShrink: 0 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#9A958B", marginBottom: 18 }}>{step.number} / 0{STEPS.length}</div>
-                <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 20 }}>
-                  <div style={{ width: 68, height: 68, borderRadius: 9999, background: step.color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 0.5s ease" }}>
-                    <IconSvg path={step.icon} size={32} stroke="#fff" strokeWidth={1.7} />
-                  </div>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: 30, fontWeight: 800, letterSpacing: "-0.01em", color: DARK, lineHeight: 1.1 }}>{step.title}</h3>
-                    <div style={{ fontSize: 15, fontWeight: 600, color: step.color, marginTop: 4, transition: "color 0.5s ease" }}>{step.theme}</div>
-                  </div>
-                </div>
-                <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.6, color: "#6B6B73", maxWidth: 520 }}>{step.purpose}</p>
-              </div>
-
-              <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", marginTop: 22, paddingTop: 20, borderTop: "1px solid rgba(20,20,25,0.08)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 14, flexShrink: 0 }}>
-                  <IconSvg path={ICONS.briefcase} size={15} stroke={ORANGE} strokeWidth={2.2} />
-                  <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B" }}>Programs</span>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 16, overflowY: "auto", paddingRight: 8, minHeight: 0 }} className="ib-4e-programs">
-                  {step.programs.map((p) => (
-                    <div key={p.title} style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: DARK, lineHeight: 1.3 }}>{p.title}</div>
-                      <div style={{ fontSize: 12.5, color: "#9A958B", lineHeight: 1.45 }}>{p.tagline}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Vertical timeline, far right */}
-            <div className="ib-4e-timeline" style={{ position: "absolute", right: -8, top: "50%", transform: "translateY(-50%)", display: "flex", flexDirection: "column", alignItems: "center" }}>
-              {STEPS.map((s, i) => (
-                <div key={s.key} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <button
-                    onClick={() => goToStep(i)}
-                    aria-label={`Go to ${s.title}`}
-                    title={s.title}
-                    style={{
-                      width: 30,
-                      height: 30,
-                      borderRadius: 9999,
-                      border: "none",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 11,
-                      fontWeight: 700,
-                      color: i <= active ? "#fff" : "#9A958B",
-                      background: i <= active ? step.color : "#F4F2EC",
-                      transition: "background 0.5s ease, color 0.5s ease",
-                      flexShrink: 0,
-                      margin: "4px 0",
-                    }}
-                  >
-                    {s.number}
-                  </button>
-                  {i < STEPS.length - 1 && <span style={{ width: 1.5, height: 26, background: i < active ? step.color : "rgba(20,20,25,0.12)", transition: "background 0.4s ease" }} />}
-                </div>
-              ))}
             </div>
           </div>
-
-          {/* Bottom step bar */}
-          <div style={{ flexShrink: 0, padding: "16px 40px", borderTop: "1px solid rgba(20,20,25,0.07)" }}>
-            <div style={{ maxWidth: 1180, margin: "0 auto", display: "flex", alignItems: "center", background: "#FAFAF7", borderRadius: 16, padding: "10px 18px" }} className="ib-4e-bottombar">
-              {STEPS.map((s, i) => (
-                <div key={s.key} style={{ display: "flex", alignItems: "center", flex: 1, minWidth: 0 }}>
-                  <button
-                    onClick={() => goToStep(i)}
-                    style={{ display: "flex", alignItems: "center", gap: 10, background: "none", border: "none", cursor: "pointer", textAlign: "left", padding: "6px 8px", borderRadius: 10, minWidth: 0, opacity: i === active ? 1 : 0.55, transition: "opacity 0.4s ease" }}
-                  >
-                    <span style={{ width: 26, height: 26, borderRadius: 9999, background: i === active ? s.color : "#fff", border: `1.5px solid ${i === active ? s.color : "rgba(20,20,25,0.15)"}`, color: i === active ? "#fff" : "#9A958B", fontSize: 10.5, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 0.4s ease, border-color 0.4s ease" }}>
-                      {s.number}
-                    </span>
-                    <span style={{ minWidth: 0 }}>
-                      <div style={{ fontSize: 12.5, fontWeight: 700, color: DARK, whiteSpace: "nowrap" }}>{s.title}</div>
-                      <div className="ib-4e-bottombar-theme" style={{ fontSize: 10.5, color: "#9A958B", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.theme}</div>
-                    </span>
-                  </button>
-                  {i < STEPS.length - 1 && (
-                    <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="#C9C5BB" strokeWidth={2.4} style={{ flexShrink: 0, margin: "0 4px" }}><path d="m9 6 6 6-6 6" /></svg>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        ))}
       </section>
 
-      {/* MOBILE fallback: stacked, non-sticky */}
-      <section className="ib-4e-mobile" style={{ background: "#fff", padding: "56px 24px", display: "none" }}>
-        <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <div style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: ORANGE, marginBottom: 8 }}>Our Programs</div>
-          <h2 style={{ margin: 0, fontSize: 26, fontWeight: 800, letterSpacing: "-0.02em", color: DARK }}>Programs Built Around the <span style={{ color: ORANGE }}>Startup Journey.</span></h2>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+      {/* MOBILE fallback: plain stacked cards */}
+      <section className="ib-stack-mobile" style={{ background: "#fff", padding: "0 22px 60px", display: "none" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20, marginTop: 44 }}>
           {STEPS.map((s) => (
-            <div key={s.key} style={{ border: "1px solid rgba(20,20,25,0.10)", borderRadius: 20, overflow: "hidden" }}>
-              {images[s.key] && (
-                <img src={images[s.key]} alt={s.title} style={{ width: "100%", height: 160, objectFit: "cover", display: "block" }} />
-              )}
-              <div style={{ padding: "26px 22px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 12 }}>
-                <div style={{ width: 48, height: 48, borderRadius: 9999, background: s.color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <IconSvg path={s.icon} size={22} stroke="#fff" strokeWidth={1.8} />
-                </div>
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#9A958B" }}>{s.number} / 0{STEPS.length}</div>
-                  <h3 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: DARK }}>{s.title}</h3>
-                </div>
+            <div
+              key={s.key}
+              style={{
+                background: s.bg,
+                border: "1px solid rgba(64,50,34,0.11)",
+                borderRadius: 22,
+                overflow: "hidden",
+                boxShadow: "0 10px 26px -18px rgba(17,17,20,0.18)",
+              }}
+            >
+              <div style={{ height: 196, padding: 14, paddingBottom: 0 }}>
+                <StepVisual step={s} image={images[s.key]} count={s.highlights.length} compact />
               </div>
-              <div style={{ fontSize: 13.5, fontWeight: 600, color: s.color, marginBottom: 10 }}>{s.theme}</div>
-              <p style={{ margin: "0 0 16px", fontSize: 13.5, lineHeight: 1.6, color: "#6B6B73" }}>{s.purpose}</p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 14, paddingTop: 14, borderTop: "1px solid rgba(20,20,25,0.08)" }}>
-                <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9A958B", marginBottom: 2 }}>Programs</div>
-                {s.programs.map((p) => (
-                  <div key={p.title} style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: DARK, lineHeight: 1.3 }}>{p.title}</div>
-                    <div style={{ fontSize: 12, color: "#9A958B", lineHeight: 1.45 }}>{p.tagline}</div>
-                  </div>
-                ))}
-              </div>
+              <div style={{ padding: "22px 20px 24px" }}>
+                <CardBody step={s} compact />
               </div>
             </div>
           ))}

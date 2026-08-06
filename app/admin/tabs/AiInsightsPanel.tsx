@@ -80,7 +80,7 @@ export default function AiInsightsPanel({ ready }: { ready: boolean }) {
   }, [ready]);
 
   return (
-    <div style={{ background: "linear-gradient(135deg,#181819 0%,#0E0E10 100%)", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(242,101,34,0.25)" }}>
+    <div style={{ background: "linear-gradient(135deg,#1C1917 0%,#131110 100%)", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(242,101,34,0.25)" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
           <div style={{ width: 26, height: 26, borderRadius: 8, background: "rgba(242,101,34,0.18)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -89,7 +89,7 @@ export default function AiInsightsPanel({ ready }: { ready: boolean }) {
               <circle cx="12" cy="12" r="4" />
             </svg>
           </div>
-          <span style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>AI Insights</span>
+          <span style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>AI Insights</span>
         </div>
         <button
           onClick={regenerate}

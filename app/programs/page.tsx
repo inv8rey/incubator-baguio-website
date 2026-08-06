@@ -96,7 +96,7 @@ const PATHS: {
 
 const PROGRAMS_HTML_TOP = `
 <!-- NAV -->
-<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:#0E0E10;position:sticky;top:0;z-index:50;">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:#131110;position:sticky;top:0;z-index:50;">
   <a href="${BP}/" style="display:flex;align-items:center;gap:11px;text-decoration:none;"><img src="${BP}/assets/city-of-baguio-seal.png" alt="City of Baguio" style="height:46px;width:auto;"><img src="${BP}/assets/cpdso-logo.png" alt="CPDSO" style="height:46px;width:auto;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:32px;width:auto;"><div style="font-size:16px;font-weight:600;color:#fff;">Incubator Baguio</div></a>
   <div style="display:flex;align-items:center;gap:28px;">
     <div style="display:flex;gap:22px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.72);">
@@ -116,13 +116,13 @@ const PROGRAMS_HTML_TOP = `
 </div>
 
 <!-- HERO -->
-<div style="position:relative;background:#0B0B0D;overflow:hidden;">
+<div style="position:relative;background:#100D0B;overflow:hidden;">
   <div class="ib-programs-hero" style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:1.3fr 1fr;align-items:stretch;">
     <div style="position:relative;padding:88px 40px;display:flex;flex-direction:column;justify-content:center;">
       <div style="position:absolute;top:-120px;left:-100px;width:420px;height:420px;background:radial-gradient(circle,rgba(242,101,34,0.2),transparent 65%);pointer-events:none;"></div>
       <div style="position:relative;">
-        <div style="font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:16px;">Programs &amp; Opportunities</div>
-        <h1 style="margin:0;font-size:46px;font-weight:800;letter-spacing:-0.03em;color:#fff;line-height:1.12;max-width:560px;">Find the Right Opportunity for Your <span style="color:#F26522;">Innovation Journey.</span></h1>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:16px;">Programs &amp; Opportunities</div>
+        <h1 style="margin:0;font-size:46px;font-weight:500;letter-spacing:-0.03em;color:#fff;line-height:1.12;max-width:560px;">Find the Right Opportunity for Your <span style="color:#F26522;">Innovation Journey.</span></h1>
         <p style="margin:20px 0 0;font-size:16px;line-height:1.65;color:rgba(255,255,255,0.62);max-width:520px;">Whether you&rsquo;re a founder, student, researcher, mentor, investor, or organization, discover programs, events, funding opportunities, and ecosystem initiatives designed to help you succeed.</p>
 
         <div style="display:grid;grid-template-columns:repeat(2,auto);gap:16px 36px;margin:32px 0 30px;">
@@ -134,7 +134,7 @@ const PROGRAMS_HTML_TOP = `
           ].map((s) => `
           <div style="display:flex;align-items:center;gap:11px;">
             <div style="width:38px;height:38px;border-radius:9999px;background:${s[1]};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${s[2]}</div>
-            <div><div style="font-size:19px;font-weight:700;color:#fff;letter-spacing:-0.01em;line-height:1.1;">${s[3]}</div><div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;">${s[4]}</div></div>
+            <div><div style="font-size:19px;font-weight:600;color:#fff;letter-spacing:-0.01em;line-height:1.1;">${s[3]}</div><div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;">${s[4]}</div></div>
           </div>`).join("")}
         </div>
 
@@ -147,8 +147,8 @@ const PROGRAMS_HTML_TOP = `
       </div>
     </div>
 
-    <div style="position:relative;overflow:hidden;background:radial-gradient(120% 90% at 78% 30%,#F2A24A 0%,#C9591F 28%,#5A1E12 55%,#0B0B0D 80%);">
-      <div style="position:absolute;inset:0;background:linear-gradient(100deg,#0B0B0D 0%,rgba(11,11,13,0.4) 22%,transparent 48%);"></div>
+    <div style="position:relative;overflow:hidden;background:radial-gradient(120% 90% at 78% 30%,#F2A24A 0%,#C9591F 28%,#5A1E12 55%,#100D0B 80%);">
+      <div style="position:absolute;inset:0;background:linear-gradient(100deg,#100D0B 0%,rgba(11,11,13,0.4) 22%,transparent 48%);"></div>
       <svg style="position:absolute;left:0;top:0;width:100%;height:100%;" viewBox="0 0 600 560" fill="none" preserveAspectRatio="xMidYMid slice">
         <path d="M40 470 L130 470 L130 380 L190 380 L190 320 L250 320 L250 470" stroke="rgba(20,10,5,0.55)" stroke-width="3" fill="none"></path>
         <path d="M320 470 L320 300 L360 250 L400 300 L400 470" stroke="rgba(20,10,5,0.5)" stroke-width="3" fill="none"></path>
@@ -166,24 +166,24 @@ const PROGRAMS_HTML_TOP = `
 
 const PROGRAMS_HTML_BOTTOM = `
 <!-- WHAT BRINGS YOU HERE (bento) -->
-<div id="program-grid" style="background:#FAFAF7;padding:64px 40px;border-bottom:1px solid rgba(20,20,25,0.06);">
+<div id="program-grid" style="background:#F6F2EA;padding:64px 40px;border-bottom:1px solid rgba(64,50,34,0.09);">
   <div style="max-width:1180px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:40px;">
       <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">Get Started</div>
-      <h2 style="margin:0;font-size:38px;font-weight:700;letter-spacing:-0.025em;color:#141417;">What brings <span style="color:#F26522;">you</span> here?</h2>
-      <p style="margin:14px auto 0;font-size:15px;line-height:1.6;color:#6B6B73;max-width:520px;">Choose the path that fits you best. We&rsquo;ll help you take the next step.</p>
+      <h2 style="margin:0;font-size:38px;font-weight:500;letter-spacing:-0.025em;color:#1A1714;">What brings <span style="color:#F26522;">you</span> here?</h2>
+      <p style="margin:14px auto 0;font-size:15px;line-height:1.6;color:#5A544B;max-width:520px;">Choose the path that fits you best. We&rsquo;ll help you take the next step.</p>
     </div>
     <div class="ib-brings-grid" style="display:grid;grid-template-columns:repeat(12,1fr);gap:18px;">
       ${PATHS.map((p, i) => {
         const span = i < 3 ? 4 : 6;
         const wide = span === 6;
         return `
-      <div class="ib-challenge-hover" style="grid-column:span ${span};background:#fff;border:1px solid rgba(20,20,25,0.10);border-radius:20px;padding:30px 28px;display:flex;flex-direction:column;">
+      <div class="ib-challenge-hover" style="grid-column:span ${span};background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:20px;padding:30px 28px;display:flex;flex-direction:column;">
         <div style="width:56px;height:56px;border-radius:9999px;background:${p.bg};display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p.icon}</svg>
         </div>
-        <h3 style="margin:0 0 18px;font-size:19px;font-weight:700;color:#141417;letter-spacing:-0.01em;">${p.title}</h3>
-        <div style="display:grid;grid-template-columns:${wide ? "repeat(2,1fr)" : "1fr"};gap:9px 18px;padding-top:16px;border-top:1px solid rgba(20,20,25,0.07);margin-bottom:24px;flex:1;">
+        <h3 style="margin:0 0 18px;font-size:19px;font-weight:600;color:#1A1714;letter-spacing:-0.01em;">${p.title}</h3>
+        <div style="display:grid;grid-template-columns:${wide ? "repeat(2,1fr)" : "1fr"};gap:9px 18px;padding-top:16px;border-top:1px solid rgba(64,50,34,0.10);margin-bottom:24px;flex:1;">
           ${p.items.map((it) => `<div style="display:flex;align-items:center;gap:9px;font-size:13.5px;color:#44444C;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M20 6 9 17l-5-5"></path></svg>${it}</div>`).join("")}
         </div>
         <a href="${p.href}" style="margin-top:auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid ${p.color};color:${p.color};font-weight:600;font-size:14px;padding:12px 20px;border-radius:9999px;text-decoration:none;">${p.cta} <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
@@ -197,18 +197,18 @@ const PROGRAMS_HTML_BOTTOM = `
 <div style="background:#fff;padding:88px 40px;">
   <div style="max-width:860px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:48px;">
-      <h2 style="margin:0;font-size:46px;font-weight:800;letter-spacing:-0.03em;color:#141417;line-height:1.1;">Frequently asked questions</h2>
-      <p style="margin:18px auto 0;font-size:16px;line-height:1.6;color:#6B6B73;max-width:420px;">Everything you need to know about the Incubator Baguio ecosystem.</p>
+      <h2 style="margin:0;font-size:46px;font-weight:500;letter-spacing:-0.03em;color:#1A1714;line-height:1.1;">Frequently asked questions</h2>
+      <p style="margin:18px auto 0;font-size:16px;line-height:1.6;color:#5A544B;max-width:420px;">Everything you need to know about the Incubator Baguio ecosystem.</p>
     </div>
     <div style="display:flex;flex-direction:column;gap:16px;">
       ${FAQS.map((f) => `
       <details class="ib-faq-item" style="background:#F7F3ED;border-radius:20px;overflow:hidden;">
         <summary class="ib-faq-summary" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:26px 32px;">
-          <span style="font-size:17px;font-weight:600;color:#141417;">${f.q}</span>
+          <span style="font-size:17px;font-weight:600;color:#1A1714;">${f.q}</span>
           <svg class="ib-faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M6 9l6 6 6-6"></path></svg>
         </summary>
         <div style="padding:0 32px 28px;">
-          <p style="margin:0;font-size:14.5px;line-height:1.65;color:#6B6B73;max-width:680px;">${f.a}</p>
+          <p style="margin:0;font-size:14.5px;line-height:1.65;color:#5A544B;max-width:680px;">${f.a}</p>
         </div>
       </details>`).join("")}
     </div>
@@ -216,7 +216,7 @@ const PROGRAMS_HTML_BOTTOM = `
 </div>
 
 <!-- FOOTER -->
-<div style="background:#0B0B0D;padding:56px 40px 36px;">
+<div style="background:#100D0B;padding:56px 40px 36px;">
   <div style="max-width:1180px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.08);">
       <div>

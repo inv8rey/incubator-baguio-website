@@ -8,7 +8,7 @@ import { CATEGORY_COLORS, EVENT_FORMATS, ORGANIZER_TYPES, type EventCategory, ty
 
 const EVENT_CATEGORIES = Object.keys(CATEGORY_COLORS) as EventCategory[];
 
-const modalInputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "10px 14px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.14)", fontSize: 13.5, color: DARK, outline: "none", fontFamily: "inherit" };
+const modalInputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "10px 14px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", fontSize: 13.5, color: DARK, outline: "none", fontFamily: "inherit" };
 const modalLabelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 5, display: "block" };
 
 const STATUSES = ["pending", "approved", "rejected"] as const;
@@ -126,10 +126,10 @@ function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; o
       <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, padding: "32px 36px", width: "100%", maxWidth: 560, boxShadow: "0 24px 64px rgba(0,0,0,0.18)", display: "flex", flexDirection: "column", gap: 18, maxHeight: "88vh", overflowY: "auto" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>{isEdit ? "Edit event" : "Add event"}</div>
-            <div style={{ fontSize: 12.5, color: "#9A958B", marginTop: 3 }}>{isEdit ? "Changes save immediately." : "Goes live on the calendar immediately."}</div>
+            <div style={{ fontSize: 20, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{isEdit ? "Edit event" : "Add event"}</div>
+            <div style={{ fontSize: 12.5, color: "#8B8479", marginTop: 3 }}>{isEdit ? "Changes save immediately." : "Goes live on the calendar immediately."}</div>
           </div>
-          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#6B6B73", flexShrink: 0 }}>&times;</button>
+          <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#5A544B", flexShrink: 0 }}>&times;</button>
         </div>
 
         <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -137,7 +137,7 @@ function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; o
             <label style={modalLabelStyle}>Poster</label>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               {posterUrl ? (
-                <img src={posterUrl} alt="" style={{ width: 68, height: 68, borderRadius: 10, objectFit: "cover", flexShrink: 0, border: "1px solid rgba(20,20,25,0.1)" }} />
+                <img src={posterUrl} alt="" style={{ width: 68, height: 68, borderRadius: 10, objectFit: "cover", flexShrink: 0, border: "1px solid rgba(64,50,34,0.13)" }} />
               ) : (
                 <div style={{ width: 68, height: 68, borderRadius: 10, background: "#F5F4F0", flexShrink: 0 }} />
               )}
@@ -146,7 +146,7 @@ function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; o
                 <input type="file" accept="image/*" onChange={handlePosterChange} disabled={posterUploading} style={{ display: "none" }} />
               </label>
               {posterUrl && (
-                <button type="button" onClick={() => setPosterUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#9A958B", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
+                <button type="button" onClick={() => setPosterUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#8B8479", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
               )}
             </div>
           </div>
@@ -224,7 +224,7 @@ function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; o
           {error && <p style={{ color: "#E23A2E", fontSize: 12.5, margin: 0 }}>{error}</p>}
 
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", paddingTop: 4 }}>
-            <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(20,20,25,0.12)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
+            <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
             <button type="submit" disabled={status === "loading" || posterUploading} style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: status === "loading" ? 0.7 : 1 }}>
               {status === "loading" ? "Saving…" : isEdit ? "Save changes" : "Add event"}
             </button>
@@ -279,7 +279,7 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
 
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
-      <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(20,20,25,0.09)", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+      <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(64,50,34,0.12)", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <div style={{ display: "flex", gap: 6, flex: 1, flexWrap: "wrap" }}>
           {STATUSES.map((s) => {
             const active = status === s;
@@ -294,8 +294,8 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
                   padding: "6px 14px",
                   borderRadius: 999,
                   border: "none",
-                  color: active ? "#fff" : "#6B6B73",
-                  background: active ? "#0E0E10" : "#F5F4F0",
+                  color: active ? "#fff" : "#5A544B",
+                  background: active ? "#131110" : "#F5F4F0",
                   cursor: "pointer",
                   display: "inline-flex",
                   alignItems: "center",
@@ -315,25 +315,25 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
         {filtered.map((e) => {
           const sc = STATUS_COLORS[e.status];
           return (
-            <div key={e.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18, display: "flex", gap: 16, alignItems: "flex-start" }}>
+            <div key={e.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", padding: 18, display: "flex", gap: 16, alignItems: "flex-start" }}>
               {e.poster_url ? (
                 <img src={e.poster_url} alt="" style={{ width: 56, height: 56, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
               ) : null}
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4, flexWrap: "wrap" }}>
-                  <span style={{ fontSize: 14.5, fontWeight: 700, color: DARK }}>{e.title}</span>
-                  <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: sc.color, background: sc.bg, padding: "3px 9px", borderRadius: 999 }}>{STATUS_LABELS[e.status]}</span>
+                  <span style={{ fontSize: 14.5, fontWeight: 600, color: DARK }}>{e.title}</span>
+                  <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: sc.color, background: sc.bg, padding: "3px 9px", borderRadius: 999 }}>{STATUS_LABELS[e.status]}</span>
                 </div>
-                <div style={{ fontSize: 12, color: "#9A958B", marginBottom: 8 }}>
+                <div style={{ fontSize: 12, color: "#8B8479", marginBottom: 8 }}>
                   {formatDate(e.event_date)}{e.event_time ? ` · ${e.event_time}` : ""} · {e.venue || "TBD"} · {e.org} ({e.org_type})
                 </div>
-                <div style={{ fontSize: 12.5, color: "#6B6B73", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <div style={{ fontSize: 12.5, color: "#5A544B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   Submitted by {e.contact_name} &middot; {e.email}
                 </div>
               </div>
               <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
                 <button onClick={() => setViewing(e)} style={{ fontSize: 12, fontWeight: 600, color: "#285E7A", background: "none", border: "1.5px solid rgba(40,94,122,0.3)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>View</button>
-                <button onClick={() => setEditing(e)} style={{ fontSize: 12, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(20,20,25,0.14)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Edit</button>
+                <button onClick={() => setEditing(e)} style={{ fontSize: 12, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Edit</button>
                 {e.status !== "approved" && (
                   <button onClick={() => setEventStatus(e.id, "approved")} style={{ fontSize: 12, fontWeight: 600, color: "#fff", background: "#1A6B3C", border: "none", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Approve</button>
                 )}
@@ -346,7 +346,7 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
         })}
 
         {loaded && filtered.length === 0 && (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)" }}>
+          <div style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             No {STATUS_LABELS[status].toLowerCase()} submissions.
           </div>
         )}
@@ -356,41 +356,41 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
         <div onClick={() => setViewing(null)} style={{ position: "fixed", inset: 0, background: "rgba(15,15,17,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 20 }}>
           <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 18, padding: 26, width: "100%", maxWidth: 480, display: "flex", flexDirection: "column", gap: 14, maxHeight: "88vh", overflowY: "auto" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div style={{ fontSize: 16.5, fontWeight: 700, color: DARK }}>{viewing.title}</div>
-              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#9A958B", lineHeight: 1 }}>×</button>
+              <div style={{ fontSize: 16.5, fontWeight: 600, color: DARK }}>{viewing.title}</div>
+              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#8B8479", lineHeight: 1 }}>×</button>
             </div>
             {viewing.poster_url && (
               <img src={viewing.poster_url} alt="" style={{ width: "100%", borderRadius: 12, objectFit: "cover", maxHeight: 220 }} />
             )}
             <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13 }}>
-              <div><span style={{ color: "#9A958B" }}>Category:</span> <strong>{viewing.category}</strong></div>
-              <div><span style={{ color: "#9A958B" }}>When:</span> <strong>{formatDate(viewing.event_date)}{viewing.end_date ? ` – ${formatDate(viewing.end_date)}` : ""}{viewing.event_time ? `, ${viewing.event_time}` : ""}</strong></div>
-              <div><span style={{ color: "#9A958B" }}>Venue:</span> <strong>{viewing.venue || "—"}</strong> ({viewing.format})</div>
-              <div><span style={{ color: "#9A958B" }}>Organizer:</span> <strong>{viewing.org}</strong> ({viewing.org_type})</div>
+              <div><span style={{ color: "#8B8479" }}>Category:</span> <strong>{viewing.category}</strong></div>
+              <div><span style={{ color: "#8B8479" }}>When:</span> <strong>{formatDate(viewing.event_date)}{viewing.end_date ? ` – ${formatDate(viewing.end_date)}` : ""}{viewing.event_time ? `, ${viewing.event_time}` : ""}</strong></div>
+              <div><span style={{ color: "#8B8479" }}>Venue:</span> <strong>{viewing.venue || "—"}</strong> ({viewing.format})</div>
+              <div><span style={{ color: "#8B8479" }}>Organizer:</span> <strong>{viewing.org}</strong> ({viewing.org_type})</div>
               {viewing.description && (
                 <div>
-                  <span style={{ color: "#9A958B" }}>Description:</span>
+                  <span style={{ color: "#8B8479" }}>Description:</span>
                   <p style={{ margin: "4px 0 0", lineHeight: 1.55 }}>{viewing.description}</p>
                 </div>
               )}
               {viewing.registration_link && (
-                <div><span style={{ color: "#9A958B" }}>Registration link:</span> <a href={viewing.registration_link} target="_blank" rel="noopener noreferrer" style={{ color: "#285E7A", fontWeight: 600 }}>{viewing.registration_link}</a></div>
+                <div><span style={{ color: "#8B8479" }}>Registration link:</span> <a href={viewing.registration_link} target="_blank" rel="noopener noreferrer" style={{ color: "#285E7A", fontWeight: 600 }}>{viewing.registration_link}</a></div>
               )}
-              <div style={{ borderTop: "1px solid rgba(20,20,25,0.08)", paddingTop: 10 }}>
-                <div><span style={{ color: "#9A958B" }}>Contact:</span> <strong>{viewing.contact_name}</strong></div>
-                <div><span style={{ color: "#9A958B" }}>Email:</span> <strong>{viewing.email}</strong></div>
-                {viewing.phone && <div><span style={{ color: "#9A958B" }}>Phone:</span> <strong>{viewing.phone}</strong></div>}
+              <div style={{ borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 10 }}>
+                <div><span style={{ color: "#8B8479" }}>Contact:</span> <strong>{viewing.contact_name}</strong></div>
+                <div><span style={{ color: "#8B8479" }}>Email:</span> <strong>{viewing.email}</strong></div>
+                {viewing.phone && <div><span style={{ color: "#8B8479" }}>Phone:</span> <strong>{viewing.phone}</strong></div>}
               </div>
             </div>
             <div style={{ display: "flex", gap: 8, marginTop: 6, flexWrap: "wrap" }}>
-              <button onClick={() => { setEditing(viewing); setViewing(null); }} style={{ fontSize: 13, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(20,20,25,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}>Edit</button>
+              <button onClick={() => { setEditing(viewing); setViewing(null); }} style={{ fontSize: 13, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}>Edit</button>
               {viewing.status !== "approved" && (
                 <button onClick={() => setEventStatus(viewing.id, "approved")} style={{ fontSize: 13, fontWeight: 600, color: "#fff", background: "#1A6B3C", border: "none", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}>Approve</button>
               )}
               {viewing.status !== "rejected" && (
                 <button onClick={() => setEventStatus(viewing.id, "rejected")} style={{ fontSize: 13, fontWeight: 600, color: "#E23A2E", background: "none", border: "1.5px solid rgba(226,58,46,0.3)", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}>Reject</button>
               )}
-              <button onClick={() => remove(viewing.id)} style={{ fontSize: 13, fontWeight: 600, color: "#9A958B", background: "none", border: "1.5px solid rgba(20,20,25,0.12)", borderRadius: 999, padding: "9px 18px", cursor: "pointer", marginLeft: "auto" }}>Delete</button>
+              <button onClick={() => remove(viewing.id)} style={{ fontSize: 13, fontWeight: 600, color: "#8B8479", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer", marginLeft: "auto" }}>Delete</button>
             </div>
           </div>
         </div>

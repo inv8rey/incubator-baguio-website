@@ -1,6 +1,6 @@
 import { checkRateLimit, getClientIp } from "../../../lib/chatRateLimit";
 import { classifyIntent, fetchChatContext, formatContextBlock, hydrateMatches } from "../../../lib/chatContext";
-import { requestChatCompletion, SYSTEM_PROMPT, type ChatMessage } from "../../../lib/chatCompletion";
+import { requestChatCompletion, SYSTEM_PROMPT, ChatServiceError, type ChatMessage } from "../../../lib/chatCompletion";
 import { parseChatCompletion } from "../../../lib/chatParse";
 
 export const maxDuration = 30;
@@ -54,6 +54,13 @@ export async function POST(req: Request) {
 
     return Response.json({ reply: parsed.text, cards });
   } catch (err: any) {
-    return Response.json({ error: err.message || "Couldn't get a response. Please try again." }, { status: 502 });
+    if (err instanceof ChatServiceError) {
+      return Response.json({ error: err.message }, { status: err.status });
+    }
+    console.error("Unexpected chat error:", err);
+    return Response.json(
+      { error: "The assistant is temporarily unavailable. Please try again shortly." },
+      { status: 502 }
+    );
   }
 }

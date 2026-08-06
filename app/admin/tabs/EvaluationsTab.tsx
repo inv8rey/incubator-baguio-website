@@ -68,10 +68,10 @@ function resolvedVisitPurpose(row: FeedbackRow) {
 
 function StatBox({ label, value, note }: { label: string; value: string; note?: string }) {
   return (
-    <div style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: "16px 18px" }}>
-      <div style={{ fontSize: 11, color: "#9A958B", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>{label}</div>
-      <div style={{ color: DARK, fontSize: 26, fontWeight: 800, marginTop: 8, lineHeight: 1 }}>{value}</div>
-      {note && <div style={{ color: "#6B6B73", fontSize: 12.5, marginTop: 7 }}>{note}</div>}
+    <div style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", padding: "16px 18px" }}>
+      <div style={{ fontSize: 11, color: "#8B8479", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>{label}</div>
+      <div style={{ color: DARK, fontSize: 26, fontWeight: 600, marginTop: 8, lineHeight: 1 }}>{value}</div>
+      {note && <div style={{ color: "#5A544B", fontSize: 12.5, marginTop: 7 }}>{note}</div>}
     </div>
   );
 }
@@ -79,7 +79,7 @@ function StatBox({ label, value, note }: { label: string; value: string; note?: 
 function DetailLine({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div style={{ color: "#9A958B", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>{label}</div>
+      <div style={{ color: "#8B8479", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>{label}</div>
       <div style={{ color: DARK, fontSize: 13.5, fontWeight: 600, lineHeight: 1.45, whiteSpace: "pre-wrap" }}>{value}</div>
     </div>
   );
@@ -171,8 +171,8 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
         <StatBox label="Wants Updates" value={String(wantsUpdates)} note="Opted in to future programs" />
       </div>
 
-      <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(20,20,25,0.09)", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-        <div style={{ fontSize: 12.5, fontWeight: 700, color: DARK, flexShrink: 0 }}>Visitor type</div>
+      <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(64,50,34,0.12)", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+        <div style={{ fontSize: 12.5, fontWeight: 600, color: DARK, flexShrink: 0 }}>Visitor type</div>
         <div style={{ display: "flex", gap: 6, flex: 1, flexWrap: "wrap" }}>
           {visitorTypes.map((type) => {
             const active = visitorType === type;
@@ -187,8 +187,8 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
                   padding: "6px 14px",
                   borderRadius: 999,
                   border: "none",
-                  color: active ? "#fff" : "#6B6B73",
-                  background: active ? "#0E0E10" : "#F5F4F0",
+                  color: active ? "#fff" : "#5A544B",
+                  background: active ? "#131110" : "#F5F4F0",
                   cursor: "pointer",
                   display: "inline-flex",
                   alignItems: "center",
@@ -205,8 +205,8 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
 
       {error && (
         <div style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(226,58,46,0.24)", padding: 18 }}>
-          <div style={{ color: "#E23A2E", fontSize: 13.5, fontWeight: 700, marginBottom: 6 }}>Could not load consultation feedback</div>
-          <div style={{ color: "#6B6B73", fontSize: 13, lineHeight: 1.6 }}>
+          <div style={{ color: "#E23A2E", fontSize: 13.5, fontWeight: 600, marginBottom: 6 }}>Could not load consultation feedback</div>
+          <div style={{ color: "#5A544B", fontSize: 13, lineHeight: 1.6 }}>
             {error.includes("consultation_feedback")
               ? "The database table is not available yet. Run the consultation_feedback SQL in Supabase, then reload this tab."
               : error}
@@ -218,33 +218,33 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
         {filtered.map((row) => {
           const avg = averageRating(row);
           return (
-            <div key={row.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18, display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 16, alignItems: "start" }}>
+            <div key={row.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", padding: 18, display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 16, alignItems: "start" }}>
               <div style={{ minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 7, flexWrap: "wrap" }}>
-                  <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", color: ORANGE, background: "rgba(242,101,34,0.12)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap" }}>{resolvedVisitorType(row)}</span>
-                  <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", color: "#285E7A", background: "rgba(40,94,122,0.10)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap" }}>{resolvedVisitPurpose(row)}</span>
-                  <span style={{ fontSize: 12, color: "#9A958B" }}>{displayDate(row.created_at)}</span>
+                  <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: ORANGE, background: "rgba(242,101,34,0.12)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap" }}>{resolvedVisitorType(row)}</span>
+                  <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#285E7A", background: "rgba(40,94,122,0.10)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap" }}>{resolvedVisitPurpose(row)}</span>
+                  <span style={{ fontSize: 12, color: "#8B8479" }}>{displayDate(row.created_at)}</span>
                 </div>
-                <div style={{ color: DARK, fontSize: 15, fontWeight: 800, lineHeight: 1.35 }}>
+                <div style={{ color: DARK, fontSize: 15, fontWeight: 600, lineHeight: 1.35 }}>
                   {row.startup_name || row.respondent_role || row.organization_contact ? clean(row.startup_name || row.respondent_role || row.organization_contact) : "Anonymous visitor"}
                 </div>
-                <div style={{ color: "#6B6B73", fontSize: 12.5, marginTop: 5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <div style={{ color: "#5A544B", fontSize: 12.5, marginTop: 5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {row.takeaway || row.liked_most || row.improvements || "No written response provided."}
                 </div>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ color: DARK, fontSize: 20, fontWeight: 800, lineHeight: 1 }}>{scoreLabel(avg)}</div>
-                  <div style={{ color: "#9A958B", fontSize: 10.5, marginTop: 3 }}>avg rating</div>
+                  <div style={{ color: DARK, fontSize: 20, fontWeight: 600, lineHeight: 1 }}>{scoreLabel(avg)}</div>
+                  <div style={{ color: "#8B8479", fontSize: 10.5, marginTop: 3 }}>avg rating</div>
                 </div>
-                <button onClick={() => setViewing(row)} style={{ fontSize: 12, fontWeight: 700, color: "#285E7A", background: "none", border: "1.5px solid rgba(40,94,122,0.3)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>View</button>
+                <button onClick={() => setViewing(row)} style={{ fontSize: 12, fontWeight: 600, color: "#285E7A", background: "none", border: "1.5px solid rgba(40,94,122,0.3)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>View</button>
               </div>
             </div>
           );
         })}
 
         {loaded && !error && filtered.length === 0 && (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)" }}>
+          <div style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             No consultation feedback yet.
           </div>
         )}
@@ -255,11 +255,11 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
           <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 18, padding: 26, width: "100%", maxWidth: 680, display: "flex", flexDirection: "column", gap: 18, maxHeight: "88vh", overflowY: "auto" }}>
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
               <div>
-                <div style={{ fontSize: 11, color: ORANGE, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Consultation Feedback</div>
-                <div style={{ color: DARK, fontSize: 19, fontWeight: 800, lineHeight: 1.25 }}>{clean(viewing.startup_name || resolvedVisitorType(viewing))}</div>
-                <div style={{ color: "#6B6B73", fontSize: 12.5, marginTop: 5 }}>{displayDate(viewing.created_at)}</div>
+                <div style={{ fontSize: 11, color: ORANGE, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Consultation Feedback</div>
+                <div style={{ color: DARK, fontSize: 19, fontWeight: 600, lineHeight: 1.25 }}>{clean(viewing.startup_name || resolvedVisitorType(viewing))}</div>
+                <div style={{ color: "#5A544B", fontSize: 12.5, marginTop: 5 }}>{displayDate(viewing.created_at)}</div>
               </div>
-              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 20, color: "#9A958B", lineHeight: 1, flexShrink: 0 }}>x</button>
+              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 20, color: "#8B8479", lineHeight: 1, flexShrink: 0 }}>x</button>
             </div>
 
             <div className="ib-admin-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 14 }}>
@@ -274,19 +274,19 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
               <DetailLine label="Wants updates" value={viewing.wants_updates ? "Yes" : "No"} />
             </div>
 
-            <div style={{ borderTop: "1px solid rgba(20,20,25,0.08)", paddingTop: 16, display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
+            <div style={{ borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 16, display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
               <DetailLine label="What they liked most" value={clean(viewing.liked_most)} />
               <DetailLine label="Biggest takeaway" value={clean(viewing.takeaway)} />
               <DetailLine label="Improvement suggestion" value={clean(viewing.improvements)} />
               <DetailLine label="Would recommend" value={clean(viewing.would_recommend)} />
             </div>
 
-            <div style={{ borderTop: "1px solid rgba(20,20,25,0.08)", paddingTop: 16 }}>
-              <div style={{ color: "#9A958B", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Ratings</div>
+            <div style={{ borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 16 }}>
+              <div style={{ color: "#8B8479", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Ratings</div>
               <div style={{ display: "grid", gap: 8 }}>
                 {RATING_LABELS.map((label) => (
                   <div key={label} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 34px", gap: 12, alignItems: "center", fontSize: 13 }}>
-                    <span style={{ color: "#6B6B73", lineHeight: 1.45 }}>{label}</span>
+                    <span style={{ color: "#5A544B", lineHeight: 1.45 }}>{label}</span>
                     <strong style={{ color: DARK, textAlign: "right" }}>{viewing.ratings?.[label] ?? "—"}</strong>
                   </div>
                 ))}

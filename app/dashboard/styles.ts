@@ -1,9 +1,9 @@
 export const ORANGE = "#F26522";
-export const DARK = "#141417";
+export const DARK = "#1A1714";
 
 export const cardStyle: React.CSSProperties = {
   background: "#fff",
-  border: "1px solid rgba(20,20,25,0.10)",
+  border: "1px solid rgba(64,50,34,0.13)",
   borderRadius: 20,
   padding: "32px 36px",
 };
@@ -12,8 +12,8 @@ export const inputStyle: React.CSSProperties = {
   width: "100%",
   fontSize: 14.5,
   color: DARK,
-  background: "#FAFAF7",
-  border: "1.5px solid rgba(20,20,25,0.12)",
+  background: "#F6F2EA",
+  border: "1.5px solid rgba(64,50,34,0.14)",
   borderRadius: 10,
   padding: "12px 14px",
   outline: "none",
@@ -46,7 +46,7 @@ export const rowItemStyle: React.CSSProperties = {
   justifyContent: "space-between",
   gap: 12,
   padding: "14px 18px",
-  background: "#FAFAF7",
-  border: "1px solid rgba(20,20,25,0.08)",
+  background: "#F6F2EA",
+  border: "1px solid rgba(64,50,34,0.11)",
   borderRadius: 12,
 };

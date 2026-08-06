@@ -16,7 +16,7 @@ interface DocumentRow {
 }
 
 const STATUS_STYLE: Record<DocumentRow["status"], { label: string; bg: string; fg: string }> = {
-  pending: { label: "Pending", bg: "#F5F4F0", fg: "#6B6B73" },
+  pending: { label: "Pending", bg: "#F5F4F0", fg: "#5A544B" },
   processing: { label: "Processing…", bg: "rgba(242,101,34,0.12)", fg: ORANGE },
   ready: { label: "Ready", bg: "rgba(35,158,88,0.12)", fg: "#239E58" },
   error: { label: "Error", bg: "rgba(226,58,46,0.12)", fg: "#E23A2E" },
@@ -132,8 +132,8 @@ export default function ChatbotKnowledgeTab({ searchQuery = "" }: { searchQuery?
 
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
-      <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(20,20,25,0.09)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div style={{ fontSize: 12.5, color: "#9A958B", maxWidth: 460 }}>
+      <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(64,50,34,0.12)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+        <div style={{ fontSize: 12.5, color: "#8B8479", maxWidth: 460 }}>
           Private documents the chat assistant can search — never shown on the public site. PDF only, 15MB max.
         </div>
         <label style={{ fontSize: 12.5, fontWeight: 600, color: "#fff", background: uploading ? "#C9C6BE" : ORANGE, border: "none", borderRadius: 999, padding: "8px 16px", cursor: uploading ? "default" : "pointer", flexShrink: 0 }}>
@@ -152,23 +152,23 @@ export default function ChatbotKnowledgeTab({ searchQuery = "" }: { searchQuery?
         {filtered.map((d) => {
           const s = STATUS_STYLE[d.status];
           return (
-            <div key={d.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)", padding: 18, display: "flex", gap: 16, alignItems: "flex-start" }}>
+            <div key={d.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", padding: 18, display: "flex", gap: 16, alignItems: "flex-start" }}>
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4, flexWrap: "wrap" }}>
-                  <span style={{ fontSize: 14.5, fontWeight: 700, color: DARK }}>{d.title}</span>
-                  <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.02em", color: s.fg, background: s.bg, padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>
+                  <span style={{ fontSize: 14.5, fontWeight: 600, color: DARK }}>{d.title}</span>
+                  <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: s.fg, background: s.bg, padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>
                     {s.label}
                     {d.status === "ready" && d.chunk_count ? ` · ${d.chunk_count} chunks` : ""}
                   </span>
                 </div>
-                <div style={{ fontSize: 12.5, color: "#6B6B73" }}>{d.original_filename}</div>
+                <div style={{ fontSize: 12.5, color: "#5A544B" }}>{d.original_filename}</div>
                 {d.status === "error" && d.error_message && (
                   <div style={{ fontSize: 12, color: "#E23A2E", marginTop: 6 }}>{d.error_message}</div>
                 )}
               </div>
               <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
                 {d.status === "error" && (
-                  <button onClick={() => retry(d.id)} style={{ fontSize: 12, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(20,20,25,0.14)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>
+                  <button onClick={() => retry(d.id)} style={{ fontSize: 12, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>
                     Retry
                   </button>
                 )}
@@ -181,7 +181,7 @@ export default function ChatbotKnowledgeTab({ searchQuery = "" }: { searchQuery?
         })}
 
         {loaded && filtered.length === 0 && (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#9A958B", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(20,20,25,0.09)" }}>
+          <div style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             No documents yet.
           </div>
         )}

@@ -1,5 +1,5 @@
 export const ORANGE = "#F26522";
-export const DARK = "#141417";
+export const DARK = "#1A1714";
 
 export type KnowledgeCategory =
   | "Startup Resources"

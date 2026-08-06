@@ -18,13 +18,13 @@ function formatDate(iso: string | null) {
 }
 
 function deadlineInfo(iso: string | null): { label: string; color: string; daysLeft: number | null } {
-  if (!iso) return { label: "No deadline set", color: "#9A958B", daysLeft: null };
+  if (!iso) return { label: "No deadline set", color: "#8B8479", daysLeft: null };
   const [y, m, d] = iso.split("-").map(Number);
   const target = new Date(y, m - 1, d);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const daysLeft = Math.round((target.getTime() - today.getTime()) / 86400000);
-  if (daysLeft < 0) return { label: "Deadline passed", color: "#9A958B", daysLeft };
+  if (daysLeft < 0) return { label: "Deadline passed", color: "#8B8479", daysLeft };
   if (daysLeft === 0) return { label: "Due today", color: "#E23A2E", daysLeft };
   const color = daysLeft <= 10 ? "#E23A2E" : daysLeft <= 25 ? "#D88A0A" : "#3F9E4D";
   return { label: `${daysLeft} day${daysLeft === 1 ? "" : "s"} left`, color, daysLeft };
@@ -51,7 +51,7 @@ function mapChallengeRow(r: any): Challenge {
     status: r.status,
     scopeRegion: r.scope_region,
     orgType: (r.org_type as ChallengeOrgType) || "Government",
-    orgColor: r.org_color || "#141417",
+    orgColor: r.org_color || "#1A1714",
     orgInitials: r.org_initials || "",
     orgInitialsFontSize: (r.org_initials || "").length > 4 ? "9px" : "10px",
     orgName: r.org_name,

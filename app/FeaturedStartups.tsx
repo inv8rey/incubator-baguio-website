@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { fetchDynamicStartups } from "./ecosystem/dynamicData";
 import type { StartupEntry } from "./ecosystem/data";
 
-const DARK = "#141417";
+const DARK = "#1A1714";
 
 function pickRandom<T>(items: T[], n: number): T[] {
   const pool = [...items];
@@ -26,52 +26,113 @@ export default function FeaturedStartups({ bp }: { bp: string }) {
   if (startups && startups.length === 0) return null;
 
   return (
-    <div style={{ background: "#FAFAF7", padding: "80px 40px" }}>
+    <div style={{ background: "#F6F2EA", padding: "80px 40px" }}>
       <div style={{ maxWidth: 1060, margin: "0 auto" }}>
-        <div style={{ marginBottom: 40, maxWidth: 640 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F26522", marginBottom: 12 }}>Startup Directory</div>
-          <h2 style={{ margin: 0, fontSize: 40, fontWeight: 700, letterSpacing: "-0.03em", color: DARK, lineHeight: 1.08 }}>Startups in the Incubator Baguio network</h2>
+        <div style={{ marginBottom: 44, maxWidth: 620 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 9, marginBottom: 16 }}>
+            <span style={{ width: 22, height: 1, background: "rgba(242,101,34,0.5)" }} />
+            <span style={{ fontSize: 11.5, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: "#F26522" }}>Startup Directory</span>
+          </div>
+          <h2 style={{ margin: 0, fontSize: 40, fontWeight: 500, letterSpacing: "-0.032em", color: DARK, lineHeight: 1.14 }}>Startups in the Incubator Baguio network</h2>
         </div>
 
         {!startups ? (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }} className="ib-featured-grid">
             {[0, 1, 2].map((i) => (
-              <div key={i} style={{ background: "#fff", border: "1px solid rgba(20,20,25,0.10)", borderRadius: 18, height: 260 }} />
+              <div key={i} style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 18, height: 260 }} />
             ))}
           </div>
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }} className="ib-featured-grid">
             {startups.map((s) => (
-              <div key={s.name} className="ib-card-hover ib-startup-card" style={{ position: "relative", background: "#fff", border: "1px solid rgba(20,20,25,0.07)", borderRadius: 16, overflow: "hidden", boxShadow: "var(--ib-shadow-sm)" }}>
-                <div style={{ position: "relative", height: 150, background: `radial-gradient(130% 120% at 50% 0%, ${s.bg} 0%, #F6F4EF 60%)`, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                  <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(20,20,25,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(20,20,25,0.03) 1px,transparent 1px)", backgroundSize: "26px 26px" }} />
+              <div
+                key={s.name}
+                className="ib-card-hover ib-startup-card"
+                style={{
+                  position: "relative",
+                  background: "#fff",
+                  border: "1px solid rgba(64,50,34,0.10)",
+                  borderRadius: 18,
+                  padding: "26px 24px 24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  boxShadow: "var(--ib-shadow-sm)",
+                }}
+              >
+                {/* One mark per card — the logo doubles as the identity, so no
+                    separate initial tile repeating the same information. */}
+                <div style={{ display: "flex", alignItems: "center", gap: 13, marginBottom: 18 }}>
                   {s.logoUrl ? (
-                    <img src={s.logoUrl} alt={`${s.name} logo`} style={{ position: "relative", width: 60, height: 60, borderRadius: 14, objectFit: "cover", boxShadow: "0 8px 20px -6px rgba(20,20,25,0.25)" }} />
+                    // `contain` rather than `cover`: partner logos come in every
+                    // aspect ratio and cropping them mangles the wordmarks.
+                    <img
+                      src={s.logoUrl}
+                      alt={`${s.name} logo`}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 13,
+                        objectFit: "contain",
+                        background: "#fff",
+                        padding: 5,
+                        flexShrink: 0,
+                        border: "1px solid rgba(64,50,34,0.09)",
+                      }}
+                    />
                   ) : (
-                    <div style={{ position: "relative", width: 60, height: 60, borderRadius: 14, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 700, color: s.color, boxShadow: "0 8px 20px -6px rgba(20,20,25,0.18)" }}>{s.initial}</div>
-                  )}
-                </div>
-                <div style={{ padding: 24 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                    <div style={{ width: 46, height: 46, borderRadius: 12, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: s.color, flexShrink: 0 }}>{s.initial}</div>
-                    <div>
-                      <div style={{ fontSize: 16, fontWeight: 600, color: DARK }}>{s.name}</div>
-                      <div style={{ fontSize: 12.5, color: "#9A958B" }}>{s.sector}</div>
+                    <div
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 13,
+                        background: s.bg,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 18,
+                        fontWeight: 600,
+                        color: s.color,
+                        flexShrink: 0,
+                      }}
+                    >
+                      {s.initial}
                     </div>
+                  )}
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 16.5, fontWeight: 600, letterSpacing: "-0.015em", color: DARK, lineHeight: 1.3 }}>{s.name}</div>
+                    <div style={{ fontSize: 12.5, color: "#8B8479", marginTop: 2 }}>{s.sector}</div>
                   </div>
-                  <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: "#6B6B73", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{s.description}</p>
                 </div>
+
+                <p
+                  style={{
+                    margin: "0 0 20px",
+                    fontSize: 14,
+                    lineHeight: 1.62,
+                    color: "#5A544B",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {s.description}
+                </p>
+
                 {s.website && (
-                  <a
-                    href={s.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ib-startup-link-btn"
-                    aria-label={`Visit ${s.name}`}
-                    style={{ position: "absolute", right: 16, bottom: 16, width: 34, height: 34, borderRadius: 9999, background: "#141417", display: "flex", alignItems: "center", justifyContent: "center" }}
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-                  </a>
+                  // marginTop:auto pins the footer to the card floor so the rules
+                  // line up across the row even when names/sectors wrap.
+                  <div style={{ marginTop: "auto", paddingTop: 18, borderTop: "1px solid rgba(64,50,34,0.09)" }}>
+                    <a
+                      href={s.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13.5, fontWeight: 600, color: DARK, textDecoration: "none" }}
+                    >
+                      Visit site
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F26522" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                    </a>
+                  </div>
                 )}
               </div>
             ))}
@@ -81,7 +142,7 @@ export default function FeaturedStartups({ bp }: { bp: string }) {
         <div style={{ marginTop: 32 }}>
           <a
             href={`${bp}/ecosystem/`}
-            style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "#141417", color: "#fff", fontWeight: 600, fontSize: 15, padding: "14px 28px", borderRadius: 9999, textDecoration: "none" }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "#1A1714", color: "#fff", fontWeight: 600, fontSize: 15, padding: "14px 28px", borderRadius: 9999, textDecoration: "none" }}
           >
             View all startups
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4}><path d="M5 12h14M13 6l6 6-6 6"></path></svg>

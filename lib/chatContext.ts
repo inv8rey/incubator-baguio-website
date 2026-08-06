@@ -9,32 +9,25 @@ export interface ChatIntent {
   wantsMentors: boolean;
   wantsStartups: boolean;
   wantsKnowledge: boolean;
-  wantsDocuments: boolean;
 }
 
 const MENTOR_WORDS = /mentor|coach|advis(or|er)|guidance/i;
 const CHALLENGE_WORDS = /challenge|problem\s*statement|open innovation|opportunit/i;
 const KNOWLEDGE_WORDS = /resource|guide|template|pdf|policy|policies|report|knowledge|toolkit|funding opportun/i;
 const STARTUP_WORDS = /collaborat|partner|co-?founder|other startup|team up|teammate/i;
-// Separate from KNOWLEDGE_WORDS on purpose: the public Knowledge Hub and the
-// private document knowledge base are different data sources that happen to
-// share similar trigger language — keeping the buckets independent means
-// tuning one doesn't silently change the other.
-const DOCUMENT_WORDS = /document|pdf|policy|handbook|manual|guideline|procedure|faq|deck|whitepaper|report|contract|form\b/i;
 
 export function classifyIntent(message: string): ChatIntent {
   const wantsMentors = MENTOR_WORDS.test(message);
   const wantsChallenges = CHALLENGE_WORDS.test(message);
   const wantsKnowledge = KNOWLEDGE_WORDS.test(message);
   const wantsStartups = STARTUP_WORDS.test(message);
-  const wantsDocuments = DOCUMENT_WORDS.test(message);
 
   // No strong signal at all — go broad so a vague "help me find
   // opportunities" still returns something from every category.
-  if (!wantsMentors && !wantsChallenges && !wantsKnowledge && !wantsStartups && !wantsDocuments) {
-    return { wantsChallenges: true, wantsMentors: true, wantsStartups: true, wantsKnowledge: true, wantsDocuments: true };
+  if (!wantsMentors && !wantsChallenges && !wantsKnowledge && !wantsStartups) {
+    return { wantsChallenges: true, wantsMentors: true, wantsStartups: true, wantsKnowledge: true };
   }
-  return { wantsChallenges, wantsMentors, wantsStartups, wantsKnowledge, wantsDocuments };
+  return { wantsChallenges, wantsMentors, wantsStartups, wantsKnowledge };
 }
 
 // Strips obvious prompt-injection markers from user/admin-submitted free
@@ -155,7 +148,12 @@ export async function fetchChatContext(intent: ChatIntent, userMessage: string):
     intent.wantsKnowledge
       ? supabase.from("knowledge_resources").select("id,title,category,description,source,file_url,link_url").limit(ROW_CAP)
       : Promise.resolve({ data: [] as any[] }),
-    intent.wantsDocuments ? fetchDocumentChunks(userMessage) : Promise.resolve([] as ChatChunkRow[]),
+    // Always searched, unlike the buckets above — relevance here comes from
+    // the embedding similarity floor in fetchDocumentChunks(), not from
+    // keyword-matching the user's message, so a query never has to name a
+    // document (or use words like "guide"/"report") for a genuinely
+    // relevant private doc to surface.
+    fetchDocumentChunks(userMessage),
   ]);
 
   const challenges: ChatChallengeRow[] = (challengesRes.data ?? []).map((r: any) => ({
