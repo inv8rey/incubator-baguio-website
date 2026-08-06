@@ -48,3 +48,63 @@ export async function syncEventsToSheet(supabase: SupabaseClient): Promise<numbe
   );
   return rows.length;
 }
+
+// These 4 write to "Admin: <Name>" tabs, not the plain-named tabs -- this
+// spreadsheet already had hand-curated Mentors/Service Providers/Co-working
+// Spaces/Labs tabs with their own columns before this sync existed, and a
+// full clear-and-rewrite would have destroyed that data. The "Admin: " tabs
+// are a separate, admin-panel-only mirror alongside the originals.
+export async function syncMentorsToSheet(supabase: SupabaseClient): Promise<number> {
+  const { data, error } = await supabase.from("mentors").select("*").order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  const rows = data ?? [];
+  const headers = ["name", "position", "company", "bio", "specializations", "photo_url", "sector", "social_link"];
+  await writeSheetTab(
+    "Admin: Mentors",
+    headers,
+    rows.map((r: any) => headers.map((h) => (h === "specializations" ? (r[h] ?? []).join(", ") : r[h] ?? "")))
+  );
+  return rows.length;
+}
+
+export async function syncFundedProjectsToSheet(supabase: SupabaseClient): Promise<number> {
+  const { data, error } = await supabase.from("funded_projects").select("*").order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  const rows = data ?? [];
+  const headers = ["title", "funding_agency", "lead_institution", "duration", "status"];
+  await writeSheetTab(
+    "Admin: Funded Projects",
+    headers,
+    rows.map((r: any) => headers.map((h) => r[h] ?? ""))
+  );
+  return rows.length;
+}
+
+// organizations is one shared table across several categories (org_type) --
+// this syncs just one category's rows into its own sheet tab, since that's
+// what the admin edits at a time and what was asked for (Service Providers /
+// Coworking Spaces / Makerspaces & Labs), not the other org_type values.
+async function syncOrgCategoryToSheet(supabase: SupabaseClient, orgType: string, tabName: string): Promise<number> {
+  const { data, error } = await supabase.from("organizations").select("*").eq("org_type", orgType).order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  const rows = data ?? [];
+  const headers = ["name", "org_type", "type", "description", "website", "contact_email", "logo_url", "cover_url"];
+  await writeSheetTab(
+    tabName,
+    headers,
+    rows.map((r: any) => headers.map((h) => r[h] ?? ""))
+  );
+  return rows.length;
+}
+
+export function syncServiceProvidersToSheet(supabase: SupabaseClient): Promise<number> {
+  return syncOrgCategoryToSheet(supabase, "Service Providers", "Admin: Service Providers");
+}
+
+export function syncCoworkingSpacesToSheet(supabase: SupabaseClient): Promise<number> {
+  return syncOrgCategoryToSheet(supabase, "Coworking Spaces", "Admin: Coworking Spaces");
+}
+
+export function syncMakerspacesLabsToSheet(supabase: SupabaseClient): Promise<number> {
+  return syncOrgCategoryToSheet(supabase, "Makerspaces & Labs", "Admin: Makerspaces & Labs");
+}

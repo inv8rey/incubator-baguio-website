@@ -5,7 +5,17 @@ import { supabase } from "./supabaseClient";
  * Sheet tab after an admin edit. Never throws -- a Sheets hiccup must not
  * block or fail the admin action that already succeeded against Supabase.
  */
-export async function triggerSheetSync(table: "startups" | "programs" | "events"): Promise<void> {
+export type SyncableTable =
+  | "startups"
+  | "programs"
+  | "events"
+  | "mentors"
+  | "funded-projects"
+  | "service-providers"
+  | "coworking-spaces"
+  | "makerspaces-labs";
+
+export async function triggerSheetSync(table: SyncableTable): Promise<void> {
   if (!supabase) return;
   try {
     const { data: sessionData } = await supabase.auth.getSession();

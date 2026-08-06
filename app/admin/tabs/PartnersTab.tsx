@@ -5,7 +5,17 @@ import { DARK, ORANGE, SECTOR_FILTERS } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
 import { uploadMentorPhoto, uploadOrgLogo, uploadOrgCoverImage, uploadPartnerLogo } from "../../../lib/uploadLogo";
+import { triggerSheetSync, type SyncableTable } from "../../../lib/syncSheetClient";
 import { MENTOR_SPECIALIZATIONS } from "../../ecosystem/data";
+
+// Only these 3 organization categories mirror to a Google Sheet today (the
+// other org_type values -- TBIs, Companies, Government, Community -- and
+// Ecosystem Partners were never asked for).
+const ORG_SHEET_TABLE: Partial<Record<OrgType, SyncableTable>> = {
+  "Service Providers": "service-providers",
+  "Coworking Spaces": "coworking-spaces",
+  "Makerspaces & Labs": "makerspaces-labs",
+};
 
 const ORG_TYPES = ["TBIs", "Companies", "Service Providers", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
 type OrgType = (typeof ORG_TYPES)[number];
@@ -267,14 +277,17 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     const { error: err } = await supabase.from("mentors").delete().eq("id", id);
     if (err) return window.alert(err.message);
     load();
+    triggerSheetSync("mentors");
   }
 
-  async function deleteOrg(id: string) {
+  async function deleteOrg(org: OrgRow) {
     if (!supabase) return;
     if (!window.confirm("Delete this entry? This can't be undone.")) return;
-    const { error: err } = await supabase.from("organizations").delete().eq("id", id);
+    const { error: err } = await supabase.from("organizations").delete().eq("id", org.id);
     if (err) return window.alert(err.message);
     load();
+    const sheetTable = ORG_SHEET_TABLE[org.org_type];
+    if (sheetTable) triggerSheetSync(sheetTable);
   }
 
   async function deletePartner(id: string) {
@@ -291,6 +304,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     const { error: err } = await supabase.from("funded_projects").delete().eq("id", id);
     if (err) return window.alert(err.message);
     load();
+    triggerSheetSync("funded-projects");
   }
 
   async function submit(e: React.FormEvent) {
@@ -306,6 +320,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
         ? await supabase.from("mentors").update(payload).eq("id", editingId)
         : await supabase.from("mentors").insert(payload);
       if (err) return setError(err.message);
+      triggerSheetSync("mentors");
     } else if (isPartners) {
       if (!partnerForm.name.trim()) return setError("Add a name.");
       const payload = { name: partnerForm.name.trim(), logo_url: partnerForm.logoUrl };
@@ -320,6 +335,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
         ? await supabase.from("funded_projects").update(payload).eq("id", editingId)
         : await supabase.from("funded_projects").insert(payload);
       if (err) return setError(err.message);
+      triggerSheetSync("funded-projects");
     } else {
       if (!orgForm.name.trim()) return setError("Add a name.");
       const payload = { name: orgForm.name.trim(), org_type: category, description: orgForm.description.trim(), website: orgForm.website.trim(), contact_email: orgForm.contact_email.trim(), logo_url: orgForm.logoUrl, cover_url: orgForm.coverUrl, type: orgForm.type.trim() };
@@ -327,6 +343,8 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
         ? await supabase.from("organizations").update(payload).eq("id", editingId)
         : await supabase.from("organizations").insert(payload);
       if (err) return setError(err.message);
+      const sheetTable = ORG_SHEET_TABLE[category as OrgType];
+      if (sheetTable) triggerSheetSync(sheetTable);
     }
     closeModal();
     load();
@@ -422,7 +440,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                 <div style={{ fontSize: 11.5, color: "#8B8479", margin: "3px 0 8px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{o.description || "No description yet"}</div>
                 <div style={{ display: "flex", gap: 12 }}>
                   <button onClick={() => openEditOrg(o)} style={{ fontSize: 11.5, fontWeight: 600, color: "#285E7A", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Edit</button>
-                  <button onClick={() => deleteOrg(o.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Delete</button>
+                  <button onClick={() => deleteOrg(o)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Delete</button>
                 </div>
               </div>
             </div>

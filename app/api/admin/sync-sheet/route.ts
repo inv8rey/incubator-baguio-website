@@ -1,11 +1,25 @@
 import { requireAdmin } from "../../../../lib/requireAdmin";
 import { sheetsConfigured } from "../../../../lib/googleSheets";
-import { syncStartupsToSheet, syncProgramsToSheet, syncEventsToSheet } from "../../../../lib/sheetSync";
+import {
+  syncStartupsToSheet,
+  syncProgramsToSheet,
+  syncEventsToSheet,
+  syncMentorsToSheet,
+  syncFundedProjectsToSheet,
+  syncServiceProvidersToSheet,
+  syncCoworkingSpacesToSheet,
+  syncMakerspacesLabsToSheet,
+} from "../../../../lib/sheetSync";
 
 const SYNCERS = {
   startups: syncStartupsToSheet,
   programs: syncProgramsToSheet,
   events: syncEventsToSheet,
+  mentors: syncMentorsToSheet,
+  "funded-projects": syncFundedProjectsToSheet,
+  "service-providers": syncServiceProvidersToSheet,
+  "coworking-spaces": syncCoworkingSpacesToSheet,
+  "makerspaces-labs": syncMakerspacesLabsToSheet,
 } as const;
 
 type Table = keyof typeof SYNCERS;
