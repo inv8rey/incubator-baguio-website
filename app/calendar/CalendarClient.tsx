@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
+import { uploadEventSubmissionPoster } from "../../lib/uploadLogo";
 import {
   CATEGORY_COLORS,
   DARK,
@@ -293,11 +294,27 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
   const [format, setFormat] = useState<EventFormat>("In-Person");
   const [description, setDescription] = useState("");
   const [registrationLink, setRegistrationLink] = useState("");
+  const [posterUrl, setPosterUrl] = useState("");
+  const [posterUploading, setPosterUploading] = useState(false);
   const [contactName, setContactName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [error, setError] = useState("");
+
+  async function handlePosterChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setPosterUploading(true);
+    setError("");
+    try {
+      setPosterUrl(await uploadEventSubmissionPoster(file));
+    } catch (err: any) {
+      setError(err.message || "Cover photo upload failed.");
+    }
+    setPosterUploading(false);
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -319,6 +336,7 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
       format,
       description: description.trim(),
       registration_link: registrationLink.trim(),
+      poster_url: posterUrl,
       contact_name: contactName.trim(),
       email: email.trim(),
       phone: phone.trim(),
@@ -361,6 +379,24 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
           <div>
             <label style={modalLabelStyle}>Event title *</label>
             <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Founder Fundamentals Workshop" style={modalInputStyle} required />
+          </div>
+          <div>
+            <label style={modalLabelStyle}>Cover photo (optional)</label>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              {posterUrl ? (
+                <img src={posterUrl} alt="" style={{ width: 68, height: 68, borderRadius: 10, objectFit: "cover", flexShrink: 0, border: "1px solid rgba(64,50,34,0.13)" }} />
+              ) : (
+                <div style={{ width: 68, height: 68, borderRadius: 10, background: "#F5F4F0", flexShrink: 0 }} />
+              )}
+              <label style={{ fontSize: 12.5, fontWeight: 600, color: "#285E7A", border: "1.5px solid rgba(40,94,122,0.3)", borderRadius: 999, padding: "8px 14px", cursor: "pointer" }}>
+                {posterUploading ? "Uploading…" : posterUrl ? "Replace photo" : "Upload photo"}
+                <input type="file" accept="image/*" onChange={handlePosterChange} disabled={posterUploading} style={{ display: "none" }} />
+              </label>
+              {posterUrl && (
+                <button type="button" onClick={() => setPosterUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#8B8479", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
+              )}
+            </div>
+            <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#8B8479" }}>Shown as the event&rsquo;s cover on the calendar. Landscape works best.</p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div>
@@ -435,7 +471,7 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
 
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", paddingTop: 4 }}>
             <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
-            <button type="submit" disabled={status === "loading"} style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: status === "loading" ? 0.7 : 1 }}>
+            <button type="submit" disabled={status === "loading" || posterUploading} style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: status === "loading" ? 0.7 : 1 }}>
               {status === "loading" ? "Submitting…" : "Submit for review"}
             </button>
           </div>

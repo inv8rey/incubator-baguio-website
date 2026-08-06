@@ -49,6 +49,14 @@ export function uploadEventPoster(file: File): Promise<string> {
   return uploadImage(file, "event-posters");
 }
 
+// Separate bucket from uploadEventPoster: this one backs the public,
+// no-login "Submit an event" form, so its storage policy allows anonymous
+// uploads -- keep the two upload paths pointed at their own buckets rather
+// than merging them.
+export function uploadEventSubmissionPoster(file: File): Promise<string> {
+  return uploadImage(file, "event-submission-posters");
+}
+
 export function uploadProgramImage(file: File): Promise<string> {
   return uploadImage(file, "program-images");
 }

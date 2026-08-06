@@ -733,6 +733,26 @@ create policy "authenticated users can delete event posters" on storage.objects
   for delete to authenticated using (bucket_id = 'event-posters');
 
 -- ---------------------------------------------------------------------------
+-- storage: event-submission-posters bucket for the no-login "Submit an
+-- event" form (app/calendar/CalendarClient.tsx SubmitEventModal). Deliberately
+-- its own bucket rather than reusing event-posters, whose insert policy is
+-- authenticated-only for the admin flow -- same reasoning as
+-- ecosystem-signup-logos below: keep the anonymous-upload policy isolated to
+-- the one bucket that actually needs it.
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('event-submission-posters', 'event-submission-posters', true)
+on conflict (id) do nothing;
+
+drop policy if exists "event submission posters are publicly readable" on storage.objects;
+create policy "event submission posters are publicly readable" on storage.objects
+  for select using (bucket_id = 'event-submission-posters');
+
+drop policy if exists "anyone can upload event submission posters" on storage.objects;
+create policy "anyone can upload event submission posters" on storage.objects
+  for insert with check (bucket_id = 'event-submission-posters');
+
+-- ---------------------------------------------------------------------------
 -- ecosystem_signups: TEMPORARY no-login signup form (app/ecosystem-signup)
 -- for people to submit themselves as a startup, mentor, or organization
 -- without needing an account. Purely a moderation staging table — it has
