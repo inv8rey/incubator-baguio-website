@@ -351,6 +351,26 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
     max-height: none !important;
   }
   .ib-chat-bubble { bottom: 22px !important; }
+  /* Lowering the bubble to bottom:22px on mobile put it directly on top of
+     .ib-backtotop (also bottom:22px, right:22px) -- same corner, and the
+     bubble's higher z-index + larger footprint fully hid the smaller button
+     underneath it, making "back to top" invisible and unclickable on every
+     mobile page. Restore the same non-overlapping stack the two have on
+     desktop (there, backtotop sits under the bubble with a 16px gap). */
+  .ib-backtotop { bottom: 94px !important; }
+}
+
+@media (max-width: 480px) {
+  /* The footer's closing legal-links line is long enough that even
+     left-aligned it can run into that same bottom-right corner once a
+     visitor scrolls to the true end of the page. padding-bottom alone left
+     only ~1px of horizontal clearance from the reserved button corner --
+     too fragile to rely on across devices/font rendering. Reserve real
+     horizontal space too, so the line wraps before it ever gets close. */
+  [style*="padding-top:24px;font-size:12.5px;color:rgba(255,255,255,0.4);flex-wrap:wrap"] {
+    padding-bottom: 70px !important;
+    padding-right: 90px !important;
+  }
 }
 
 /* Homepage journey: dashed connector between the step numbers (desktop only) */
