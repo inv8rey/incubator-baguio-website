@@ -992,14 +992,18 @@ create table if not exists public.program_step_images (
 
 -- One-time migration: the pillars were renamed from Enable/Engage/Expand/Evolve
 -- to their current names, but this table (and the admin uploader) kept the old
--- keys, so uploaded photos never matched the homepage cards. Re-running this on
+-- keys, so uploaded photos never matched the homepage cards. The constraint
+-- must be dropped BEFORE the renames below -- the old check still forbids the
+-- new key values, so renaming into it first (as an earlier version of this
+-- migration did) fails with a check-constraint violation. Re-running this on
 -- an already-migrated database is a no-op, since no rows will match the old keys.
+alter table public.program_step_images drop constraint if exists program_step_images_step_check;
+
 update public.program_step_images set step = 'founder-development' where step = 'enable';
 update public.program_step_images set step = 'ecosystem-building' where step = 'engage';
 update public.program_step_images set step = 'open-innovation' where step = 'expand';
 update public.program_step_images set step = 'ecosystem-intelligence' where step = 'evolve';
 
-alter table public.program_step_images drop constraint if exists program_step_images_step_check;
 alter table public.program_step_images add constraint program_step_images_step_check
   check (step in ('founder-development', 'ecosystem-building', 'open-innovation', 'ecosystem-intelligence'));
 
