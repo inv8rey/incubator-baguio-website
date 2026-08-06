@@ -1,15 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DARK, ORANGE } from "../data";
+import { DARK } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { uploadProgramImage } from "../../../lib/uploadLogo";
 
+// Keys, titles, and colors must match STEPS in app/programs/EcosystemModel.tsx
+// exactly — this is what the previous "enable/engage/expand/evolve" naming
+// got wrong after the pillars were renamed, silently orphaning uploads.
 const STEPS = [
-  { step: "enable", title: "Enable", theme: "Help founders build.", color: ORANGE },
-  { step: "engage", title: "Engage", theme: "Bring the ecosystem together.", color: "#285E7A" },
-  { step: "expand", title: "Expand", theme: "Create opportunities for growth.", color: "#9E2A52" },
-  { step: "evolve", title: "Evolve", theme: "Strengthen the ecosystem.", color: "#1A6B3C" },
+  { step: "founder-development", title: "Founder Development", theme: "Helping entrepreneurs turn ideas into sustainable ventures.", color: "#D9531E" },
+  { step: "ecosystem-building", title: "Ecosystem Building", theme: "Connecting people, organizations, and opportunities.", color: "#22596F" },
+  { step: "open-innovation", title: "Open Innovation", theme: "Turning real-world challenges into collaborative solutions.", color: "#8E2749" },
+  { step: "ecosystem-intelligence", title: "Ecosystem Intelligence", theme: "Enabling better decisions through data and insights.", color: "#17603A" },
 ] as const;
 
 interface Row {
@@ -104,7 +107,7 @@ export default function ProgramsTab() {
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 20 }}>
       <p style={{ margin: 0, fontSize: 13.5, color: "#5A544B", maxWidth: 640 }}>
-        Upload one photo per step. It replaces the illustration on the left side of the &ldquo;Our Programs&rdquo; scrolling section on the homepage and /programs page. Recommended: a landscape photo, at least 900px wide.
+        Upload one photo per pillar. It replaces the generated illustration on the right side of that pillar&rsquo;s card in the &ldquo;Our Programs&rdquo; sticky section on the homepage and /programs page. Recommended: a landscape photo, at least 900px wide.
       </p>
       <div className="ib-admin-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16 }}>
         {STEPS.map((s) => (
