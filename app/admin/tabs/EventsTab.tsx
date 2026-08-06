@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { DARK, ORANGE } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { uploadEventPoster } from "../../../lib/uploadLogo";
+import { triggerSheetSync } from "../../../lib/syncSheetClient";
 import { CATEGORY_COLORS, EVENT_FORMATS, ORGANIZER_TYPES, type EventCategory, type EventFormat, type OrganizerType } from "../../calendar/data";
 
 const EVENT_CATEGORIES = Object.keys(CATEGORY_COLORS) as EventCategory[];
@@ -131,6 +132,7 @@ function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; o
       return;
     }
     onSaved();
+    triggerSheetSync("events");
   }
 
   return (
@@ -278,6 +280,7 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
     if (error) return window.alert(error.message);
     setViewing(null);
     load();
+    triggerSheetSync("events");
   }
 
   // Approving goes through the API route rather than a direct client update,
@@ -296,6 +299,7 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
     }
     setViewing(null);
     load();
+    triggerSheetSync("events");
   }
 
   async function remove(id: string) {
@@ -305,6 +309,7 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
     if (error) return window.alert(error.message);
     setViewing(null);
     load();
+    triggerSheetSync("events");
   }
 
   return (

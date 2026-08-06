@@ -7,6 +7,7 @@ import { DARK, ORANGE, SECTOR_FILTERS, STAGE_BADGE, STAGE_FILTERS } from "../dat
 import { supabase } from "../../../lib/supabaseClient";
 import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
 import { uploadStartupLogo } from "../../../lib/uploadLogo";
+import { triggerSheetSync } from "../../../lib/syncSheetClient";
 import type { LocationValue } from "../../LocationPicker";
 
 const LocationPicker = dynamic(() => import("../../LocationPicker"), { ssr: false });
@@ -162,6 +163,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
       return;
     }
     load();
+    triggerSheetSync("startups");
   }
 
   async function submitStartup(e: React.FormEvent) {
@@ -196,6 +198,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
     }
     closeModal();
     load();
+    triggerSheetSync("startups");
   }
 
   const stats = useMemo(() => {

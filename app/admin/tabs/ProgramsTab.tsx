@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { DARK } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { uploadProgramImage } from "../../../lib/uploadLogo";
+import { triggerSheetSync } from "../../../lib/syncSheetClient";
 
 // Keys, titles, and colors must match STEPS in app/programs/EcosystemModel.tsx
 // exactly — this is what the previous "enable/engage/expand/evolve" naming
@@ -35,6 +36,7 @@ function StepCard({ step, title, theme, color, imageUrl, onSaved }: { step: stri
       const { error: err } = await supabase.from("program_step_images").upsert({ step, image_url: url, updated_at: new Date().toISOString() });
       if (err) throw new Error(err.message);
       onSaved();
+      triggerSheetSync("programs");
     } catch (err: any) {
       setError(err.message || "Upload failed.");
     }
@@ -46,6 +48,7 @@ function StepCard({ step, title, theme, color, imageUrl, onSaved }: { step: stri
     const { error: err } = await supabase.from("program_step_images").upsert({ step, image_url: "", updated_at: new Date().toISOString() });
     if (err) return setError(err.message);
     onSaved();
+    triggerSheetSync("programs");
   }
 
   return (
