@@ -106,9 +106,9 @@ const ABOUT_HTML_TOP = `
 <!-- OUR FOUNDATION -->
 <div style="background:#fff;padding:76px 40px;">
   <div style="max-width:1080px;margin:0 auto;display:grid;grid-template-columns:0.85fr 1.15fr;gap:52px;align-items:center;">
-    <div style="position:relative;border-radius:20px;overflow:hidden;background:#100D0B;aspect-ratio:4/4.2;display:flex;align-items:center;justify-content:center;">
+    <div style="position:relative;border-radius:20px;overflow:hidden;background:#100D0B;aspect-ratio:4/4.2;">
+      <img src="${BP}/assets/about-our-foundation.jpg" alt="Partners signing the Incubator Baguio Pledge of Commitment" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
       <div style="position:absolute;inset:0;background:linear-gradient(160deg,rgba(242,101,34,0.14),transparent 55%);"></div>
-      <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:24px;"><svg width="120" height="104" viewBox="0 0 120 104" fill="none"><polyline points="12,40 60,12 108,40" stroke="#F5A623" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="12,60 60,32 108,60" stroke="#E23A2E" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="12,80 60,52 108,80" stroke="#9E2A52" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="12,100 60,72 108,100" stroke="#285E7A" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"></polyline></svg><div style="font-size:11.5px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.4);">City Hall Imagery</div></div>
     </div>
     <div>
       <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F26522;margin-bottom:14px;">Our Foundation</div>
