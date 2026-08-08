@@ -75,7 +75,7 @@ function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; o
   const [orgType, setOrgType] = useState<OrganizerType>((event?.org_type as OrganizerType) || ORGANIZER_TYPES[0]);
   const [format, setFormat] = useState<EventFormat>((event?.format as EventFormat) || "In-Person");
   const [description, setDescription] = useState(event?.description ?? "");
-  const [cta, setCta] = useState(event?.cta || "Register");
+  const [cta, setCta] = useState(event?.cta || "View Event");
   const [registrationLink, setRegistrationLink] = useState(event?.registration_link ?? "");
   const [posterUrl, setPosterUrl] = useState(event?.poster_url ?? "");
   const [posterUploading, setPosterUploading] = useState(false);
@@ -119,7 +119,7 @@ function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; o
       org_type: orgType,
       format,
       description: description.trim(),
-      cta: cta.trim() || "Register",
+      cta: cta.trim() || "View Event",
       registration_link: registrationLink.trim(),
       poster_url: posterUrl,
     };
@@ -227,7 +227,7 @@ function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; o
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div>
               <label style={modalLabelStyle}>Button label</label>
-              <input value={cta} onChange={(e) => setCta(e.target.value)} placeholder="e.g. Register, RSVP, Join online" style={modalInputStyle} />
+              <input value={cta} onChange={(e) => setCta(e.target.value)} placeholder="e.g. View Event, Register, RSVP" style={modalInputStyle} />
             </div>
             <div>
               <label style={modalLabelStyle}>Registration link</label>

@@ -435,6 +435,23 @@ img { max-width: 100%; height: auto; }
   .ib-gallery-tile:hover img { transform: none; }
 }
 
+/* Calendar day cells: only days that actually have something scheduled are
+   clickable, so only those get a hover state -- hovering an empty day
+   shouldn't imply there's anything to open. */
+.ib-events-daycell-live:hover {
+  background: #FBF9F5 !important;
+}
+
+/* Events calendar: stack the agenda panel below the calendar well before the
+   usual 900px. Keeping the two side by side down that far left the seven day
+   columns about 60px wide, which is too narrow for an event title to survive.
+   Full width for the grid matters more than having the panel alongside. */
+@media (max-width: 1150px) {
+  .ib-events-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 /* Homepage event rows: date | details | CTA works down to about tablet width,
    then the CTA starts crowding the title. Below that, drop the button onto its
    own full-width row instead of letting the three tracks fight each other. */
@@ -473,11 +490,6 @@ img { max-width: 100%; height: auto; }
   [style*="grid-template-columns:1.6fr 1fr"] {
     grid-template-columns: 1fr !important;
   }
-  /* Events calendar: agenda panel stacks below the calendar */
-  .ib-events-grid {
-    grid-template-columns: 1fr !important;
-  }
-
   /* Ecosystem database: 3/4-col directory grids collapse to 2 */
   .ib-ecosystem-grid {
     grid-template-columns: repeat(2, 1fr) !important;
@@ -665,19 +677,29 @@ img { max-width: 100%; height: auto; }
   .ib-events-viewtoggle button {
     flex: 1;
   }
-  /* Event chips inside calendar day cells: drop the text, keep the dot,
-     so 7 narrow columns don't force the grid wider than the viewport. */
+  /* Event chips inside calendar day cells: drop the title and collapse the
+     accent bar into a dot, so 7 narrow columns don't force the grid wider
+     than the viewport. The day panel carries the full details on tap. */
   .ib-events-chip {
     padding: 0 !important;
     background: none !important;
+    gap: 0 !important;
+    justify-content: flex-start;
   }
+  /* !important because the chip text carries an inline display:-webkit-box
+     for its two-line clamp, which would otherwise win over this rule. */
   .ib-events-chip-text {
-    display: none;
+    display: none !important;
   }
-  /* Shrink the day grid's gap/padding so 7 columns fit a phone screen */
-  .ib-events-monthgrid {
-    gap: 3px !important;
+  .ib-events-chip-bar {
+    width: 6px !important;
+    min-height: 6px !important;
+    height: 6px !important;
+    align-self: center;
+    margin-left: 2px;
   }
+  /* Tighten the day cells so 7 columns fit a phone screen. The grid itself
+     stays gapless -- its hairlines are what make it read as a calendar. */
   .ib-events-daycell {
     padding: 4px 3px !important;
     min-height: 64px !important;

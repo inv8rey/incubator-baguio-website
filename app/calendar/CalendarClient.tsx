@@ -22,6 +22,7 @@ import {
   type OrganizerType,
 } from "./data";
 
+const HAIRLINE = "rgba(64,50,34,0.10)";
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const CATEGORIES = Object.keys(CATEGORY_COLORS) as EventCategory[];
@@ -51,7 +52,10 @@ function mapEventRow(r: any): CityEvent {
     org: r.org,
     orgType: (r.org_type as OrganizerType) || "Community Partners",
     format: (r.format as EventFormat) || "In-Person",
-    cta: r.cta || "Register",
+    // "Register" was the old default and is stored on existing rows, so it's
+    // remapped rather than just changing the fallback. A genuinely custom
+    // label the admin typed (RSVP, Join online, ...) still comes through.
+    cta: !r.cta || r.cta === "Register" ? "View Event" : r.cta,
     registrationLink: r.registration_link || undefined,
     posterUrl: r.poster_url || undefined,
   };
@@ -102,13 +106,34 @@ function Select({ value, onChange, options, allLabel }: { value: string | null; 
   );
 }
 
+interface DayCell { date: Date; inMonth: boolean }
 interface ChipData { key: string; label: string; time: string; color: string; bg: string }
 
 function DayChip({ data, compact }: { data: ChipData; compact?: boolean }) {
   return (
-    <div className="ib-events-chip" style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0, fontSize: compact ? 10 : 10.5, fontWeight: 600, color: data.color, background: data.bg, borderRadius: 5, padding: "3px 6px", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
-      <span style={{ width: 5, height: 5, borderRadius: 9999, background: data.color, flexShrink: 0 }} />
-      <span className="ib-events-chip-text" style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>{data.label} {data.time}</span>
+    <div className="ib-events-chip" style={{ display: "flex", alignItems: "stretch", gap: 5, minWidth: 0, background: data.bg, borderRadius: 6, padding: "3px 6px 3px 5px", overflow: "hidden" }}>
+      <span className="ib-events-chip-bar" style={{ width: 3, minHeight: 14, flexShrink: 0, borderRadius: 9999, background: data.color }} />
+      {/* Month cells are only ~130px wide, so a single nowrap line truncates
+          after a word or two ("Desig…"). Two clamped lines make the title
+          actually readable, and the time is left to the wider Week view and
+          the day panel rather than eating the chip. */}
+      <span
+        className="ib-events-chip-text"
+        style={{
+          minWidth: 0,
+          overflow: "hidden",
+          display: "-webkit-box",
+          WebkitBoxOrient: "vertical",
+          WebkitLineClamp: 2,
+          fontSize: compact ? 10.5 : 11,
+          fontWeight: 500,
+          lineHeight: 1.35,
+          color: data.color,
+        }}
+      >
+        {!compact && data.time ? <span style={{ opacity: 0.7, marginRight: 5 }}>{data.time}</span> : null}
+        {data.label}
+      </span>
     </div>
   );
 }
@@ -132,7 +157,9 @@ function EventRow({ e }: { e: CityEvent }) {
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{ borderBottom: "1px solid rgba(64,50,34,0.09)", overflow: "hidden", borderRadius: hovered ? 12 : 0, margin: hovered ? "6px 0" : "0", transition: "margin 0.18s ease, border-radius 0.18s ease" }}
+      // No margin change on hover: animating it nudged every row below this
+      // one, so a mouse drifting down the list made the whole panel twitch.
+      style={{ borderBottom: `1px solid ${HAIRLINE}`, overflow: "hidden", borderRadius: hovered ? 12 : 0, transition: "border-radius 0.18s ease" }}
     >
       <div style={{
         height: hovered ? 88 : 0,
@@ -172,12 +199,23 @@ function EventRow({ e }: { e: CityEvent }) {
         <div style={{ fontSize: 14, fontWeight: 600, color: DARK, lineHeight: 1.3, marginBottom: 5 }}>{e.title}</div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <span style={{ fontSize: 11.5, color: "#8B8479", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{e.venue}</span>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-            <a href={e.registrationLink || "#"} target={e.registrationLink ? "_blank" : undefined} rel={e.registrationLink ? "noopener noreferrer" : undefined} onClick={(ev) => { if (!e.registrationLink) ev.preventDefault(); }} style={{ background: DARK, color: "#fff", fontWeight: 600, fontSize: 11.5, padding: "7px 13px", borderRadius: 9999, textDecoration: "none", whiteSpace: "nowrap" }}>{e.cta}</a>
-            <button aria-label="Save event" style={{ width: 27, height: 27, borderRadius: 8, border: "1.5px solid rgba(64,50,34,0.13)", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
-              <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2}><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
-            </button>
-          </div>
+          {/* No bookmark button here: it had no handler wired up, so it looked
+              actionable and did nothing. Better absent than fake. */}
+          {e.registrationLink ? (
+            <a
+              href={e.registrationLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 5, background: DARK, color: "#fff", fontWeight: 600, fontSize: 11.5, padding: "7px 13px", borderRadius: 9999, textDecoration: "none", whiteSpace: "nowrap" }}
+            >
+              {e.cta}
+              <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.8 }}>
+                <path d="M7 17 17 7M9 7h8v8" />
+              </svg>
+            </a>
+          ) : (
+            <span style={{ flexShrink: 0, fontSize: 11.5, color: "#8B8479", whiteSpace: "nowrap" }}>Details to follow</span>
+          )}
         </div>
       </div>
     </div>
@@ -619,13 +657,18 @@ export default function CalendarClient() {
   const filteredEvents = useMemo(() => allEvents.filter(matchesEventFilters), [allEvents, category, organizerType, format, q]);
   const filteredSlots = useMemo(() => MENTOR_SLOTS.filter(matchesMentorFilters), [category, organizerType, format, q]);
 
+  // Leading/trailing cells carry the real adjacent-month dates rather than
+  // nulls, and the grid is padded to whole weeks -- an unbroken 7-column
+  // block reads as a calendar, where blank placeholder tiles read as
+  // something that failed to load.
   const monthCells = useMemo(() => {
-    const firstDay = new Date(year, month, 1);
-    const startOffset = firstDay.getDay();
+    const startOffset = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const out: (Date | null)[] = [];
-    for (let i = 0; i < startOffset; i++) out.push(null);
-    for (let d = 1; d <= daysInMonth; d++) out.push(new Date(year, month, d));
+    const out: DayCell[] = [];
+    for (let i = startOffset; i > 0; i--) out.push({ date: new Date(year, month, 1 - i), inMonth: false });
+    for (let d = 1; d <= daysInMonth; d++) out.push({ date: new Date(year, month, d), inMonth: true });
+    let trailing = 1;
+    while (out.length % 7 !== 0) out.push({ date: new Date(year, month, daysInMonth + trailing++), inMonth: false });
     return out;
   }, [year, month]);
 
@@ -634,11 +677,25 @@ export default function CalendarClient() {
     return Array.from({ length: 7 }, (_, i) => {
       const d = new Date(start);
       d.setDate(d.getDate() + i);
-      return d;
+      return { date: d, inMonth: true };
     });
   }, [cursor]);
 
   const cells = view === "Week" ? weekCells : monthCells;
+
+  // Which legend swatches are worth showing: only what's actually on the
+  // grid right now, recomputed as the period or filters change.
+  const visibleCategories = useMemo(() => {
+    const seen = new Set<string>();
+    for (const { date } of cells) {
+      if (mode === "events") {
+        for (const e of eventsOnDay(date, allEvents).filter(matchesEventFilters)) seen.add(e.category);
+      } else {
+        for (const s of slotsOnDay(date).filter(matchesMentorFilters)) seen.add(s.expertise);
+      }
+    }
+    return seen;
+  }, [cells, mode, allEvents, category, organizerType, format, q]);
 
   function eventsOnDayFiltered(date: Date) {
     return eventsOnDay(date, allEvents).filter(matchesEventFilters);
@@ -794,7 +851,7 @@ export default function CalendarClient() {
             <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "24px 24px 18px" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
                 <div style={{ fontSize: 19, fontWeight: 600, color: DARK, letterSpacing: "-0.01em" }}>
-                  {view === "Week" ? `Week of ${formatLong(isoOf(weekCells[0]))}` : `${MONTH_NAMES[month]} ${year}`}
+                  {view === "Week" ? `Week of ${formatLong(isoOf(weekCells[0].date))}` : `${MONTH_NAMES[month]} ${year}`}
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
                   <button onClick={() => step(-1)} aria-label="Previous" style={{ width: 32, height: 32, borderRadius: 9999, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -809,85 +866,101 @@ export default function CalendarClient() {
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))", gap: 4, marginBottom: 6 }}>
-                {WEEKDAYS.map((w) => (
-                  <div key={w} style={{ textAlign: "center", fontSize: 10.5, fontWeight: 600, color: "#8B8479", padding: "4px 0" }}>{w}</div>
-                ))}
+              {/* One clipped, hairline-ruled block for the weekday header and the
+                  days, rather than 37 detached rounded tiles -- a continuous
+                  grid is what reads as a calendar. Columns are minmax(0,1fr)
+                  because a bare 1fr floors each track at its content width, so
+                  one long event title would stretch its column and squeeze the
+                  rest into slivers. */}
+              <div style={{ border: `1px solid ${HAIRLINE}`, borderRadius: 14, overflow: "hidden" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))", background: "#FBF9F5", borderBottom: `1px solid ${HAIRLINE}` }}>
+                  {WEEKDAYS.map((w, i) => (
+                    <div key={w} style={{ textAlign: "center", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: "#8B8479", padding: "10px 0", borderRight: i < 6 ? `1px solid ${HAIRLINE}` : "none" }}>
+                      {w}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="ib-events-monthgrid" style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))" }}>
+                  {cells.map(({ date, inMonth }, i) => {
+                    const iso = isoOf(date);
+                    const dayItems = mode === "events" ? eventsOnDayFiltered(date) : slotsOnDayFiltered(date);
+                    const dayChips: ChipData[] = mode === "events"
+                      ? (dayItems as CityEvent[]).map((e) => ({ key: e.id, label: e.title, time: e.time, color: CATEGORY_COLORS[e.category].color, bg: CATEGORY_COLORS[e.category].bg }))
+                      : (dayItems as MentorSlot[]).map((s) => ({ key: s.id, label: s.mentorName, time: s.time, color: MENTOR_EXPERTISE_COLORS[s.expertise].color, bg: MENTOR_EXPERTISE_COLORS[s.expertise].bg }));
+                    const isToday = iso === todayIso;
+                    const isSelected = iso === selectedIso;
+                    const visible = dayChips.slice(0, view === "Week" ? 6 : 2);
+                    const extra = dayChips.length - visible.length;
+                    const interactive = dayItems.length > 0;
+                    const lastRow = i >= cells.length - 7;
+                    return (
+                      <button
+                        key={i}
+                        className={`ib-events-daycell${interactive ? " ib-events-daycell-live" : ""}`}
+                        onClick={() => interactive && setSelectedIso(isSelected ? null : iso)}
+                        disabled={!interactive}
+                        aria-label={`${formatLong(iso)}${interactive ? `, ${dayItems.length} ${dayItems.length === 1 ? itemsLabel.slice(0, -1) : itemsLabel}` : ""}`}
+                        style={{
+                          minHeight: view === "Week" ? 168 : 118,
+                          minWidth: 0,
+                          border: "none",
+                          borderRight: i % 7 < 6 ? `1px solid ${HAIRLINE}` : "none",
+                          borderBottom: lastRow ? "none" : `1px solid ${HAIRLINE}`,
+                          // Inset ring for the selection so it can't shift the
+                          // grid's hairlines the way a real border would.
+                          boxShadow: isSelected ? `inset 0 0 0 2px ${ORANGE}` : "none",
+                          background: isSelected ? "rgba(242,101,34,0.05)" : inMonth ? "#fff" : "#FCFAF6",
+                          cursor: interactive ? "pointer" : "default",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "stretch",
+                          gap: 5,
+                          padding: "8px 7px",
+                          textAlign: "left",
+                          transition: "background 0.15s ease",
+                        }}
+                      >
+                        <span style={{ display: "flex", alignItems: "center", minHeight: 21 }}>
+                          <span
+                            style={
+                              isToday
+                                ? { width: 21, height: 21, borderRadius: 9999, background: ORANGE, color: "#fff", fontSize: 11.5, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center" }
+                                : { fontSize: 12.5, fontWeight: 500, color: !inMonth ? "#CFCAC0" : interactive ? DARK : "#9C958A", padding: "0 2px" }
+                            }
+                          >
+                            {date.getDate()}
+                          </span>
+                        </span>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 0 }}>
+                          {visible.map((c) => <DayChip key={c.key} data={c} compact={view !== "Week"} />)}
+                          {extra > 0 && <span style={{ fontSize: 10, fontWeight: 500, color: "#8B8479", padding: "1px 6px" }}>+{extra} more</span>}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* minmax(0,1fr) rather than 1fr: a bare 1fr floors each track at
-                  its content width, so one long event title stretches its column
-                  and squeezes the empty days into slivers. */}
-              <div className="ib-events-monthgrid" style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))", gap: 6 }}>
-                {cells.map((date, i) => {
-                  if (!date) return <div key={i} style={{ minHeight: view === "Week" ? 150 : 92, borderRadius: 12, border: "1.5px solid rgba(64,50,34,0.04)", background: "#F6F2EA" }} />;
-                  const iso = isoOf(date);
-                  const dayItems = mode === "events" ? eventsOnDayFiltered(date) : slotsOnDayFiltered(date);
-                  const dayChips: ChipData[] = mode === "events"
-                    ? (dayItems as CityEvent[]).map((e) => ({ key: e.id, label: e.title, time: e.time, color: CATEGORY_COLORS[e.category].color, bg: CATEGORY_COLORS[e.category].bg }))
-                    : (dayItems as MentorSlot[]).map((s) => ({ key: s.id, label: s.mentorName, time: s.time, color: MENTOR_EXPERTISE_COLORS[s.expertise].color, bg: MENTOR_EXPERTISE_COLORS[s.expertise].bg }));
-                  const isToday = iso === todayIso;
-                  const isSelected = iso === selectedIso;
-                  const visible = dayChips.slice(0, view === "Week" ? 6 : 2);
-                  const extra = dayChips.length - visible.length;
-                  return (
-                    <button
-                      key={i}
-                      className="ib-events-daycell"
-                      onClick={() => dayItems.length > 0 && setSelectedIso(isSelected ? null : iso)}
-                      disabled={dayItems.length === 0}
-                      style={{
-                        minHeight: view === "Week" ? 150 : 92,
-                        minWidth: 0,
-                        borderRadius: 12,
-                        border: isSelected ? `1.5px solid ${ORANGE}` : "1.5px solid rgba(64,50,34,0.10)",
-                        background: isSelected ? "rgba(242,101,34,0.06)" : "#fff",
-                        cursor: dayItems.length > 0 ? "pointer" : "default",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "stretch",
-                        gap: 4,
-                        padding: "7px 6px",
-                        textAlign: "left",
-                      }}
-                    >
-                      {isToday ? (
-                        <>
-                          <span style={{ width: 22, height: 22, borderRadius: 9999, background: ORANGE, color: "#fff", fontSize: 12, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center" }}>{date.getDate()}</span>
-                          {dayItems.length > 0 && (
-                            <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: "center" }}>
-                              <span style={{ fontSize: 11, fontWeight: 600, color: ORANGE }}>{dayItems.length} {dayItems.length === 1 ? itemsLabel.slice(0, -1) : itemsLabel}</span>
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        <>
-                          <span style={{ fontSize: 12, fontWeight: 500, color: dayItems.length > 0 ? DARK : "#C9C5BB", padding: "1px 2px" }}>{date.getDate()}</span>
-                          <div style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 0 }}>
-                            {visible.map((c) => <DayChip key={c.key} data={c} compact={view !== "Week"} />)}
-                            {extra > 0 && <span style={{ fontSize: 10, fontWeight: 600, color: "#8B8479", padding: "1px 4px" }}>+{extra} more</span>}
-                          </div>
-                        </>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 18, paddingTop: 16, borderTop: "1px solid rgba(64,50,34,0.10)" }}>
+              {/* Only the categories actually on screen -- a fixed list of all
+                  eight is noise the reader has to filter out themselves. */}
+              <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginTop: 16, paddingTop: 14, borderTop: `1px solid ${HAIRLINE}` }}>
                 {mode === "events"
-                  ? CATEGORIES.map((cat) => (
-                      <div key={cat} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                  ? CATEGORIES.filter((cat) => visibleCategories.has(cat)).map((cat) => (
+                      <div key={cat} style={{ display: "flex", alignItems: "center", gap: 6 }}>
                         <span style={{ width: 7, height: 7, borderRadius: 9999, background: CATEGORY_COLORS[cat].color, display: "inline-block" }} />
-                        <span style={{ fontSize: 11, color: "#5A544B" }}>{cat}</span>
+                        <span style={{ fontSize: 11.5, color: "#5A544B" }}>{cat}</span>
                       </div>
                     ))
-                  : MENTOR_EXPERTISE_LIST.map((exp) => (
-                      <div key={exp} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                  : MENTOR_EXPERTISE_LIST.filter((exp) => visibleCategories.has(exp)).map((exp) => (
+                      <div key={exp} style={{ display: "flex", alignItems: "center", gap: 6 }}>
                         <span style={{ width: 7, height: 7, borderRadius: 9999, background: MENTOR_EXPERTISE_COLORS[exp].color, display: "inline-block" }} />
-                        <span style={{ fontSize: 11, color: "#5A544B" }}>{exp}</span>
+                        <span style={{ fontSize: 11.5, color: "#5A544B" }}>{exp}</span>
                       </div>
                     ))}
+                {visibleCategories.size === 0 && (
+                  <span style={{ fontSize: 11.5, color: "#8B8479" }}>Nothing scheduled in this {view === "Week" ? "week" : "month"} yet.</span>
+                )}
               </div>
             </div>
           ) : (

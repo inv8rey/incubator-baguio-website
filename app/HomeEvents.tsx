@@ -51,7 +51,9 @@ function mapRow(r: any): HomeEvent {
     venue: r.venue || "",
     org: r.org || "",
     format: r.format || "In-Person",
-    cta: r.cta || "Register",
+    // Matches the remap in app/calendar/CalendarClient.tsx: "Register" was the
+    // old stored default, custom labels pass through untouched.
+    cta: !r.cta || r.cta === "Register" ? "View Event" : r.cta,
     registrationLink: r.registration_link || undefined,
   };
 }
