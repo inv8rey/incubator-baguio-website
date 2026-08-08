@@ -106,9 +106,9 @@ interface ChipData { key: string; label: string; time: string; color: string; bg
 
 function DayChip({ data, compact }: { data: ChipData; compact?: boolean }) {
   return (
-    <div className="ib-events-chip" style={{ display: "flex", alignItems: "center", gap: 4, fontSize: compact ? 10 : 10.5, fontWeight: 600, color: data.color, background: data.bg, borderRadius: 5, padding: "3px 6px", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+    <div className="ib-events-chip" style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0, fontSize: compact ? 10 : 10.5, fontWeight: 600, color: data.color, background: data.bg, borderRadius: 5, padding: "3px 6px", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
       <span style={{ width: 5, height: 5, borderRadius: 9999, background: data.color, flexShrink: 0 }} />
-      <span className="ib-events-chip-text" style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{data.label} {data.time}</span>
+      <span className="ib-events-chip-text" style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>{data.label} {data.time}</span>
     </div>
   );
 }
@@ -809,13 +809,16 @@ export default function CalendarClient() {
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4, marginBottom: 6 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))", gap: 4, marginBottom: 6 }}>
                 {WEEKDAYS.map((w) => (
                   <div key={w} style={{ textAlign: "center", fontSize: 10.5, fontWeight: 600, color: "#8B8479", padding: "4px 0" }}>{w}</div>
                 ))}
               </div>
 
-              <div className="ib-events-monthgrid" style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6 }}>
+              {/* minmax(0,1fr) rather than 1fr: a bare 1fr floors each track at
+                  its content width, so one long event title stretches its column
+                  and squeezes the empty days into slivers. */}
+              <div className="ib-events-monthgrid" style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))", gap: 6 }}>
                 {cells.map((date, i) => {
                   if (!date) return <div key={i} style={{ minHeight: view === "Week" ? 150 : 92, borderRadius: 12, border: "1.5px solid rgba(64,50,34,0.04)", background: "#F6F2EA" }} />;
                   const iso = isoOf(date);
@@ -835,6 +838,7 @@ export default function CalendarClient() {
                       disabled={dayItems.length === 0}
                       style={{
                         minHeight: view === "Week" ? 150 : 92,
+                        minWidth: 0,
                         borderRadius: 12,
                         border: isSelected ? `1.5px solid ${ORANGE}` : "1.5px solid rgba(64,50,34,0.10)",
                         background: isSelected ? "rgba(242,101,34,0.06)" : "#fff",
@@ -859,7 +863,7 @@ export default function CalendarClient() {
                       ) : (
                         <>
                           <span style={{ fontSize: 12, fontWeight: 500, color: dayItems.length > 0 ? DARK : "#C9C5BB", padding: "1px 2px" }}>{date.getDate()}</span>
-                          <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 0 }}>
                             {visible.map((c) => <DayChip key={c.key} data={c} compact={view !== "Week"} />)}
                             {extra > 0 && <span style={{ fontSize: 10, fontWeight: 600, color: "#8B8479", padding: "1px 4px" }}>+{extra} more</span>}
                           </div>
