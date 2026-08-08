@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
 import { uploadEventSubmissionPoster } from "../../lib/uploadLogo";
+import TimeRangePicker from "./TimeRangePicker";
 import {
   CATEGORY_COLORS,
   DARK,
@@ -149,10 +150,26 @@ const CATEGORY_COVER_PATTERNS: Record<EventCategory, string> = {
   Other: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
 };
 
+function shortDate(iso: string) {
+  const [, m, d] = iso.split("-").map(Number);
+  return `${MONTH_NAMES[m - 1].slice(0, 3)} ${String(d).padStart(2, "0")}`;
+}
+
+/** "Aug 14", or "Aug 14–16" / "Aug 30 – Sep 02" for a multi-day run. */
+function dateRangeLabel(start: string, end?: string) {
+  if (!end || end === start) return shortDate(start);
+  const [, sm] = start.split("-").map(Number);
+  const [, em, ed] = end.split("-").map(Number);
+  return sm === em ? `${shortDate(start)}–${String(ed).padStart(2, "0")}` : `${shortDate(start)} – ${shortDate(end)}`;
+}
+
 function EventRow({ e }: { e: CityEvent }) {
   const cc = CATEGORY_COLORS[e.category];
   const [hovered, setHovered] = useState(false);
-  const [, m, d] = e.date.split("-").map(Number);
+  // An empty event_time used to render an empty span, leaving a dead gap in
+  // the meta row; multi-day events showed only their start date.
+  const timeLabel = e.time?.trim() || "Time TBA";
+  const dateLabel = dateRangeLabel(e.date, e.endDate);
   return (
     <div
       onMouseEnter={() => setHovered(true)}
@@ -179,7 +196,7 @@ function EventRow({ e }: { e: CityEvent }) {
           </svg>
         )}
         <span style={{ position: "absolute", top: 10, left: 12, fontSize: 9.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 8px", borderRadius: 9999 }}>{e.category}</span>
-        <span style={{ position: "absolute", top: 10, right: 12, fontSize: 10.5, color: "#8B8479" }}>{MONTH_NAMES[m - 1].slice(0, 3)} {String(d).padStart(2, "0")}</span>
+        <span style={{ position: "absolute", top: 10, right: 12, fontSize: 10.5, color: "#8B8479" }}>{dateLabel}</span>
         <div style={{ position: "absolute", bottom: 10, left: 12, right: 12, fontSize: 13, fontWeight: 600, color: DARK, lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{e.title}</div>
       </div>
 
@@ -187,13 +204,13 @@ function EventRow({ e }: { e: CityEvent }) {
         {!hovered && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
             <span style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 7px", borderRadius: 9999, flexShrink: 0 }}>{e.category}</span>
-            <span style={{ fontSize: 11, color: "#8B8479" }}>{e.time}</span>
-            <span style={{ fontSize: 11, color: "#C9C5BB", marginLeft: "auto", flexShrink: 0 }}>{MONTH_NAMES[m - 1].slice(0, 3)} {String(d).padStart(2, "0")}</span>
+            <span style={{ fontSize: 11, color: "#8B8479" }}>{timeLabel}</span>
+            <span style={{ fontSize: 11, color: "#C9C5BB", marginLeft: "auto", flexShrink: 0 }}>{dateLabel}</span>
           </div>
         )}
         {hovered && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-            <span style={{ fontSize: 11, color: "#8B8479" }}>{e.time}</span>
+            <span style={{ fontSize: 11, color: "#8B8479" }}>{timeLabel}</span>
           </div>
         )}
         <div style={{ fontSize: 14, fontWeight: 600, color: DARK, lineHeight: 1.3, marginBottom: 5 }}>{e.title}</div>
@@ -224,7 +241,6 @@ function EventRow({ e }: { e: CityEvent }) {
 
 function MentorRow({ s, booked, onBook }: { s: MentorSlot; booked: boolean; onBook: (s: MentorSlot) => void }) {
   const cc = MENTOR_EXPERTISE_COLORS[s.expertise];
-  const [, m, d] = s.date.split("-").map(Number);
   return (
     <div style={{ padding: "14px 0", borderBottom: "1px solid rgba(64,50,34,0.09)", display: "flex", gap: 12 }}>
       <div style={{ width: 40, height: 40, borderRadius: 9999, background: s.color, color: "#fff", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{s.initials}</div>
@@ -232,7 +248,7 @@ function MentorRow({ s, booked, onBook }: { s: MentorSlot; booked: boolean; onBo
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
           <span style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 7px", borderRadius: 9999, flexShrink: 0 }}>{s.expertise}</span>
           <span style={{ fontSize: 11, color: "#8B8479" }}>{s.time} &middot; {s.duration}</span>
-          <span style={{ fontSize: 11, color: "#C9C5BB", marginLeft: "auto", flexShrink: 0 }}>{MONTH_NAMES[m - 1].slice(0, 3)} {String(d).padStart(2, "0")}</span>
+          <span style={{ fontSize: 11, color: "#C9C5BB", marginLeft: "auto", flexShrink: 0 }}>{shortDate(s.date)}</span>
         </div>
         <div style={{ fontSize: 14, fontWeight: 600, color: DARK, lineHeight: 1.3, marginBottom: 5 }}>{s.mentorName}</div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
@@ -325,6 +341,7 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState<EventCategory>("Workshop");
   const [eventDate, setEventDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [eventTime, setEventTime] = useState("");
   const [venue, setVenue] = useState("");
   const [org, setOrg] = useState("");
@@ -367,6 +384,9 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
       title: title.trim(),
       category,
       event_date: eventDate,
+      // end_date is `text not null default ''`, so a blank one has to be an
+      // empty string rather than null.
+      end_date: endDate || "",
       event_time: eventTime.trim(),
       venue: venue.trim(),
       org: org.trim(),
@@ -460,9 +480,13 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
               <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} style={modalInputStyle} required />
             </div>
             <div>
-              <label style={modalLabelStyle}>Time</label>
-              <input value={eventTime} onChange={(e) => setEventTime(e.target.value)} placeholder="e.g. 2:00 PM" style={modalInputStyle} />
+              <label style={modalLabelStyle}>End date (optional)</label>
+              <input type="date" value={endDate} min={eventDate || undefined} onChange={(e) => setEndDate(e.target.value)} style={modalInputStyle} />
             </div>
+          </div>
+          <div>
+            <label style={modalLabelStyle}>Time</label>
+            <TimeRangePicker value={eventTime} onChange={setEventTime} />
           </div>
           <div>
             <label style={modalLabelStyle}>Venue</label>
@@ -753,6 +777,23 @@ export default function CalendarClient() {
   const daySlotSelection: MentorSlot[] | null = selectedIso ? filteredSlots.filter((s) => s.date === selectedIso) : null;
 
   const hasActiveFilters = !!(q || category || organizerType || format);
+
+  // "Nothing matches your filters" is only true when filters are on. With no
+  // filters it means nothing is published, and for mentoring that's always the
+  // case right now -- MENTOR_SLOTS is empty, so the mode has no data at all.
+  const emptyMessage = (kind: "events" | "sessions") => {
+    if (kind === "sessions" && MENTOR_SLOTS.length === 0) return "Mentoring sessions aren’t published yet — check back soon.";
+    if (hasActiveFilters) return `No ${kind} match your filters.`;
+    return `No upcoming ${kind} scheduled yet.`;
+  };
+
+  function clearFilters() {
+    setQuery("");
+    setCategory(null);
+    setOrganizerType(null);
+    setFormat(null);
+    setSelectedIso(null);
+  }
   const itemsLabel = mode === "events" ? "events" : "sessions";
   const availableForModal = MENTOR_SLOTS.filter((s) => !bookedIds.has(s.id));
 
@@ -761,9 +802,12 @@ export default function CalendarClient() {
       <div style={{ maxWidth: 1440, margin: "0 auto" }}>
         {/* MODE TOGGLE + ACTIONS */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, marginBottom: 18, flexWrap: "wrap" }}>
-          <div style={{ display: "flex", background: "#F6F2EA", borderRadius: 9999, padding: 3, gap: 2 }}>
+          {/* White, not the page's own #F6F2EA -- as a segmented control it has
+              to read as a container, and matching the page made it invisible. */}
+          <div style={{ display: "flex", background: "#fff", border: `1px solid ${HAIRLINE}`, borderRadius: 9999, padding: 3, gap: 2 }}>
             <button
               onClick={() => switchMode("events")}
+              aria-pressed={mode === "events"}
               style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9999, border: "none", cursor: "pointer", color: mode === "events" ? "#fff" : "#5A544B", background: mode === "events" ? DARK : "transparent" }}
             >
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><rect x={3} y={4} width={18} height={17} rx={2} /><path d="M3 9h18M8 2v4M16 2v4" /></svg>
@@ -771,6 +815,7 @@ export default function CalendarClient() {
             </button>
             <button
               onClick={() => switchMode("mentoring")}
+              aria-pressed={mode === "mentoring"}
               style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9999, border: "none", cursor: "pointer", color: mode === "mentoring" ? "#fff" : "#5A544B", background: mode === "mentoring" ? ORANGE : "transparent" }}
             >
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><path d="M22 10 12 5 2 10l10 5 10-5Z" /><path d="M6 12v5c3 2 9 2 12 0v-5" /></svg>
@@ -831,12 +876,25 @@ export default function CalendarClient() {
               options={mode === "events" ? EVENT_FORMATS : MENTOR_FORMATS}
               allLabel="All Formats"
             />
+            {/* hasActiveFilters was being computed to caption the sidebar but
+                never gave the reader a way back out -- clearing meant resetting
+                every dropdown by hand. */}
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12.5, fontWeight: 600, color: ORANGE, background: "rgba(242,101,34,0.07)", border: `1.5px solid rgba(242,101,34,0.28)`, borderRadius: 9999, padding: "9px 15px", cursor: "pointer" }}
+              >
+                <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                Clear filters
+              </button>
+            )}
           </div>
-          <div className="ib-events-viewtoggle" style={{ display: "flex", background: "#F6F2EA", borderRadius: 9999, padding: 3, gap: 2, flexShrink: 0 }}>
+          <div className="ib-events-viewtoggle" style={{ display: "flex", background: "#fff", border: `1px solid ${HAIRLINE}`, borderRadius: 9999, padding: 3, gap: 2, flexShrink: 0 }}>
             {VIEWS.map((v) => (
               <button
                 key={v}
                 onClick={() => setView(v)}
+                aria-pressed={view === v}
                 style={{ fontSize: 12.5, fontWeight: 600, padding: "8px 16px", borderRadius: 9999, border: "none", cursor: "pointer", color: view === v ? "#fff" : "#5A544B", background: view === v ? ORANGE : "transparent" }}
               >
                 {v}
@@ -900,6 +958,7 @@ export default function CalendarClient() {
                         className={`ib-events-daycell${interactive ? " ib-events-daycell-live" : ""}`}
                         onClick={() => interactive && setSelectedIso(isSelected ? null : iso)}
                         disabled={!interactive}
+                        aria-pressed={interactive ? isSelected : undefined}
                         aria-label={`${formatLong(iso)}${interactive ? `, ${dayItems.length} ${dayItems.length === 1 ? itemsLabel.slice(0, -1) : itemsLabel}` : ""}`}
                         style={{
                           minHeight: view === "Week" ? 168 : 118,
@@ -969,12 +1028,12 @@ export default function CalendarClient() {
               {mode === "events" ? (
                 <>
                   {filteredEvents.filter((e) => (e.endDate ? e.endDate >= todayIso : e.date >= todayIso)).sort((a, b) => a.date.localeCompare(b.date)).map((e) => <EventRow key={e.id} e={e} />)}
-                  {filteredEvents.length === 0 && <p style={{ fontSize: 13.5, color: "#8B8479", padding: "12px 0" }}>No events match your filters.</p>}
+                  {filteredEvents.length === 0 && <p style={{ fontSize: 13.5, color: "#8B8479", padding: "12px 0" }}>{emptyMessage("events")}</p>}
                 </>
               ) : (
                 <>
                   {filteredSlots.filter((s) => s.date >= todayIso).sort((a, b) => a.date.localeCompare(b.date)).map((s) => <MentorRow key={s.id} s={s} booked={bookedIds.has(s.id)} onBook={openBooking} />)}
-                  {filteredSlots.length === 0 && <p style={{ fontSize: 13.5, color: "#8B8479", padding: "12px 0" }}>No mentoring sessions match your filters.</p>}
+                  {filteredSlots.length === 0 && <p style={{ fontSize: 13.5, color: "#8B8479", padding: "12px 0" }}>{emptyMessage("sessions")}</p>}
                 </>
               )}
             </div>
@@ -1000,7 +1059,7 @@ export default function CalendarClient() {
                   </div>
 
                   {grouped.today.length === 0 && grouped.thisWeek.length === 0 && grouped.thisMonth.length === 0 && grouped.later.length === 0 && (
-                    <p style={{ fontSize: 13, color: "#8B8479", padding: "12px 0" }}>No events match your filters.</p>
+                    <p style={{ fontSize: 13, color: "#8B8479", padding: "12px 0" }}>{emptyMessage("events")}</p>
                   )}
 
                   {grouped.today.length > 0 && (
@@ -1054,7 +1113,7 @@ export default function CalendarClient() {
                 </div>
 
                 {groupedSlots.today.length === 0 && groupedSlots.thisWeek.length === 0 && groupedSlots.thisMonth.length === 0 && groupedSlots.later.length === 0 && (
-                  <p style={{ fontSize: 13, color: "#8B8479", padding: "12px 0" }}>No mentoring sessions match your filters.</p>
+                  <p style={{ fontSize: 13, color: "#8B8479", padding: "12px 0" }}>{emptyMessage("sessions")}</p>
                 )}
 
                 {groupedSlots.today.length > 0 && (

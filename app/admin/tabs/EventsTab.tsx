@@ -6,6 +6,7 @@ import { supabase } from "../../../lib/supabaseClient";
 import { uploadEventPoster } from "../../../lib/uploadLogo";
 import { triggerSheetSync } from "../../../lib/syncSheetClient";
 import { CATEGORY_COLORS, EVENT_FORMATS, ORGANIZER_TYPES, type EventCategory, type EventFormat, type OrganizerType } from "../../calendar/data";
+import TimeRangePicker from "../../calendar/TimeRangePicker";
 
 const EVENT_CATEGORIES = Object.keys(CATEGORY_COLORS) as EventCategory[];
 
@@ -196,15 +197,13 @@ function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; o
               <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={modalInputStyle} />
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <div>
-              <label style={modalLabelStyle}>Time</label>
-              <input value={eventTime} onChange={(e) => setEventTime(e.target.value)} placeholder="e.g. 2:00 PM" style={modalInputStyle} />
-            </div>
-            <div>
-              <label style={modalLabelStyle}>Venue</label>
-              <input value={venue} onChange={(e) => setVenue(e.target.value)} placeholder="e.g. Incubator Baguio Hub, or Online" style={modalInputStyle} />
-            </div>
+          <div>
+            <label style={modalLabelStyle}>Time</label>
+            <TimeRangePicker value={eventTime} onChange={setEventTime} />
+          </div>
+          <div>
+            <label style={modalLabelStyle}>Venue</label>
+            <input value={venue} onChange={(e) => setVenue(e.target.value)} placeholder="e.g. Incubator Baguio Hub, or Online" style={modalInputStyle} />
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div>
