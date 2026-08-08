@@ -90,7 +90,7 @@ export default function ChatPanel({ messages, loading, input, onInputChange, onS
       <div ref={listRef} aria-live="polite" style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
         {messages.length === 0 && (
           <div style={{ fontSize: 13, lineHeight: 1.6, color: "rgba(255,255,255,0.6)" }}>
-            Hi! Ask me to find open challenges, mentors, potential collaborators, or Knowledge Hub resources — or try one of the prompts below.
+            Hi! I can find open challenges, mentors, collaborators and Knowledge Hub resources, and answer questions about local programmes and funding using the Incubator Baguio team&rsquo;s own documents. Describe what you&rsquo;re working on, or try a prompt below.
           </div>
         )}
         {messages.map((m, i) => (
@@ -98,6 +98,9 @@ export default function ChatPanel({ messages, loading, input, onInputChange, onS
             key={i}
             message={m}
             onRetry={!loading && i === messages.length - 1 && m.error ? onRetry : undefined}
+            // Only the latest answer offers follow-ups; older ones would let a
+            // visitor branch off a stale point in the conversation.
+            onFollowUp={!loading && i === messages.length - 1 ? onQuickPick : undefined}
           />
         ))}
         {loading && (

@@ -1,9 +1,9 @@
 "use client";
 
 const PROMPTS = [
+  "What funding programmes can I apply for?",
   "Find mentors for my idea",
   "What challenges match my startup?",
-  "Show me funding resources",
   "Find potential collaborators",
 ];
 

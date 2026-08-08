@@ -91,6 +91,7 @@ export interface ChatChunkRow {
   id: string;
   document_id: string;
   content: string;
+  document_title?: string;
   similarity: number;
 }
 
@@ -100,6 +101,13 @@ export interface ChatContext {
   startups: ChatStartupRow[];
   resources: ChatResourceRow[];
   documentChunks: ChatChunkRow[];
+  /**
+   * Titles of the admin-uploaded documents the excerpts above came from, so
+   * the UI can tell a visitor an answer is grounded in official material
+   * rather than the model's own recall. Titles only -- the documents
+   * themselves stay private and unlinkable.
+   */
+  documentTitles: string[];
 }
 
 const ROW_CAP = 25;
@@ -128,7 +136,7 @@ async function fetchDocumentChunks(userMessage: string): Promise<ChatChunkRow[]>
 }
 
 export async function fetchChatContext(intent: ChatIntent, userMessage: string): Promise<ChatContext> {
-  if (!supabase) return { challenges: [], mentors: [], startups: [], resources: [], documentChunks: [] };
+  if (!supabase) return { challenges: [], mentors: [], startups: [], resources: [], documentChunks: [], documentTitles: [] };
 
   const [challengesRes, mentorsRes, startupsRes, resourcesRes, documentChunks] = await Promise.all([
     intent.wantsChallenges
@@ -196,7 +204,11 @@ export async function fetchChatContext(intent: ChatIntent, userMessage: string):
     link_url: r.link_url ?? "",
   }));
 
-  return { challenges, mentors, startups, resources, documentChunks };
+  const documentTitles = Array.from(
+    new Set(documentChunks.map((c) => (c.document_title ?? "").trim()).filter(Boolean))
+  );
+
+  return { challenges, mentors, startups, resources, documentChunks, documentTitles };
 }
 
 export function formatContextBlock(ctx: ChatContext): string {
@@ -249,6 +261,39 @@ export interface ChatCard {
   subtitle: string;
   description: string;
   href: string;
+}
+
+/**
+ * Next questions to offer after an answer. Derived in code from what the turn
+ * actually produced rather than asked of the model: it costs no extra Workers
+ * AI quota (which is the scarce resource here), can't come back malformed, and
+ * can't suggest something the site has no data for. Without these the panel
+ * gives a first-time visitor nothing to do after the first reply.
+ */
+export function suggestFollowUps(ctx: ChatContext, cards: ChatCard[]): string[] {
+  const out: string[] = [];
+  const seenTypes = new Set(cards.map((c) => c.type));
+
+  if (seenTypes.has("challenge")) out.push("How do I apply to that challenge?");
+  if (seenTypes.has("mentor")) out.push("How do I get connected with a mentor?");
+  if (seenTypes.has("startup")) out.push("How do I reach out to collaborate?");
+
+  if (!cards.length) {
+    if (ctx.challenges.length) out.push("What open challenges are there right now?");
+    if (ctx.mentors.length) out.push("Which mentors could help me?");
+  }
+
+  // Grounded answers tend to raise eligibility/deadline questions next, and
+  // those are exactly what the uploaded programme documents can answer.
+  if (ctx.documentChunks.length) {
+    out.push("Am I eligible for that?");
+    out.push("What are the deadlines?");
+  }
+
+  if (ctx.resources.length) out.push("Any guides or templates for this?");
+  out.push("How do I get support from Incubator Baguio?");
+
+  return Array.from(new Set(out)).slice(0, 3);
 }
 
 const TYPE_TO_KEY: Record<ChatEntityType, keyof ChatContext> = {

@@ -1,5 +1,5 @@
-import { checkRateLimit, getClientIp } from "../../../lib/chatRateLimit";
-import { classifyIntent, fetchChatContext, formatContextBlock, hydrateMatches } from "../../../lib/chatContext";
+import { checkRateLimit, getClientIp, RATE_LIMIT_MESSAGES } from "../../../lib/chatRateLimit";
+import { classifyIntent, fetchChatContext, formatContextBlock, hydrateMatches, suggestFollowUps } from "../../../lib/chatContext";
 import { requestChatCompletion, SYSTEM_PROMPT, ChatServiceError, type ChatMessage } from "../../../lib/chatCompletion";
 import { parseChatCompletion } from "../../../lib/chatParse";
 
@@ -28,8 +28,12 @@ export async function POST(req: Request) {
   const ip = getClientIp(req);
   const rate = await checkRateLimit(ip);
   if (!rate.allowed) {
+    // Distinct copy per reason: "slow down" and "the assistant is out of
+    // capacity for today" call for completely different things from the
+    // visitor, and the old single message told them to retry in a moment even
+    // when the answer was "not until tomorrow".
     return Response.json(
-      { error: "You're sending messages too quickly. Please wait a moment and try again." },
+      { error: RATE_LIMIT_MESSAGES[rate.reason ?? "ip-burst"], retryable: rate.reason === "ip-burst" },
       { status: 429, headers: rate.retryAfterSeconds ? { "Retry-After": String(rate.retryAfterSeconds) } : undefined }
     );
   }
@@ -52,7 +56,15 @@ export async function POST(req: Request) {
     const parsed = parseChatCompletion(raw);
     const cards = hydrateMatches(parsed.matches, context);
 
-    return Response.json({ reply: parsed.text, cards });
+    return Response.json({
+      reply: parsed.text,
+      cards,
+      // Sent so the panel can show the visitor that an answer rests on the
+      // team's uploaded programme documents rather than model recall. Titles
+      // only, never content or a link -- those documents are private.
+      sources: context.documentTitles,
+      followUps: suggestFollowUps(context, cards),
+    });
   } catch (err: any) {
     if (err instanceof ChatServiceError) {
       return Response.json({ error: err.message }, { status: err.status });

@@ -44,7 +44,9 @@ export default function ChatWidget() {
   async function sendRequest(history: ChatUiMessage[]) {
     setLoading(true);
     try {
-      const res = await fetch("/api/chat", {
+      // Trailing slash on purpose: the site sets trailingSlash, so "/api/chat"
+      // answers with a 308 and every message pays an extra round trip.
+      const res = await fetch("/api/chat/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: history.map((m) => ({ role: m.role, content: m.content })) }),
@@ -53,13 +55,21 @@ export default function ChatWidget() {
 
       if (!res.ok) {
         const friendly = data.error || "Couldn't get a response. Please try again.";
-        setMessages((prev) => [...prev, { role: "assistant", content: friendly, error: true }]);
+        // A spent daily budget or an hourly lockout won't clear by retrying, so
+        // those come back with retryable:false and get no Retry button.
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: friendly, error: true, retryable: data.retryable !== false },
+        ]);
         return;
       }
 
-      setMessages((prev) => [...prev, { role: "assistant", content: data.reply, cards: data.cards }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: data.reply, cards: data.cards, sources: data.sources, followUps: data.followUps },
+      ]);
     } catch {
-      setMessages((prev) => [...prev, { role: "assistant", content: "Something went wrong reaching the assistant. Please try again.", error: true }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: "Something went wrong reaching the assistant. Please try again.", error: true, retryable: true }]);
     } finally {
       setLoading(false);
     }
@@ -78,7 +88,7 @@ export default function ChatWidget() {
   function retry() {
     if (loading) return;
     const last = messages[messages.length - 1];
-    if (!last || last.role !== "assistant" || !last.error) return;
+    if (!last || last.role !== "assistant" || !last.error || last.retryable === false) return;
     const withoutError = messages.slice(0, -1);
     setMessages(withoutError);
     sendRequest(withoutError);

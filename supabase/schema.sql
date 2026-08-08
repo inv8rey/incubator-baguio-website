@@ -1157,6 +1157,35 @@ drop policy if exists "chat rate limit rows are usable by anon" on public.chat_r
 create policy "chat rate limit rows are usable by anon" on public.chat_rate_limits
   for all using (true) with check (true);
 
+-- Atomic increment-and-return for one counter bucket. The route previously did
+-- a select-then-update, which loses counts when two requests land together --
+-- tolerable for a per-IP throttle, not for the shared daily budget, where an
+-- undercount means overspending the Workers AI allowance. Returns the post
+-- increment value so the caller can compare it against its own cap.
+create or replace function public.bump_chat_usage(
+  p_client_key text,
+  p_window_start timestamptz
+)
+returns integer
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  new_count integer;
+begin
+  insert into public.chat_rate_limits (client_key, window_start, request_count)
+  values (p_client_key, p_window_start, 1)
+  on conflict (client_key, window_start)
+  do update set request_count = chat_rate_limits.request_count + 1
+  returning chat_rate_limits.request_count into new_count;
+  return new_count;
+end;
+$$;
+
+revoke all on function public.bump_chat_usage(text, timestamptz) from public;
+grant execute on function public.bump_chat_usage(text, timestamptz) to anon, authenticated;
+
 -- ---------------------------------------------------------------------------
 -- chatbot_documents / chatbot_document_chunks: a PRIVATE, admin-only document
 -- knowledge base the chatbot can search (RAG), separate from the public
@@ -1230,7 +1259,11 @@ create policy "admins manage chatbot document chunks" on public.chatbot_document
 -- security-definer function instead of selecting the table directly. It only
 -- ever returns chunk content/metadata for documents whose processing
 -- finished successfully ('ready'), nothing else about the tables is exposed.
-create or replace function public.match_chatbot_chunks(
+-- Dropped rather than replaced: document_title was added to the return table,
+-- and create-or-replace cannot change a function's return type.
+drop function if exists public.match_chatbot_chunks(vector, int);
+
+create function public.match_chatbot_chunks(
   query_embedding vector(768),
   match_count int default 5
 )
@@ -1239,6 +1272,7 @@ returns table (
   document_id uuid,
   chunk_index int,
   content text,
+  document_title text,
   similarity float
 )
 language sql stable
@@ -1250,6 +1284,7 @@ as $$
     c.document_id,
     c.chunk_index,
     c.content,
+    d.title as document_title,
     1 - (c.embedding <=> query_embedding) as similarity
   from public.chatbot_document_chunks c
   join public.chatbot_documents d on d.id = c.document_id
