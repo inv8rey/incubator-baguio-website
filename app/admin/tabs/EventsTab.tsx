@@ -112,7 +112,7 @@ function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; o
       title: title.trim(),
       category,
       event_date: eventDate,
-      end_date: endDate || null,
+      end_date: endDate || "",
       event_time: eventTime.trim(),
       venue: venue.trim(),
       org: org.trim(),
