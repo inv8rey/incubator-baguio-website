@@ -961,6 +961,17 @@ create table if not exists public.knowledge_resources (
 
 alter table public.knowledge_resources add column if not exists featured boolean not null default false;
 
+-- Funding & Opportunities-specific fields. Free text rather than a number +
+-- currency column: real funding notices are things like "Up to ₱500,000" or
+-- "₱50,000–₱200,000 per awardee", not a single clean amount, and the same is
+-- true of eligibility ("Early-stage tech startups", "Registered MSMEs in
+-- Baguio City"). Kept on the shared table rather than a separate one since
+-- every other Knowledge Hub field (title, description, category...) already
+-- applies to a funding listing the same way it does to any other resource.
+alter table public.knowledge_resources add column if not exists cover_image_url text not null default '';
+alter table public.knowledge_resources add column if not exists funding_amount text not null default '';
+alter table public.knowledge_resources add column if not exists target_participants text not null default '';
+
 alter table public.knowledge_resources enable row level security;
 
 drop policy if exists "knowledge resources are publicly readable" on public.knowledge_resources;
@@ -997,6 +1008,31 @@ create policy "authenticated users can update knowledge files" on storage.object
 drop policy if exists "authenticated users can delete knowledge files" on storage.objects;
 create policy "authenticated users can delete knowledge files" on storage.objects
   for delete to authenticated using (bucket_id = 'knowledge-files');
+
+-- ---------------------------------------------------------------------------
+-- storage: knowledge-resource-covers bucket for resource cover images (used
+-- today by Funding & Opportunities cards) -- separate from knowledge-files
+-- since that bucket holds the resource's actual document, not its artwork.
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('knowledge-resource-covers', 'knowledge-resource-covers', true)
+on conflict (id) do nothing;
+
+drop policy if exists "knowledge resource covers are publicly readable" on storage.objects;
+create policy "knowledge resource covers are publicly readable" on storage.objects
+  for select using (bucket_id = 'knowledge-resource-covers');
+
+drop policy if exists "authenticated users can upload knowledge resource covers" on storage.objects;
+create policy "authenticated users can upload knowledge resource covers" on storage.objects
+  for insert to authenticated with check (bucket_id = 'knowledge-resource-covers');
+
+drop policy if exists "authenticated users can update knowledge resource covers" on storage.objects;
+create policy "authenticated users can update knowledge resource covers" on storage.objects
+  for update to authenticated using (bucket_id = 'knowledge-resource-covers');
+
+drop policy if exists "authenticated users can delete knowledge resource covers" on storage.objects;
+create policy "authenticated users can delete knowledge resource covers" on storage.objects
+  for delete to authenticated using (bucket_id = 'knowledge-resource-covers');
 
 -- ---------------------------------------------------------------------------
 -- program_step_images: admin-uploaded photo for each of the 4 "Our Programs"

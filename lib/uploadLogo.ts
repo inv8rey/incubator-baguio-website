@@ -64,3 +64,7 @@ export function uploadProgramImage(file: File): Promise<string> {
 export function uploadGalleryPhoto(file: File): Promise<string> {
   return uploadImage(file, "gallery-photos");
 }
+
+export function uploadKnowledgeResourceCover(file: File): Promise<string> {
+  return uploadImage(file, "knowledge-resource-covers");
+}

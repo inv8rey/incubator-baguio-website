@@ -29,7 +29,7 @@ export const KNOWLEDGE_CATEGORIES: KnowledgeCategoryInfo[] = [
   },
   {
     id: "Funding & Opportunities",
-    description: "Grants, competitions, calls for proposals, investor opportunities, and accelerator programs.",
+    description: "Grants, competitions, and accelerator programs open for applications right now.",
     color: "#1A6B3C",
     bg: "rgba(26,107,60,0.10)",
   },
@@ -50,4 +50,9 @@ export interface KnowledgeResource {
   linkUrl?: string;
   source?: string;
   featured?: boolean;
+  /** Funding & Opportunities extras — free text, since real notices read
+   * "Up to ₱500,000" or "Early-stage tech startups", not a clean number. */
+  coverImageUrl?: string;
+  fundingAmount?: string;
+  targetParticipants?: string;
 }

@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { DARK, ORANGE } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { uploadKnowledgeResourceFile } from "../../../lib/uploadFile";
+import { uploadKnowledgeResourceCover } from "../../../lib/uploadLogo";
 import { KNOWLEDGE_CATEGORIES, type KnowledgeCategory } from "../../knowledge/data";
+
+const FUNDING_CATEGORY: KnowledgeCategory = "Funding & Opportunities";
 
 const modalInputStyle: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: "10px 14px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", fontSize: 13.5, color: DARK, outline: "none", fontFamily: "inherit" };
 const modalLabelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 5, display: "block" };
@@ -18,6 +21,9 @@ interface ResourceRow {
   link_url: string;
   source: string;
   featured: boolean;
+  cover_image_url: string;
+  funding_amount: string;
+  target_participants: string;
   created_at: string;
 }
 
@@ -30,9 +36,15 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
   const [fileUrl, setFileUrl] = useState(resource?.file_url ?? "");
   const [source, setSource] = useState(resource?.source ?? "");
   const [featured, setFeatured] = useState(resource?.featured ?? false);
+  const [coverImageUrl, setCoverImageUrl] = useState(resource?.cover_image_url ?? "");
+  const [fundingAmount, setFundingAmount] = useState(resource?.funding_amount ?? "");
+  const [targetParticipants, setTargetParticipants] = useState(resource?.target_participants ?? "");
   const [fileUploading, setFileUploading] = useState(false);
+  const [coverUploading, setCoverUploading] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [error, setError] = useState("");
+
+  const isFunding = category === FUNDING_CATEGORY;
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -46,6 +58,20 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
       setError(err.message || "File upload failed.");
     }
     setFileUploading(false);
+  }
+
+  async function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setCoverUploading(true);
+    setError("");
+    try {
+      setCoverImageUrl(await uploadKnowledgeResourceCover(file));
+    } catch (err: any) {
+      setError(err.message || "Cover image upload failed.");
+    }
+    setCoverUploading(false);
   }
 
   async function submit(e: React.FormEvent) {
@@ -72,6 +98,12 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
       link_url: linkUrl.trim(),
       source: source.trim(),
       featured,
+      // Cleared when the category is switched away from Funding &
+      // Opportunities, so a leftover cover/amount/audience can't linger on a
+      // resource re-filed under a different category.
+      cover_image_url: isFunding ? coverImageUrl : "",
+      funding_amount: isFunding ? fundingAmount.trim() : "",
+      target_participants: isFunding ? targetParticipants.trim() : "",
     };
     const { error: err } = isEdit
       ? await supabase.from("knowledge_resources").update(payload).eq("id", resource!.id)
@@ -110,12 +142,50 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
           </div>
           <div>
             <label style={modalLabelStyle}>Description</label>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What is this resource about?" style={{ ...modalInputStyle, resize: "vertical", minHeight: 70 }} />
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder={isFunding ? "What's being funded, and why should a founder care? e.g. \"Matching grants for MSMEs upgrading their production tech.\"" : "What is this resource about?"}
+              style={{ ...modalInputStyle, resize: "vertical", minHeight: 70 }}
+            />
           </div>
           <div>
             <label style={modalLabelStyle}>Source / attribution (optional)</label>
             <input value={source} onChange={(e) => setSource(e.target.value)} placeholder="e.g. DTI Region CAR" style={modalInputStyle} />
           </div>
+
+          {isFunding && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 14, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.11)", borderRadius: 12, padding: 16 }}>
+              <div style={{ fontSize: 12.5, fontWeight: 600, color: DARK }}>Funding details</div>
+              <div>
+                <label style={modalLabelStyle}>Cover image (optional)</label>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  {coverImageUrl ? (
+                    <img src={coverImageUrl} alt="" style={{ width: 84, height: 52, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
+                  ) : (
+                    <div style={{ width: 84, height: 52, borderRadius: 8, background: "#fff", border: "1px dashed rgba(64,50,34,0.2)", flexShrink: 0 }} />
+                  )}
+                  <label style={{ fontSize: 12.5, fontWeight: 600, color: "#285E7A", border: "1.5px solid rgba(40,94,122,0.3)", borderRadius: 999, padding: "8px 14px", cursor: "pointer", background: "#fff" }}>
+                    {coverUploading ? "Uploading…" : coverImageUrl ? "Replace image" : "Upload image"}
+                    <input type="file" accept="image/*" onChange={handleCoverChange} disabled={coverUploading} style={{ display: "none" }} />
+                  </label>
+                  {coverImageUrl && (
+                    <button type="button" onClick={() => setCoverImageUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#8B8479", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
+                  )}
+                </div>
+                <div style={{ fontSize: 11, color: "#8B8479", marginTop: 6 }}>Shown as a banner on the card. Landscape works best.</div>
+              </div>
+              <div>
+                <label style={modalLabelStyle}>Funding amount (optional)</label>
+                <input value={fundingAmount} onChange={(e) => setFundingAmount(e.target.value)} placeholder="e.g. Up to ₱500,000 per project" style={modalInputStyle} />
+              </div>
+              <div>
+                <label style={modalLabelStyle}>Who can apply (optional)</label>
+                <input value={targetParticipants} onChange={(e) => setTargetParticipants(e.target.value)} placeholder="e.g. Early-stage tech startups registered in Baguio" style={modalInputStyle} />
+              </div>
+            </div>
+          )}
+
           <div>
             <label style={modalLabelStyle}>File</label>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -145,7 +215,7 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
 
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", paddingTop: 4 }}>
             <button type="button" onClick={onClose} style={{ padding: "10px 20px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", fontSize: 13.5, fontWeight: 500, cursor: "pointer", color: "#44444C" }}>Cancel</button>
-            <button type="submit" disabled={status === "loading" || fileUploading} style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: status === "loading" ? 0.7 : 1 }}>
+            <button type="submit" disabled={status === "loading" || fileUploading || coverUploading} style={{ padding: "10px 22px", borderRadius: 9, border: "none", background: ORANGE, color: "#fff", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: status === "loading" ? 0.7 : 1 }}>
               {status === "loading" ? "Saving…" : isEdit ? "Save changes" : "Add resource"}
             </button>
           </div>
@@ -227,6 +297,9 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {filtered.map((r) => (
           <div key={r.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", padding: 18, display: "flex", gap: 16, alignItems: "flex-start" }}>
+            {r.category === FUNDING_CATEGORY && r.cover_image_url ? (
+              <img src={r.cover_image_url} alt="" style={{ width: 56, height: 56, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
+            ) : null}
             <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4, flexWrap: "wrap" }}>
                 <span style={{ fontSize: 14.5, fontWeight: 600, color: DARK }}>{r.title}</span>
@@ -236,6 +309,11 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
                 <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: "#5A544B", background: "#F5F4F0", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{r.category}</span>
               </div>
               {r.description && <div style={{ fontSize: 12.5, color: "#5A544B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.description}</div>}
+              {r.category === FUNDING_CATEGORY && (r.funding_amount || r.target_participants) && (
+                <div style={{ fontSize: 11.5, color: "#1A6B3C", marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {[r.funding_amount, r.target_participants].filter(Boolean).join(" · ")}
+                </div>
+              )}
             </div>
             <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
               {(r.file_url || r.link_url) && (

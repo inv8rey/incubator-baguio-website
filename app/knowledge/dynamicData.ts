@@ -13,5 +13,8 @@ export async function fetchDynamicKnowledgeResources(): Promise<KnowledgeResourc
     linkUrl: r.link_url || undefined,
     source: r.source || undefined,
     featured: !!r.featured,
+    coverImageUrl: r.cover_image_url || undefined,
+    fundingAmount: r.funding_amount || undefined,
+    targetParticipants: r.target_participants || undefined,
   }));
 }
