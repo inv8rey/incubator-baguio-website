@@ -24,7 +24,14 @@ export async function runHogQL(query: string): Promise<any[][]> {
   const res = await fetch(`${POSTHOG_HOST}/api/projects/${POSTHOG_PROJECT_ID}/query/`, {
     method: "POST",
     headers: { Authorization: `Bearer ${POSTHOG_PERSONAL_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ query: { kind: "HogQLQuery", query } }),
+    // refresh: "blocking" -- without it PostHog can serve a cached result for
+    // an identical query string. Confirmed directly against this project: the
+    // exact 30-day totals query returned a cached 0 minutes after real
+    // pageviews existed (each row individually matched the date filter, but
+    // the cached aggregate didn't), and only a forced refresh recomputed it
+    // correctly. A dashboard whose numbers can silently freeze at "0" is
+    // worse than the extra latency of always recomputing.
+    body: JSON.stringify({ query: { kind: "HogQLQuery", query }, refresh: "blocking" }),
   });
   const body = await res.json().catch(() => null);
   if (!res.ok) {
