@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import EcosystemDirectory from "../ecosystem/EcosystemDirectory";
 import EcosystemSignupForm from "../ecosystem-signup/EcosystemSignupForm";
 import EcosystemPartnersMarquee from "../EcosystemPartnersMarquee";
@@ -133,7 +134,9 @@ export default function ComingSoonPage() {
       <div dangerouslySetInnerHTML={{ __html: JOIN_INTRO_HTML }} />
       <div style={{ background: "#F6F2EA", padding: "40px 24px 80px" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
-          <EcosystemSignupForm />
+          <Suspense fallback={null}>
+            <EcosystemSignupForm />
+          </Suspense>
         </div>
       </div>
       <div dangerouslySetInnerHTML={{ __html: BOTTOM_HTML }} />

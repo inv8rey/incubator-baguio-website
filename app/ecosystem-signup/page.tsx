@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import EcosystemSignupForm from "./EcosystemSignupForm";
 import VisitTracker from "./VisitTracker";
 
@@ -31,7 +32,9 @@ export default function EcosystemSignupPage() {
               Submit your startup, mentor profile, or organization to be featured in the Incubator Baguio Ecosystem directory. Every submission is reviewed before it goes live.
             </p>
           </div>
-          <EcosystemSignupForm />
+          <Suspense fallback={null}>
+            <EcosystemSignupForm />
+          </Suspense>
         </div>
       </div>
     </main>

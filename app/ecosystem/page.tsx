@@ -64,7 +64,7 @@ const BOTTOM_HTML = `
     <div style="position:relative;max-width:580px;margin:0 auto;">
       <h2 style="margin:0 0 12px;font-size:38px;font-weight:500;letter-spacing:-0.03em;color:#fff;line-height:1.08;">Join the ecosystem</h2>
       <p style="margin:0 0 28px;font-size:17px;line-height:1.55;color:rgba(255,255,255,0.9);">Become a partner, sign up as a mentor, or bring your company into the alliance.</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;"><a href="#" style="background:#100D0B;color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;">Become a partner</a><a href="#" style="background:rgba(255,255,255,0.16);color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.4);">Sign up as a mentor</a></div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;"><a href="${BP}/contact" style="background:#100D0B;color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;">Become a partner</a><a href="${BP}/ecosystem-signup?type=mentor" style="background:rgba(255,255,255,0.16);color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.4);">Sign up as a mentor</a></div>
     </div>
   </div>
 </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } from "../dashboard/styles";
 import { SECTOR_FILTERS } from "../admin/data";
@@ -32,8 +33,17 @@ interface FounderRow {
 
 const textareaStyle: React.CSSProperties = { ...inputStyle, minHeight: 90, resize: "vertical" };
 
+function isEntityType(v: string | null): v is EntityType {
+  return ENTITY_TYPES.some((t) => t.value === v);
+}
+
 export default function EcosystemSignupForm() {
-  const [entityType, setEntityType] = useState<EntityType>("startup");
+  const searchParams = useSearchParams();
+  // Lets other pages deep-link straight into a specific form -- e.g. the
+  // ecosystem page's "Sign up as a mentor" button -- instead of dropping
+  // everyone on the Startup tab regardless of what they clicked.
+  const requestedType = searchParams.get("type");
+  const [entityType, setEntityType] = useState<EntityType>(isEntityType(requestedType) ? requestedType : "startup");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
