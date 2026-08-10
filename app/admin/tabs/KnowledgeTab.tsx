@@ -5,7 +5,7 @@ import { DARK, ORANGE } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { uploadKnowledgeResourceFile } from "../../../lib/uploadFile";
 import { uploadKnowledgeResourceCover } from "../../../lib/uploadLogo";
-import { KNOWLEDGE_CATEGORIES, type KnowledgeCategory } from "../../knowledge/data";
+import { KNOWLEDGE_CATEGORIES, fundingDeadlineInfo, type KnowledgeCategory } from "../../knowledge/data";
 
 const FUNDING_CATEGORY: KnowledgeCategory = "Funding & Opportunities";
 
@@ -24,6 +24,7 @@ interface ResourceRow {
   cover_image_url: string;
   funding_amount: string;
   target_participants: string;
+  deadline_date: string | null;
   created_at: string;
 }
 
@@ -39,6 +40,7 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
   const [coverImageUrl, setCoverImageUrl] = useState(resource?.cover_image_url ?? "");
   const [fundingAmount, setFundingAmount] = useState(resource?.funding_amount ?? "");
   const [targetParticipants, setTargetParticipants] = useState(resource?.target_participants ?? "");
+  const [deadlineDate, setDeadlineDate] = useState(resource?.deadline_date ?? "");
   const [fileUploading, setFileUploading] = useState(false);
   const [coverUploading, setCoverUploading] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
@@ -104,6 +106,7 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
       cover_image_url: isFunding ? coverImageUrl : "",
       funding_amount: isFunding ? fundingAmount.trim() : "",
       target_participants: isFunding ? targetParticipants.trim() : "",
+      deadline_date: isFunding ? deadlineDate || null : null,
     };
     const { error: err } = isEdit
       ? await supabase.from("knowledge_resources").update(payload).eq("id", resource!.id)
@@ -182,6 +185,11 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
               <div>
                 <label style={modalLabelStyle}>Who can apply (optional)</label>
                 <input value={targetParticipants} onChange={(e) => setTargetParticipants(e.target.value)} placeholder="e.g. Early-stage tech startups registered in Baguio" style={modalInputStyle} />
+              </div>
+              <div>
+                <label style={modalLabelStyle}>Application deadline (optional)</label>
+                <input type="date" value={deadlineDate} onChange={(e) => setDeadlineDate(e.target.value)} style={modalInputStyle} />
+                <div style={{ fontSize: 11, color: "#8B8479", marginTop: 6 }}>Once this date passes, the card automatically grays out on the Knowledge Hub. Leave blank for an ongoing or rolling call.</div>
               </div>
             </div>
           )}
@@ -307,6 +315,12 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
                   <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: ORANGE, background: "rgba(242,101,34,0.12)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>★ Featured</span>
                 )}
                 <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: "#5A544B", background: "#F5F4F0", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{r.category}</span>
+                {r.category === FUNDING_CATEGORY && (() => {
+                  const info = fundingDeadlineInfo(r.deadline_date);
+                  return info ? (
+                    <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: info.color, background: `${info.color}1A`, padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{info.label}</span>
+                  ) : null;
+                })()}
               </div>
               {r.description && <div style={{ fontSize: 12.5, color: "#5A544B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.description}</div>}
               {r.category === FUNDING_CATEGORY && (r.funding_amount || r.target_participants) && (

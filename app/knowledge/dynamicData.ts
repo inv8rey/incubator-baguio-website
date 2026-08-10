@@ -16,5 +16,6 @@ export async function fetchDynamicKnowledgeResources(): Promise<KnowledgeResourc
     coverImageUrl: r.cover_image_url || undefined,
     fundingAmount: r.funding_amount || undefined,
     targetParticipants: r.target_participants || undefined,
+    deadlineDate: r.deadline_date || null,
   }));
 }

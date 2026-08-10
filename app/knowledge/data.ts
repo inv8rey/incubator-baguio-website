@@ -55,4 +55,32 @@ export interface KnowledgeResource {
   coverImageUrl?: string;
   fundingAmount?: string;
   targetParticipants?: string;
+  /** ISO yyyy-mm-dd, or null/undefined when the call has no fixed deadline. */
+  deadlineDate?: string | null;
+}
+
+export interface DeadlineInfo {
+  label: string;
+  color: string;
+  closed: boolean;
+}
+
+// Same urgency bands as app/challenges/dynamicData.ts's deadlineInfo(), so a
+// grant deadline and a challenge deadline read the same way anywhere both
+// appear. Hand-parsed rather than `new Date(iso)` to avoid the UTC-midnight
+// off-by-one that string parsing produces in evening-local timezones.
+export function fundingDeadlineInfo(iso: string | null | undefined): DeadlineInfo | null {
+  if (!iso) return null;
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return null;
+  const target = new Date(y, m - 1, d);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const daysLeft = Math.round((target.getTime() - today.getTime()) / 86400000);
+  const formatted = target.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+
+  if (daysLeft < 0) return { label: "Applications closed", color: "#8B8479", closed: true };
+  if (daysLeft === 0) return { label: "Applications close today", color: "#E23A2E", closed: false };
+  const color = daysLeft <= 10 ? "#E23A2E" : daysLeft <= 25 ? "#D88A0A" : "#1A6B3C";
+  return { label: `Apply by ${formatted}`, color, closed: false };
 }

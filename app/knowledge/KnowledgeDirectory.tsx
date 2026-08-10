@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
-import { DARK, KNOWLEDGE_CATEGORIES, type KnowledgeCategory, type KnowledgeResource } from "./data";
+import { DARK, KNOWLEDGE_CATEGORIES, fundingDeadlineInfo, type KnowledgeCategory, type KnowledgeResource } from "./data";
 import { fetchDynamicKnowledgeResources } from "./dynamicData";
 
 function matches(haystacks: string[], query: string) {
@@ -49,7 +49,15 @@ export default function KnowledgeDirectory() {
       if (tab !== "All" && r.category !== tab) return false;
       return matches([r.title, r.description, r.source ?? ""], query);
     });
-    return [...list].sort((a, b) => Number(!!b.featured) - Number(!!a.featured));
+    // Closed funding calls sink to the bottom regardless of featured status --
+    // a "Featured" grant nobody can apply to anymore is worse than useless at
+    // the top of the grid, since it's the first thing a founder would click.
+    return [...list].sort((a, b) => {
+      const aClosed = Number(!!fundingDeadlineInfo(a.deadlineDate)?.closed);
+      const bClosed = Number(!!fundingDeadlineInfo(b.deadlineDate)?.closed);
+      if (aClosed !== bClosed) return aClosed - bClosed;
+      return Number(!!b.featured) - Number(!!a.featured);
+    });
   }, [resources, tab, query]);
 
   const activeInfo = tab !== "All" ? KNOWLEDGE_CATEGORIES.find((c) => c.id === tab) : null;
@@ -124,36 +132,62 @@ export default function KnowledgeDirectory() {
             const cat = KNOWLEDGE_CATEGORIES.find((c) => c.id === r.category);
             const href = r.fileUrl || r.linkUrl;
             const isFunding = r.category === "Funding & Opportunities";
+            const deadline = isFunding ? fundingDeadlineInfo(r.deadlineDate) : null;
+            const isClosed = !!deadline?.closed;
             // A funding notice is a call to action, not a document to browse —
             // "Apply Now" says what happens next; "View resource"/"Download"
             // don't fit a grant deadline the way they fit a template PDF.
             const ctaLabel = isFunding ? (r.linkUrl ? "Apply Now" : "View Guidelines") : r.fileUrl ? "Download" : "View resource";
             return (
-              <div key={r.id} className="ib-card-hover" style={{ position: "relative", background: "#fff", border: r.featured ? "1.5px solid rgba(242,101,34,0.35)" : "1px solid rgba(64,50,34,0.13)", borderRadius: 18, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+              <div
+                key={r.id}
+                className="ib-card-hover"
+                style={{
+                  position: "relative",
+                  background: isClosed ? "#F9F8F5" : "#fff",
+                  border: r.featured && !isClosed ? "1.5px solid rgba(242,101,34,0.35)" : "1px solid rgba(64,50,34,0.13)",
+                  borderRadius: 18,
+                  overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                  // Closed calls stay fully legible (never opacity on the whole
+                  // card) but read as inactive at a glance -- the image loses
+                  // color and the accent border/featured ribbon disappear.
+                  filter: isClosed ? "grayscale(0.5)" : undefined,
+                }}
+              >
                 {isFunding && r.coverImageUrl && (
-                  <div style={{ height: 140, background: "#F6F2EA", overflow: "hidden" }}>
-                    <img src={r.coverImageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <div style={{ height: 140, background: "#F6F2EA", overflow: "hidden", position: "relative" }}>
+                    <img src={r.coverImageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", filter: isClosed ? "grayscale(1)" : undefined }} />
+                    {isClosed && <div style={{ position: "absolute", inset: 0, background: "rgba(249,248,245,0.35)" }} />}
                   </div>
                 )}
                 <div style={{ position: "relative", padding: 24, display: "flex", flexDirection: "column", flex: 1 }}>
-                  {r.featured && (
+                  {r.featured && !isClosed && (
                     <span style={{ position: "absolute", top: 14, right: 14, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: "#F26522", background: "rgba(242,101,34,0.12)", padding: "4px 10px", borderRadius: 9999, whiteSpace: "nowrap" }}>★ Featured</span>
                   )}
-                  {cat && (
-                    <span style={{ display: "inline-block", alignSelf: "flex-start", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: cat.color, background: cat.bg, padding: "4px 10px", borderRadius: 9999, marginBottom: 12, whiteSpace: "nowrap" }}>
-                      {cat.id}
-                    </span>
-                  )}
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
+                    {cat && (
+                      <span style={{ display: "inline-block", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: isClosed ? "#8B8479" : cat.color, background: isClosed ? "rgba(64,50,34,0.08)" : cat.bg, padding: "4px 10px", borderRadius: 9999, whiteSpace: "nowrap" }}>
+                        {cat.id}
+                      </span>
+                    )}
+                    {deadline && (
+                      <span style={{ display: "inline-block", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: deadline.color, background: `${deadline.color}1A`, padding: "4px 10px", borderRadius: 9999, whiteSpace: "nowrap" }}>
+                        {deadline.label}
+                      </span>
+                    )}
+                  </div>
                   <div style={{ flex: 1 }}>
-                    <h3 style={{ margin: "0 0 8px", fontSize: 16.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{r.title}</h3>
+                    <h3 style={{ margin: "0 0 8px", fontSize: 16.5, fontWeight: 600, color: isClosed ? "#5A544B" : DARK, lineHeight: 1.3 }}>{r.title}</h3>
                     <p className="ib-line-clamp-3" style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#5A544B" }}>{r.description}</p>
                   </div>
 
                   {isFunding && (r.fundingAmount || r.targetParticipants) && (
                     <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(64,50,34,0.09)" }}>
                       {r.fundingAmount && (
-                        <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12.5, color: DARK, fontWeight: 600 }}>
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1A6B3C" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="9" /><path d="M12 7v10M9 9.5c0-1.4 1.3-2.5 3-2.5s3 1 3 2.2c0 2.8-6 1.3-6 4.1 0 1.2 1.3 2.2 3 2.2s3-1.1 3-2.5" /></svg>
+                        <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12.5, color: isClosed ? "#8B8479" : DARK, fontWeight: 600 }}>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={isClosed ? "#8B8479" : "#1A6B3C"} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="9" /><path d="M12 7v10M9 9.5c0-1.4 1.3-2.5 3-2.5s3 1 3 2.2c0 2.8-6 1.3-6 4.1 0 1.2 1.3 2.2 3 2.2s3-1.1 3-2.5" /></svg>
                           {r.fundingAmount}
                         </div>
                       )}
@@ -167,16 +201,25 @@ export default function KnowledgeDirectory() {
                   )}
 
                   {r.source && <p style={{ margin: "10px 0 0", fontSize: 12, color: "#8B8479" }}>{r.source}</p>}
-                  {href && (
-                    <a
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ marginTop: 16, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#fff", background: isFunding ? "#1A6B3C" : "#1A1714", textDecoration: "none", padding: "10px 18px", borderRadius: 9999 }}
-                    >
-                      {ctaLabel}
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4}><path d="M7 17 17 7M7 7h10v10" /></svg>
-                    </a>
+                  {isClosed ? (
+                    // No link at all once a call is closed -- an "Apply Now"
+                    // button that still works just leads a founder to submit
+                    // into a form that no longer accepts entries.
+                    <span style={{ marginTop: 16, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#8B8479", background: "rgba(64,50,34,0.08)", padding: "10px 18px", borderRadius: 9999 }}>
+                      Applications closed
+                    </span>
+                  ) : (
+                    href && (
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ marginTop: 16, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#fff", background: isFunding ? "#1A6B3C" : "#1A1714", textDecoration: "none", padding: "10px 18px", borderRadius: 9999 }}
+                      >
+                        {ctaLabel}
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4}><path d="M7 17 17 7M7 7h10v10" /></svg>
+                      </a>
+                    )
                   )}
                 </div>
               </div>

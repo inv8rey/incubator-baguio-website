@@ -971,6 +971,11 @@ alter table public.knowledge_resources add column if not exists featured boolean
 alter table public.knowledge_resources add column if not exists cover_image_url text not null default '';
 alter table public.knowledge_resources add column if not exists funding_amount text not null default '';
 alter table public.knowledge_resources add column if not exists target_participants text not null default '';
+-- Nullable date, not text-with-default-'' like the fields above: a deadline
+-- needs to be compared and sorted (has it passed? which is soonest?), which
+-- means it has to actually be a date or absent, matching how
+-- challenges.deadline_date (line ~425) already does this in this schema.
+alter table public.knowledge_resources add column if not exists deadline_date date;
 
 alter table public.knowledge_resources enable row level security;
 
