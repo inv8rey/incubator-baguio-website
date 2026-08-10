@@ -1,5 +1,15 @@
 import { createClient } from "@supabase/supabase-js";
-import { computeAiStats, type MentorRow, type OrgRow, type ProfileRow, type StartupRow, type SubmissionRow } from "./dashboardStats";
+import {
+  computeAiStats,
+  type MentorRow,
+  type OrgRow,
+  type ProfileRow,
+  type StartupRow,
+  type SubmissionRow,
+  type EcosystemPartnerRow,
+  type KnowledgeResourceRow,
+  type EventSubmissionRow,
+} from "./dashboardStats";
 
 const CF_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const CF_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
@@ -8,9 +18,9 @@ const CF_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-const SYSTEM_PROMPT = `You are an analyst for Incubator Baguio, a city-run startup ecosystem alliance. You'll be given a JSON snapshot of the ecosystem's current stats (startups, founders, funding, sectors, stages, TBI affiliations, partner organizations, recent activity).
+const SYSTEM_PROMPT = `You are an analyst for Incubator Baguio, a city-run startup ecosystem alliance. You'll be given a JSON snapshot of the ecosystem's current stats: startups, founders, funding, sectors, stages, TBI affiliations, partner organizations, ecosystem partners, Knowledge Hub resources, upcoming events, and recent activity across all of these.
 
-Write 3 to 5 short, specific, plain-English insights a program manager could act on. Each insight goes on its own line, starting with "• ". No markdown headers, no bold, no preamble, no closing summary — just the bullet lines. Reference actual numbers from the data. Call out things like fastest-growing or stalling sectors, funding concentration, stage distribution imbalances, or notable recent activity. If a metric is at zero or the data is too sparse to say something meaningful, skip it rather than inventing a trend.`;
+Write 3 to 5 short, specific, plain-English insights a program manager could act on. Each insight goes on its own line, starting with "• ". No markdown headers, no bold, no preamble, no closing summary — just the bullet lines. Reference actual numbers from the data. Call out things like fastest-growing or stalling sectors, funding concentration, stage distribution imbalances, a Knowledge Hub category with little or no content, a stretch with no upcoming events, or notable recent activity. Draw from whichever areas (startups, partners, Knowledge Hub, events) actually have something worth flagging — don't force equal coverage across all of them. If a metric is at zero or the data is too sparse to say something meaningful, skip it rather than inventing a trend.`;
 
 // Shared by the admin-triggered "Regenerate" POST and the daily cron job —
 // fetches fresh rows, computes the same stats shape the dashboard shows,
@@ -21,13 +31,16 @@ export async function generateAndCacheInsights(source: "cron" | "manual") {
   if (!CF_ACCOUNT_ID || !CF_API_TOKEN) throw new Error("AI insights aren't configured yet.");
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const [s, m, o, p, c, ch] = await Promise.all([
+  const [s, m, o, p, c, ch, ep, kr, ev] = await Promise.all([
     supabase.from("startups").select("id,name,sector,lifecycle_stage,tbi_affiliation,funding_raised,created_at"),
     supabase.from("mentors").select("id,name,created_at"),
     supabase.from("organizations").select("id,name,org_type,created_at"),
     supabase.from("profiles").select("id,created_at"),
     supabase.from("challenge_submissions").select("id,title,org_name,created_at"),
     supabase.from("challenges").select("id", { count: "exact", head: true }),
+    supabase.from("ecosystem_partners").select("id,name,created_at"),
+    supabase.from("knowledge_resources").select("id,title,category,created_at"),
+    supabase.from("event_submissions").select("id,title,category,status,event_date,created_at"),
   ]);
 
   const stats = computeAiStats({
@@ -37,6 +50,9 @@ export async function generateAndCacheInsights(source: "cron" | "manual") {
     profiles: (p.data as ProfileRow[]) ?? [],
     submissions: (c.data as SubmissionRow[]) ?? [],
     staticChallengesCount: ch.count ?? 0,
+    ecosystemPartners: (ep.data as EcosystemPartnerRow[]) ?? [],
+    knowledgeResources: (kr.data as KnowledgeResourceRow[]) ?? [],
+    events: (ev.data as EventSubmissionRow[]) ?? [],
   });
 
   const cfRes = await fetch(`https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/ai/run/${CF_MODEL}`, {

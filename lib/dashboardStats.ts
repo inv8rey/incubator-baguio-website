@@ -39,6 +39,25 @@ export interface SubmissionRow {
   org_name: string;
   created_at: string;
 }
+export interface EcosystemPartnerRow {
+  id: string;
+  name: string;
+  created_at: string;
+}
+export interface KnowledgeResourceRow {
+  id: string;
+  title: string;
+  category: string;
+  created_at: string;
+}
+export interface EventSubmissionRow {
+  id: string;
+  title: string;
+  category: string;
+  status: string;
+  event_date: string | null;
+  created_at: string;
+}
 
 function parsePhp(raw: string | null | undefined): number {
   if (!raw) return 0;
@@ -111,6 +130,9 @@ export function computeAiStats({
   profiles,
   submissions,
   staticChallengesCount,
+  ecosystemPartners = [],
+  knowledgeResources = [],
+  events = [],
 }: {
   startups: StartupRow[];
   mentors: MentorRow[];
@@ -118,6 +140,9 @@ export function computeAiStats({
   profiles: ProfileRow[];
   submissions: SubmissionRow[];
   staticChallengesCount: number;
+  ecosystemPartners?: EcosystemPartnerRow[];
+  knowledgeResources?: KnowledgeResourceRow[];
+  events?: EventSubmissionRow[];
 }) {
   const startupSeries = weeklySeries(startups.map((s) => s.created_at));
   const founderSeries = weeklySeries(profiles.map((p) => p.created_at));
@@ -181,11 +206,38 @@ export function computeAiStats({
     .slice(0, 5)
     .map((f) => ({ name: f.name, funding: f.display }));
 
+  // Approved-only, same rule the public calendar uses to decide what's
+  // actually live -- a pending submission isn't "an upcoming event" yet.
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const liveEvents = events.filter((e) => e.status === "approved");
+  const upcomingEventsCount = liveEvents.filter((e) => !!e.event_date && e.event_date >= todayIso).length;
+
+  const eventCategoryCounts = new Map<string, number>();
+  liveEvents.forEach((e) => {
+    const key = e.category || "Other";
+    eventCategoryCounts.set(key, (eventCategoryCounts.get(key) ?? 0) + 1);
+  });
+  const eventsByCategory = [...eventCategoryCounts.entries()].sort((a, b) => b[1] - a[1]).map(([category, count]) => ({ category, count }));
+
+  const resourceCategoryCounts = new Map<string, number>();
+  knowledgeResources.forEach((r) => {
+    const key = r.category || "Other";
+    resourceCategoryCounts.set(key, (resourceCategoryCounts.get(key) ?? 0) + 1);
+  });
+  const knowledgeResourcesByCategory = [...resourceCategoryCounts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([category, count]) => ({ category, count }));
+
+  const partnerSeries = weeklySeries(ecosystemPartners.map((p) => p.created_at));
+
   const recentActivity = [
     ...startups.slice(0, 8).map((s) => ({ key: `s-${s.id}`, who: s.name, what: "joined as a new startup", created_at: s.created_at })),
     ...mentors.slice(0, 8).map((m) => ({ key: `m-${m.id}`, who: m.name, what: "joined the mentor network", created_at: m.created_at })),
     ...orgs.slice(0, 8).map((o) => ({ key: `o-${o.id}`, who: o.name, what: `published as a ${o.org_type || "partner"} organization`, created_at: o.created_at })),
     ...submissions.slice(0, 8).map((c) => ({ key: `c-${c.id}`, who: c.org_name || c.title, what: `posted a new challenge: "${c.title}"`, created_at: c.created_at })),
+    ...ecosystemPartners.slice(0, 8).map((p) => ({ key: `ep-${p.id}`, who: p.name, what: "joined as an ecosystem partner", created_at: p.created_at })),
+    ...knowledgeResources.slice(0, 8).map((r) => ({ key: `kr-${r.id}`, who: r.title, what: `added to the Knowledge Hub under ${r.category || "resources"}`, created_at: r.created_at })),
+    ...liveEvents.slice(0, 8).map((e) => ({ key: `ev-${e.id}`, who: e.title, what: "went live on the events calendar", created_at: e.created_at })),
   ]
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     .slice(0, 6)
@@ -200,5 +252,8 @@ export function computeAiStats({
     partnerOrgsByType,
     topFundedStartups,
     recentActivity,
+    ecosystemPartners: { count: ecosystemPartners.length, trend: deltaFromSeries(partnerSeries) },
+    knowledgeHub: { totalResources: knowledgeResources.length, byCategory: knowledgeResourcesByCategory },
+    events: { totalApproved: liveEvents.length, upcoming: upcomingEventsCount, byCategory: eventsByCategory },
   };
 }
