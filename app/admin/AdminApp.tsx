@@ -8,12 +8,10 @@ import StartupsTab from "./tabs/StartupsTab";
 import ChallengesTab from "./tabs/ChallengesTab";
 import EventsTab from "./tabs/EventsTab";
 import KnowledgeTab from "./tabs/KnowledgeTab";
-import ProgramsTab from "./tabs/ProgramsTab";
-import GalleryTab from "./tabs/GalleryTab";
 import EcosystemSignupsTab from "./tabs/EcosystemSignupsTab";
-import EvaluationsTab from "./tabs/EvaluationsTab";
 import PartnersTab from "./tabs/PartnersTab";
 import ChatbotKnowledgeTab from "./tabs/ChatbotKnowledgeTab";
+import SettingsTab from "./tabs/SettingsTab";
 
 const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
   dashboard: (
@@ -43,33 +41,11 @@ const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
     </>
   ),
-  programs: (
-    <>
-      <rect x={3} y={3} width={18} height={18} rx={2} />
-      <circle cx={8.5} cy={8.5} r={1.5} />
-      <path d="m21 15-5-5L5 21" />
-    </>
-  ),
-  // Stacked frames, to read as "many photos" next to Programs' single image.
-  gallery: (
-    <>
-      <rect x={2.5} y={7.5} width={13} height={13} rx={2} />
-      <path d="M7.5 7.5V5.5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2" />
-      <circle cx={6.8} cy={11.8} r={1.2} />
-      <path d="m15.5 17.5-4-4-9 7" />
-    </>
-  ),
   signups: (
     <>
       <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
       <circle cx={9} cy={7} r={4} />
       <path d="M19 8v6M22 11h-6" />
-    </>
-  ),
-  evaluations: (
-    <>
-      <path d="M4 4h16v16H4z" />
-      <path d="M8 9h8M8 13h5M8 17h7" />
     </>
   ),
   partners: (
@@ -84,6 +60,12 @@ const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
       <rect x={5} y={11} width={14} height={10} rx={2} />
       <path d="M8 11V7a4 4 0 0 1 8 0v4" />
       <circle cx={12} cy={16} r={1.4} fill="currentColor" stroke="none" />
+    </>
+  ),
+  settings: (
+    <>
+      <circle cx={12} cy={12} r={3} />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
     </>
   ),
 };
@@ -264,12 +246,10 @@ export default function AdminApp() {
         {page === "challenges" && <ChallengesTab searchQuery={searchQuery} />}
         {page === "events" && <EventsTab searchQuery={searchQuery} />}
         {page === "knowledge" && <KnowledgeTab searchQuery={searchQuery} />}
-        {page === "programs" && <ProgramsTab />}
-        {page === "gallery" && <GalleryTab />}
         {page === "signups" && <EcosystemSignupsTab searchQuery={searchQuery} />}
-        {page === "evaluations" && <EvaluationsTab searchQuery={searchQuery} />}
         {page === "partners" && <PartnersTab searchQuery={searchQuery} />}
         {page === "chatbot-kb" && <ChatbotKnowledgeTab searchQuery={searchQuery} />}
+        {page === "settings" && <SettingsTab searchQuery={searchQuery} />}
       </main>
     </div>
   );

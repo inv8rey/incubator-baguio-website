@@ -7,12 +7,10 @@ export const NAV = [
   { id: "challenges", label: "Challenges", cnt: null as number | null },
   { id: "events", label: "Events", cnt: null as number | null },
   { id: "knowledge", label: "Knowledge", cnt: null as number | null },
-  { id: "programs", label: "Programs", cnt: null as number | null },
-  { id: "gallery", label: "Gallery", cnt: null as number | null },
   { id: "signups", label: "Signups", cnt: null as number | null },
-  { id: "evaluations", label: "Evaluations", cnt: null as number | null },
   { id: "partners", label: "Partners", cnt: null as number | null },
   { id: "chatbot-kb", label: "Chatbot KB", cnt: null as number | null },
+  { id: "settings", label: "Settings", cnt: null as number | null },
 ] as const;
 
 export type TabId = (typeof NAV)[number]["id"];
@@ -23,12 +21,10 @@ export const TITLES: Record<TabId, string> = {
   challenges: "Innovation Challenges",
   events: "Calendar Events",
   knowledge: "Knowledge Hub",
-  programs: "Our Programs",
-  gallery: "Homepage Gallery",
   signups: "Ecosystem Signups",
-  evaluations: "Consultation Evaluations",
   partners: "Ecosystem Partners",
   "chatbot-kb": "Chatbot Knowledge Base",
+  settings: "Settings",
 };
 
 export const SUBS: Record<TabId, string> = {
@@ -37,12 +33,10 @@ export const SUBS: Record<TabId, string> = {
   challenges: "Innovation challenges from government, industry, and academia",
   events: "Review and approve events submitted to the public calendar",
   knowledge: "Manage the Knowledge Hub resource library",
-  programs: "Upload the photo shown for each of the 4 Our Programs steps",
-  gallery: "Photos shown in the homepage \u201cMoments from the ecosystem\u201d gallery",
   signups: "Review the temporary public signup form and approve entries into the Ecosystem directory",
-  evaluations: "Review feedback from consultation and mentoring visitors",
   partners: "Academic, government, corporate, and community partners",
   "chatbot-kb": "Private documents the chat assistant can search — never shown on the public site",
+  settings: "Programs, homepage gallery, and consultation evaluations",
 };
 
 // ---- Dashboard ----
