@@ -196,8 +196,7 @@ function EventRow({ e }: { e: CityEvent }) {
           </svg>
         )}
         <span style={{ position: "absolute", top: 10, left: 12, fontSize: 9.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 8px", borderRadius: 9999 }}>{e.category}</span>
-        <span style={{ position: "absolute", top: 10, right: 12, fontSize: 10.5, color: "#8B8479" }}>{dateLabel}</span>
-        <div style={{ position: "absolute", bottom: 10, left: 12, right: 12, fontSize: 13, fontWeight: 600, color: DARK, lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{e.title}</div>
+        <span style={{ position: "absolute", top: 10, right: 12, fontSize: 10.5, fontWeight: 600, color: "#fff", background: "rgba(16,13,11,0.55)", padding: "2px 8px", borderRadius: 9999 }}>{dateLabel}</span>
       </div>
 
       <div style={{ padding: "13px 0 13px" }}>
@@ -213,7 +212,10 @@ function EventRow({ e }: { e: CityEvent }) {
             <span style={{ fontSize: 11, color: "#8B8479" }}>{timeLabel}</span>
           </div>
         )}
-        <div style={{ fontSize: 14, fontWeight: 600, color: DARK, lineHeight: 1.3, marginBottom: 5 }}>{e.title}</div>
+        <div style={{ fontSize: 14, fontWeight: 600, color: DARK, lineHeight: 1.3, marginBottom: 3 }}>{e.title}</div>
+        {e.org?.trim() && (
+          <div style={{ fontSize: 11.5, color: "#B8A78C", fontWeight: 500, marginBottom: 5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Hosted by {e.org}</div>
+        )}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <span style={{ fontSize: 11.5, color: "#8B8479", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{e.venue}</span>
           {/* No bookmark button here: it had no handler wired up, so it looked
