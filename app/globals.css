@@ -494,6 +494,13 @@ img { max-width: 100%; height: auto; }
   .ib-ecosystem-grid {
     grid-template-columns: repeat(2, 1fr) !important;
   }
+  /* Ecosystem page's live stat band -- same 4-up-to-2x2 treatment as every
+     other numeric stat strip, just via a class since it's a React component
+     rather than the raw-HTML-string sections the [style*="..."] selectors
+     above target. */
+  .ib-ecosystem-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
 
   /* Knowledge Hub: category grid collapses to 2, resource grid stays 2 */
   .ib-knowledge-cat-grid {
@@ -716,7 +723,8 @@ img { max-width: 100%; height: auto; }
     grid-template-columns: repeat(2, 1fr) !important;
   }
   /* Drop the vertical divider borders that look odd when stacked */
-  [style*="grid-template-columns:repeat(4,1fr)"] > div { border-left: 0 !important; }
+  [style*="grid-template-columns:repeat(4,1fr)"] > div,
+  .ib-ecosystem-stats-grid > div { border-left: 0 !important; }
 
   /* Get Started router: full single column on phones */
   .ib-getstarted-grid {

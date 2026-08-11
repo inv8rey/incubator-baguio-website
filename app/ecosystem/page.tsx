@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import EcosystemDirectory from "./EcosystemDirectory";
+import EcosystemStats from "./EcosystemStats";
 
 export const metadata: Metadata = {
   title: "Ecosystem — Incubator Baguio",
   description:
-    "One alliance of universities, agencies, companies, and mentors backing Baguio's founders and researchers.",
+    "Explore the startups, mentors, incubators, organizations, and partners building innovation in Baguio City.",
 };
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
@@ -36,21 +37,9 @@ const TOP_HTML = `
   <svg style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);opacity:0.12;" width="700" height="400" viewBox="0 0 120 104" fill="none" preserveAspectRatio="none"><polyline points="6,40 60,8 114,40" stroke="#F5A623" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,62 60,30 114,62" stroke="#E23A2E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,84 60,52 114,84" stroke="#9E2A52" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,106 60,74 114,106" stroke="#285E7A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
   <div style="position:relative;max-width:840px;margin:0 auto;">
     <div style="font-size:12.5px;color:rgba(255,255,255,0.4);margin-bottom:22px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.7);">Ecosystem</span></div>
-    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:9999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.03);margin-bottom:26px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,101,34,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:#F26522;"></span></span><span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Partners, mentors &amp; startups</span></div>
-    <h1 style="margin:0;font-size:56px;line-height:1.03;font-weight:500;letter-spacing:-0.04em;color:#fff;">The people building<br><span style="color:#F26522;">Baguio&rsquo;s future.</span></h1>
-    <p style="margin:24px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:600px;">One alliance of universities, agencies, companies, and mentors, all backing the city&rsquo;s founders and researchers.</p>
-  </div>
-</div>
-
-<!-- STAT STRIP — seamless dark continuation of the hero -->
-<div style="background:#100D0B;padding:0 40px 64px;">
-  <div style="max-width:1080px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:repeat(4,1fr);">
-    ${[
-      ["12", "", "Academic partners", false],
-      ["8", "", "Government agencies", true],
-      ["40", "+", "Active mentors", true],
-      ["10", "+", "Startups in portfolio", true],
-    ].map((s) => `<div style="text-align:center;padding:40px 20px 4px;${s[3] ? "border-left:1px solid rgba(255,255,255,0.08);" : ""}"><div style="font-size:42px;font-weight:500;color:#fff;letter-spacing:-0.03em;line-height:1;">${s[0]}<span style="color:#F26522;">${s[1]}</span></div><div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.42);margin-top:12px;">${s[2]}</div></div>`).join("")}
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:9999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.03);margin-bottom:26px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,101,34,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:#F26522;"></span></span><span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Baguio Innovation Ecosystem</span></div>
+    <h1 style="margin:0;font-size:56px;line-height:1.03;font-weight:500;letter-spacing:-0.04em;color:#fff;">Discover Baguio&rsquo;s Startup &amp; Innovation Ecosystem.</h1>
+    <p style="margin:24px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:600px;">Explore the startups, mentors, incubators, organizations, and partners building innovation in Baguio City.</p>
   </div>
 </div>
 `;
@@ -93,6 +82,7 @@ export default function Ecosystem() {
   return (
     <main>
       <div dangerouslySetInnerHTML={{ __html: TOP_HTML }} />
+      <EcosystemStats />
       <EcosystemDirectory />
       <div dangerouslySetInnerHTML={{ __html: BOTTOM_HTML }} />
     </main>
