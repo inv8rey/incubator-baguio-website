@@ -9,25 +9,28 @@ export interface ChatIntent {
   wantsMentors: boolean;
   wantsStartups: boolean;
   wantsKnowledge: boolean;
+  wantsEcosystem: boolean;
 }
 
 const MENTOR_WORDS = /mentor|coach|advis(or|er)|guidance/i;
 const CHALLENGE_WORDS = /challenge|problem\s*statement|open innovation|opportunit/i;
 const KNOWLEDGE_WORDS = /resource|guide|template|pdf|policy|policies|report|knowledge|toolkit|funding opportun/i;
 const STARTUP_WORDS = /collaborat|partner|co-?founder|other startup|team up|teammate/i;
+const ECOSYSTEM_WORDS = /organi[sz]ation|partner|coworking|co-working|makerspace|\btbi\b|incubator baguio|ecosystem|service provider|government agenc|community (partner|space)/i;
 
 export function classifyIntent(message: string): ChatIntent {
   const wantsMentors = MENTOR_WORDS.test(message);
   const wantsChallenges = CHALLENGE_WORDS.test(message);
   const wantsKnowledge = KNOWLEDGE_WORDS.test(message);
   const wantsStartups = STARTUP_WORDS.test(message);
+  const wantsEcosystem = ECOSYSTEM_WORDS.test(message);
 
   // No strong signal at all — go broad so a vague "help me find
   // opportunities" still returns something from every category.
-  if (!wantsMentors && !wantsChallenges && !wantsKnowledge && !wantsStartups) {
-    return { wantsChallenges: true, wantsMentors: true, wantsStartups: true, wantsKnowledge: true };
+  if (!wantsMentors && !wantsChallenges && !wantsKnowledge && !wantsStartups && !wantsEcosystem) {
+    return { wantsChallenges: true, wantsMentors: true, wantsStartups: true, wantsKnowledge: true, wantsEcosystem: true };
   }
-  return { wantsChallenges, wantsMentors, wantsStartups, wantsKnowledge };
+  return { wantsChallenges, wantsMentors, wantsStartups, wantsKnowledge, wantsEcosystem };
 }
 
 // Strips obvious prompt-injection markers from user/admin-submitted free
@@ -87,6 +90,13 @@ export interface ChatResourceRow {
   link_url: string;
 }
 
+export interface ChatOrganizationRow {
+  id: string;
+  name: string;
+  org_type: string;
+  description: string;
+}
+
 export interface ChatChunkRow {
   id: string;
   document_id: string;
@@ -100,6 +110,7 @@ export interface ChatContext {
   mentors: ChatMentorRow[];
   startups: ChatStartupRow[];
   resources: ChatResourceRow[];
+  organizations: ChatOrganizationRow[];
   documentChunks: ChatChunkRow[];
   /**
    * Titles of the admin-uploaded documents the excerpts above came from, so
@@ -136,9 +147,9 @@ async function fetchDocumentChunks(userMessage: string): Promise<ChatChunkRow[]>
 }
 
 export async function fetchChatContext(intent: ChatIntent, userMessage: string): Promise<ChatContext> {
-  if (!supabase) return { challenges: [], mentors: [], startups: [], resources: [], documentChunks: [], documentTitles: [] };
+  if (!supabase) return { challenges: [], mentors: [], startups: [], resources: [], organizations: [], documentChunks: [], documentTitles: [] };
 
-  const [challengesRes, mentorsRes, startupsRes, resourcesRes, documentChunks] = await Promise.all([
+  const [challengesRes, mentorsRes, startupsRes, resourcesRes, organizationsRes, documentChunks] = await Promise.all([
     intent.wantsChallenges
       ? supabase
           .from("challenges")
@@ -155,6 +166,9 @@ export async function fetchChatContext(intent: ChatIntent, userMessage: string):
       : Promise.resolve({ data: [] as any[] }),
     intent.wantsKnowledge
       ? supabase.from("knowledge_resources").select("id,title,category,description,source,file_url,link_url").limit(ROW_CAP)
+      : Promise.resolve({ data: [] as any[] }),
+    intent.wantsEcosystem
+      ? supabase.from("organizations").select("id,name,org_type,description").limit(ROW_CAP)
       : Promise.resolve({ data: [] as any[] }),
     // Always searched, unlike the buckets above — relevance here comes from
     // the embedding similarity floor in fetchDocumentChunks(), not from
@@ -204,11 +218,18 @@ export async function fetchChatContext(intent: ChatIntent, userMessage: string):
     link_url: r.link_url ?? "",
   }));
 
+  const organizations: ChatOrganizationRow[] = (organizationsRes.data ?? []).map((r: any) => ({
+    id: r.id,
+    name: sanitize(r.name, 80),
+    org_type: r.org_type,
+    description: sanitize(r.description),
+  }));
+
   const documentTitles = Array.from(
     new Set(documentChunks.map((c) => (c.document_title ?? "").trim()).filter(Boolean))
   );
 
-  return { challenges, mentors, startups, resources, documentChunks, documentTitles };
+  return { challenges, mentors, startups, resources, organizations, documentChunks, documentTitles };
 }
 
 export function formatContextBlock(ctx: ChatContext): string {
@@ -240,6 +261,20 @@ export function formatContextBlock(ctx: ChatContext): string {
     blocks.push(
       "### KNOWLEDGE HUB RESOURCES (id | title | category | source | description)\n" +
         ctx.resources.map((r) => `${r.id} | ${r.title} | ${r.category} | ${r.source} | ${r.description}`).join("\n")
+    );
+  }
+  if (ctx.organizations.length) {
+    const byType = new Map<string, ChatOrganizationRow[]>();
+    for (const o of ctx.organizations) {
+      const list = byType.get(o.org_type) ?? [];
+      list.push(o);
+      byType.set(o.org_type, list);
+    }
+    blocks.push(
+      "### ECOSYSTEM ORGANIZATIONS (informational only — no MATCHES entry exists for this type; name them in prose and point the visitor to /ecosystem to browse the full directory) (name | type | description)\n" +
+        Array.from(byType.entries())
+          .map(([type, orgs]) => orgs.map((o) => `${o.name} | ${type} | ${o.description}`).join("\n"))
+          .join("\n")
     );
   }
   if (ctx.documentChunks.length) {

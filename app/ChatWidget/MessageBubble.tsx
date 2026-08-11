@@ -35,8 +35,10 @@ export default function MessageBubble({
         </div>
 
         {/* Grounding note: says an answer came from the team's own uploaded
-            programme material rather than the model's general recall. Titles
-            are shown but never linked -- the documents stay private. */}
+            programme material rather than the model's general recall.
+            Deliberately generic -- never names the source file/title, since
+            some uploaded documents are third-party material (e.g. reference
+            books) that shouldn't be surfaced to visitors. */}
         {!isUser && !message.error && sources.length > 0 && (
           <div
             style={{
@@ -53,10 +55,7 @@ export default function MessageBubble({
               <path d="M9 12l2 2 4-4" />
               <circle cx="12" cy="12" r="9" />
             </svg>
-            <span>
-              Based on official documents from the Incubator Baguio team: {sources.slice(0, 3).join(", ")}
-              {sources.length > 3 ? ` +${sources.length - 3} more` : ""}
-            </span>
+            <span>Based on official documents from the Incubator Baguio team</span>
           </div>
         )}
 
