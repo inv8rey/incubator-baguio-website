@@ -47,10 +47,10 @@ const HOME_HTML_TOP = `
   <div style="position:relative;max-width:900px;margin:0 auto;">
     <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:9999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.03);margin-bottom:32px;">
       <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,101,34,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:#F26522;animation:ibpulse 2.4s ease-in-out infinite;"></span></span>
-      <span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Baguio&rsquo;s Startup &amp; Innovation Gateway</span>
+      <span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Baguio City&rsquo;s Innovation Platform</span>
     </div>
-    <h1 style="margin:0;font-size:74px;line-height:1.02;font-weight:500;letter-spacing:-0.042em;color:#fff;">Building Baguio&rsquo;s Innovation and&nbsp;<span style="color:#F26522;">Startup Ecosystem.</span></h1>
-    <p style="margin:28px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:580px;">Incubator Baguio connects startups, universities, Technology Business Incubators, government agencies, investors, and industry partners to accelerate innovation across the city.</p>
+    <h1 style="margin:0;font-size:74px;line-height:1.02;font-weight:500;letter-spacing:-0.042em;color:#fff;">Turning City Priorities<br>into&nbsp;<span style="color:#F26522;">Innovation.</span></h1>
+    <p style="margin:28px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:580px;">Incubator Baguio brings government, academia, industry, and society together to turn research, ideas, and real-world challenges into solutions that create lasting value for Baguio City.</p>
     <div style="display:flex;gap:12px;justify-content:center;margin-top:38px;flex-wrap:wrap;">
       <a href="${BP}/programs" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15.5px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 16px 40px -14px rgba(242,101,34,0.7);">Find Startup Support
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>

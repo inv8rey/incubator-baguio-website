@@ -78,7 +78,7 @@ export default function WhoWeAre() {
               color: "#fff",
             }}
           >
-            Incubator Baguio is the City Government of Baguio&rsquo;s platform for startup and innovation ecosystem
+            Incubator Baguio is the City Government of Baguio&rsquo;s platform for innovation ecosystem
             development under the City Planning, Development, and Sustainability Office (CPDSO).
           </h2>
           <p
@@ -92,9 +92,9 @@ export default function WhoWeAre() {
               marginRight: "auto",
             }}
           >
-            Established through City Ordinance No. 063, Series of 2023, it serves as the City&rsquo;s ecosystem
-            coordinator, bringing together government, academia, industry, and society through the Quadruple Helix
-            model to strengthen collaboration and accelerate innovation.
+            Guided by the City Research and Innovation Agenda and the Quadruple Helix model, we bring together
+            government, academia, industry, and society to address city priorities, support research and
+            innovation, and move promising ideas toward solutions that create meaningful impact for Baguio City.
           </p>
           <Blinds visible={visible} />
         </div>

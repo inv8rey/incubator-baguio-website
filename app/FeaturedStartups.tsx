@@ -31,9 +31,9 @@ export default function FeaturedStartups({ bp }: { bp: string }) {
         <div style={{ marginBottom: 44, maxWidth: 620 }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 9, marginBottom: 16 }}>
             <span style={{ width: 22, height: 1, background: "rgba(242,101,34,0.5)" }} />
-            <span style={{ fontSize: 11.5, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: "#F26522" }}>Startup Directory</span>
+            <span style={{ fontSize: 11.5, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: "#F26522" }}>Ecosystem Directory</span>
           </div>
-          <h2 style={{ margin: 0, fontSize: 40, fontWeight: 500, letterSpacing: "-0.032em", color: DARK, lineHeight: 1.14 }}>Startups in the Incubator Baguio network</h2>
+          <h2 style={{ margin: 0, fontSize: 40, fontWeight: 500, letterSpacing: "-0.032em", color: DARK, lineHeight: 1.14 }}>Innovators in the Incubator Baguio network</h2>
         </div>
 
         {!startups ? (
@@ -144,7 +144,7 @@ export default function FeaturedStartups({ bp }: { bp: string }) {
             href={`${bp}/ecosystem/`}
             style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "#1A1714", color: "#fff", fontWeight: 600, fontSize: 15, padding: "14px 28px", borderRadius: 9999, textDecoration: "none" }}
           >
-            View all startups
+            Explore the Ecosystem
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4}><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
           </a>
         </div>

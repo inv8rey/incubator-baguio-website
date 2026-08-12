@@ -37,8 +37,8 @@ const ABOUT_HTML_TOP = `
   <div style="position:relative;max-width:860px;margin:0 auto;">
     <div style="font-size:12.5px;color:rgba(255,255,255,0.4);margin-bottom:22px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.7);">About</span></div>
     <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:9999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.03);margin-bottom:26px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,101,34,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:#F26522;"></span></span><span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">About Incubator Baguio</span></div>
-    <h1 style="margin:0;font-size:54px;line-height:1.06;font-weight:500;letter-spacing:-0.04em;color:#fff;">The Gateway to Baguio&rsquo;s <span style="color:#F26522;">Startup &amp; Innovation Ecosystem</span></h1>
-    <p style="margin:24px auto 0;font-size:18px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:680px;">We connect startups, researchers, universities, Technology Business Incubators, government agencies, investors, and industry partners to build a stronger innovation ecosystem for Baguio.</p>
+    <h1 style="margin:0;font-size:54px;line-height:1.06;font-weight:500;letter-spacing:-0.04em;color:#fff;">Building Baguio&rsquo;s <span style="color:#F26522;">Innovation Ecosystem</span></h1>
+    <p style="margin:24px auto 0;font-size:18px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:680px;">Incubator Baguio is the City Government of Baguio&rsquo;s platform for startup and innovation ecosystem development under the City Planning, Development, and Sustainability Office (CPDSO). We bring together government, academia, industry, and society to turn ideas, research, and emerging solutions into meaningful action for the City.</p>
   </div>
 </div>
 
@@ -50,7 +50,7 @@ const ABOUT_HTML_TOP = `
         <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:6px;">Our Role</div>
         <div style="width:42px;height:3px;background:#F26522;border-radius:2px;margin-bottom:22px;"></div>
         <h2 style="margin:0 0 24px;font-size:44px;font-weight:500;letter-spacing:-0.03em;color:#1A1714;line-height:1.08;">Building the Infrastructure for Innovation</h2>
-        <p style="margin:0;font-size:16px;line-height:1.65;color:#5A544B;">Incubator Baguio is the city&rsquo;s startup and innovation ecosystem platform, connecting founders, researchers, universities, Technology Business Incubators, government agencies, investors, industry, and the community to create opportunities, strengthen collaboration, and accelerate innovation across Baguio.</p>
+        <p style="margin:0;font-size:16px;line-height:1.65;color:#5A544B;">Incubator Baguio helps build a stronger innovation ecosystem for Baguio by bringing together government, academia, industry, researchers, entrepreneurs, and communities. We support initiatives aligned with the City Research and Innovation Agenda, create opportunities for collaboration, and help move promising ideas, research, and solutions toward meaningful outcomes for the City.</p>
       </div>
       <div style="position:relative;border-radius:20px;overflow:hidden;aspect-ratio:16/11;background:#FFEEDD;">
         <img src="${BP}/assets/about-our-role.jpg" alt="Incubator Baguio Convenor Meeting, bringing together the city's startup and innovation ecosystem partners" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
@@ -114,7 +114,7 @@ const ABOUT_HTML_TOP = `
       <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F26522;margin-bottom:14px;">Our Foundation</div>
       <h2 style="margin:0 0 18px;font-size:36px;font-weight:500;letter-spacing:-0.025em;color:#1A1714;line-height:1.1;">Institutionalized Through City Ordinance</h2>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.65;color:#44444C;">Incubator Baguio was established through Ordinance No. 063, Series of 2023, which created the Baguio City Research and Innovation Alliance under the City Planning, Development and Sustainability Office (CPDSO).</p>
-      <p style="margin:0 0 26px;font-size:16px;line-height:1.65;color:#5A544B;">The ordinance provides the foundation for long-term collaboration among government, academia, industry, and the community to strengthen innovation, entrepreneurship, research, and startup development in Baguio.</p>
+      <p style="margin:0 0 26px;font-size:16px;line-height:1.65;color:#5A544B;">The ordinance provides the foundation for long-term collaboration among government, academia, industry, and the community to strengthen innovation, entrepreneurship, and research in Baguio.</p>
       <div style="display:flex;gap:14px;flex-wrap:wrap;">
         ${[
           ["City Government of Baguio", "Lead Institution"],
