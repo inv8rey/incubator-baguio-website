@@ -13,7 +13,6 @@ export default function MessageBubble({
   onFollowUp?: (prompt: string) => void;
 }) {
   const isUser = message.role === "user";
-  const sources = message.sources ?? [];
   const followUps = message.followUps ?? [];
 
   return (
@@ -33,31 +32,6 @@ export default function MessageBubble({
         >
           {message.content}
         </div>
-
-        {/* Grounding note: says an answer came from the team's own uploaded
-            programme material rather than the model's general recall.
-            Deliberately generic -- never names the source file/title, since
-            some uploaded documents are third-party material (e.g. reference
-            books) that shouldn't be surfaced to visitors. */}
-        {!isUser && !message.error && sources.length > 0 && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 6,
-              marginTop: 7,
-              fontSize: 11,
-              lineHeight: 1.45,
-              color: "rgba(255,255,255,0.45)",
-            }}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}>
-              <path d="M9 12l2 2 4-4" />
-              <circle cx="12" cy="12" r="9" />
-            </svg>
-            <span>Based on official documents from the Incubator Baguio team</span>
-          </div>
-        )}
 
         {!isUser && message.error && onRetry && message.retryable !== false && (
           <button
