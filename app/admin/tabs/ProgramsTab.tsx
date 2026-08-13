@@ -10,10 +10,10 @@ import { triggerSheetSync } from "../../../lib/syncSheetClient";
 // exactly — this is what the previous "enable/engage/expand/evolve" naming
 // got wrong after the pillars were renamed, silently orphaning uploads.
 const STEPS = [
-  { step: "founder-development", title: "Founder Development", theme: "Helping entrepreneurs turn ideas into sustainable ventures.", color: "#D9531E" },
-  { step: "ecosystem-building", title: "Ecosystem Building", theme: "Connecting people, organizations, and opportunities.", color: "#22596F" },
-  { step: "open-innovation", title: "Open Innovation", theme: "Turning real-world challenges into collaborative solutions.", color: "#8E2749" },
-  { step: "ecosystem-intelligence", title: "Ecosystem Intelligence", theme: "Enabling better decisions through data and insights.", color: "#17603A" },
+  { step: "founder-development", title: "Project Development", theme: "Turning ideas and research into solutions ready for the real world.", color: "#D9531E" },
+  { step: "ecosystem-building", title: "Ecosystem Collaboration", theme: "Bringing the right people together to move solutions forward.", color: "#22596F" },
+  { step: "open-innovation", title: "Open Innovation & City Adoption", theme: "Connecting city challenges with solutions that can make a difference.", color: "#8E2749" },
+  { step: "ecosystem-intelligence", title: "Innovation Intelligence", theme: "Using evidence to guide what Baguio needs next.", color: "#17603A" },
 ] as const;
 
 interface Row {
