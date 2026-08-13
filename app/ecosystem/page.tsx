@@ -5,7 +5,7 @@ import EcosystemStats from "./EcosystemStats";
 export const metadata: Metadata = {
   title: "Ecosystem — Incubator Baguio",
   description:
-    "Explore the startups, mentors, incubators, organizations, and partners building innovation in Baguio City.",
+    "Explore Baguio's growing ecosystem of startups, researchers, mentors, universities, incubators, government agencies, industry partners, and innovation organizations.",
 };
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
@@ -38,8 +38,8 @@ const TOP_HTML = `
   <div style="position:relative;max-width:840px;margin:0 auto;">
     <div style="font-size:12.5px;color:rgba(255,255,255,0.4);margin-bottom:22px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.7);">Ecosystem</span></div>
     <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:9999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.03);margin-bottom:26px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,101,34,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:#F26522;"></span></span><span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Baguio Innovation Ecosystem</span></div>
-    <h1 style="margin:0;font-size:56px;line-height:1.03;font-weight:500;letter-spacing:-0.04em;color:#fff;">Discover Baguio&rsquo;s Startup &amp; Innovation Ecosystem.</h1>
-    <p style="margin:24px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:600px;">Explore the startups, mentors, incubators, organizations, and partners building innovation in Baguio City.</p>
+    <h1 style="margin:0;font-size:56px;line-height:1.03;font-weight:500;letter-spacing:-0.04em;color:#fff;">Discover the People and Organizations Driving Innovation in Baguio</h1>
+    <p style="margin:24px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:600px;">Explore Baguio&rsquo;s growing ecosystem of startups, researchers, mentors, universities, incubators, government agencies, industry partners, and innovation organizations. Find the people and resources that can help turn ideas into solutions and opportunities.</p>
   </div>
 </div>
 `;
