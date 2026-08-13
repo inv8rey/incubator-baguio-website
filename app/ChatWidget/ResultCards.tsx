@@ -6,7 +6,7 @@ import type { ChatCard } from "./types";
 const TYPE_LABEL: Record<ChatCard["type"], string> = {
   challenge: "Challenge",
   mentor: "Mentor",
-  startup: "Startup",
+  startup: "Innovator",
   resource: "Resource",
 };
 

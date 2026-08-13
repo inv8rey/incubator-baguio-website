@@ -19,8 +19,8 @@ const NAV: { href: string; label: string; icon: React.ReactNode }[] = [
     ),
   },
   {
-    href: "/dashboard/startup/",
-    label: "Startups",
+    href: "/dashboard/innovator/",
+    label: "Innovator Hub",
     icon: <path d="M5 13.5L3 21l7.5-2M14.5 5.5C17 3 21 3 21 3s0 4-2.5 6.5L11 17l-4-4z" />,
   },
   {

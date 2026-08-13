@@ -37,7 +37,7 @@ const STEPS: StepData[] = [
     title: "Founder Development",
     theme: "Helping entrepreneurs turn ideas into sustainable ventures.",
     purpose:
-      "We equip founders with the knowledge, mentorship, and connections they need to validate ideas, build innovative businesses, and navigate the startup journey with confidence.",
+      "We equip founders with the knowledge, mentorship, and connections they need to validate ideas, build innovative businesses, and navigate the innovation journey with confidence.",
     color: "#D9531E",
     bg: "#FBF3EC",
     bgDeep: "#F3DFCD",
@@ -50,12 +50,12 @@ const STEPS: StepData[] = [
     title: "Ecosystem Building",
     theme: "Connecting people, organizations, and opportunities.",
     purpose:
-      "Innovation thrives through collaboration. We bring together government, universities, industry, startups, and ecosystem partners to build meaningful partnerships and strengthen the City's innovation network.",
+      "Innovation thrives through collaboration. We bring together government, universities, industry, innovators, and ecosystem partners to build meaningful partnerships and strengthen the City's innovation network.",
     color: "#22596F",
     bg: "#EEF3F6",
     bgDeep: "#D5E3EA",
     icon: ICONS.people,
-    highlights: ["Startup Referral Network", "Quadruple Helix Roundtable", "Startup Showcase", "Innovation Calendar"],
+    highlights: ["Innovator Referral Network", "Quadruple Helix Roundtable", "Innovator Showcase", "Innovation Calendar"],
   },
   {
     key: "open-innovation",
@@ -63,7 +63,7 @@ const STEPS: StepData[] = [
     title: "Open Innovation",
     theme: "Turning real-world challenges into collaborative solutions.",
     purpose:
-      "We connect organizations with startups, researchers, and innovators to co-develop practical solutions that address the City's priorities and create lasting impact.",
+      "We connect organizations with innovators, researchers, and entrepreneurs to co-develop practical solutions that address the City's priorities and create lasting impact.",
     color: "#8E2749",
     bg: "#F8F0F3",
     bgDeep: "#EDD6DE",

@@ -47,8 +47,8 @@ interface UpcomingEvent {
 const CARDS: { key: keyof Counts | "isMentor"; title: string; href: string; color: string; bg: string; icon: React.ReactNode }[] = [
   {
     key: "startups",
-    title: "Startup profiles",
-    href: "/dashboard/startup/",
+    title: "Innovation profiles",
+    href: "/dashboard/innovator/",
     color: "#F26522",
     bg: "rgba(242,101,34,0.12)",
     icon: <path d="M5 13.5L3 21l7.5-2M14.5 5.5C17 3 21 3 21 3s0 4-2.5 6.5L11 17l-4-4z" />,
@@ -289,10 +289,10 @@ export default function DashboardOverview() {
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: DARK }}>{doneStartup ? "Manage your startup" : "Create your startup profile"}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: DARK }}>{doneStartup ? "Manage your innovation" : "Create your innovation profile"}</div>
                   <div style={{ fontSize: 11.5, color: "#8B8479" }}>{doneStartup ? "Keep your listing up to date." : "Get discovered by mentors and programs."}</div>
                 </div>
-                <a href={`${BP}/dashboard/startup/`} style={{ fontSize: 12, fontWeight: 600, color: doneStartup ? DARK : "#fff", background: doneStartup ? "none" : ORANGE, border: doneStartup ? "1.5px solid rgba(64,50,34,0.17)" : "none", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>
+                <a href={`${BP}/dashboard/innovator/`} style={{ fontSize: 12, fontWeight: 600, color: doneStartup ? DARK : "#fff", background: doneStartup ? "none" : ORANGE, border: doneStartup ? "1.5px solid rgba(64,50,34,0.17)" : "none", padding: "8px 14px", borderRadius: 9999, textDecoration: "none", flexShrink: 0 }}>
                   {doneStartup ? "Manage" : "Start now"}
                 </a>
               </div>
@@ -342,13 +342,13 @@ export default function DashboardOverview() {
               </div>
               <div style={{ fontSize: 12.5, lineHeight: 1.5, color: "#5A544B" }}>
                 {setupDoneCount === 3
-                  ? "You've set up your startup, mentor, and organization presence."
+                  ? "You've set up your innovation, mentor, and organization presence."
                   : "Set up your presence to unlock more opportunities."}
               </div>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
               {[
-                { label: "Startup profile", done: doneStartup },
+                { label: "Innovation profile", done: doneStartup },
                 { label: "Mentor profile", done: doneMentor },
                 { label: "Organization listing", done: doneOrg },
               ].map((item) => (
@@ -402,7 +402,7 @@ export default function DashboardOverview() {
                 { label: "Open challenges", value: siteStats?.openChallenges, color: "#7C5CD6", bg: "rgba(124,92,214,0.12)" },
                 { label: "Active mentors", value: siteStats?.activeMentors, color: "#3A7BD5", bg: "rgba(58,123,213,0.12)" },
                 { label: "Partner orgs", value: siteStats?.partnerOrgs, color: "#0F9B8E", bg: "rgba(15,155,142,0.12)" },
-                { label: "Startups", value: siteStats?.registeredStartups, color: "#F26522", bg: "rgba(242,101,34,0.12)" },
+                { label: "Innovators", value: siteStats?.registeredStartups, color: "#F26522", bg: "rgba(242,101,34,0.12)" },
               ].map((s) => (
                 <div key={s.label} style={{ background: s.bg, borderRadius: 10, padding: "10px 12px" }}>
                   <div style={{ fontSize: 16, fontWeight: 600, color: s.color }}>{s.value ?? "…"}</div>

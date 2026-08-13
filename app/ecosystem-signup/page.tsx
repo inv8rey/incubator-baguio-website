@@ -7,7 +7,7 @@ const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export const metadata: Metadata = {
   title: "Join the Ecosystem — Incubator Baguio",
-  description: "Submit your startup, mentor profile, or organization for the Incubator Baguio Ecosystem directory.",
+  description: "Submit your innovation, mentor profile, or organization for the Incubator Baguio Ecosystem directory.",
   robots: { index: false, follow: false },
 };
 
@@ -29,7 +29,7 @@ export default function EcosystemSignupPage() {
             <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "#F26522", marginBottom: 12 }}>Join the ecosystem</div>
             <h1 style={{ margin: "0 0 10px", fontSize: 32, fontWeight: 600, letterSpacing: "-0.025em", color: "#1A1714" }}>Tell us about you</h1>
             <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.6, color: "#5A544B", maxWidth: 560 }}>
-              Submit your startup, mentor profile, or organization to be featured in the Incubator Baguio Ecosystem directory. Every submission is reviewed before it goes live.
+              Submit your innovation, mentor profile, or organization to be featured in the Incubator Baguio Ecosystem directory. Every submission is reviewed before it goes live.
             </p>
           </div>
           <Suspense fallback={null}>

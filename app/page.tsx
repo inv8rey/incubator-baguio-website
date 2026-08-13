@@ -52,7 +52,7 @@ const HOME_HTML_TOP = `
     <h1 style="margin:0;font-size:74px;line-height:1.02;font-weight:500;letter-spacing:-0.042em;color:#fff;">Turning City Priorities<br>into&nbsp;<span style="color:#F26522;">Innovation.</span></h1>
     <p style="margin:28px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:580px;">Incubator Baguio brings government, academia, industry, and society together to turn research, ideas, and real-world challenges into solutions that create lasting value for Baguio City.</p>
     <div style="display:flex;gap:12px;justify-content:center;margin-top:38px;flex-wrap:wrap;">
-      <a href="${BP}/programs" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15.5px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 16px 40px -14px rgba(242,101,34,0.7);">Find Startup Support
+      <a href="${BP}/programs" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15.5px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 16px 40px -14px rgba(242,101,34,0.7);">Find Innovator Support
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       <a href="${BP}/ecosystem" class="ib-cta-ghost" style="display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:15.5px;padding:15px 28px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.02);">Explore the Ecosystem</a>
     </div>
@@ -63,7 +63,7 @@ const HOME_HTML_TOP = `
 <div style="background:#100D0B;padding:0 40px 72px;">
   <div style="max-width:1120px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.08);display:grid;grid-template-columns:repeat(4,1fr);">
     ${[
-      ["9", "+", "Active startups", false],
+      ["9", "+", "Active innovators", false],
       ["8", "+", "Ecosystem partners", true],
       ["4", "", "TBIs", true],
       ["&#8734;", "", "Opportunities to build", true],
@@ -87,8 +87,8 @@ const HOME_HTML_HOW_IT_WORKS = `
       <div class="ib-journey-line"></div>
       <div class="ib-journey-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:22px;position:relative;">
         ${[
-          ["01", "#F26522", "rgba(242,101,34,0.1)", "Join the ecosystem", "Create a free account and tell us what you&rsquo;re building &mdash; startup, research, or idea."],
-          ["02", "#285E7A", "rgba(40,94,122,0.1)", "Build your presence", "Publish your startup, mentor, or organization profile to the city&rsquo;s ecosystem directory."],
+          ["01", "#F26522", "rgba(242,101,34,0.1)", "Join the ecosystem", "Create a free account and tell us what you&rsquo;re building &mdash; an innovation, research project, or idea."],
+          ["02", "#285E7A", "rgba(40,94,122,0.1)", "Build your presence", "Publish your innovation, mentor, or organization profile to the city&rsquo;s ecosystem directory."],
           ["03", "#9E2A52", "rgba(158,42,82,0.1)", "Get matched", "Connect with mentors, TBIs, co-founders, and open challenges that fit your stage and sector."],
           ["04", "#1A6B3C", "rgba(26,107,60,0.1)", "Grow with Baguio", "Join programs, workshops, and Startup Week to scale alongside the whole ecosystem."],
         ].map((s) => `
@@ -122,7 +122,7 @@ const HOME_HTML_BOTTOM_A = `
     <div class="ib-challenge-cats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
       ${[
         ["#22596F", "Government", "Smarter public services", "LGUs post operational challenges in transport, waste, tourism, and digital governance for the community to solve."],
-        ["#D9531E", "Industry", "MSME growth problems", "Local businesses surface bottlenecks in operations, supply chains, and market access that startups can address."],
+        ["#D9531E", "Industry", "MSME growth problems", "Local businesses surface bottlenecks in operations, supply chains, and market access that innovators can address."],
         ["#8E2749", "Academia", "Research to market", "Universities open up applied research questions and technologies seeking commercialization partners."],
         ["#5A4BC4", "Society", "Community-led solutions", "Civic groups and community organizations surface local needs and social challenges for innovators to solve."],
       ].map((c) => `
@@ -152,7 +152,7 @@ const HOME_HTML_STARTUP_WEEK = `
     <div style="padding:72px 40px 72px 0;display:flex;flex-direction:column;justify-content:center;">
       <span style="display:inline-block;width:fit-content;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#FFB489;padding:6px 12px;border-radius:9999px;border:1px solid rgba(242,101,34,0.4);background:rgba(242,101,34,0.12);margin-bottom:20px;">Flagship event &middot; 3rd week of April</span>
       <h2 style="margin:0 0 14px;font-size:40px;font-weight:500;letter-spacing:-0.025em;color:#fff;line-height:1.08;">Innovation Startup Week 2026</h2>
-      <p style="margin:0 0 26px;font-size:16px;line-height:1.6;color:rgba(255,255,255,0.62);max-width:420px;">A full week of pitching, demos, and matchmaking. 10+ startups, investors, mentors, and the public, all in one place.</p>
+      <p style="margin:0 0 26px;font-size:16px;line-height:1.6;color:rgba(255,255,255,0.62);max-width:420px;">A full week of pitching, demos, and matchmaking. 10+ innovators, investors, mentors, and the public, all in one place.</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap;"><a href="${BP}/calendar" class="ib-cta-orange" style="background:#F26522;color:#fff;font-weight:600;font-size:15px;padding:14px 26px;border-radius:9999px;text-decoration:none;white-space:nowrap;">View Event</a><a href="${BP}/calendar" class="ib-cta-ghost" style="color:#fff;font-weight:600;font-size:15px;padding:14px 24px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);white-space:nowrap;">View schedule</a></div>
     </div>
     <div style="position:relative;background:radial-gradient(120% 90% at 70% 15%,#221E19 0%,#16130F 60%);min-height:440px;display:flex;align-items:center;justify-content:center;border-left:1px solid rgba(255,255,255,0.06);overflow:hidden;">
@@ -187,7 +187,7 @@ const HOME_HTML_BOTTOM_B2 = `
         <p style="margin:0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,0.5);max-width:280px;">Baguio City Research and Innovation Alliance. Operationalized under Ordinance No. 63, s.2023 by the CPDSO, City Government of Baguio.</p>
       </div>
       <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Explore</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/programs">Programs</a><a class="ib-footlink" href="${BP}/challenges">Challenges</a><a class="ib-footlink" href="${BP}/knowledge">Knowledge Hub</a><a class="ib-footlink" href="${BP}/ecosystem">Ecosystem</a><a class="ib-footlink" href="${BP}/calendar">Calendar</a><a class="ib-footlink" href="${BP}/contact">Contact</a></div></div>
-      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Apply</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/dashboard/startup">Startup Incubation</a><a class="ib-footlink" href="${BP}/challenges/post">Post a Challenge</a><a class="ib-footlink" href="${BP}/dashboard/mentor">Mentor Registration</a><a class="ib-footlink" href="${BP}/dashboard/organizations">Partner Inquiry</a></div></div>
+      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Apply</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/dashboard/innovator">Innovator Incubation</a><a class="ib-footlink" href="${BP}/challenges/post">Post a Challenge</a><a class="ib-footlink" href="${BP}/dashboard/mentor">Mentor Registration</a><a class="ib-footlink" href="${BP}/dashboard/organizations">Partner Inquiry</a></div></div>
       <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Contact</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>CPDSO, City Hall, Baguio</span><span>incubatorbaguio63@gmail.com</span><a class="ib-footlink" href="https://www.facebook.com/incubatorbaguio" target="_blank" rel="noopener noreferrer">Facebook</a></div></div>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-size:12.5px;color:rgba(255,255,255,0.4);flex-wrap:wrap;gap:10px;">
@@ -218,7 +218,7 @@ const ORG_JSON_LD = {
   url: "https://incubator-baguio.vercel.app/",
   logo: "https://incubator-baguio.vercel.app/assets/ib-icon.png",
   description:
-    "Incubator Baguio connects startups, universities, Technology Business Incubators, government agencies, investors, and industry partners to accelerate innovation and strengthen the Baguio startup ecosystem.",
+    "Incubator Baguio connects innovators, universities, Technology Business Incubators, government agencies, investors, and industry partners to accelerate innovation and strengthen the Baguio innovation ecosystem.",
   email: "incubatorbaguio63@gmail.com",
   sameAs: ["https://www.facebook.com/incubatorbaguio"],
   address: {

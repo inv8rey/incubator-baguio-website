@@ -12,19 +12,19 @@ const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const FAQS: { q: string; a: string }[] = [
   {
     q: "What is Incubator Baguio?",
-    a: "Incubator Baguio is Baguio City&rsquo;s innovation and startup ecosystem platform. We connect founders, researchers, universities, government, industry, investors, and ecosystem partners to accelerate innovation and entrepreneurship.",
+    a: "Incubator Baguio is Baguio City&rsquo;s innovation ecosystem platform. We connect founders, researchers, universities, government, industry, investors, and ecosystem partners to accelerate innovation and entrepreneurship.",
   },
   {
-    q: "Do I need an existing startup to join?",
-    a: "No. Whether you&rsquo;re exploring an idea, validating a problem, building your first product, or scaling an existing startup, we&rsquo;ll help connect you with the right programs and ecosystem partners.",
+    q: "Do I need an existing innovation to join?",
+    a: "No. Whether you&rsquo;re exploring an idea, validating a problem, building your first product, or scaling an existing innovation, we&rsquo;ll help connect you with the right programs and ecosystem partners.",
   },
   {
     q: "Does Incubator Baguio provide funding?",
-    a: "Incubator Baguio does not directly invest in startups. Instead, we help founders become investment-ready and connect them with grants, investors, government funding, corporate innovation programs, and other financing opportunities.",
+    a: "Incubator Baguio does not directly invest in innovations. Instead, we help founders become investment-ready and connect them with grants, investors, government funding, corporate innovation programs, and other financing opportunities.",
   },
   {
     q: "How is Incubator Baguio different from a university incubator?",
-    a: "University incubators focus on supporting startups within their institutions. Incubator Baguio coordinates the broader ecosystem by connecting founders with universities, government agencies, investors, corporations, mentors, and other ecosystem partners. We complement existing incubators rather than replace them.",
+    a: "University incubators focus on supporting innovators within their institutions. Incubator Baguio coordinates the broader ecosystem by connecting founders with universities, government agencies, investors, corporations, mentors, and other ecosystem partners. We complement existing incubators rather than replace them.",
   },
   {
     q: "How do I get started?",
@@ -56,10 +56,10 @@ const PATHS: {
     color: "#E23A2E",
     bg: "rgba(226,58,46,0.12)",
     icon: `<path d="M5 13.5L3 21l7.5-2M14.5 5.5C17 3 21 3 21 3s0 4-2.5 6.5L11 17l-4-4z"></path><circle cx="15" cy="9" r="1.2" fill="currentColor" stroke="none"></circle>`,
-    title: "I'm Building a Startup",
-    desc: "I'm ready to grow my startup.",
-    items: ["Startup Incubation", "Mentorship", "Investor Readiness", "Demo Day", "Product Validation"],
-    cta: "Grow My Startup",
+    title: "I'm Building an Innovation",
+    desc: "I'm ready to grow my innovation.",
+    items: ["Innovator Incubation", "Mentorship", "Investor Readiness", "Demo Day", "Product Validation"],
+    cta: "Grow My Innovation",
     href: `${BP}/get-started`,
   },
   {
@@ -68,7 +68,7 @@ const PATHS: {
     icon: `<path d="M9 2v6l-5 9.5A2 2 0 0 0 5.7 21h12.6a2 2 0 0 0 1.7-3.5L15 8V2"></path><path d="M7.5 14.5h9"></path><path d="M8 2h8"></path>`,
     title: "I'm a Researcher",
     desc: "I want my research to create real-world impact.",
-    items: ["Research Commercialization", "Industry Matching", "IP Support", "Startup Formation"],
+    items: ["Research Commercialization", "Industry Matching", "IP Support", "Innovation Formation"],
     cta: "Commercialize Research",
     href: `${BP}/knowledge`,
   },
@@ -224,7 +224,7 @@ const PROGRAMS_HTML_BOTTOM = `
         <p style="margin:0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,0.5);max-width:280px;">Baguio City Research and Innovation Alliance. Operationalized under Ordinance No. 63, s.2023 by the CPDSO, City Government of Baguio.</p>
       </div>
       <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Explore</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/programs">Programs</a><a class="ib-footlink" href="${BP}/challenges">Challenges</a><a class="ib-footlink" href="${BP}/knowledge">Knowledge Hub</a><a class="ib-footlink" href="${BP}/ecosystem">Ecosystem</a><a class="ib-footlink" href="${BP}/calendar">Calendar</a><a class="ib-footlink" href="${BP}/contact">Contact</a></div></div>
-      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Apply</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/dashboard/startup">Startup Incubation</a><a class="ib-footlink" href="${BP}/challenges/post">Post a Challenge</a><a class="ib-footlink" href="${BP}/dashboard/mentor">Mentor Registration</a><a class="ib-footlink" href="${BP}/dashboard/organizations">Partner Inquiry</a></div></div>
+      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Apply</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/dashboard/innovator">Innovator Incubation</a><a class="ib-footlink" href="${BP}/challenges/post">Post a Challenge</a><a class="ib-footlink" href="${BP}/dashboard/mentor">Mentor Registration</a><a class="ib-footlink" href="${BP}/dashboard/organizations">Partner Inquiry</a></div></div>
       <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Contact</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>CPDSO, City Hall, Baguio</span><span>incubatorbaguio63@gmail.com</span><a class="ib-footlink" href="https://www.facebook.com/incubatorbaguio" target="_blank" rel="noopener noreferrer">Facebook</a></div></div>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-size:12.5px;color:rgba(255,255,255,0.4);flex-wrap:wrap;gap:10px;">

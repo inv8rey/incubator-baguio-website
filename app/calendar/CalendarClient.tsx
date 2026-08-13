@@ -323,7 +323,7 @@ function BookingModal({ availableSlots, preselected, onClose, onConfirm }: { ava
             </div>
             <div>
               <label style={modalLabelStyle}>Email *</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@startup.ph" style={modalInputStyle} required />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@innovator.ph" style={modalInputStyle} required />
             </div>
           </div>
 

@@ -9,7 +9,7 @@ const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 export const metadata: Metadata = {
   title: "Incubator Baguio — Coming August 2026",
   description:
-    "Incubator Baguio is launching this August. Join the ecosystem and be part of Baguio's innovation and startup community from day one.",
+    "Incubator Baguio is launching this August. Join the ecosystem and be part of Baguio's innovation community from day one.",
   robots: { index: false, follow: false },
 };
 
@@ -32,7 +32,7 @@ const TOP_HTML = `
       <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,101,34,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:#F26522;animation:ibpulse 2.4s ease-in-out infinite;"></span></span>
       <span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Launching August 2026</span>
     </div>
-    <h1 style="margin:0;font-size:60px;line-height:1.05;font-weight:500;letter-spacing:-0.035em;color:#fff;">The home for Baguio&rsquo;s&nbsp;<span style="color:#F26522;">startup and innovation ecosystem.</span></h1>
+    <h1 style="margin:0;font-size:60px;line-height:1.05;font-weight:500;letter-spacing:-0.035em;color:#fff;">The home for Baguio&rsquo;s&nbsp;<span style="color:#F26522;">innovation ecosystem.</span></h1>
     <p style="margin:26px auto 0;font-size:17.5px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:620px;">Incubator Baguio is the digital gateway to the city&rsquo;s innovation ecosystem, connecting people with opportunities, programs, mentors, challenges, funding, and partnerships.</p>
     <div style="display:flex;gap:12px;justify-content:center;margin-top:36px;flex-wrap:wrap;">
       <a href="#join" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15.5px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 16px 40px -14px rgba(242,101,34,0.7);">Get counted before we launch
@@ -57,7 +57,7 @@ const TOP_HTML = `
           "rgba(242,101,34,0.1)",
           `<ellipse cx="12" cy="5" rx="8" ry="3"></ellipse><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"></path><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"></path>`,
           "Ecosystem Database",
-          "Browse startups, mentors, universities, government agencies, Technology Business Incubators, coworking spaces, and ecosystem partners in one searchable directory.",
+          "Browse innovators, mentors, universities, government agencies, Technology Business Incubators, coworking spaces, and ecosystem partners in one searchable directory.",
         ],
         [
           "#285E7A",
@@ -78,7 +78,7 @@ const TOP_HTML = `
           "rgba(26,107,60,0.1)",
           `<rect x="3" y="5" width="18" height="16" rx="2.5"></rect><path d="M16 3v4M8 3v4M3 10h18"></path>`,
           "Centralized Calendar",
-          "Access a shared calendar of startup events, workshops, Demo Days, funding calls, research activities, and innovation programs across the city.",
+          "Access a shared calendar of innovation events, workshops, Demo Days, funding calls, research activities, and innovation programs across the city.",
         ],
       ].map((c) => `
       <div class="ib-card-hover" style="background:#fff;border:1px solid rgba(64,50,34,0.12);border-radius:18px;padding:26px 22px;border-top:3px solid ${c[0]};display:flex;flex-direction:column;">
@@ -107,7 +107,7 @@ const JOIN_INTRO_HTML = `
   <div style="max-width:720px;margin:0 auto;text-align:center;">
     <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">Get counted before we launch</div>
     <h2 style="margin:0 0 12px;font-size:34px;font-weight:600;letter-spacing:-0.03em;color:#1A1714;line-height:1.12;">Tell us about you</h2>
-    <p style="margin:0;font-size:14.5px;line-height:1.6;color:#5A544B;">Submit your startup, mentor profile, or organization now, so you&rsquo;re already featured in the Ecosystem directory the moment Incubator Baguio launches. Every submission is reviewed before it goes live.</p>
+    <p style="margin:0;font-size:14.5px;line-height:1.6;color:#5A544B;">Submit your innovation, mentor profile, or organization now, so you&rsquo;re already featured in the Ecosystem directory the moment Incubator Baguio launches. Every submission is reviewed before it goes live.</p>
   </div>
 </div>
 `;

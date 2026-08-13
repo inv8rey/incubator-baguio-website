@@ -6,7 +6,7 @@ import CommunityChallenges from "./CommunityChallenges";
 export const metadata: Metadata = {
   title: "Innovation Challenges — Incubator Baguio",
   description:
-    "Real problems posted by LGUs, MSMEs, universities, and NGOs across Baguio. Founders, startups, researchers, and students build the solutions.",
+    "Real problems posted by LGUs, MSMEs, universities, and NGOs across Baguio. Founders, innovators, researchers, and students build the solutions.",
 };
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
@@ -80,7 +80,7 @@ const CHALLENGES_HTML_TOP = `
           icon: '<path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.1 1.5 3.5.6.67 1.23 1.5 1.41 2.5"></path>',
           heading: "SOLVERS",
           subheading: "Find meaningful challenges. Build solutions that create impact.",
-          description: "Founders, startups, innovators, researchers, and students discover challenges and submit solutions.",
+          description: "Founders, innovators, researchers, and students discover challenges and submit solutions.",
           steps: [
             ["Browse challenges", "Filter by sector, theme, or deadline."],
             ["Submit your solution", "Submit your approach, team, and prototype to the challenge."],
@@ -142,7 +142,7 @@ const CHALLENGES_HTML_BOTTOM = `
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;">
       ${[
         ["#5B9BC0", "Who posts challenges", ["LGUs", "MSMEs", "Universities", "Corporations", "NGOs", "Community orgs"]],
-        ["#FFB489", "Who solves them", ["Founders", "Startups", "Innovators", "Researchers", "Students"]],
+        ["#FFB489", "Who solves them", ["Founders", "Innovators", "Researchers", "Students"]],
       ].map((col) => `
       <div style="background:#141418;border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:28px;">
         <div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:${col[0]};margin-bottom:16px;">${col[1]}</div>
@@ -178,7 +178,7 @@ const CHALLENGES_HTML_BOTTOM = `
         <p style="margin:0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,0.5);max-width:280px;">Baguio City Research and Innovation Alliance. Operationalized under Ordinance No. 63, s.2023 by the CPDSO, City Government of Baguio.</p>
       </div>
       <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Explore</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/programs">Programs</a><a class="ib-footlink" href="${BP}/challenges">Challenges</a><a class="ib-footlink" href="${BP}/knowledge">Knowledge Hub</a><a class="ib-footlink" href="${BP}/ecosystem">Ecosystem</a><a class="ib-footlink" href="${BP}/calendar">Calendar</a><a class="ib-footlink" href="${BP}/contact">Contact</a></div></div>
-      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Apply</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/dashboard/startup">Startup Incubation</a><a class="ib-footlink" href="${BP}/challenges/post">Post a Challenge</a><a class="ib-footlink" href="${BP}/dashboard/mentor">Mentor Registration</a><a class="ib-footlink" href="${BP}/dashboard/organizations">Partner Inquiry</a></div></div>
+      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Apply</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/dashboard/innovator">Innovator Incubation</a><a class="ib-footlink" href="${BP}/challenges/post">Post a Challenge</a><a class="ib-footlink" href="${BP}/dashboard/mentor">Mentor Registration</a><a class="ib-footlink" href="${BP}/dashboard/organizations">Partner Inquiry</a></div></div>
       <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Contact</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>CPDSO, City Hall, Baguio</span><span>incubatorbaguio63@gmail.com</span><a class="ib-footlink" href="https://www.facebook.com/incubatorbaguio" target="_blank" rel="noopener noreferrer">Facebook</a></div></div>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-size:12.5px;color:rgba(255,255,255,0.4);flex-wrap:wrap;gap:10px;">

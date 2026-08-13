@@ -7,7 +7,7 @@ const DARK = "#1A1714";
 
 const REASONS = [
   "General inquiry",
-  "Startup incubation",
+  "Innovator incubation",
   "Research submission",
   "Mentor registration",
   "Partner inquiry",

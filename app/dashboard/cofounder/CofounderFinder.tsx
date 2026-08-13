@@ -298,7 +298,7 @@ export default function CofounderFinder() {
             </div>
             <div>
               <label style={labelStyle}>What are you building?</label>
-              <textarea style={{ ...inputStyle, minHeight: 80, resize: "vertical" }} value={form.building} onChange={(e) => update("building", e.target.value)} placeholder="A short pitch of your idea or startup." maxLength={300} />
+              <textarea style={{ ...inputStyle, minHeight: 80, resize: "vertical" }} value={form.building} onChange={(e) => update("building", e.target.value)} placeholder="A short pitch of your idea or innovation." maxLength={300} />
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
               <div>

@@ -3,7 +3,7 @@
 const PROMPTS = [
   "What funding programmes can I apply for?",
   "Find mentors for my idea",
-  "What challenges match my startup?",
+  "What challenges match my innovation?",
   "Find potential collaborators",
 ];
 

@@ -5,7 +5,7 @@ import { supabase } from "../../lib/supabaseClient";
 
 const visitorTypes = [
   "Student",
-  "Startup Founder",
+  "Innovator",
   "Aspiring Entrepreneur",
   "MSME Owner",
   "Researcher / Faculty",
@@ -15,7 +15,7 @@ const visitorTypes = [
 ];
 
 const visitPurposes = [
-  "Startup Consultation",
+  "Innovation Consultation",
   "Business Mentoring",
   "Partnership Discussion",
   "Innovation Project",
@@ -146,7 +146,7 @@ export default function EvaluationForm() {
         <p>
           Thank you for taking the time to share your feedback. Your responses
           help us continuously improve our services and strengthen Baguio
-          City&apos;s startup and innovation ecosystem.
+          City&apos;s innovation ecosystem.
         </p>
       </div>
     );
@@ -221,17 +221,17 @@ export default function EvaluationForm() {
       <section className="evaluation-section">
         <h2 className="evaluation-question">
           <span>3</span>
-          Startup / organization details
+          Innovation / organization details
         </h2>
         <p className="evaluation-hint">Optional, but helpful for follow-up and ecosystem tracking</p>
         <div className="evaluation-field-grid">
           <div>
-            <label>Startup / organization name</label>
+            <label>Innovation / organization name</label>
             <input
               className="evaluation-input"
               value={startupName}
               onChange={(event) => setStartupName(event.target.value)}
-              placeholder="Name of startup, business, school, or organization"
+              placeholder="Name of your innovation, business, school, or organization"
             />
           </div>
           <div>

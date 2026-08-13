@@ -56,8 +56,8 @@ export async function GET() {
             padding: "0 90px",
           }}
         >
-          <span>Building&nbsp;Baguio&rsquo;s&nbsp;Innovation&nbsp;and&nbsp;</span>
-          <span style={{ color: "#F26522" }}>Startup&nbsp;Ecosystem.</span>
+          <span>Turning&nbsp;City&nbsp;Priorities&nbsp;into&nbsp;</span>
+          <span style={{ color: "#F26522" }}>Innovation.</span>
         </div>
         <div
           style={{

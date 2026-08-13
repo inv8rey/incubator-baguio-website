@@ -9,7 +9,7 @@ import { MENTOR_SPECIALIZATIONS } from "../ecosystem/data";
 import { uploadEcosystemSignupLogo, uploadOrgCoverImage } from "../../lib/uploadLogo";
 
 const ENTITY_TYPES = [
-  { value: "startup", label: "Startup" },
+  { value: "startup", label: "Innovator" },
   { value: "mentor", label: "Mentor" },
   { value: "organization", label: "Organization" },
 ] as const;
@@ -23,7 +23,7 @@ const STARTUP_STAGES = [
   { value: "Idea", label: "Idea", description: "I have an idea and I’m still validating the problem and solution." },
   { value: "MVP", label: "MVP", description: "I have a working prototype or MVP that I’m testing with early users." },
   { value: "Launch", label: "Launch", description: "My product or service is live, and I’ve started gaining customers or generating revenue." },
-  { value: "Growth", label: "Growth", description: "My startup has traction and is focused on growing customers, revenue, or expanding into new markets." },
+  { value: "Growth", label: "Growth", description: "My innovation has traction and is focused on growing customers, revenue, or expanding into new markets." },
 ] as const;
 
 interface FounderRow {
@@ -254,11 +254,11 @@ export default function EcosystemSignupForm() {
       {entityType === "startup" && (
         <>
           <div>
-            <label style={labelStyle}>Startup name</label>
+            <label style={labelStyle}>Innovation name</label>
             <input style={inputStyle} required value={suName} onChange={(e) => setSuName(e.target.value)} placeholder="e.g. Tasarap Ecobites" />
           </div>
           <div>
-            <label style={labelStyle}>What stage is your startup currently in?</label>
+            <label style={labelStyle}>What stage is your innovation currently in?</label>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {STARTUP_STAGES.map((s) => {
                 const active = suStage === s.value;
@@ -309,7 +309,7 @@ export default function EcosystemSignupForm() {
           </div>
           <div>
             <label style={labelStyle}>Description</label>
-            <textarea style={textareaStyle} value={suDescription} onChange={(e) => setSuDescription(e.target.value)} placeholder="What does your startup do?" />
+            <textarea style={textareaStyle} value={suDescription} onChange={(e) => setSuDescription(e.target.value)} placeholder="What does your innovation do?" />
           </div>
           <div>
             <label style={labelStyle}>What is your biggest challenge today?</label>

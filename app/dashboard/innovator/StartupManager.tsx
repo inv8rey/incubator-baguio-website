@@ -121,7 +121,7 @@ export default function StartupManager() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <div style={cardStyle}>
-        <h2 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 600, color: DARK }}>Add a startup profile</h2>
+        <h2 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 600, color: DARK }}>Add an innovation profile</h2>
         <p style={{ margin: "0 0 22px", fontSize: 13.5, color: "#5A544B" }}>Published immediately to the Ecosystem directory under Startups.</p>
         <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -142,7 +142,7 @@ export default function StartupManager() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
-              <label style={labelStyle}>Startup name</label>
+              <label style={labelStyle}>Innovation name</label>
               <input style={inputStyle} required maxLength={NAME_MAX} value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="e.g. HarvestLink" />
             </div>
             <div>
@@ -169,7 +169,7 @@ export default function StartupManager() {
               <span>Description</span>
               <span style={{ fontWeight: 500, color: "#8B8479" }}>{form.description.length}/{DESCRIPTION_MAX}</span>
             </label>
-            <textarea style={{ ...inputStyle, minHeight: 90, resize: "vertical" }} maxLength={DESCRIPTION_MAX} value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="What does this startup do?" />
+            <textarea style={{ ...inputStyle, minHeight: 90, resize: "vertical" }} maxLength={DESCRIPTION_MAX} value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="What does this innovation do?" />
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
@@ -229,16 +229,16 @@ export default function StartupManager() {
           {error && <p style={{ color: "#E23A2E", fontSize: 13, margin: 0 }}>{error}</p>}
           <div>
             <button type="submit" disabled={busy || uploading} style={{ ...primaryButtonStyle, opacity: busy || uploading ? 0.7 : 1 }}>
-              {busy ? "Publishing…" : "Publish startup profile"}
+              {busy ? "Publishing…" : "Publish innovation profile"}
             </button>
           </div>
         </form>
       </div>
 
       <div style={cardStyle}>
-        <h2 style={{ margin: "0 0 18px", fontSize: 18, fontWeight: 600, color: DARK }}>Your startups ({startups.length})</h2>
+        <h2 style={{ margin: "0 0 18px", fontSize: 18, fontWeight: 600, color: DARK }}>Your innovations ({startups.length})</h2>
         {startups.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>No startup profiles yet.</p>
+          <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>No innovation profiles yet.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {startups.map((s) => (

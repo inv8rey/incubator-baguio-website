@@ -8,7 +8,7 @@ import PostHogProvider from "./PostHogProvider";
 import ChatWidget from "./ChatWidget/ChatWidget";
 import { SITE_URL } from "./seo";
 
-const TITLE = "Incubator Baguio | Baguio’s Startup & Innovation Ecosystem Platform";
+const TITLE = "Incubator Baguio | Baguio’s Innovation Ecosystem Platform";
 const DESCRIPTION =
   "Incubator Baguio brings together entrepreneurs, researchers, students, government, businesses, and academic institutions to transform ideas into solutions that create economic, social, and technological impact.";
 
@@ -18,11 +18,11 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   keywords: [
     "Incubator Baguio",
-    "Baguio startup incubator",
+    "Baguio innovation incubator",
     "Baguio innovation ecosystem",
     "Technology Business Incubator Baguio",
     "Baguio TBI",
-    "Cordillera startups",
+    "Cordillera innovators",
     "Baguio City innovation",
     "innovation challenges Baguio",
   ],

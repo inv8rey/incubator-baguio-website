@@ -107,7 +107,7 @@ function AuthWidget({ mobile }: { mobile: boolean }) {
           </div>
           {[
             ["Dashboard", "/dashboard/"],
-            ["My Startups", "/dashboard/startup/"],
+            ["My Innovation", "/dashboard/innovator/"],
             ["Mentor Hub", "/dashboard/mentor/"],
             ["Organizations", "/dashboard/organizations/"],
             ["Connections", "/dashboard/connections/"],
