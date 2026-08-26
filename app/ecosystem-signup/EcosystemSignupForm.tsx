@@ -63,7 +63,7 @@ export default function EcosystemSignupForm() {
   const [mCompany, setMCompany] = useState("");
   const [mBio, setMBio] = useState("");
   const [mSpecializations, setMSpecializations] = useState<string[]>([]);
-  const [mSector, setMSector] = useState(SECTOR_FILTERS[0].label);
+  const [mSectors, setMSectors] = useState<string[]>([]);
   const [mSocialLink, setMSocialLink] = useState("");
 
   // Organization fields
@@ -79,6 +79,7 @@ export default function EcosystemSignupForm() {
   const [contactName, setContactName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
 
   // Logo / photo (shared across all three types — only one is active at a time)
   const [logoUrl, setLogoUrl] = useState("");
@@ -121,6 +122,10 @@ export default function EcosystemSignupForm() {
     });
   }
 
+  function toggleSector(s: string) {
+    setMSectors((prev) => (prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]));
+  }
+
   async function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -143,6 +148,10 @@ export default function EcosystemSignupForm() {
     // full name, already required below.
     const effectiveContactName = entityType === "mentor" ? mName : contactName;
     if (!effectiveContactName.trim() || !email.trim()) return;
+    if (!privacyAccepted) {
+      setError("Please agree to the data privacy notice to continue.");
+      return;
+    }
     if (!supabase) {
       setError("Signups aren't configured yet.");
       return;
@@ -162,7 +171,7 @@ export default function EcosystemSignupForm() {
         bio: mBio.trim(),
         specializations: mSpecializations,
         logo_url: logoUrl,
-        sector: isIndustryExpert ? mSector : "",
+        sector: isIndustryExpert ? mSectors.join(", ") : "",
         social_link: mSocialLink.trim(),
       };
     } else {
@@ -449,13 +458,35 @@ export default function EcosystemSignupForm() {
           </div>
           {isIndustryExpert && (
             <div>
-              <label style={labelStyle}>Sector</label>
-              <select style={{ ...inputStyle, appearance: "auto" }} value={mSector} onChange={(e) => setMSector(e.target.value)}>
-                {SECTOR_FILTERS.map((s) => (
-                  <option key={s.label} value={s.label}>{s.label}</option>
-                ))}
-              </select>
-              <div style={{ fontSize: 11, color: "#8B8479", marginTop: 4 }}>Which sector is your expertise in?</div>
+              <label style={{ ...labelStyle, display: "flex", justifyContent: "space-between" }}>
+                <span>Sector</span>
+                {mSectors.length > 0 && <span style={{ color: "#8B8479", fontWeight: 500 }}>{mSectors.length} selected</span>}
+              </label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {SECTOR_FILTERS.map((s) => {
+                  const active = mSectors.includes(s.label);
+                  return (
+                    <button
+                      key={s.label}
+                      type="button"
+                      onClick={() => toggleSector(s.label)}
+                      style={{
+                        fontSize: 11.5,
+                        fontWeight: 600,
+                        padding: "6px 12px",
+                        borderRadius: 999,
+                        border: active ? "1.5px solid " + ORANGE : "1.5px solid rgba(64,50,34,0.14)",
+                        color: active ? ORANGE : "#5A544B",
+                        background: active ? "rgba(242,101,34,0.08)" : "#fff",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {s.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <div style={{ fontSize: 11, color: "#8B8479", marginTop: 6 }}>Which sectors is your expertise in? Pick as many as apply.</div>
             </div>
           )}
           <div>
@@ -530,10 +561,22 @@ export default function EcosystemSignupForm() {
         <input style={inputStyle} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="09XX XXX XXXX" />
       </div>
 
+      <label style={{ display: "flex", alignItems: "flex-start", gap: 10, cursor: "pointer" }}>
+        <input
+          type="checkbox"
+          checked={privacyAccepted}
+          onChange={(e) => setPrivacyAccepted(e.target.checked)}
+          style={{ width: 17, height: 17, marginTop: 1, flexShrink: 0, accentColor: ORANGE, cursor: "pointer" }}
+        />
+        <span style={{ fontSize: 12.5, lineHeight: 1.55, color: "#5A544B" }}>
+          I agree to the collection and processing of the information above by Incubator Baguio, in accordance with the Data Privacy Act of 2012 (RA 10173), for the purpose of review and, if approved, publication in the Ecosystem directory.
+        </span>
+      </label>
+
       {error && <p style={{ color: "#E23A2E", fontSize: 13, margin: 0 }}>{error}</p>}
 
       <div>
-        <button type="submit" disabled={busy} style={{ ...primaryButtonStyle, opacity: busy ? 0.7 : 1 }}>
+        <button type="submit" disabled={busy || !privacyAccepted} style={{ ...primaryButtonStyle, opacity: busy || !privacyAccepted ? 0.6 : 1 }}>
           {busy ? "Submitting…" : "Submit for review"}
         </button>
       </div>
