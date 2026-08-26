@@ -238,39 +238,6 @@ export default function EcosystemSignupForm() {
             );
           })}
         </div>
-
-        {/* Org types live here rather than in a dropdown further down the
-            form -- picking the kind of organization is part of saying what
-            you're submitting, and chips beat a native select on mobile. */}
-        {entityType === "organization" && (
-          <div style={{ marginTop: 14 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#8B8479", marginBottom: 8 }}>What kind of organization?</div>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {ORG_TYPES.map((t) => {
-                const active = oOrgType === t;
-                return (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => setOOrgType(t)}
-                    style={{
-                      fontSize: 12.5,
-                      fontWeight: 600,
-                      padding: "7px 14px",
-                      borderRadius: 9999,
-                      border: active ? "1.5px solid " + ORANGE : "1.5px solid rgba(64,50,34,0.14)",
-                      color: active ? ORANGE : "#5A544B",
-                      background: active ? "rgba(242,101,34,0.08)" : "#fff",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {t}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
       </div>
 
       <div>
@@ -502,6 +469,33 @@ export default function EcosystemSignupForm() {
 
       {entityType === "organization" && (
         <>
+          <div>
+            <label style={labelStyle}>What kind of organization?</label>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {ORG_TYPES.map((t) => {
+                const active = oOrgType === t;
+                return (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setOOrgType(t)}
+                    style={{
+                      fontSize: 12.5,
+                      fontWeight: 600,
+                      padding: "7px 14px",
+                      borderRadius: 9999,
+                      border: active ? "1.5px solid " + ORANGE : "1.5px solid rgba(64,50,34,0.14)",
+                      color: active ? ORANGE : "#5A544B",
+                      background: active ? "rgba(242,101,34,0.08)" : "#fff",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {t}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <div>
             <label style={labelStyle}>Organization name</label>
             <input style={inputStyle} required value={oName} onChange={(e) => setOName(e.target.value)} placeholder="e.g. Cordillera Founders Guild" />
