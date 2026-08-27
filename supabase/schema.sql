@@ -1380,8 +1380,8 @@ end $$;
 -- ---------------------------------------------------------------------------
 -- gallery_photos: admin-curated photos of ecosystem activities shown in the
 -- homepage "From the ecosystem" gallery (app/HomeGallery.tsx). Publicly
--- readable; only admins can add/edit/remove. `sort_order` drives the display
--- order so the gallery can be arranged without renaming or re-uploading.
+-- readable; only admins can add/edit/remove. Display order is driven by
+-- `event_date` (most recent first, nulls last) rather than manual reordering.
 -- ---------------------------------------------------------------------------
 create table if not exists public.gallery_photos (
   id uuid primary key default gen_random_uuid(),
@@ -1397,7 +1397,12 @@ create table if not exists public.gallery_photos (
 alter table public.gallery_photos add column if not exists event_date date;
 alter table public.gallery_photos add column if not exists post_url text not null default '';
 
-create index if not exists gallery_photos_sort_idx on public.gallery_photos (sort_order, created_at desc);
+-- Superseded by gallery_photos_date_idx below — the app no longer sorts by
+-- sort_order (its int type couldn't hold the fractional reorder values the
+-- old manual drag controls produced), but the column itself is left in place
+-- rather than dropped, since dropping a column is a one-way migration.
+drop index if exists gallery_photos_sort_idx;
+create index if not exists gallery_photos_date_idx on public.gallery_photos (event_date desc nulls last, created_at desc);
 
 alter table public.gallery_photos enable row level security;
 

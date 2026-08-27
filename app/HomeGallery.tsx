@@ -50,7 +50,7 @@ export default function HomeGallery({ bp }: { bp: string }) {
     const { data } = await supabase
       .from("gallery_photos")
       .select("*")
-      .order("sort_order", { ascending: true })
+      .order("event_date", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false })
       .limit(8);
     setPhotos((data ?? []).map(mapRow));
