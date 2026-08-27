@@ -1392,6 +1392,11 @@ create table if not exists public.gallery_photos (
   created_at timestamptz not null default now()
 );
 
+-- Migrates tables created before photos carried the date of the event they
+-- depict and a link back to the original social post.
+alter table public.gallery_photos add column if not exists event_date date;
+alter table public.gallery_photos add column if not exists post_url text not null default '';
+
 create index if not exists gallery_photos_sort_idx on public.gallery_photos (sort_order, created_at desc);
 
 alter table public.gallery_photos enable row level security;

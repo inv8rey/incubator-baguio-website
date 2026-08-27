@@ -10,6 +10,8 @@ interface Row {
   image_url: string;
   caption: string;
   credit: string;
+  event_date: string | null;
+  post_url: string;
   sort_order: number;
 }
 
@@ -28,6 +30,8 @@ function PhotoCard({
 }) {
   const [caption, setCaption] = useState(row.caption);
   const [credit, setCredit] = useState(row.credit);
+  const [eventDate, setEventDate] = useState(row.event_date ?? "");
+  const [postUrl, setPostUrl] = useState(row.post_url);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -35,15 +39,20 @@ function PhotoCard({
   useEffect(() => {
     setCaption(row.caption);
     setCredit(row.credit);
-  }, [row.caption, row.credit]);
+    setEventDate(row.event_date ?? "");
+    setPostUrl(row.post_url);
+  }, [row.caption, row.credit, row.event_date, row.post_url]);
 
-  const dirty = caption !== row.caption || credit !== row.credit;
+  const dirty = caption !== row.caption || credit !== row.credit || eventDate !== (row.event_date ?? "") || postUrl !== row.post_url;
 
   async function save() {
     if (!supabase) return;
     setSaving(true);
     setError("");
-    const { error: err } = await supabase.from("gallery_photos").update({ caption, credit }).eq("id", row.id);
+    const { error: err } = await supabase
+      .from("gallery_photos")
+      .update({ caption, credit, event_date: eventDate || null, post_url: postUrl })
+      .eq("id", row.id);
     if (err) setError(err.message);
     else onChanged();
     setSaving(false);
@@ -80,10 +89,25 @@ function PhotoCard({
         placeholder="Caption (shown on the photo)"
         style={{ fontSize: 13, padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${HAIR}`, outline: "none", color: DARK }}
       />
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+        <input
+          type="date"
+          value={eventDate}
+          onChange={(e) => setEventDate(e.target.value)}
+          aria-label="Event date"
+          style={{ fontSize: 13, padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${HAIR}`, outline: "none", color: eventDate ? DARK : "#8B8479" }}
+        />
+        <input
+          value={credit}
+          onChange={(e) => setCredit(e.target.value)}
+          placeholder="Credit (optional)"
+          style={{ fontSize: 13, padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${HAIR}`, outline: "none", color: DARK }}
+        />
+      </div>
       <input
-        value={credit}
-        onChange={(e) => setCredit(e.target.value)}
-        placeholder="Credit (optional, shown when enlarged)"
+        value={postUrl}
+        onChange={(e) => setPostUrl(e.target.value)}
+        placeholder="Link to the original post (optional)"
         style={{ fontSize: 13, padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${HAIR}`, outline: "none", color: DARK }}
       />
 
