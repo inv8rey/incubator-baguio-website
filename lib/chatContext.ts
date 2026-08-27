@@ -168,7 +168,7 @@ export async function fetchChatContext(intent: ChatIntent, userMessage: string):
       ? supabase.from("knowledge_resources").select("id,title,category,description,source,file_url,link_url").limit(ROW_CAP)
       : Promise.resolve({ data: [] as any[] }),
     intent.wantsEcosystem
-      ? supabase.from("organizations").select("id,name,org_type,description").limit(ROW_CAP)
+      ? supabase.from("organizations").select("id,name,org_type,description").eq("is_public", true).limit(ROW_CAP)
       : Promise.resolve({ data: [] as any[] }),
     // Always searched, unlike the buckets above — relevance here comes from
     // the embedding similarity floor in fetchDocumentChunks(), not from

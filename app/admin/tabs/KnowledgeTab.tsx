@@ -25,8 +25,18 @@ interface ResourceRow {
   funding_amount: string;
   target_participants: string;
   deadline_date: string | null;
+  status: "pending" | "approved" | "rejected";
+  owner_id: string | null;
   created_at: string;
 }
+
+const STATUS_FILTERS = ["All", "Pending", "Approved", "Rejected"] as const;
+type StatusFilter = (typeof STATUS_FILTERS)[number];
+const STATUS_BADGE: Record<ResourceRow["status"], { label: string; color: string; bg: string }> = {
+  pending: { label: "Pending review", color: "#D88A0A", bg: "rgba(245,166,35,0.14)" },
+  approved: { label: "Approved", color: "#1A6B3C", bg: "rgba(26,107,60,0.10)" },
+  rejected: { label: "Rejected", color: "#E23A2E", bg: "rgba(226,58,46,0.10)" },
+};
 
 function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceRow | null; onClose: () => void; onSaved: () => void }) {
   const isEdit = !!resource;
@@ -236,6 +246,7 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
 export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: string }) {
   const [resources, setResources] = useState<ResourceRow[]>([]);
   const [tab, setTab] = useState<KnowledgeCategory | "All">("All");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const [loaded, setLoaded] = useState(false);
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<ResourceRow | null>(null);
@@ -263,12 +274,30 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
   }, []);
 
   const q = searchQuery.toLowerCase();
-  const filtered = resources.filter((r) => (tab === "All" || r.category === tab) && (!q || r.title.toLowerCase().includes(q) || r.description.toLowerCase().includes(q)));
+  const filtered = resources.filter(
+    (r) =>
+      (tab === "All" || r.category === tab) &&
+      (statusFilter === "All" || r.status === statusFilter.toLowerCase()) &&
+      (!q || r.title.toLowerCase().includes(q) || r.description.toLowerCase().includes(q))
+  );
+  const statusCounts: Record<StatusFilter, number> = {
+    All: resources.length,
+    Pending: resources.filter((r) => r.status === "pending").length,
+    Approved: resources.filter((r) => r.status === "approved").length,
+    Rejected: resources.filter((r) => r.status === "rejected").length,
+  };
 
   async function remove(id: string) {
     if (!supabase) return;
     if (!window.confirm("Delete this resource permanently? This can't be undone.")) return;
     const { error } = await supabase.from("knowledge_resources").delete().eq("id", id);
+    if (error) return window.alert(error.message);
+    load();
+  }
+
+  async function setResourceStatus(id: string, status: ResourceRow["status"]) {
+    if (!supabase) return;
+    const { error } = await supabase.from("knowledge_resources").update({ status }).eq("id", id);
     if (error) return window.alert(error.message);
     load();
   }
@@ -302,6 +331,21 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
         <button onClick={() => setAdding(true)} style={{ fontSize: 12.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 999, padding: "8px 16px", cursor: "pointer", flexShrink: 0 }}>+ Add resource</button>
       </div>
 
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+        {STATUS_FILTERS.map((f) => {
+          const active = statusFilter === f;
+          return (
+            <button
+              key={f}
+              onClick={() => setStatusFilter(f)}
+              style={{ fontSize: 12, fontWeight: active ? 600 : 500, padding: "6px 13px", borderRadius: 999, border: active ? `1.5px solid ${ORANGE}` : "1.5px solid rgba(64,50,34,0.14)", color: active ? ORANGE : "#5A544B", background: active ? "rgba(242,101,34,0.08)" : "#fff", cursor: "pointer" }}
+            >
+              {f} <span style={{ fontSize: 10, opacity: 0.7 }}>{statusCounts[f]}</span>
+            </button>
+          );
+        })}
+      </div>
+
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {filtered.map((r) => (
           <div key={r.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", padding: 18, display: "flex", gap: 16, alignItems: "flex-start" }}>
@@ -315,6 +359,12 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
                   <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: ORANGE, background: "rgba(242,101,34,0.12)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>★ Featured</span>
                 )}
                 <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: "#5A544B", background: "#F5F4F0", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{r.category}</span>
+                {r.status !== "approved" && (
+                  <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: STATUS_BADGE[r.status].color, background: STATUS_BADGE[r.status].bg, padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{STATUS_BADGE[r.status].label}</span>
+                )}
+                {r.owner_id && (
+                  <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: "#8B8479", background: "#F5F4F0", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>Member submission</span>
+                )}
                 {r.category === FUNDING_CATEGORY && (() => {
                   const info = fundingDeadlineInfo(r.deadline_date);
                   return info ? (
@@ -332,6 +382,15 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
             <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
               {(r.file_url || r.link_url) && (
                 <a href={r.file_url || r.link_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: "#8B8479", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "7px 14px", cursor: "pointer", textDecoration: "none" }}>View</a>
+              )}
+              {r.status === "pending" && (
+                <>
+                  <button onClick={() => setResourceStatus(r.id, "approved")} style={{ fontSize: 12, fontWeight: 600, color: "#1A6B3C", background: "none", border: "1.5px solid rgba(26,107,60,0.3)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Approve</button>
+                  <button onClick={() => setResourceStatus(r.id, "rejected")} style={{ fontSize: 12, fontWeight: 600, color: "#E23A2E", background: "none", border: "1.5px solid rgba(226,58,46,0.3)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Reject</button>
+                </>
+              )}
+              {r.status === "rejected" && (
+                <button onClick={() => setResourceStatus(r.id, "approved")} style={{ fontSize: 12, fontWeight: 600, color: "#1A6B3C", background: "none", border: "1.5px solid rgba(26,107,60,0.3)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Reinstate</button>
               )}
               <button onClick={() => setEditing(r)} style={{ fontSize: 12, fontWeight: 600, color: "#44444C", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Edit</button>
               <button onClick={() => remove(r.id)} style={{ fontSize: 12, fontWeight: 600, color: "#E23A2E", background: "none", border: "1.5px solid rgba(226,58,46,0.3)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>Delete</button>

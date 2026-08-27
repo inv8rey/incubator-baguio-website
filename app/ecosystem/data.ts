@@ -1,4 +1,4 @@
-export type EcosystemCategory = "Startups" | "Mentors" | "TBIs" | "Companies" | "Service Providers" | "Government" | "Community" | "Coworking Spaces" | "Makerspaces & Labs" | "Funded Projects";
+export type EcosystemCategory = "Startups" | "Mentors" | "TBIs" | "Academe" | "Companies" | "Service Providers" | "Government" | "Community" | "Coworking Spaces" | "Makerspaces & Labs" | "Funded Projects";
 
 export interface StartupEntry {
   id?: string;
@@ -62,6 +62,19 @@ export interface TbiEntry {
   initials: string;
   logoUrl?: string;
   website?: string;
+  slug?: string;
+}
+
+export interface AcademeEntry {
+  name: string;
+  type: string;
+  description: string;
+  color: string;
+  bg: string;
+  initials: string;
+  logoUrl?: string;
+  website?: string;
+  slug?: string;
 }
 
 export interface CommunityEntry {
@@ -73,6 +86,7 @@ export interface CommunityEntry {
   initials: string;
   logoUrl?: string;
   website?: string;
+  slug?: string;
 }
 
 export interface CompanyEntry {
@@ -84,6 +98,7 @@ export interface CompanyEntry {
   initials: string;
   logoUrl?: string;
   website?: string;
+  slug?: string;
 }
 
 export interface ServiceProviderEntry {
@@ -95,6 +110,7 @@ export interface ServiceProviderEntry {
   initials: string;
   logoUrl?: string;
   website?: string;
+  slug?: string;
 }
 
 export interface GovernmentEntry {
@@ -106,6 +122,7 @@ export interface GovernmentEntry {
   initials: string;
   logoUrl?: string;
   website?: string;
+  slug?: string;
 }
 
 export interface CoworkingEntry {
@@ -118,6 +135,7 @@ export interface CoworkingEntry {
   logoUrl?: string;
   coverUrl?: string;
   website?: string;
+  slug?: string;
 }
 
 export interface MakerspaceEntry {
@@ -130,6 +148,7 @@ export interface MakerspaceEntry {
   logoUrl?: string;
   coverUrl?: string;
   website?: string;
+  slug?: string;
 }
 
 export interface FundedProjectEntry {

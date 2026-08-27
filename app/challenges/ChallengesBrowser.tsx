@@ -2,11 +2,22 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
+import { useAuth } from "../AuthProvider";
+import { fetchSavedItems, toggleSavedItem } from "../dashboard/savedItems";
 import { CHALLENGE_CATEGORIES, CHALLENGE_ORG_TYPES, type Challenge, type ChallengeOrgType } from "./data";
 import { fetchDynamicChallenges } from "./dynamicData";
 
 const DARK = "#1A1714";
 const ORANGE = "#F26522";
+const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+function BookmarkIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg width={16} height={16} viewBox="0 0 24 24" fill={filled ? ORANGE : "none"} stroke={filled ? ORANGE : "#8B8479"} strokeWidth={2}>
+      <path d="M6 3.5h12a1 1 0 0 1 1 1V21l-7-4.5L5 21V4.5a1 1 0 0 1 1-1Z" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 function shuffle<T>(items: T[]): T[] {
   const arr = [...items];
@@ -38,11 +49,34 @@ function Chip({ label, active, onClick }: { label: string; active: boolean; onCl
 }
 
 export default function ChallengesBrowser({ bp }: { bp: string }) {
+  const { user } = useAuth();
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [category, setCategory] = useState<string | null>(null);
   const [orgType, setOrgType] = useState<ChallengeOrgType | null>(null);
   const [query, setQuery] = useState("");
+  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!user) {
+      setSavedIds(new Set());
+      return;
+    }
+    fetchSavedItems(user.id, "challenge").then((rows) => setSavedIds(new Set(rows.map((r) => r.ref_id))));
+  }, [user]);
+
+  async function onToggleSave(c: Challenge, e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!user) return;
+    const nowSaved = await toggleSavedItem(user.id, "challenge", c.id, c.title, c.orgName, `${bp}/challenges/${c.slug}/`);
+    setSavedIds((prev) => {
+      const next = new Set(prev);
+      if (nowSaved) next.add(c.id);
+      else next.delete(c.id);
+      return next;
+    });
+  }
 
   useEffect(() => {
     function load() {
@@ -119,6 +153,8 @@ export default function ChallengesBrowser({ bp }: { bp: string }) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {filtered.map((c) => {
               const cat = CHALLENGE_CATEGORIES.find((cc) => cc.id === c.category);
+              const isSaved = savedIds.has(c.id);
+              const bookmarkBtnStyle: React.CSSProperties = { width: 30, height: 30, borderRadius: 9999, background: "#F6F2EA", border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, marginLeft: "auto" };
               return (
                 <div key={c.id} className="ib-challenge-hover" style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 18, padding: 24, display: "flex", flexDirection: "column" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, gap: 10, flexWrap: "wrap" }}>
@@ -127,6 +163,15 @@ export default function ChallengesBrowser({ bp }: { bp: string }) {
                       <span style={{ width: 6, height: 6, borderRadius: 9999, background: c.deadlineColor, display: "inline-block" }} />
                       {c.deadline}
                     </span>
+                    {user ? (
+                      <button onClick={(e) => onToggleSave(c, e)} style={bookmarkBtnStyle} aria-label={isSaved ? "Remove bookmark" : "Bookmark this challenge"} title={isSaved ? "Remove bookmark" : "Bookmark this challenge"}>
+                        <BookmarkIcon filled={isSaved} />
+                      </button>
+                    ) : (
+                      <a href={`${BP}/login/?redirect=${encodeURIComponent(`${BP}/challenges/`)}`} style={{ ...bookmarkBtnStyle, textDecoration: "none" }} aria-label="Log in to bookmark this challenge" title="Log in to bookmark">
+                        <BookmarkIcon filled={false} />
+                      </a>
+                    )}
                   </div>
                   <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{c.title}</h3>
                   <p style={{ margin: "0 0 18px", fontSize: 13.5, lineHeight: 1.55, color: "#5A544B", flex: 1 }}>{c.summary}</p>

@@ -184,6 +184,19 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
 }
 .ib-footlink:hover { color: #fff; transform: translateX(3px); }
 
+/* Footer social icon badges */
+.ib-social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.08);
+  transition: background .18s ease, transform .18s ease;
+}
+.ib-social-icon:hover { background: #F26522; transform: translateY(-2px); }
+
 /* Scroll-reveal — only applied by JS, and skipped under reduced motion */
 @media (prefers-reduced-motion: no-preference) {
   .ib-reveal {
@@ -555,10 +568,18 @@ img { max-width: 100%; height: auto; }
      stat row goes 3-up. */
   .ib-dashboard-grid { grid-template-columns: 1fr !important; }
   .ib-dashboard-stats { grid-template-columns: repeat(3, 1fr) !important; }
+
+  /* "Your next step" card: ring+text stacks above the checklist instead of
+     squeezing both into one row. */
+  .ib-dashboard-nextstep { grid-template-columns: 1fr !important; }
+  .ib-dashboard-nextstep-checks { flex-direction: row !important; flex-wrap: wrap; min-width: 0 !important; gap: 14px !important; }
+
+  .ib-dashboard-help { grid-template-columns: 1fr 1fr !important; }
 }
 
 @media (max-width: 600px) {
   .ib-dashboard-stats { grid-template-columns: repeat(2, 1fr) !important; }
+  .ib-dashboard-help { grid-template-columns: 1fr !important; }
 }
 
 /* Horizontal scroll rows (e.g. dashboard "Recommended for you") with no

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../AuthProvider";
 import { supabase } from "../../../lib/supabaseClient";
 import { CHALLENGE_CATEGORIES } from "../data";
@@ -49,11 +49,19 @@ const labelStyle: React.CSSProperties = {
   marginBottom: 7,
 };
 
+interface MyOrg {
+  id: string;
+  name: string;
+  org_type: string;
+}
+
 export default function PostChallengeForm({ bp }: { bp: string }) {
   const { user } = useAuth();
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [myOrgs, setMyOrgs] = useState<MyOrg[]>([]);
+  const [postAsOrgId, setPostAsOrgId] = useState("");
   const [form, setForm] = useState<FormState>({
     orgName: "",
     orgType: "",
@@ -70,8 +78,23 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  useEffect(() => {
+    if (!supabase || !user) return;
+    supabase
+      .from("organizations")
+      .select("id,name,org_type")
+      .eq("owner_id", user.id)
+      .then(({ data }) => setMyOrgs((data as MyOrg[]) ?? []));
+  }, [user]);
+
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  function selectPostAsOrg(id: string) {
+    setPostAsOrgId(id);
+    const org = myOrgs.find((o) => o.id === id);
+    if (org) update("orgName", org.name);
   }
 
   function validateStep(s: number): boolean {
@@ -109,6 +132,7 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
     if (supabase && user) {
       const { error } = await supabase.from("challenge_submissions").insert({
         owner_id: user.id,
+        organization_id: postAsOrgId || null,
         org_name: form.orgName,
         org_type: form.orgType,
         contact_name: form.contactName,
@@ -195,6 +219,18 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
       {/* Step 0 */}
       {step === 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          {myOrgs.length > 0 && (
+            <div>
+              <label style={labelStyle}>Post as (optional)</label>
+              <select style={{ ...inputStyle, appearance: "auto" }} value={postAsOrgId} onChange={(e) => selectPostAsOrg(e.target.value)}>
+                <option value="">Myself / a different organization</option>
+                {myOrgs.map((o) => (
+                  <option key={o.id} value={o.id}>{o.name}</option>
+                ))}
+              </select>
+              <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#8B8479" }}>Attributes this challenge to your organization&rsquo;s Organization Management dashboard.</p>
+            </div>
+          )}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
               <label style={labelStyle}>Organization / office name</label>

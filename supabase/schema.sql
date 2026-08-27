@@ -334,6 +334,171 @@ create policy "admins manage all organizations" on public.organizations
   );
 
 -- ---------------------------------------------------------------------------
+-- Organization Profile & Account Management (self-service org accounts).
+--
+-- Adds a public profile, richer ecosystem fields, and an approval pipeline to
+-- organizations created by their own representatives via /dashboard/organizations
+-- (app/dashboard/organizations/OrganizationManager.tsx). Rows created any other
+-- way (admin PartnersTab, the ecosystem_signups approval flow) get the column
+-- defaults below -- approved and public immediately, preserving how those two
+-- existing flows already behave. Only the new self-service create path
+-- explicitly sets approval_status='pending', is_public=false.
+--
+-- "Academe" is added as an org_type so schools/universities/TBI-hosting
+-- institutions -- the primary users named in the PRD -- have a home in the
+-- existing category system already used by the Ecosystem directory, admin
+-- Partners tab, and the Google Sheets mirror, rather than inventing a
+-- parallel taxonomy.
+-- ---------------------------------------------------------------------------
+
+alter table public.organizations drop constraint if exists organizations_org_type_check;
+alter table public.organizations add constraint organizations_org_type_check
+  check (org_type in ('TBIs', 'Academe', 'Companies', 'Service Providers', 'Government', 'Community', 'Coworking Spaces', 'Makerspaces & Labs'));
+
+alter table public.organizations add column if not exists slug text;
+alter table public.organizations add column if not exists short_description text not null default '';
+alter table public.organizations add column if not exists phone text not null default '';
+alter table public.organizations add column if not exists facebook_url text not null default '';
+alter table public.organizations add column if not exists social_url text not null default '';
+alter table public.organizations add column if not exists address text not null default '';
+alter table public.organizations add column if not exists city text not null default '';
+alter table public.organizations add column if not exists province text not null default '';
+alter table public.organizations add column if not exists region text not null default '';
+alter table public.organizations add column if not exists country text not null default 'Philippines';
+alter table public.organizations add column if not exists sectors text[] not null default '{}';
+alter table public.organizations add column if not exists expertise text[] not null default '{}';
+alter table public.organizations add column if not exists can_offer text[] not null default '{}';
+alter table public.organizations add column if not exists looking_for text[] not null default '{}';
+alter table public.organizations add column if not exists contact_public boolean not null default false;
+
+-- The org lifecycle. Defaults keep every existing creation path (admin
+-- Partners tab, ecosystem_signups approval) behaving exactly as before --
+-- instantly approved and public. "Hidden" is modeled as an approved org with
+-- is_public=false rather than a 5th status, so an admin can unhide without
+-- losing the approval record.
+alter table public.organizations add column if not exists approval_status text not null default 'approved'
+  check (approval_status in ('pending', 'approved', 'rejected', 'suspended'));
+alter table public.organizations add column if not exists is_public boolean not null default true;
+
+-- Name changes go through IB approval (PRD §9, §19) rather than editing
+-- `name` directly -- see the protect_organization_admin_fields trigger below.
+alter table public.organizations add column if not exists pending_name text;
+alter table public.organizations add column if not exists name_change_requested_at timestamptz;
+
+-- Set at registration time when a similarly-named organization already
+-- exists, so IB can review it during approval rather than auto-merging.
+alter table public.organizations add column if not exists flagged_duplicate boolean not null default false;
+
+alter table public.organizations add column if not exists updated_at timestamptz not null default now();
+
+update public.organizations set slug = lower(regexp_replace(regexp_replace(trim(name), '[^a-zA-Z0-9]+', '-', 'g'), '^-+|-+$', '', 'g')) || '-' || substr(id::text, 1, 8)
+  where slug is null;
+alter table public.organizations alter column slug set not null;
+create unique index if not exists organizations_slug_idx on public.organizations (slug);
+
+-- Column-level protection: RLS below lets an org's own members update their
+-- row, but a handful of columns must stay admin-only no matter what a client
+-- sends. This trigger silently reverts those columns to their prior value
+-- whenever the caller isn't an admin, so RLS doesn't have to be the only
+-- safeguard (PRD §18). Name changes are requested via `pending_name` instead
+-- (left unprotected here on purpose) and only take effect when an admin
+-- copies pending_name -> name themselves.
+create or replace function public.protect_organization_admin_fields()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  caller_is_admin boolean;
+begin
+  select is_admin into caller_is_admin from public.profiles where id = auth.uid();
+  if not coalesce(caller_is_admin, false) then
+    new.name := old.name;
+    new.org_type := old.org_type;
+    new.owner_id := old.owner_id;
+    new.approval_status := old.approval_status;
+    new.is_public := old.is_public;
+    new.flagged_duplicate := old.flagged_duplicate;
+  end if;
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists organizations_protect_admin_fields on public.organizations;
+create trigger organizations_protect_admin_fields
+  before update on public.organizations
+  for each row execute function public.protect_organization_admin_fields();
+
+-- ---------------------------------------------------------------------------
+-- organization_members: lets an organization have more than one authorized
+-- user without restructuring organizations itself (PRD §3, §14). MVP self-
+-- service registration only ever inserts a single 'owner' row for the
+-- creator; adding a second person is an IB-side manual step for now (PRD
+-- §15), same as the rest of this feature's admin-mediated changes.
+-- ---------------------------------------------------------------------------
+create table if not exists public.organization_members (
+  id uuid primary key default gen_random_uuid(),
+  organization_id uuid not null references public.organizations (id) on delete cascade,
+  user_id uuid not null references public.profiles (id) on delete cascade,
+  role text not null default 'owner' check (role in ('owner', 'admin', 'editor', 'viewer')),
+  status text not null default 'active' check (status in ('active', 'revoked')),
+  created_at timestamptz not null default now(),
+  unique (organization_id, user_id)
+);
+
+alter table public.organization_members enable row level security;
+
+drop policy if exists "members see their own memberships" on public.organization_members;
+create policy "members see their own memberships" on public.organization_members
+  for select using (
+    auth.uid() = user_id
+    or exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+-- A user may only ever add THEMSELVES as a member -- adding a colleague is
+-- an admin/manual step (PRD §15), not self-service.
+drop policy if exists "users add themselves as a member" on public.organization_members;
+create policy "users add themselves as a member" on public.organization_members
+  for insert with check (auth.uid() = user_id);
+
+drop policy if exists "admins manage all memberships" on public.organization_members;
+create policy "admins manage all memberships" on public.organization_members
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+-- Extends the existing owner_id-based policy so a second/third authorized
+-- user (added via organization_members) can also manage the org, without
+-- touching the owner_id column or breaking the current single-owner path.
+drop policy if exists "owners manage their organizations" on public.organizations;
+create policy "owners manage their organizations" on public.organizations
+  for all using (
+    auth.uid() = owner_id
+    or exists (
+      select 1 from public.organization_members m
+      where m.organization_id = organizations.id and m.user_id = auth.uid() and m.status = 'active'
+    )
+  ) with check (
+    auth.uid() = owner_id
+    or exists (
+      select 1 from public.organization_members m
+      where m.organization_id = organizations.id and m.user_id = auth.uid() and m.status = 'active'
+    )
+  );
+
+-- Backfills a membership row for every organization created before this
+-- feature existed, so the new membership-aware queries see them immediately.
+insert into public.organization_members (organization_id, user_id, role, status)
+select o.id, o.owner_id, 'owner', 'active'
+from public.organizations o
+where o.owner_id is not null
+on conflict (organization_id, user_id) do nothing;
+
+-- ---------------------------------------------------------------------------
 -- challenge_submissions: "Create ... innovation challenges" (Post a Challenge)
 -- ---------------------------------------------------------------------------
 create table if not exists public.challenge_submissions (
@@ -1449,3 +1614,186 @@ do $$ begin
     alter publication supabase_realtime add table public.gallery_photos;
   end if;
 end $$;
+
+-- ---------------------------------------------------------------------------
+-- Individual + Organization dashboards.
+--
+-- Members can now submit into the Knowledge Hub (previously admin-only) and
+-- attribute a challenge/event/resource submission to one of their own
+-- organizations, so "Organization Management" pages can filter by
+-- organization_id instead of approximating via the posting user's owner_id.
+-- Org "Members" stays read-only (no invite system) and self-hide stays
+-- admin-only, per the same reasoning as the organizations feature above --
+-- self-service publishing is fine, but taking something OFF the public site
+-- (or letting an org disappear from it) stays admin-reviewed.
+-- ---------------------------------------------------------------------------
+
+alter table public.challenge_submissions add column if not exists organization_id uuid references public.organizations (id) on delete set null;
+
+alter table public.event_submissions add column if not exists owner_id uuid references public.profiles (id) on delete set null;
+alter table public.event_submissions add column if not exists organization_id uuid references public.organizations (id) on delete set null;
+
+-- A submitter previously couldn't see their own event submission through the
+-- client at all once it left the browser tab that just submitted it -- the
+-- only existing select policy required status = 'approved'. This adds the
+-- missing "see your own, whatever its status" path without loosening what
+-- the public can see.
+drop policy if exists "owners view their own event submissions" on public.event_submissions;
+create policy "owners view their own event submissions" on public.event_submissions
+  for select using (auth.uid() = owner_id);
+
+alter table public.knowledge_resources add column if not exists owner_id uuid references public.profiles (id) on delete set null;
+alter table public.knowledge_resources add column if not exists organization_id uuid references public.organizations (id) on delete set null;
+
+-- Knowledge Hub resources were admin-only until now, so every existing row
+-- (and every future admin-added one, since admin writes don't set this
+-- explicitly) defaults to 'approved' -- nothing already on the public
+-- Knowledge Hub goes dark. Only the new member-submission path below
+-- explicitly sets 'pending'.
+alter table public.knowledge_resources add column if not exists status text not null default 'approved'
+  check (status in ('pending', 'approved', 'rejected'));
+
+-- Tightened from "using (true)": pending/rejected submissions must not leak
+-- onto the public Knowledge Hub just because a row exists.
+drop policy if exists "knowledge resources are publicly readable" on public.knowledge_resources;
+create policy "knowledge resources are publicly readable" on public.knowledge_resources
+  for select using (status = 'approved');
+
+drop policy if exists "owners view their own knowledge submissions" on public.knowledge_resources;
+create policy "owners view their own knowledge submissions" on public.knowledge_resources
+  for select using (auth.uid() = owner_id);
+
+-- Members may only ever insert their own submission, and only as pending --
+-- publishing straight to 'approved' stays admin-only (enforced by the
+-- "admins manage knowledge resources" policy already defined above, which
+-- still applies for admin writes).
+drop policy if exists "members submit pending knowledge resources" on public.knowledge_resources;
+create policy "members submit pending knowledge resources" on public.knowledge_resources
+  for insert with check (auth.uid() = owner_id and status = 'pending');
+
+-- ---------------------------------------------------------------------------
+-- saved_items: lets a member bookmark a challenge/opportunity/event from the
+-- dashboard's "Recommended for you" feed or the individual Challenges/Events
+-- pages. Denormalized (title/subtitle/href captured at save time) rather
+-- than a polymorphic FK into four different source tables -- the save still
+-- renders correctly even if the underlying item is later edited or removed,
+-- and rendering the saved list never needs a join.
+-- ---------------------------------------------------------------------------
+create table if not exists public.saved_items (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles (id) on delete cascade,
+  item_type text not null check (item_type in ('challenge', 'opportunity', 'event')),
+  ref_id text not null,
+  title text not null,
+  subtitle text not null default '',
+  href text not null default '',
+  created_at timestamptz not null default now(),
+  unique (user_id, item_type, ref_id)
+);
+
+alter table public.saved_items enable row level security;
+
+drop policy if exists "users manage their own saved items" on public.saved_items;
+create policy "users manage their own saved items" on public.saved_items
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- ---------------------------------------------------------------------------
+-- account_deletion_requests: self-service account deletion needs the admin
+-- API (a service-role key), which this app deliberately never holds
+-- client-side. A member instead files a request here for staff to action
+-- manually -- same admin-mediated pattern as organization member transfer.
+-- ---------------------------------------------------------------------------
+create table if not exists public.account_deletion_requests (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles (id) on delete cascade,
+  email text not null default '',
+  note text not null default '',
+  status text not null default 'pending' check (status in ('pending', 'done')),
+  created_at timestamptz not null default now()
+);
+
+alter table public.account_deletion_requests enable row level security;
+
+drop policy if exists "users file their own deletion request" on public.account_deletion_requests;
+create policy "users file their own deletion request" on public.account_deletion_requests
+  for insert with check (auth.uid() = user_id);
+
+drop policy if exists "users view their own deletion request" on public.account_deletion_requests;
+create policy "users view their own deletion request" on public.account_deletion_requests
+  for select using (auth.uid() = user_id);
+
+drop policy if exists "admins manage deletion requests" on public.account_deletion_requests;
+create policy "admins manage deletion requests" on public.account_deletion_requests
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+-- Widens organization_members visibility from "see your own row" to "see
+-- every member of an org you belong to" -- needed for the read-only Members
+-- page (PRD-adjacent decision: list members, don't let anyone invite/edit
+-- them yet). Uses a security-definer function rather than a self-referencing
+-- policy, since a plain subquery against organization_members from within
+-- its own select policy recurses into itself.
+create or replace function public.is_org_member(check_org_id uuid)
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from public.organization_members
+    where organization_id = check_org_id and user_id = auth.uid() and status = 'active'
+  );
+$$;
+
+drop policy if exists "members see their own memberships" on public.organization_members;
+drop policy if exists "org members see their org's roster" on public.organization_members;
+create policy "org members see their org's roster" on public.organization_members
+  for select using (
+    auth.uid() = user_id
+    or public.is_org_member(organization_id)
+    or exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
+-- ---------------------------------------------------------------------------
+-- Personal profile fields (Account Settings -> "Build your profile", step 1
+-- of the dashboard's ecosystem-profile flow). Separate from `organizations`
+-- self-description -- org_affiliation here is a free-text label ("I work
+-- with SLU iDEYA"), not a link to a real organizations row, since not every
+-- affiliation the member wants to note is one they administer.
+-- ---------------------------------------------------------------------------
+alter table public.profiles add column if not exists photo_url text not null default '';
+alter table public.profiles add column if not exists preferred_name text not null default '';
+alter table public.profiles add column if not exists role_title text not null default '';
+alter table public.profiles add column if not exists org_affiliation text not null default '';
+alter table public.profiles add column if not exists bio text not null default '';
+alter table public.profiles add column if not exists location text not null default '';
+alter table public.profiles add column if not exists areas_of_interest text[] not null default '{}';
+alter table public.profiles add column if not exists skills text[] not null default '{}';
+alter table public.profiles add column if not exists looking_for text[] not null default '{}';
+alter table public.profiles add column if not exists can_offer text[] not null default '{}';
+
+-- ---------------------------------------------------------------------------
+-- Org-scoped startups/mentors: lets a TBI list the startups it incubates and
+-- the mentors it hosts, and lets an Academe org list the research/innovation
+-- output associated with it (same `startups` table -- a TBI's "startup" and
+-- an Academe's "research project" are the same underlying row, just framed
+-- differently in the UI). owner_id stays null for these -- no linked founder
+-- or mentor account is required, same reasoning as the existing admin-added
+-- rows already supported on both tables.
+-- ---------------------------------------------------------------------------
+alter table public.startups add column if not exists organization_id uuid references public.organizations (id) on delete set null;
+alter table public.mentors add column if not exists organization_id uuid references public.organizations (id) on delete set null;
+
+drop policy if exists "org members manage their org's startups" on public.startups;
+create policy "org members manage their org's startups" on public.startups
+  for all using (organization_id is not null and public.is_org_member(organization_id))
+  with check (organization_id is not null and public.is_org_member(organization_id));
+
+drop policy if exists "org members manage their org's mentors" on public.mentors;
+create policy "org members manage their org's mentors" on public.mentors
+  for all using (organization_id is not null and public.is_org_member(organization_id))
+  with check (organization_id is not null and public.is_org_member(organization_id));

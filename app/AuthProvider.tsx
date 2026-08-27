@@ -11,6 +11,16 @@ export interface Profile {
   is_mentor: boolean;
   is_admin: boolean;
   created_at: string;
+  photo_url?: string;
+  preferred_name?: string;
+  role_title?: string;
+  org_affiliation?: string;
+  bio?: string;
+  location?: string;
+  areas_of_interest?: string[];
+  skills?: string[];
+  looking_for?: string[];
+  can_offer?: string[];
 }
 
 interface AuthContextValue {

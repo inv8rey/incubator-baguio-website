@@ -17,11 +17,19 @@ const ORG_SHEET_TABLE: Partial<Record<OrgType, SyncableTable>> = {
   "Makerspaces & Labs": "makerspaces-labs",
 };
 
-const ORG_TYPES = ["TBIs", "Companies", "Service Providers", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
+const ORG_TYPES = ["TBIs", "Academe", "Companies", "Service Providers", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs"] as const;
 type OrgType = (typeof ORG_TYPES)[number];
 const CATEGORIES = ["Mentors", ...ORG_TYPES, "Ecosystem Partners", "Funded Projects"] as const;
 type Category = (typeof CATEGORIES)[number];
 const PROJECT_STATUSES = ["Ongoing", "Completed", "Upcoming"] as const;
+
+// Org lifecycle -- self-service organizations (created via
+// /dashboard/organizations) start Pending; everything else this tab already
+// creates (via "+ Add") stays Approved immediately, same as before this
+// feature existed. "Hidden" is an Approved org with is_public off, not a
+// separate DB status -- see the schema comment on organizations.is_public.
+const ORG_STATUS_FILTERS = ["All", "Pending", "Approved", "Hidden", "Rejected", "Suspended"] as const;
+type OrgStatusFilter = (typeof ORG_STATUS_FILTERS)[number];
 
 const NAME_MAX = 60;
 const BIO_MAX = 280;
@@ -62,6 +70,10 @@ interface OrgRow {
   type: string;
   initials: string;
   color: string;
+  approvalStatus: string;
+  isPublic: boolean;
+  pendingName: string;
+  flaggedDuplicate: boolean;
 }
 
 interface PartnerRow {
@@ -100,6 +112,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
   const [fundedProjectForm, setFundedProjectForm] = useState(EMPTY_FUNDED_PROJECT);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const [orgStatusFilter, setOrgStatusFilter] = useState<OrgStatusFilter>("All");
 
   async function load() {
     if (!supabase) {
@@ -121,7 +134,23 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     setOrgs(
       (orgData ?? []).map((o: any) => {
         const p = paletteFor(o.name);
-        return { id: o.id, name: o.name, org_type: o.org_type, description: o.description, website: o.website, contact_email: o.contact_email, logoUrl: o.logo_url, coverUrl: o.cover_url, type: o.type, initials: initialsOf(o.name), color: p.color };
+        return {
+          id: o.id,
+          name: o.name,
+          org_type: o.org_type,
+          description: o.description,
+          website: o.website,
+          contact_email: o.contact_email,
+          logoUrl: o.logo_url,
+          coverUrl: o.cover_url,
+          type: o.type,
+          initials: initialsOf(o.name),
+          color: p.color,
+          approvalStatus: o.approval_status || "approved",
+          isPublic: o.is_public !== false,
+          pendingName: o.pending_name || "",
+          flaggedDuplicate: !!o.flagged_duplicate,
+        };
       })
     );
     setPartners((partnerData ?? []).map((p: any) => ({ id: p.id, name: p.name, logoUrl: p.logo_url })));
@@ -152,7 +181,25 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
   const isFundedProjects = category === "Funded Projects";
   const isOrg = !isMentors && !isPartners && !isFundedProjects;
   const filteredMentors = mentors.filter((m) => !q || m.name.toLowerCase().includes(q) || m.position.toLowerCase().includes(q) || m.company.toLowerCase().includes(q));
-  const filteredOrgs = orgs.filter((o) => o.org_type === category && (!q || o.name.toLowerCase().includes(q) || o.description.toLowerCase().includes(q)));
+  function matchesOrgStatusFilter(o: OrgRow, filter: OrgStatusFilter): boolean {
+    if (filter === "All") return true;
+    if (filter === "Pending") return o.approvalStatus === "pending";
+    if (filter === "Approved") return o.approvalStatus === "approved" && o.isPublic;
+    if (filter === "Hidden") return o.approvalStatus === "approved" && !o.isPublic;
+    if (filter === "Rejected") return o.approvalStatus === "rejected";
+    return o.approvalStatus === "suspended"; // "Suspended"
+  }
+  const filteredOrgs = orgs.filter(
+    (o) => o.org_type === category && matchesOrgStatusFilter(o, orgStatusFilter) && (!q || o.name.toLowerCase().includes(q) || o.description.toLowerCase().includes(q))
+  );
+  const orgStatusCounts: Record<OrgStatusFilter, number> = {
+    All: orgs.filter((o) => o.org_type === category).length,
+    Pending: orgs.filter((o) => o.org_type === category && matchesOrgStatusFilter(o, "Pending")).length,
+    Approved: orgs.filter((o) => o.org_type === category && matchesOrgStatusFilter(o, "Approved")).length,
+    Hidden: orgs.filter((o) => o.org_type === category && matchesOrgStatusFilter(o, "Hidden")).length,
+    Rejected: orgs.filter((o) => o.org_type === category && matchesOrgStatusFilter(o, "Rejected")).length,
+    Suspended: orgs.filter((o) => o.org_type === category && matchesOrgStatusFilter(o, "Suspended")).length,
+  };
   const filteredPartners = partners.filter((p) => !q || p.name.toLowerCase().includes(q));
   const filteredFundedProjects = fundedProjects.filter((f) => !q || f.title.toLowerCase().includes(q) || f.fundingAgency.toLowerCase().includes(q) || f.leadInstitution.toLowerCase().includes(q));
 
@@ -280,6 +327,36 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     triggerSheetSync("mentors");
   }
 
+  // These four all write approval_status/is_public directly. Safe only
+  // because this tab is admin-only (RequireAdmin) -- the
+  // protect_organization_admin_fields trigger lets an admin caller's writes
+  // to those columns through untouched; a non-admin's identical payload
+  // would be silently reverted by that same trigger.
+  async function setOrgStatus(id: string, patch: { approval_status?: string; is_public?: boolean }) {
+    if (!supabase) return;
+    const { error: err } = await supabase.from("organizations").update(patch).eq("id", id);
+    if (err) return window.alert(err.message);
+    load();
+  }
+  const approveOrg = (id: string) => setOrgStatus(id, { approval_status: "approved", is_public: true });
+  const rejectOrg = (id: string) => setOrgStatus(id, { approval_status: "rejected", is_public: false });
+  const suspendOrg = (id: string) => setOrgStatus(id, { approval_status: "suspended", is_public: false });
+  const hideOrg = (id: string) => setOrgStatus(id, { is_public: false });
+  const unhideOrg = (id: string) => setOrgStatus(id, { is_public: true });
+
+  async function approveNameChange(org: OrgRow) {
+    if (!supabase || !org.pendingName) return;
+    const { error: err } = await supabase.from("organizations").update({ name: org.pendingName, pending_name: null, name_change_requested_at: null }).eq("id", org.id);
+    if (err) return window.alert(err.message);
+    load();
+  }
+  async function rejectNameChange(org: OrgRow) {
+    if (!supabase) return;
+    const { error: err } = await supabase.from("organizations").update({ pending_name: null, name_change_requested_at: null }).eq("id", org.id);
+    if (err) return window.alert(err.message);
+    load();
+  }
+
   async function deleteOrg(org: OrgRow) {
     if (!supabase) return;
     if (!window.confirm("Delete this entry? This can't be undone.")) return;
@@ -389,6 +466,36 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
         </button>
       </div>
 
+      {isOrg && (
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {ORG_STATUS_FILTERS.map((f) => {
+            const active = orgStatusFilter === f;
+            return (
+              <button
+                key={f}
+                onClick={() => setOrgStatusFilter(f)}
+                style={{
+                  fontSize: 12,
+                  fontWeight: active ? 600 : 500,
+                  padding: "6px 13px",
+                  borderRadius: 999,
+                  border: active ? "1.5px solid #F26522" : "1.5px solid rgba(64,50,34,0.14)",
+                  color: active ? "#F26522" : "#5A544B",
+                  background: active ? "rgba(242,101,34,0.08)" : "#fff",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 5,
+                }}
+              >
+                {f}
+                <span style={{ fontSize: 10, opacity: 0.7 }}>{orgStatusCounts[f]}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       <div className="ib-admin-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 14 }}>
         {isMentors &&
           filteredMentors.map((m) => (
@@ -428,23 +535,72 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
           ))}
 
         {isOrg &&
-          filteredOrgs.map((o) => (
-            <div key={o.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", padding: 18, display: "flex", gap: 12 }}>
-              {o.logoUrl ? (
-                <img src={o.logoUrl} alt="" style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
-              ) : (
-                <div style={{ width: 44, height: 44, borderRadius: 10, background: o.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 11, fontWeight: 600, flexShrink: 0 }}>{o.initials}</div>
-              )}
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{o.name}</div>
-                <div style={{ fontSize: 11.5, color: "#8B8479", margin: "3px 0 8px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{o.description || "No description yet"}</div>
-                <div style={{ display: "flex", gap: 12 }}>
-                  <button onClick={() => openEditOrg(o)} style={{ fontSize: 11.5, fontWeight: 600, color: "#285E7A", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Edit</button>
-                  <button onClick={() => deleteOrg(o)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Delete</button>
+          filteredOrgs.map((o) => {
+            const statusBadge =
+              o.approvalStatus === "pending"
+                ? { label: "Pending review", color: "#D88A0A", bg: "rgba(245,166,35,0.14)" }
+                : o.approvalStatus === "rejected"
+                ? { label: "Rejected", color: "#E23A2E", bg: "rgba(226,58,46,0.10)" }
+                : o.approvalStatus === "suspended"
+                ? { label: "Suspended", color: "#E23A2E", bg: "rgba(226,58,46,0.10)" }
+                : !o.isPublic
+                ? { label: "Hidden", color: "#8B8479", bg: "#F5F4F0" }
+                : null;
+            return (
+              <div key={o.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", padding: 18, display: "flex", gap: 12 }}>
+                {o.logoUrl ? (
+                  <img src={o.logoUrl} alt="" style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
+                ) : (
+                  <div style={{ width: 44, height: 44, borderRadius: 10, background: o.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 11, fontWeight: 600, flexShrink: 0 }}>{o.initials}</div>
+                )}
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginBottom: 2 }}>
+                    <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{o.name}</div>
+                    {statusBadge && (
+                      <span style={{ fontSize: 9.5, fontWeight: 600, color: statusBadge.color, background: statusBadge.bg, padding: "2px 8px", borderRadius: 999, whiteSpace: "nowrap" }}>{statusBadge.label}</span>
+                    )}
+                    {o.flaggedDuplicate && (
+                      <span style={{ fontSize: 9.5, fontWeight: 600, color: "#9E2A52", background: "rgba(158,42,82,0.10)", padding: "2px 8px", borderRadius: 999, whiteSpace: "nowrap" }} title="A similarly-named organization already exists">
+                        ⚠ Possible duplicate
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: 11.5, color: "#8B8479", margin: "1px 0 8px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{o.description || "No description yet"}</div>
+                  {o.pendingName && (
+                    <div style={{ fontSize: 11.5, color: "#5A544B", background: "#F6F2EA", borderRadius: 8, padding: "6px 9px", marginBottom: 8 }}>
+                      Requested name change: <strong>{o.pendingName}</strong>
+                      <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
+                        <button onClick={() => approveNameChange(o)} style={{ fontSize: 11, fontWeight: 600, color: "#1A6B3C", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Approve</button>
+                        <button onClick={() => rejectNameChange(o)} style={{ fontSize: 11, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Reject</button>
+                      </div>
+                    </div>
+                  )}
+                  <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                    <button onClick={() => openEditOrg(o)} style={{ fontSize: 11.5, fontWeight: 600, color: "#285E7A", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Edit</button>
+                    {o.approvalStatus === "pending" && (
+                      <>
+                        <button onClick={() => approveOrg(o.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#1A6B3C", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Approve</button>
+                        <button onClick={() => rejectOrg(o.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Reject</button>
+                      </>
+                    )}
+                    {o.approvalStatus === "approved" && o.isPublic && (
+                      <>
+                        <button onClick={() => hideOrg(o.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#8B8479", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Hide</button>
+                        <button onClick={() => suspendOrg(o.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Suspend</button>
+                      </>
+                    )}
+                    {o.approvalStatus === "approved" && !o.isPublic && (
+                      <button onClick={() => unhideOrg(o.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#1A6B3C", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Unhide</button>
+                    )}
+                    {(o.approvalStatus === "rejected" || o.approvalStatus === "suspended") && (
+                      <button onClick={() => approveOrg(o.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#1A6B3C", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Reinstate</button>
+                    )}
+                    <button onClick={() => deleteOrg(o)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Delete</button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
         {isFundedProjects &&
           filteredFundedProjects.map((f) => (
@@ -736,7 +892,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                   <input
                     value={orgForm.name}
                     onChange={(e) => setOrgForm((f) => ({ ...f, name: e.target.value }))}
-                    placeholder={`e.g. ${category === "TBIs" ? "SLU iDEYA" : category === "Government" ? "City Environment Office" : "Organization name"}`}
+                    placeholder={`e.g. ${category === "TBIs" ? "SLU iDEYA" : category === "Academe" ? "Saint Louis University" : category === "Government" ? "City Environment Office" : "Organization name"}`}
                     required
                     maxLength={NAME_MAX}
                     style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}

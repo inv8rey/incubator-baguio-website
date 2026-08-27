@@ -65,7 +65,10 @@ export default function LoginForm({ bp }: { bp: string }) {
           <input style={inputStyle} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
         </div>
         <div>
-          <label style={labelStyle}>Password</label>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <label style={labelStyle}>Password</label>
+            <a href={`${bp}/forgot-password/`} style={{ fontSize: 12.5, fontWeight: 600, color: ORANGE, textDecoration: "none", marginBottom: 7 }}>Forgot password?</a>
+          </div>
           <input style={inputStyle} type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
         </div>
         {error && <p style={{ color: "#E23A2E", fontSize: 13, margin: 0 }}>{error}</p>}

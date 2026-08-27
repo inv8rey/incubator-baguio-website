@@ -1,6 +1,7 @@
 import { supabase } from "../../lib/supabaseClient";
 import { acronymOf, initialsOf, paletteFor, truncate } from "../../lib/visualIdentity";
 import type {
+  AcademeEntry,
   CommunityEntry,
   CompanyEntry,
   CoworkingEntry,
@@ -63,6 +64,7 @@ export async function fetchDynamicMentors(): Promise<DynamicMentorEntry[]> {
 
 interface DynamicOrgBuckets {
   TBIs: TbiEntry[];
+  Academe: AcademeEntry[];
   Companies: CompanyEntry[];
   "Service Providers": ServiceProviderEntry[];
   Government: GovernmentEntry[];
@@ -103,19 +105,23 @@ export async function fetchDynamicFundedProjects(): Promise<FundedProjectEntry[]
 }
 
 export async function fetchDynamicOrganizations(): Promise<DynamicOrgBuckets> {
-  const empty: DynamicOrgBuckets = { TBIs: [], Companies: [], "Service Providers": [], Government: [], Community: [], "Coworking Spaces": [], "Makerspaces & Labs": [] };
+  const empty: DynamicOrgBuckets = { TBIs: [], Academe: [], Companies: [], "Service Providers": [], Government: [], Community: [], "Coworking Spaces": [], "Makerspaces & Labs": [] };
   if (!supabase) return empty;
-  const { data } = await supabase.from("organizations").select("*").order("created_at", { ascending: false });
+  // is_public also covers rejected/suspended/hidden orgs -- an admin turns
+  // it off for all of those, so this one filter is enough to keep anything
+  // not fully approved out of the public directory.
+  const { data } = await supabase.from("organizations").select("*").eq("is_public", true).order("created_at", { ascending: false });
   for (const o of data ?? []) {
     const p = paletteFor(o.name);
     const initials = initialsOf(o.name);
     const logoUrl = o.logo_url || undefined;
     const coverUrl = o.cover_url || undefined;
     const website = o.website || undefined;
+    const slug = o.slug || undefined;
     if (o.org_type === "TBIs") {
-      empty.TBIs.push({ name: o.name, host: o.type || acronymOf(o.name), focus: truncate(o.description, 40), description: o.description, color: p.color, bg: p.bg, initials, logoUrl, website });
+      empty.TBIs.push({ name: o.name, host: o.type || acronymOf(o.name), focus: truncate(o.description, 40), description: o.description, color: p.color, bg: p.bg, initials, logoUrl, website, slug });
     } else if (o.org_type in empty) {
-      (empty as any)[o.org_type].push({ name: o.name, type: o.type || acronymOf(o.name), description: o.description, color: p.color, bg: p.bg, initials, logoUrl, coverUrl, website });
+      (empty as any)[o.org_type].push({ name: o.name, type: o.type || acronymOf(o.name), description: o.description, color: p.color, bg: p.bg, initials, logoUrl, coverUrl, website, slug });
     }
   }
   return empty;

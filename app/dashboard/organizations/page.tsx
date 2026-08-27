@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import DashboardShell from "../DashboardShell";
 import OrganizationManager from "./OrganizationManager";
 import { navBarHtml, footerHtml } from "../chrome";
@@ -14,7 +15,9 @@ export default function OrganizationsDashboardPage() {
     <main>
       <div dangerouslySetInnerHTML={{ __html: navBarHtml() }} />
       <DashboardShell active="/dashboard/organizations/">
-        <OrganizationManager />
+        <Suspense fallback={null}>
+          <OrganizationManager />
+        </Suspense>
       </DashboardShell>
       <div dangerouslySetInnerHTML={{ __html: footerHtml() }} />
     </main>

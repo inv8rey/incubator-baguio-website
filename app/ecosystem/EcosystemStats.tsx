@@ -31,8 +31,8 @@ export default function EcosystemStats() {
       const [s, m, tbi, org] = await Promise.all([
         supabase!.from("startups").select("id", { count: "exact", head: true }),
         supabase!.from("mentors").select("id", { count: "exact", head: true }),
-        supabase!.from("organizations").select("id", { count: "exact", head: true }).eq("org_type", "TBIs"),
-        supabase!.from("organizations").select("id", { count: "exact", head: true }),
+        supabase!.from("organizations").select("id", { count: "exact", head: true }).eq("org_type", "TBIs").eq("is_public", true),
+        supabase!.from("organizations").select("id", { count: "exact", head: true }).eq("is_public", true),
       ]);
       setCounts({ startups: s.count ?? 0, mentors: m.count ?? 0, tbis: tbi.count ?? 0, organizations: org.count ?? 0 });
     }

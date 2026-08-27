@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { MENTOR_SPECIALIZATIONS, type EcosystemCategory, type StartupEntry, type TbiEntry, type CompanyEntry, type ServiceProviderEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry, type FundedProjectEntry } from "./data";
+import { MENTOR_SPECIALIZATIONS, type EcosystemCategory, type StartupEntry, type TbiEntry, type AcademeEntry, type CompanyEntry, type ServiceProviderEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry, type FundedProjectEntry } from "./data";
 import { fetchDynamicStartups, fetchDynamicMentors, fetchDynamicOrganizations, fetchDynamicFundedProjects, type DynamicMentorEntry } from "./dynamicData";
 import ConnectMentorButton from "./ConnectMentorButton";
 
@@ -17,6 +17,7 @@ const EcosystemMap = dynamic(() => import("./EcosystemMap"), {
 
 const DARK = "#1A1714";
 const ORANGE = "#F26522";
+const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 function matches(haystacks: string[], query: string) {
   const q = query.trim().toLowerCase();
@@ -145,13 +146,14 @@ interface OrgListCardProps {
   initials: string;
   logoUrl?: string;
   website?: string;
+  profileHref?: string;
 }
 
 // Shared card for TBIs, Companies, Service Providers, Government, and
 // Community: a white logo
 // tile + colored badge up top, a divider, then description and a "visit
 // website" pill that's icon-only until the card is hovered.
-function OrgListCard({ name, badge, description, color, bg, initials, logoUrl, website }: OrgListCardProps) {
+function OrgListCard({ name, badge, description, color, bg, initials, logoUrl, website, profileHref }: OrgListCardProps) {
   return (
     <div className="ib-card-hover ib-org-list-card" style={{ position: "relative", background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: 24, display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex", gap: 14, marginBottom: 16 }}>
@@ -172,20 +174,29 @@ function OrgListCard({ name, badge, description, color, bg, initials, logoUrl, w
       <div style={{ borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 14, flex: 1 }}>
         <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#5A544B", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{description}</p>
       </div>
-      {website && (
-        <a
-          href={website}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`Visit ${name}`}
-          className="ib-orglist-btn"
-          style={{ marginTop: 16, alignSelf: "flex-end", height: 34, borderRadius: 9999, background: "#1A1714", color: "#fff", display: "flex", alignItems: "center", justifyContent: "flex-end", overflow: "hidden", textDecoration: "none", flexShrink: 0 }}
-        >
-          <span className="ib-orglist-label" style={{ fontSize: 12.5, fontWeight: 600, whiteSpace: "nowrap" }}>View website</span>
-          <span style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-          </span>
-        </a>
+      {(profileHref || website) && (
+        <div style={{ marginTop: 16, display: "flex", alignItems: "center", justifyContent: profileHref ? "space-between" : "flex-end", gap: 10 }}>
+          {profileHref && (
+            <a href={profileHref} aria-label={`View ${name}'s profile`} style={{ fontSize: 12.5, fontWeight: 600, color: ORANGE, textDecoration: "none", flexShrink: 0 }}>
+              View profile
+            </a>
+          )}
+          {website && (
+            <a
+              href={website}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Visit ${name}`}
+              className="ib-orglist-btn"
+              style={{ height: 34, borderRadius: 9999, background: "#1A1714", color: "#fff", display: "flex", alignItems: "center", justifyContent: "flex-end", overflow: "hidden", textDecoration: "none", flexShrink: 0 }}
+            >
+              <span className="ib-orglist-label" style={{ fontSize: 12.5, fontWeight: 600, whiteSpace: "nowrap" }}>View website</span>
+              <span style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+              </span>
+            </a>
+          )}
+        </div>
       )}
     </div>
   );
@@ -254,13 +265,14 @@ export default function EcosystemDirectory() {
   const [dynMentors, setDynMentors] = useState<DynamicMentorEntry[]>([]);
   const [dynOrgs, setDynOrgs] = useState<{
     TBIs: TbiEntry[];
+    Academe: AcademeEntry[];
     Companies: CompanyEntry[];
     "Service Providers": ServiceProviderEntry[];
     Government: GovernmentEntry[];
     Community: CommunityEntry[];
     "Coworking Spaces": CoworkingEntry[];
     "Makerspaces & Labs": MakerspaceEntry[];
-  }>({ TBIs: [], Companies: [], "Service Providers": [], Government: [], Community: [], "Coworking Spaces": [], "Makerspaces & Labs": [] });
+  }>({ TBIs: [], Academe: [], Companies: [], "Service Providers": [], Government: [], Community: [], "Coworking Spaces": [], "Makerspaces & Labs": [] });
   const [dynFundedProjects, setDynFundedProjects] = useState<FundedProjectEntry[]>([]);
 
   useEffect(() => {
@@ -269,6 +281,7 @@ export default function EcosystemDirectory() {
     fetchDynamicOrganizations().then((r) =>
       setDynOrgs({
         TBIs: shuffle(r.TBIs),
+        Academe: shuffle(r.Academe),
         Companies: shuffle(r.Companies),
         "Service Providers": shuffle(r["Service Providers"]),
         Government: shuffle(r.Government),
@@ -291,6 +304,7 @@ export default function EcosystemDirectory() {
   const allStartups = dynStartups;
   const allMentors = dynMentors;
   const allTbis = dynOrgs.TBIs;
+  const allAcademe = dynOrgs.Academe;
   const allCompanies = dynOrgs.Companies;
   const allServiceProviders = dynOrgs["Service Providers"];
   const allGovernment = dynOrgs.Government;
@@ -303,6 +317,7 @@ export default function EcosystemDirectory() {
     { id: "Startups", label: "Startups", count: allStartups.length },
     { id: "Mentors", label: "Mentors", count: allMentors.length },
     { id: "TBIs", label: "TBIs", count: allTbis.length },
+    { id: "Academe", label: "Academe", count: allAcademe.length },
     { id: "Companies", label: "Companies", count: allCompanies.length },
     { id: "Service Providers", label: "Service Providers", count: allServiceProviders.length },
     { id: "Government", label: "Government", count: allGovernment.length },
@@ -327,6 +342,8 @@ export default function EcosystemDirectory() {
       if (specializationFilter) list = list.filter((m) => (m.specializations ?? []).includes(specializationFilter));
     } else if (tab === "TBIs") {
       list = allTbis.filter((t) => matches([t.name, t.host, t.focus], query));
+    } else if (tab === "Academe") {
+      list = allAcademe.filter((a) => matches([a.name, a.type, a.description], query));
     } else if (tab === "Companies") {
       list = allCompanies.filter((c) => matches([c.name, c.type, c.description], query));
     } else if (tab === "Service Providers") {
@@ -348,7 +365,7 @@ export default function EcosystemDirectory() {
       const bn = b.name ?? b.title ?? "";
       return sort === "az" ? an.localeCompare(bn) : bn.localeCompare(an);
     });
-  }, [tab, query, sort, sectorFilter, specializationFilter, allStartups, allMentors, allTbis, allCompanies, allServiceProviders, allGovernment, allCoworking, allMakerspaces, allCommunity, allFundedProjects]);
+  }, [tab, query, sort, sectorFilter, specializationFilter, allStartups, allMentors, allTbis, allAcademe, allCompanies, allServiceProviders, allGovernment, allCoworking, allMakerspaces, allCommunity, allFundedProjects]);
 
   // Normalized pin data for the map placeholder — swap this for real coordinates once a map API is wired up.
   const pins = useMemo(
@@ -639,7 +656,15 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "TBIs" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as TbiEntry[]).map((t) => (
-              <OrgListCard key={t.name} name={t.name} badge={t.host} description={t.description} color={t.color} bg={t.bg} initials={t.initials} logoUrl={t.logoUrl} website={t.website} />
+              <OrgListCard key={t.name} name={t.name} badge={t.host} description={t.description} color={t.color} bg={t.bg} initials={t.initials} logoUrl={t.logoUrl} website={t.website} profileHref={t.slug ? `${BP}/organizations/${t.slug}` : undefined} />
+            ))}
+          </div>
+        )}
+
+        {view === "list" && tab === "Academe" && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
+            {(filtered as AcademeEntry[]).map((a) => (
+              <OrgListCard key={a.name} name={a.name} badge={a.type} description={a.description} color={a.color} bg={a.bg} initials={a.initials} logoUrl={a.logoUrl} website={a.website} profileHref={a.slug ? `${BP}/organizations/${a.slug}` : undefined} />
             ))}
           </div>
         )}
@@ -647,7 +672,7 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Companies" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as CompanyEntry[]).map((c) => (
-              <OrgListCard key={c.name} name={c.name} badge={c.type} description={c.description} color={c.color} bg={c.bg} initials={c.initials} logoUrl={c.logoUrl} website={c.website} />
+              <OrgListCard key={c.name} name={c.name} badge={c.type} description={c.description} color={c.color} bg={c.bg} initials={c.initials} logoUrl={c.logoUrl} website={c.website} profileHref={c.slug ? `${BP}/organizations/${c.slug}` : undefined} />
             ))}
           </div>
         )}
@@ -655,7 +680,7 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Service Providers" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as ServiceProviderEntry[]).map((s) => (
-              <OrgListCard key={s.name} name={s.name} badge={s.type} description={s.description} color={s.color} bg={s.bg} initials={s.initials} logoUrl={s.logoUrl} website={s.website} />
+              <OrgListCard key={s.name} name={s.name} badge={s.type} description={s.description} color={s.color} bg={s.bg} initials={s.initials} logoUrl={s.logoUrl} website={s.website} profileHref={s.slug ? `${BP}/organizations/${s.slug}` : undefined} />
             ))}
           </div>
         )}
@@ -663,7 +688,7 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Government" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as GovernmentEntry[]).map((g) => (
-              <OrgListCard key={g.name} name={g.name} badge={g.type} description={g.description} color={g.color} bg={g.bg} initials={g.initials} logoUrl={g.logoUrl} website={g.website} />
+              <OrgListCard key={g.name} name={g.name} badge={g.type} description={g.description} color={g.color} bg={g.bg} initials={g.initials} logoUrl={g.logoUrl} website={g.website} profileHref={g.slug ? `${BP}/organizations/${g.slug}` : undefined} />
             ))}
           </div>
         )}
@@ -671,7 +696,7 @@ export default function EcosystemDirectory() {
         {view === "list" && tab === "Community" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
             {(filtered as CommunityEntry[]).map((c) => (
-              <OrgListCard key={c.name} name={c.name} badge={c.type} description={c.description} color={c.color} bg={c.bg} initials={c.initials} logoUrl={c.logoUrl} website={c.website} />
+              <OrgListCard key={c.name} name={c.name} badge={c.type} description={c.description} color={c.color} bg={c.bg} initials={c.initials} logoUrl={c.logoUrl} website={c.website} profileHref={c.slug ? `${BP}/organizations/${c.slug}` : undefined} />
             ))}
           </div>
         )}

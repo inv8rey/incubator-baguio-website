@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useAuth } from "../AuthProvider";
 import { supabase } from "../../lib/supabaseClient";
 import { uploadEventSubmissionPoster } from "../../lib/uploadLogo";
 import TimeRangePicker from "./TimeRangePicker";
@@ -339,7 +340,15 @@ function BookingModal({ availableSlots, preselected, onClose, onConfirm }: { ava
 
 const EVENT_CATEGORIES = Object.keys(CATEGORY_COLORS) as EventCategory[];
 
+interface MyOrgOption {
+  id: string;
+  name: string;
+}
+
 function SubmitEventModal({ onClose }: { onClose: () => void }) {
+  const { user } = useAuth();
+  const [myOrgs, setMyOrgs] = useState<MyOrgOption[]>([]);
+  const [postAsOrgId, setPostAsOrgId] = useState("");
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState<EventCategory>("Workshop");
   const [eventDate, setEventDate] = useState("");
@@ -358,6 +367,21 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!supabase || !user) return;
+    supabase
+      .from("organizations")
+      .select("id,name")
+      .eq("owner_id", user.id)
+      .then(({ data }) => setMyOrgs((data as MyOrgOption[]) ?? []));
+  }, [user]);
+
+  function selectPostAsOrg(id: string) {
+    setPostAsOrgId(id);
+    const found = myOrgs.find((o) => o.id === id);
+    if (found) setOrg(found.name);
+  }
 
   async function handlePosterChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -383,6 +407,8 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
     setError("");
     setStatus("loading");
     const { error: err } = await supabase.from("event_submissions").insert({
+      owner_id: user?.id ?? null,
+      organization_id: postAsOrgId || null,
       title: title.trim(),
       category,
       event_date: eventDate,
@@ -494,6 +520,17 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
             <label style={modalLabelStyle}>Venue</label>
             <input value={venue} onChange={(e) => setVenue(e.target.value)} placeholder="e.g. Incubator Baguio Hub, or Online" style={modalInputStyle} />
           </div>
+          {myOrgs.length > 0 && (
+            <div>
+              <label style={modalLabelStyle}>Post as (optional)</label>
+              <select value={postAsOrgId} onChange={(e) => selectPostAsOrg(e.target.value)} style={{ ...modalInputStyle, appearance: "auto" }}>
+                <option value="">Myself / a different organizer</option>
+                {myOrgs.map((o) => (
+                  <option key={o.id} value={o.id}>{o.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div>
               <label style={modalLabelStyle}>Organizer *</label>

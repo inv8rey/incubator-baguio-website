@@ -1,34 +1,17 @@
 import type { Metadata } from "next";
 import EcosystemPartnersMarquee from "../EcosystemPartnersMarquee";
+import { navBarHtml, footerHtml } from "../chrome";
 
 export const metadata: Metadata = {
   title: "About — Incubator Baguio",
   description:
-    "Incubator Baguio brings together government, academia, industry, entrepreneurs, researchers, and community partners to strengthen innovation in the city.",
+    "Incubator Baguio strengthens Baguio's innovation ecosystem by connecting government, academia, industry, researchers, entrepreneurs, and communities around the Baguio City Research and Innovation Agenda.",
 };
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 const ABOUT_HTML_TOP = `
-<!-- NAV -->
-<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:#131110;position:sticky;top:0;z-index:50;">
-  <a href="${BP}/" style="display:flex;align-items:center;gap:11px;text-decoration:none;"><img src="${BP}/assets/city-of-baguio-seal.png" alt="City of Baguio" style="height:46px;width:auto;"><img src="${BP}/assets/cpdso-logo.png" alt="CPDSO" style="height:46px;width:auto;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:32px;width:auto;"><div style="font-size:16px;font-weight:600;color:#fff;">Incubator Baguio</div></a>
-  <div style="display:flex;align-items:center;gap:28px;">
-    <div style="display:flex;gap:22px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.72);">
-      <a href="${BP}/about" class="ib-navlink" style="color:#fff;border-bottom:2px solid #F26522;padding-bottom:3px;">About</a>
-      <a href="${BP}/programs" class="ib-navlink">Programs</a>
-      <a href="${BP}/challenges" class="ib-navlink">Challenges</a>
-      <a href="${BP}/knowledge" class="ib-navlink">Knowledge Hub</a>
-      <a href="${BP}/ecosystem" class="ib-navlink">Ecosystem</a>
-      <a href="${BP}/calendar" class="ib-navlink">Calendar</a>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <a href="${BP}/ecosystem-signup" class="ib-cta-orange" style="background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;">Sign Up</a>
-      <a href="${BP}/contact" style="color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(255,255,255,0.22);">Contact Us</a>
-      <span class="ib-auth-slot"></span>
-    </div>
-  </div>
-</div>
+${navBarHtml("/about")}
 
 <!-- HERO -->
 <div style="position:relative;background:#100D0B;padding:64px 40px 70px;overflow:hidden;text-align:center;">
@@ -49,8 +32,8 @@ const ABOUT_HTML_TOP = `
       <div>
         <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:6px;">Our Role</div>
         <div style="width:42px;height:3px;background:#F26522;border-radius:2px;margin-bottom:22px;"></div>
-        <h2 style="margin:0 0 24px;font-size:44px;font-weight:500;letter-spacing:-0.03em;color:#1A1714;line-height:1.08;">Building the Infrastructure for Innovation</h2>
-        <p style="margin:0;font-size:16px;line-height:1.65;color:#5A544B;">Incubator Baguio helps build a stronger innovation ecosystem for Baguio by bringing together government, academia, industry, researchers, entrepreneurs, and communities. We support initiatives aligned with the City Research and Innovation Agenda, create opportunities for collaboration, and help move promising ideas, research, and solutions toward meaningful outcomes for the City.</p>
+        <h2 style="margin:0 0 24px;font-size:44px;font-weight:500;letter-spacing:-0.03em;color:#1A1714;line-height:1.08;">Connecting the People and Resources Behind Innovation.</h2>
+        <p style="margin:0;font-size:16px;line-height:1.65;color:#5A544B;">Incubator Baguio strengthens Baguio&rsquo;s innovation ecosystem by bringing together government, academia, industry, researchers, entrepreneurs, and communities. Guided by the Baguio City Research and Innovation Agenda, we connect ideas, challenges, expertise, and opportunities to help promising innovations move forward.</p>
       </div>
       <div style="position:relative;border-radius:20px;overflow:hidden;aspect-ratio:16/11;background:#FFEEDD;">
         <img src="${BP}/assets/about-our-role.jpg" alt="Incubator Baguio Convenor Meeting, bringing together the city's innovation ecosystem partners" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
@@ -141,24 +124,7 @@ const ABOUT_HTML_BOTTOM = `
   </div>
 </div>
 
-<!-- FOOTER -->
-<div style="background:#100D0B;padding:56px 40px 36px;">
-  <div style="max-width:1180px;margin:0 auto;">
-    <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.08);">
-      <div>
-        <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px;"><img src="${BP}/assets/city-of-baguio-seal.png" alt="City of Baguio" style="height:54px;width:auto;"><img src="${BP}/assets/cpdso-logo.png" alt="CPDSO" style="height:54px;width:auto;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:38px;width:auto;"><div style="font-size:17px;font-weight:600;color:#fff;">Incubator Baguio</div></div>
-        <p style="margin:0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,0.5);max-width:280px;">Baguio City Research and Innovation Alliance. Operationalized under Ordinance No. 63, s.2023 by the CPDSO, City Government of Baguio.</p>
-      </div>
-      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Explore</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/programs">Programs</a><a class="ib-footlink" href="${BP}/challenges">Challenges</a><a class="ib-footlink" href="${BP}/knowledge">Knowledge Hub</a><a class="ib-footlink" href="${BP}/ecosystem">Ecosystem</a><a class="ib-footlink" href="${BP}/calendar">Calendar</a><a class="ib-footlink" href="${BP}/contact">Contact</a></div></div>
-      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Apply</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><a class="ib-footlink" href="${BP}/dashboard/innovator">Innovator Incubation</a><a class="ib-footlink" href="${BP}/challenges/post">Post a Challenge</a><a class="ib-footlink" href="${BP}/dashboard/mentor">Mentor Registration</a><a class="ib-footlink" href="${BP}/dashboard/organizations">Partner Inquiry</a></div></div>
-      <div><div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Contact</div><div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);"><span>CPDSO, City Hall, Baguio</span><span>incubatorbaguio63@gmail.com</span><a class="ib-footlink" href="https://www.facebook.com/incubatorbaguio" target="_blank" rel="noopener noreferrer">Facebook</a></div></div>
-    </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-size:12.5px;color:rgba(255,255,255,0.4);flex-wrap:wrap;gap:10px;">
-      <span>&copy; 2026 City Government of Baguio &middot; CPDSO</span>
-      <span>Privacy Policy &middot; IP Policy &middot; Data Privacy Act (RA 10173)</span>
-    </div>
-  </div>
-</div>
+${footerHtml()}
 `;
 
 export default function About() {
