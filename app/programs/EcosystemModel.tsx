@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 
 const DARK = "#1A1714";
 const MUTED = "#5F5C57";
 const FAINT = "#8E8A84";
+const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 interface StepData {
   key: string;
@@ -21,6 +22,10 @@ interface StepData {
   bgDeep: string;
   icon: string;
   highlights: string[];
+  cta: string;
+  href: string;
+  /** Fixed image for this step — takes precedence over program_step_images. */
+  defaultImage?: string;
 }
 
 const ICONS = {
@@ -43,6 +48,8 @@ const STEPS: StepData[] = [
     bgDeep: "#F3DFCD",
     icon: ICONS.sprout,
     highlights: ["Project Development Clinics", "Research & Innovation Mentoring", "Solution Validation", "Expert & Technical Assistance"],
+    cta: "Explore Project Development",
+    href: `${BP}/get-started`,
   },
   {
     key: "ecosystem-building",
@@ -56,6 +63,8 @@ const STEPS: StepData[] = [
     bgDeep: "#D5E3EA",
     icon: ICONS.people,
     highlights: ["Quadruple Helix Roundtables", "Research & Innovation Network", "Expert & Mentor Network", "Collaboration & Referral Platform"],
+    cta: "Explore Ecosystem Collaboration",
+    href: `${BP}/ecosystem`,
   },
   {
     key: "open-innovation",
@@ -69,6 +78,9 @@ const STEPS: StepData[] = [
     bgDeep: "#EDD6DE",
     icon: ICONS.lightbulb,
     highlights: ["City Innovation Challenges", "Challenge Repository", "Solution Development Programs", "Innovation Pilot Program", "City Adoption Pathways"],
+    cta: "Explore Open Innovation",
+    href: `${BP}/challenges`,
+    defaultImage: `${BP}/assets/programs-open-innovation.png`,
   },
   {
     key: "ecosystem-intelligence",
@@ -82,6 +94,8 @@ const STEPS: StepData[] = [
     bgDeep: "#D6E6DC",
     icon: ICONS.database,
     highlights: ["Innovation & Project Database", "Ecosystem Intelligence Dashboard", "Research & Innovation Needs Assessment", "Annual Innovation Report", "Knowledge Hub"],
+    cta: "Explore Innovation Intelligence",
+    href: `${BP}/knowledge`,
   },
 ];
 
@@ -103,25 +117,23 @@ function ChevronMark({ color, width = 300, opacity = 0.16 }: { color: string; wi
 }
 
 /**
- * The right-hand panel. A Supabase-managed photo wins when one exists; otherwise
- * we compose a branded graphic (masked grid, accent bloom, chevron watermark,
- * ringed medallion) so an unset image still reads as designed rather than blank.
+ * The image panel. A Supabase-managed photo (or a code-level default) wins
+ * when one exists; otherwise we compose a branded graphic (masked grid,
+ * accent bloom, chevron watermark, ringed medallion) so an unset step still
+ * reads as designed rather than blank.
  */
-function StepVisual({ step, image, count, compact = false }: { step: StepData; image?: string; count: number; compact?: boolean }) {
-  const medallion = compact ? 74 : 104;
-  const ringOuter = compact ? 152 : 214;
-  const ringInner = compact ? 112 : 156;
+function StepVisual({ step, image, count }: { step: StepData; image?: string; count: number }) {
   return (
     <div
       style={{
         position: "relative",
         width: "100%",
         height: "100%",
-        borderRadius: 22,
+        borderRadius: 20,
         overflow: "hidden",
         background: image ? step.bgDeep : `linear-gradient(155deg, ${step.bgDeep} 0%, ${step.bg} 52%, #FFFFFF 100%)`,
         border: "1px solid rgba(64,50,34,0.10)",
-        boxShadow: "0 30px 60px -34px rgba(17,17,20,0.30), 0 2px 6px -2px rgba(17,17,20,0.06)",
+        boxShadow: "0 24px 48px -28px rgba(17,17,20,0.28), 0 2px 6px -2px rgba(17,17,20,0.06)",
       }}
     >
       {image ? (
@@ -150,19 +162,19 @@ function StepVisual({ step, image, count, compact = false }: { step: StepData; i
               background: `radial-gradient(circle, ${step.color}26, transparent 68%)`,
             }}
           />
-          <div style={{ position: "absolute", bottom: compact ? -52 : -74, left: compact ? -44 : -62, transform: "rotate(-8deg)" }}>
-            <ChevronMark color={step.color} width={compact ? 168 : 236} opacity={0.09} />
+          <div style={{ position: "absolute", bottom: -52, left: -44, transform: "rotate(-8deg)" }}>
+            <ChevronMark color={step.color} width={168} opacity={0.09} />
           </div>
 
           <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ position: "absolute", width: ringOuter, height: ringOuter, borderRadius: 9999, border: `1px solid ${step.color}1A` }} />
-              <span style={{ position: "absolute", width: ringInner, height: ringInner, borderRadius: 9999, border: `1px solid ${step.color}2B` }} />
+              <span style={{ position: "absolute", width: 152, height: 152, borderRadius: 9999, border: `1px solid ${step.color}1A` }} />
+              <span style={{ position: "absolute", width: 112, height: 112, borderRadius: 9999, border: `1px solid ${step.color}2B` }} />
               <div
                 style={{
                   position: "relative",
-                  width: medallion,
-                  height: medallion,
+                  width: 74,
+                  height: 74,
                   borderRadius: 9999,
                   background: "rgba(255,255,255,0.78)",
                   backdropFilter: "blur(6px)",
@@ -174,7 +186,7 @@ function StepVisual({ step, image, count, compact = false }: { step: StepData; i
                   justifyContent: "center",
                 }}
               >
-                <IconSvg path={step.icon} size={compact ? 34 : 50} stroke={step.color} strokeWidth={1.6} />
+                <IconSvg path={step.icon} size={34} stroke={step.color} strokeWidth={1.6} />
               </div>
             </div>
           </div>
@@ -182,12 +194,12 @@ function StepVisual({ step, image, count, compact = false }: { step: StepData; i
           <div
             style={{
               position: "absolute",
-              top: compact ? 14 : 22,
-              left: compact ? 14 : 22,
+              top: 14,
+              left: 14,
               display: "inline-flex",
               alignItems: "center",
-              gap: compact ? 6 : 8,
-              padding: compact ? "5px 10px" : "7px 13px",
+              gap: 6,
+              padding: "5px 10px",
               borderRadius: 9999,
               background: "rgba(255,255,255,0.8)",
               backdropFilter: "blur(6px)",
@@ -196,10 +208,8 @@ function StepVisual({ step, image, count, compact = false }: { step: StepData; i
               boxShadow: "0 6px 16px -8px rgba(17,17,20,0.18)",
             }}
           >
-            <span style={{ width: compact ? 5 : 6, height: compact ? 5 : 6, borderRadius: 9999, background: step.color }} />
-            <span style={{ fontSize: compact ? 10 : 11.5, fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: MUTED }}>
-              {count} programs
-            </span>
+            <span style={{ width: 5, height: 5, borderRadius: 9999, background: step.color }} />
+            <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: MUTED }}>{count} programs</span>
           </div>
         </>
       )}
@@ -207,96 +217,10 @@ function StepVisual({ step, image, count, compact = false }: { step: StepData; i
   );
 }
 
-function CardBody({ step, compact = false }: { step: StepData; compact?: boolean }) {
-  return (
-    <>
-      <div>
-        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: compact ? 16 : 24 }}>
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minWidth: 42,
-              height: 26,
-              padding: "0 11px",
-              borderRadius: 9999,
-              background: step.color,
-              color: "#fff",
-              fontSize: 11.5,
-              fontWeight: 600,
-              letterSpacing: "0.1em",
-            }}
-          >
-            {step.number}
-          </span>
-          <span style={{ flex: 1, height: 1, background: `${step.color}26` }} />
-        </div>
-
-        <h3
-          style={{
-            margin: "0 0 12px",
-            fontSize: compact ? 23 : 37,
-            fontWeight: 600,
-            letterSpacing: "-0.026em",
-            color: DARK,
-            lineHeight: 1.12,
-          }}
-        >
-          {step.title}
-        </h3>
-        <p
-          style={{
-            margin: `0 0 ${compact ? 12 : 18}px`,
-            fontSize: compact ? 14.5 : 18,
-            fontWeight: 600,
-            lineHeight: 1.4,
-            letterSpacing: "-0.008em",
-            color: step.color,
-            maxWidth: 430,
-          }}
-        >
-          {step.theme}
-        </p>
-        <p style={{ margin: 0, fontSize: compact ? 13.5 : 15.5, lineHeight: 1.68, color: MUTED, maxWidth: 468 }}>{step.purpose}</p>
-      </div>
-
-      <div style={{ marginTop: compact ? 20 : 34, paddingTop: compact ? 16 : 24, borderTop: "1px solid rgba(64,50,34,0.12)" }}>
-        <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: FAINT, marginBottom: 13 }}>
-          Highlights
-        </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {step.highlights.map((h) => (
-            <span
-              key={h}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 7,
-                padding: compact ? "7px 12px" : "8px 14px",
-                borderRadius: 9999,
-                background: "rgba(255,255,255,0.92)",
-                border: "1px solid rgba(64,50,34,0.11)",
-                boxShadow: "0 1px 2px rgba(17,17,20,0.04)",
-                fontSize: compact ? 12.5 : 13.5,
-                fontWeight: 600,
-                letterSpacing: "-0.005em",
-                color: DARK,
-              }}
-            >
-              <span style={{ width: 5, height: 5, borderRadius: 9999, background: step.color, flexShrink: 0 }} />
-              {h}
-            </span>
-          ))}
-        </div>
-      </div>
-    </>
-  );
-}
-
 export default function EcosystemModel() {
   const [images, setImages] = useState<Record<string, string>>({});
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [active, setActive] = useState(0);
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     if (!supabase) return;
@@ -318,129 +242,191 @@ export default function EcosystemModel() {
     };
   }, []);
 
-  // Each pinned card recedes — scales back and dims — as the next one slides
-  // over it, so the stack reads as a physical deck instead of a hard swap.
-  const syncDepth = useCallback(() => {
-    const vh = window.innerHeight;
-    cardRefs.current.forEach((card, i) => {
-      if (!card) return;
-      const next = cardRefs.current[i + 1];
-      const covered = next ? 1 - Math.min(Math.max(next.getBoundingClientRect().top / vh, 0), 1) : 0;
-      const eased = covered * covered * (3 - 2 * covered);
-      card.style.transform = `scale(${1 - eased * 0.055}) translateY(${-eased * 16}px)`;
-      const veil = card.firstElementChild as HTMLElement | null;
-      if (veil) veil.style.opacity = String(eased * 0.5);
-    });
+  // Scrollspy: whichever row is crossing the upper-middle band of the
+  // viewport becomes "active" in the rail, so the numbered nav tracks scroll
+  // position the way the pinned/receding cards used to.
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const idx = rowRefs.current.findIndex((el) => el === entry.target);
+          if (idx !== -1) setActive(idx);
+        });
+      },
+      { rootMargin: "-35% 0px -50% 0px", threshold: 0 }
+    );
+    rowRefs.current.forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
   }, []);
 
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let queued = false;
-    function onScroll() {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(() => {
-        queued = false;
-        syncDepth();
-      });
-    }
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    syncDepth();
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [syncDepth]);
-
   return (
-    <>
-      {/* DESKTOP: sticky stacking deck */}
-      <section className="ib-stack-wrap" style={{ position: "relative", marginTop: 64, background: "#fff" }}>
-        {STEPS.map((s, i) => (
-          <div
-            key={s.key}
-            ref={(el) => {
-              cardRefs.current[i] = el;
-            }}
-            style={{
-              position: "sticky",
-              top: 0,
-              zIndex: i + 1,
-              minHeight: "100vh",
-              display: "flex",
-              alignItems: "center",
-              background: s.bg,
-              borderRadius: "30px 30px 0 0",
-              borderTop: "1px solid rgba(255,255,255,0.7)",
-              boxShadow: "0 -30px 60px -30px rgba(17,17,20,0.22)",
-              transformOrigin: "center top",
-              willChange: "transform",
-            }}
-          >
-            {/* Recede veil — opacity driven by syncDepth. */}
-            <div
-              aria-hidden
-              style={{
-                position: "absolute",
-                inset: 0,
-                borderRadius: "30px 30px 0 0",
-                background: "rgba(18,18,22,0.16)",
-                opacity: 0,
-                pointerEvents: "none",
-                zIndex: 2,
-              }}
-            />
-            <div
-              style={{
-                position: "relative",
-                zIndex: 1,
-                maxWidth: 1200,
-                width: "100%",
-                margin: "0 auto",
-                // Fluid so a short viewport can't push the pinned card past 100vh.
-                padding: "clamp(44px, 7vh, 76px) 48px",
-                display: "grid",
-                gridTemplateColumns: "1fr 1.04fr",
-                gap: 72,
-                alignItems: "center",
-              }}
-            >
-              <div>
-                <CardBody step={s} />
-              </div>
-              <div style={{ height: "clamp(300px, 55vh, 452px)" }}>
-                <StepVisual step={s} image={images[s.key]} count={s.highlights.length} />
-              </div>
-            </div>
+    <section style={{ background: "#F6F2EA", padding: "64px 0 20px" }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 40px" }}>
+        <div className="ib-programs-header" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 40, alignItems: "end", marginBottom: 48 }}>
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F26522", marginBottom: 12 }}>Programs</div>
+            <h2 style={{ margin: 0, fontSize: 38, fontWeight: 500, letterSpacing: "-0.025em", color: DARK, lineHeight: 1.12 }}>Four ways we support the ecosystem</h2>
           </div>
-        ))}
-      </section>
-
-      {/* MOBILE fallback: plain stacked cards */}
-      <section className="ib-stack-mobile" style={{ background: "#fff", padding: "0 22px 60px", display: "none" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 20, marginTop: 44 }}>
-          {STEPS.map((s) => (
-            <div
-              key={s.key}
-              style={{
-                background: s.bg,
-                border: "1px solid rgba(64,50,34,0.11)",
-                borderRadius: 22,
-                overflow: "hidden",
-                boxShadow: "0 10px 26px -18px rgba(17,17,20,0.18)",
-              }}
-            >
-              <div style={{ height: 196, padding: 14, paddingBottom: 0 }}>
-                <StepVisual step={s} image={images[s.key]} count={s.highlights.length} compact />
-              </div>
-              <div style={{ padding: "22px 20px 24px" }}>
-                <CardBody step={s} compact />
-              </div>
-            </div>
-          ))}
+          <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.65, color: MUTED }}>
+            From strengthening early ideas to coordinating partners, opening city challenges, and tracking what&rsquo;s working &mdash; our programs cover every stage of the innovation journey.
+          </p>
         </div>
-      </section>
-    </>
+
+        <div className="ib-programs-grid" style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 48, alignItems: "start" }}>
+          {/* RAIL */}
+          <nav className="ib-programs-rail" style={{ position: "sticky", top: 100, display: "flex", flexDirection: "column" }}>
+            {STEPS.map((s, i) => {
+              const isActive = i === active;
+              return (
+                <div key={s.key} style={{ display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <span
+                      style={{
+                        fontSize: 11.5,
+                        fontWeight: 700,
+                        letterSpacing: "0.04em",
+                        color: isActive ? s.color : FAINT,
+                        transition: "color .35s ease",
+                        width: 20,
+                        flexShrink: 0,
+                      }}
+                    >
+                      {s.number}
+                    </span>
+                    <span
+                      style={{
+                        width: isActive ? 10 : 7,
+                        height: isActive ? 10 : 7,
+                        borderRadius: 9999,
+                        background: isActive ? s.color : "rgba(64,50,34,0.18)",
+                        flexShrink: 0,
+                        transition: "all .35s ease",
+                        boxShadow: isActive ? `0 0 0 4px ${s.color}22` : "none",
+                      }}
+                    />
+                  </div>
+                  {i < STEPS.length - 1 && (
+                    <div style={{ width: 1, height: 44, marginLeft: 30.5, background: i < active ? s.color : "rgba(64,50,34,0.14)", opacity: i < active ? 0.4 : 1, transition: "background .35s ease" }} />
+                  )}
+                  <div
+                    style={{
+                      marginTop: 6,
+                      marginBottom: i < STEPS.length - 1 ? 0 : 0,
+                      marginLeft: 32,
+                      fontSize: 12.5,
+                      fontWeight: isActive ? 600 : 500,
+                      color: isActive ? DARK : FAINT,
+                      lineHeight: 1.3,
+                      maxWidth: 110,
+                      transition: "color .35s ease",
+                    }}
+                  >
+                    {s.title}
+                  </div>
+                </div>
+              );
+            })}
+          </nav>
+
+          {/* ROWS */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            {STEPS.map((s, i) => (
+              <div
+                key={s.key}
+                ref={(el) => {
+                  rowRefs.current[i] = el;
+                }}
+                className="ib-program-row"
+                style={{
+                  background: s.bg,
+                  border: "1px solid rgba(64,50,34,0.1)",
+                  borderRadius: 24,
+                  padding: 28,
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 32,
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        minWidth: 40,
+                        height: 24,
+                        padding: "0 10px",
+                        borderRadius: 9999,
+                        background: s.color,
+                        color: "#fff",
+                        fontSize: 11,
+                        fontWeight: 600,
+                        letterSpacing: "0.08em",
+                      }}
+                    >
+                      {s.number}
+                    </span>
+                    <span style={{ flex: 1, height: 1, background: `${s.color}26` }} />
+                  </div>
+
+                  <h3 style={{ margin: "0 0 10px", fontSize: 24, fontWeight: 600, letterSpacing: "-0.02em", color: DARK, lineHeight: 1.15 }}>{s.title}</h3>
+                  <p style={{ margin: "0 0 12px", fontSize: 14.5, fontWeight: 600, lineHeight: 1.4, color: s.color, maxWidth: 400 }}>{s.theme}</p>
+                  <p style={{ margin: "0 0 20px", fontSize: 13.5, lineHeight: 1.6, color: MUTED, maxWidth: 420 }}>{s.purpose}</p>
+
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 22 }}>
+                    {s.highlights.map((h) => (
+                      <span
+                        key={h}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 6,
+                          padding: "6px 12px",
+                          borderRadius: 9999,
+                          background: "rgba(255,255,255,0.85)",
+                          border: "1px solid rgba(64,50,34,0.1)",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: DARK,
+                        }}
+                      >
+                        <span style={{ width: 5, height: 5, borderRadius: 9999, background: s.color, flexShrink: 0 }} />
+                        {h}
+                      </span>
+                    ))}
+                  </div>
+
+                  <a
+                    href={s.href}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 8,
+                      fontSize: 13.5,
+                      fontWeight: 600,
+                      color: "#fff",
+                      background: s.color,
+                      padding: "11px 20px",
+                      borderRadius: 9999,
+                      textDecoration: "none",
+                    }}
+                  >
+                    {s.cta}
+                    <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4}><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                  </a>
+                </div>
+
+                <div style={{ height: 260 }}>
+                  <StepVisual step={s} image={s.defaultImage || images[s.key]} count={s.highlights.length} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

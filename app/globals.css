@@ -575,9 +575,12 @@ img { max-width: 100%; height: auto; }
   }
 
 
-  /* Programs sticky card stack: swap for a plain stacked fallback */
-  .ib-stack-wrap { display: none !important; }
-  .ib-stack-mobile { display: block !important; }
+  /* Programs four-pillar section: drop the sticky rail nav, header goes
+     single-column, each row card stacks image under text. */
+  .ib-programs-header { grid-template-columns: 1fr !important; align-items: start !important; gap: 16px !important; }
+  .ib-programs-rail { display: none !important; }
+  .ib-programs-grid { grid-template-columns: 1fr !important; }
+  .ib-program-row { grid-template-columns: 1fr !important; }
 
   /* User dashboard overview: sidebar drops below the main column and the
      stat row goes 3-up. */

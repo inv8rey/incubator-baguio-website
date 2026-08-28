@@ -101,7 +101,7 @@ const HOME_HTML_BOTTOM_A = `
         ["#8E2749", "Academia", "Research to market", "Universities open up applied research questions and technologies seeking commercialization partners."],
         ["#5A4BC4", "Society", "Community-led solutions", "Civic groups and community organizations surface local needs and social challenges for innovators to solve."],
       ].map((c) => `
-      <div class="ib-card-hover ib-helix-card" style="background:#fff;border:1px solid rgba(64,50,34,0.1);border-radius:18px;padding:26px 24px 22px;display:flex;flex-direction:column;box-shadow:var(--ib-shadow-sm);">
+      <div class="ib-card-hover ib-helix-card" style="background:#fff;border:1px solid rgba(64,50,34,0.06);border-radius:18px;padding:26px 24px 22px;display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(17,17,20,0.02);">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
           <span style="width:7px;height:7px;border-radius:9999px;background:${c[0]};flex-shrink:0;"></span>
           <span style="font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:${c[0]};">${c[1]}</span>

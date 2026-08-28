@@ -1,19 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import dynamic from "next/dynamic";
 import { MENTOR_SPECIALIZATIONS, type EcosystemCategory, type StartupEntry, type TbiEntry, type AcademeEntry, type CompanyEntry, type ServiceProviderEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry, type FundedProjectEntry } from "./data";
 import { fetchDynamicStartups, fetchDynamicMentors, fetchDynamicOrganizations, fetchDynamicFundedProjects, type DynamicMentorEntry } from "./dynamicData";
 import ConnectMentorButton from "./ConnectMentorButton";
-
-const EcosystemMap = dynamic(() => import("./EcosystemMap"), {
-  ssr: false,
-  loading: () => (
-    <div style={{ width: "100%", height: 480, borderRadius: 20, border: "1px solid rgba(64,50,34,0.13)", background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 14 }}>
-      Loading map&hellip;
-    </div>
-  ),
-});
 
 const DARK = "#1A1714";
 const ORANGE = "#F26522";
@@ -367,22 +357,6 @@ export default function EcosystemDirectory() {
     });
   }, [tab, query, sort, sectorFilter, specializationFilter, allStartups, allMentors, allTbis, allAcademe, allCompanies, allServiceProviders, allGovernment, allCoworking, allMakerspaces, allCommunity, allFundedProjects]);
 
-  // Normalized pin data for the map placeholder — swap this for real coordinates once a map API is wired up.
-  const pins = useMemo(
-    () =>
-      filtered.map((item: any) => ({
-        key: item.name ?? item.title,
-        label: item.initial ?? item.initials,
-        color: item.color,
-        bg: item.bg,
-        name: item.name ?? item.title,
-        sub: item.sector ?? item.type ?? item.position ?? item.host ?? item.fundingAgency ?? "",
-        lat: item.latitude,
-        lng: item.longitude,
-      })),
-    [filtered]
-  );
-
   return (
     <div style={{ background: "#fff", padding: "72px 40px", borderTop: "1px solid rgba(64,50,34,0.09)" }}>
       <div style={{ maxWidth: 1080, margin: "0 auto" }}>
@@ -497,7 +471,32 @@ export default function EcosystemDirectory() {
           <p style={{ textAlign: "center", fontSize: 14, color: "#8B8479", padding: "32px 0" }}>No {tab.toLowerCase()} match &ldquo;{query}&rdquo;.</p>
         )}
 
-        {view === "map" && filtered.length > 0 && <EcosystemMap pins={pins} />}
+        {view === "map" && filtered.length > 0 && (
+          <div
+            style={{
+              width: "100%",
+              minHeight: 340,
+              borderRadius: 20,
+              border: "1px solid rgba(64,50,34,0.13)",
+              background: "#F6F2EA",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              gap: 10,
+              padding: "48px 24px",
+            }}
+          >
+            <div style={{ width: 52, height: 52, borderRadius: 9999, background: "#fff", border: `1.5px solid ${ORANGE}`, color: ORANGE, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 4 }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
+            </div>
+            <h3 style={{ margin: 0, fontSize: 17, fontWeight: 600, color: DARK }}>Map view is on its way</h3>
+            <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479", maxWidth: 360 }}>
+              We&rsquo;re plotting the ecosystem on a real map. For now, switch back to the list view to browse everyone.
+            </p>
+          </div>
+        )}
 
         {view === "list" && tab === "Startups" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }} className="ib-ecosystem-grid">
