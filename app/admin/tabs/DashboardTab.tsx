@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BreakdownBars, Sparkline, StageDonut } from "../charts";
+import { BreakdownBars, LineChart, Sparkline, StageDonut } from "../charts";
 import { DARK, ORANGE, SECTOR_FILTERS, STAGE_BADGE } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
@@ -124,6 +124,8 @@ interface StartupRow {
   lifecycle_stage: string;
   tbi_affiliation: string;
   funding_raised: string;
+  funding_type: string;
+  status: string;
   created_at: string;
 }
 interface MentorRow {
@@ -140,6 +142,7 @@ interface OrgRow {
 interface ProfileRow {
   id: string;
   full_name: string;
+  email: string;
   created_at: string;
 }
 interface SubmissionRow {
@@ -152,6 +155,60 @@ interface CuratedChallengeRow {
   id: string;
   created_at: string;
 }
+interface KnowledgeResourceRow {
+  id: string;
+  status: string;
+  views: number;
+  created_at: string;
+}
+interface SolutionRow {
+  id: string;
+  created_at: string;
+}
+interface FundedProjectRow {
+  id: string;
+  created_at: string;
+}
+interface SignupVisitRow {
+  id: string;
+  created_at: string;
+}
+interface SignupRow {
+  id: string;
+  status: string;
+  created_at: string;
+}
+
+const ECOSYSTEM_PALETTE = [ORANGE, "#285E7A", "#1A6B3C", "#9E2A52", "#3A5FA0", "#7C5CD6", "#0E5C44", "#8B4513", "#D88A0A", "#5B9BC0", "#C4576A"];
+const VISIT_DAYS = 14;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// "2026-08-06" -> "Aug 6", built by hand for the same reason shortDate()
+// exists in AnalyticsPanel.tsx: new Date(iso) parses a bare date as UTC
+// midnight and can render as the previous local day.
+function dayKey(iso: string): string {
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function shortDayLabel(key: string): string {
+  const [y, m, d] = key.split("-").map(Number);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${months[m - 1]} ${d}`;
+}
+function dailySeries(dates: string[], days: number): { label: string; value: number }[] {
+  const counts = new Map<string, number>();
+  dates.forEach((iso) => {
+    const key = dayKey(iso);
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  });
+  const now = Date.now();
+  const series: { label: string; value: number }[] = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const key = dayKey(new Date(now - i * DAY_MS).toISOString());
+    series.push({ label: shortDayLabel(key), value: counts.get(key) ?? 0 });
+  }
+  return series;
+}
 
 export default function DashboardTab() {
   const [startups, setStartups] = useState<StartupRow[]>([]);
@@ -160,6 +217,11 @@ export default function DashboardTab() {
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [submissions, setSubmissions] = useState<SubmissionRow[]>([]);
   const [curatedChallenges, setCuratedChallenges] = useState<CuratedChallengeRow[]>([]);
+  const [resources, setResources] = useState<KnowledgeResourceRow[]>([]);
+  const [solutions, setSolutions] = useState<SolutionRow[]>([]);
+  const [fundedProjects, setFundedProjects] = useState<FundedProjectRow[]>([]);
+  const [signupVisits, setSignupVisits] = useState<SignupVisitRow[]>([]);
+  const [signups, setSignups] = useState<SignupRow[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [live, setLive] = useState(false);
 
@@ -171,13 +233,18 @@ export default function DashboardTab() {
     let cancelled = false;
 
     async function load() {
-      const [s, m, o, p, c, ch] = await Promise.all([
-        supabase!.from("startups").select("id,name,sector,lifecycle_stage,tbi_affiliation,funding_raised,created_at").order("created_at", { ascending: false }),
+      const [s, m, o, p, c, ch, kr, sol, fp, sv, sg] = await Promise.all([
+        supabase!.from("startups").select("id,name,sector,lifecycle_stage,tbi_affiliation,funding_raised,funding_type,status,created_at").order("created_at", { ascending: false }),
         supabase!.from("mentors").select("id,name,created_at").order("created_at", { ascending: false }),
         supabase!.from("organizations").select("id,name,org_type,created_at").order("created_at", { ascending: false }),
-        supabase!.from("profiles").select("id,full_name,created_at").order("created_at", { ascending: false }),
+        supabase!.from("profiles").select("id,full_name,email,created_at").order("created_at", { ascending: false }),
         supabase!.from("challenge_submissions").select("id,title,org_name,created_at").order("created_at", { ascending: false }),
         supabase!.from("challenges").select("id,created_at").order("created_at", { ascending: false }),
+        supabase!.from("knowledge_resources").select("id,status,views,created_at").order("created_at", { ascending: false }),
+        supabase!.from("challenge_applications").select("id,created_at").order("created_at", { ascending: false }),
+        supabase!.from("funded_projects").select("id,created_at").order("created_at", { ascending: false }),
+        supabase!.from("ecosystem_signup_visits").select("id,created_at").order("created_at", { ascending: false }),
+        supabase!.from("ecosystem_signups").select("id,status,created_at").order("created_at", { ascending: false }),
       ]);
       if (cancelled) return;
       setStartups((s.data as StartupRow[]) ?? []);
@@ -186,6 +253,11 @@ export default function DashboardTab() {
       setProfiles((p.data as ProfileRow[]) ?? []);
       setSubmissions((c.data as SubmissionRow[]) ?? []);
       setCuratedChallenges((ch.data as CuratedChallengeRow[]) ?? []);
+      setResources((kr.data as KnowledgeResourceRow[]) ?? []);
+      setSolutions((sol.data as SolutionRow[]) ?? []);
+      setFundedProjects((fp.data as FundedProjectRow[]) ?? []);
+      setSignupVisits((sv.data as SignupVisitRow[]) ?? []);
+      setSignups((sg.data as SignupRow[]) ?? []);
       setLoaded(true);
     }
     load();
@@ -201,6 +273,11 @@ export default function DashboardTab() {
       .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, load)
       .on("postgres_changes", { event: "*", schema: "public", table: "challenge_submissions" }, load)
       .on("postgres_changes", { event: "*", schema: "public", table: "challenges" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "knowledge_resources" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "challenge_applications" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "funded_projects" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "ecosystem_signup_visits" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "ecosystem_signups" }, load)
       .subscribe((status) => setLive(status === "SUBSCRIBED"));
 
     return () => {
@@ -271,6 +348,39 @@ export default function DashboardTab() {
     .sort((a, b) => b.amount - a.amount)
     .slice(0, 5);
 
+  // Knowledge Hub
+  const resourcesPublished = resources.filter((r) => r.status === "approved").length;
+  const resourcesViewed = resources.reduce((sum, r) => sum + (r.views || 0), 0);
+  const completeProfiles = profiles.filter((p) => p.full_name?.trim() && p.email?.trim()).length;
+  const profileCompletionPct = profiles.length ? Math.round((completeProfiles / profiles.length) * 100) : 0;
+
+  // Opening Innovation
+  const challengesPosted = curatedChallenges.length + submissions.length;
+  const solutionsSubmitted = solutions.length;
+
+  // Ecosystem Composition — same categories as the public /ecosystem directory
+  const compositionRows = [
+    { label: "Startups", count: startups.length },
+    { label: "Mentors", count: mentors.length },
+    ...orgRows.map((o) => ({ label: o.label, count: o.count })),
+    { label: "Funded Projects", count: fundedProjects.length },
+  ]
+    .filter((r) => r.count > 0)
+    .sort((a, b) => b.count - a.count)
+    .map((r, i) => ({ ...r, color: ECOSYSTEM_PALETTE[i % ECOSYSTEM_PALETTE.length] }));
+  const compositionTotal = compositionRows.reduce((sum, r) => sum + r.count, 0) || 1;
+
+  // Funding and Startup Growth
+  const grantsReceived = startups.filter((s) => s.funding_type === "Grant").reduce((sum, s) => sum + parsePhp(s.funding_raised), 0);
+  const startupsActive = startups.filter((s) => s.status !== "closed").length;
+  const startupsClosed = startups.filter((s) => s.status === "closed").length;
+
+  // Signups from Website
+  const totalVisits = signupVisits.length;
+  const approvedSignups = signups.filter((s) => s.status === "approved").length;
+  const conversionPct = totalVisits ? Math.round((approvedSignups / totalVisits) * 1000) / 10 : null;
+  const dailyVisitSeries = dailySeries(signupVisits.map((v) => v.created_at), VISIT_DAYS);
+
   const activity = [
     ...startups.slice(0, 8).map((s) => ({ key: `s-${s.id}`, name: s.name, note: "joined as a new startup", created_at: s.created_at })),
     ...mentors.slice(0, 8).map((m) => ({ key: `m-${m.id}`, name: m.name, note: "joined the mentor network", created_at: m.created_at })),
@@ -339,6 +449,100 @@ export default function DashboardTab() {
           <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 18 }}>Including independently operating startups</div>
           <BreakdownBars data={tbiRows} labelWidth={170} />
         </div>
+      </div>
+
+      {/* KNOWLEDGE HUB */}
+      <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 18 }}>Knowledge Hub</div>
+        <div className="ib-admin-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16 }}>
+          <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
+            <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Resources Published</div>
+            <div style={{ fontSize: 26, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? resourcesPublished : "—"}</div>
+            <div style={{ fontSize: 11, color: "#8B8479", marginTop: 6 }}>From the Knowledge Hub</div>
+          </div>
+          <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
+            <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Resources Viewed</div>
+            <div style={{ fontSize: 26, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? resourcesViewed.toLocaleString() : "—"}</div>
+            <div style={{ fontSize: 11, color: "#8B8479", marginTop: 6 }}>Total opens across all resources</div>
+          </div>
+          <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
+            <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Profile Completion</div>
+            <div style={{ fontSize: 26, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? `${profileCompletionPct}%` : "—"}</div>
+            <div style={{ fontSize: 11, color: "#8B8479", marginTop: 6 }}>Profiles with name and email set</div>
+          </div>
+        </div>
+      </div>
+
+      {/* OPENING INNOVATION / FUNDING AND STARTUP GROWTH */}
+      <div className="ib-admin-grid-2-bottom" style={{ display: "grid", gridTemplateColumns: "1fr 1.6fr", gap: 16, alignItems: "start" }}>
+        <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 18 }}>Opening Innovation</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
+              <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Challenges Posted</div>
+              <div style={{ fontSize: 26, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? challengesPosted : "—"}</div>
+            </div>
+            <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
+              <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Solutions Submitted</div>
+              <div style={{ fontSize: 26, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? solutionsSubmitted : "—"}</div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 18 }}>Funding and Startup Growth</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14 }}>
+            <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
+              <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Funding Raised</div>
+              <div style={{ fontSize: 22, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? formatPhp(totalFunding) : "—"}</div>
+            </div>
+            <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
+              <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Grants Received</div>
+              <div style={{ fontSize: 22, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? formatPhp(grantsReceived) : "—"}</div>
+            </div>
+            <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
+              <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Startups Active</div>
+              <div style={{ fontSize: 22, fontWeight: 600, color: "#1A6B3C", letterSpacing: "-0.02em" }}>{loaded ? startupsActive : "—"}</div>
+            </div>
+            <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
+              <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Startups Closed</div>
+              <div style={{ fontSize: 22, fontWeight: 600, color: "#8B8479", letterSpacing: "-0.02em" }}>{loaded ? startupsClosed : "—"}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ECOSYSTEM COMPOSITION */}
+      <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Ecosystem Composition</div>
+        <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 18 }}>Members by type in the ecosystem database</div>
+        {compositionRows.length > 0 ? (
+          <BreakdownBars data={compositionRows.map((r) => ({ ...r, pct: Math.round((r.count / compositionTotal) * 1000) / 10 }))} labelWidth={170} />
+        ) : (
+          <div style={{ fontSize: 12.5, color: "#8B8479", padding: "12px 0" }}>No ecosystem members yet.</div>
+        )}
+      </div>
+
+      {/* SIGNUPS FROM WEBSITE */}
+      <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Signups from Website</div>
+        <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 18 }}>How many visitors to the ecosystem signup page become ecosystem members</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 20 }}>
+          <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
+            <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Page Visits</div>
+            <div style={{ fontSize: 24, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? totalVisits.toLocaleString() : "—"}</div>
+          </div>
+          <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
+            <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Became Members</div>
+            <div style={{ fontSize: 24, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? approvedSignups.toLocaleString() : "—"}</div>
+          </div>
+          <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
+            <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Conversion Rate</div>
+            <div style={{ fontSize: 24, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? (conversionPct == null ? "—" : `${conversionPct}%`) : "—"}</div>
+          </div>
+        </div>
+        <div style={{ fontSize: 12.5, fontWeight: 600, color: "#5A544B", marginBottom: 10 }}>Daily visits (last {VISIT_DAYS} days)</div>
+        {totalVisits > 0 ? <LineChart data={dailyVisitSeries} color={ORANGE} /> : <div style={{ fontSize: 12.5, color: "#8B8479" }}>No signup page visits recorded yet.</div>}
       </div>
 
       {/* ACTIVITY FEED */}

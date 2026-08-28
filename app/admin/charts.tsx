@@ -111,6 +111,45 @@ export function TrendChart({
   );
 }
 
+export function LineChart({
+  data,
+  color = ORANGE,
+  height = 120,
+}: {
+  data: { label: string; value: number }[];
+  color?: string;
+  height?: number;
+}) {
+  if (!data.length) return null;
+  const w = 100;
+  const max = Math.max(...data.map((d) => d.value), 1);
+  const axisH = height - 18;
+  const stepX = data.length > 1 ? w / (data.length - 1) : 0;
+  const points = data.map((d, i) => {
+    const x = i * stepX;
+    const y = axisH - (d.value / max) * (axisH - 6);
+    return { x, y };
+  });
+  const linePath = points.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ");
+  const areaPath = `${linePath} L${points[points.length - 1].x},${axisH} L${points[0].x},${axisH} Z`;
+  return (
+    <div>
+      <svg viewBox={`0 0 ${w} ${height}`} width="100%" height={height} preserveAspectRatio="none" style={{ display: "block", overflow: "visible" }}>
+        <line x1={0} y1={axisH} x2={w} y2={axisH} stroke="rgba(64,50,34,0.09)" strokeWidth={0.5} />
+        <path d={areaPath} fill={color} opacity={0.08} stroke="none" />
+        <path d={linePath} fill="none" stroke={color} strokeWidth={1.4} vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round" />
+        {points.map((p, i) => (
+          <circle key={i} cx={p.x} cy={p.y} r={1.3} fill={color} />
+        ))}
+      </svg>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#8B8479", marginTop: 6 }}>
+        <span>{data[0]?.label}</span>
+        <span>{data[data.length - 1]?.label}</span>
+      </div>
+    </div>
+  );
+}
+
 export function StageDonut({ data, total }: { data: { label: string; count: number; color: string }[]; total: number }) {
   const r = 58;
   const thick = 18;

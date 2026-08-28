@@ -122,6 +122,20 @@ alter table public.startups drop constraint if exists startups_description_lengt
 alter table public.startups add constraint startups_description_length check (char_length(description) <= 280);
 alter table public.startups drop constraint if exists startups_tbi_affiliation_length;
 alter table public.startups add constraint startups_tbi_affiliation_length check (char_length(tbi_affiliation) <= 60);
+
+-- Admin-set operating status, separate from lifecycle_stage (which tracks
+-- growth stage, not whether the startup is still running). Defaults to
+-- active on every existing row. Purely a dashboard/reporting flag for now --
+-- a closed startup still shows on the public directory unless removed.
+alter table public.startups add column if not exists status text not null default 'active';
+alter table public.startups drop constraint if exists startups_status_check;
+alter table public.startups add constraint startups_status_check check (status in ('active', 'closed'));
+
+-- Categorizes funding_raised (a free-text amount) so the dashboard can sum
+-- "Grants Received" separately from other funding types.
+alter table public.startups add column if not exists funding_type text not null default '';
+alter table public.startups drop constraint if exists startups_funding_type_check;
+alter table public.startups add constraint startups_funding_type_check check (funding_type in ('', 'Grant', 'Private Investment', 'Corporate', 'Other'));
 alter table public.startups drop constraint if exists startups_address_length;
 alter table public.startups add constraint startups_address_length check (char_length(address) <= 160);
 
@@ -561,6 +575,12 @@ alter table public.challenge_applications enable row level security;
 drop policy if exists "applicants manage their own applications" on public.challenge_applications;
 create policy "applicants manage their own applications" on public.challenge_applications
   for all using (auth.uid() = applicant_id) with check (auth.uid() = applicant_id);
+
+drop policy if exists "admins can read challenge applications" on public.challenge_applications;
+create policy "admins can read challenge applications" on public.challenge_applications
+  for select using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
 
 -- ---------------------------------------------------------------------------
 -- challenges: admin-curated Innovation Challenges shown on the main
@@ -1147,6 +1167,7 @@ alter table public.knowledge_resources add column if not exists target_participa
 -- means it has to actually be a date or absent, matching how
 -- challenges.deadline_date (line ~425) already does this in this schema.
 alter table public.knowledge_resources add column if not exists deadline_date date;
+alter table public.knowledge_resources add column if not exists views integer not null default 0;
 
 alter table public.knowledge_resources enable row level security;
 
@@ -1161,6 +1182,22 @@ create policy "admins manage knowledge resources" on public.knowledge_resources
   ) with check (
     exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
   );
+
+-- Atomic increment, callable by any visitor (no admin-only UPDATE policy
+-- needed for this one counter) -- same public-RPC-for-one-counter pattern as
+-- bump_chat_usage() above. Returns nothing; the client doesn't need the new
+-- count back, just confirmation the call succeeded.
+create or replace function public.increment_resource_views(p_resource_id uuid)
+returns void
+language sql
+security definer
+set search_path = public
+as $$
+  update public.knowledge_resources set views = views + 1 where id = p_resource_id;
+$$;
+
+revoke all on function public.increment_resource_views(uuid) from public;
+grant execute on function public.increment_resource_views(uuid) to anon, authenticated;
 
 -- ---------------------------------------------------------------------------
 -- storage: knowledge-files bucket for uploaded Knowledge Hub resource files.

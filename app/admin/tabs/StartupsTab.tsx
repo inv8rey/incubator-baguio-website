@@ -15,6 +15,7 @@ const LocationPicker = dynamic(() => import("../../LocationPicker"), { ssr: fals
 const NAME_MAX = 60;
 const DESCRIPTION_MAX = 280;
 const FOUNDER_STATUSES = ["Student Founder", "Professional Founder"] as const;
+const FUNDING_TYPES = ["", "Grant", "Private Investment", "Corporate", "Other"] as const;
 
 interface FounderRow {
   name: string;
@@ -36,6 +37,8 @@ interface Startup {
   longitude: number | null;
   founders: FounderRow[];
   tbiAffiliation: string;
+  status: "active" | "closed";
+  fundingType: string;
   initials: string;
   color: string;
 }
@@ -47,11 +50,13 @@ const EMPTY_FORM = {
   sector: SECTOR_FILTERS[0].label,
   stage: "Idea",
   funding: "",
+  fundingType: "",
   since: "",
   description: "",
   logoUrl: "",
   website: "",
   tbiAffiliation: "",
+  status: "active",
 };
 
 export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string }) {
@@ -106,6 +111,8 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
           longitude: s.longitude,
           founders: s.founders ?? [],
           tbiAffiliation: s.tbi_affiliation ?? "",
+          status: s.status === "closed" ? "closed" : "active",
+          fundingType: s.funding_type ?? "",
           initials: initialsOf(s.name),
           color: p.color,
         };
@@ -136,7 +143,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
 
   function openEditModal(s: Startup) {
     setEditingId(s.id);
-    setForm({ name: s.name, sector: s.sector, stage: s.stage, funding: s.funding, since: s.since, description: s.description, logoUrl: s.logoUrl, website: s.website, tbiAffiliation: s.tbiAffiliation });
+    setForm({ name: s.name, sector: s.sector, stage: s.stage, funding: s.funding, fundingType: s.fundingType, since: s.since, description: s.description, logoUrl: s.logoUrl, website: s.website, tbiAffiliation: s.tbiAffiliation, status: s.status });
     setLocation(s.latitude != null && s.longitude != null ? { lat: s.latitude, lng: s.longitude, address: s.address } : null);
     setFounders(s.founders.length > 0 ? s.founders : [{ name: "", status: "Student Founder" }]);
     setError("");
@@ -195,6 +202,8 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
       logo_url: form.logoUrl,
       website: form.website.trim(),
       tbi_affiliation: form.tbiAffiliation.trim(),
+      status: form.status,
+      funding_type: form.fundingType,
       address: location?.address ?? "",
       latitude: location?.lat ?? null,
       longitude: location?.lng ?? null,
@@ -337,7 +346,12 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                         </div>
                       )}
                       <div>
-                        <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK }}>{s.name}</div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                          <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK }}>{s.name}</div>
+                          {s.status === "closed" && (
+                            <span style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "#8B8479", background: "rgba(64,50,34,0.08)", padding: "2px 7px", borderRadius: 999 }}>Closed</span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -542,6 +556,32 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                   placeholder="₱500K"
                   style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
                 />
+              </div>
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Funding type</label>
+                <select
+                  value={form.fundingType}
+                  onChange={(e) => update("fundingType", e.target.value)}
+                  style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
+                >
+                  {FUNDING_TYPES.map((t) => (
+                    <option key={t} value={t}>{t || "Not specified"}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Operating status</label>
+                <select
+                  value={form.status}
+                  onChange={(e) => update("status", e.target.value)}
+                  style={{ width: "100%", fontSize: 13.5, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
+                >
+                  <option value="active">Active</option>
+                  <option value="closed">Closed</option>
+                </select>
               </div>
               <div>
                 <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Since (year)</label>

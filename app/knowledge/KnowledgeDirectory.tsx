@@ -214,6 +214,7 @@ export default function KnowledgeDirectory() {
                         href={href}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => supabase?.rpc("increment_resource_views", { p_resource_id: r.id })}
                         style={{ marginTop: 16, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#fff", background: isFunding ? "#1A6B3C" : "#1A1714", textDecoration: "none", padding: "10px 18px", borderRadius: 9999 }}
                       >
                         {ctaLabel}
