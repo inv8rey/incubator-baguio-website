@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { supabase } from "../../lib/supabaseClient";
 
 const ORANGE = "#F26522";
 const DARK = "#1A1714";
@@ -48,19 +49,41 @@ export default function ContactForm() {
   const [form, setForm] = useState<FormState>({ name: "", email: "", organization: "", reason: REASONS[0], message: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     const errs: Record<string, string> = {};
     if (!form.name.trim()) errs.name = "Name is required.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "Enter a valid email address.";
     if (!form.message.trim() || form.message.trim().length < 10) errs.message = "Tell us a bit more — at least a sentence or two.";
     setErrors(errs);
-    if (Object.keys(errs).length === 0) setSubmitted(true);
+    if (Object.keys(errs).length > 0) return;
+
+    setSubmitError("");
+    if (!supabase) {
+      setSubmitError("The backend isn't configured yet. Ask the site admin to set up Supabase.");
+      return;
+    }
+    setBusy(true);
+    const { error: err } = await supabase.from("contact_messages").insert({
+      name: form.name.trim(),
+      email: form.email.trim(),
+      organization: form.organization.trim(),
+      reason: form.reason,
+      message: form.message.trim(),
+    });
+    setBusy(false);
+    if (err) {
+      setSubmitError(err.message);
+      return;
+    }
+    setSubmitted(true);
   }
 
   if (submitted) {
@@ -113,12 +136,14 @@ export default function ContactForm() {
         {errors.message && <p style={{ color: "#E23A2E", fontSize: 12, margin: "6px 0 0" }}>{errors.message}</p>}
       </div>
 
+      {submitError && <p style={{ color: "#E23A2E", fontSize: 13, margin: 0 }}>{submitError}</p>}
       <button
         type="submit"
-        style={{ alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 9999, padding: "13px 28px", cursor: "pointer" }}
+        disabled={busy}
+        style={{ alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 9999, padding: "13px 28px", cursor: busy ? "default" : "pointer", opacity: busy ? 0.7 : 1 }}
       >
-        Send message
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4}><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        {busy ? "Sending…" : "Send message"}
+        {!busy && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4}><path d="M5 12h14M13 6l6 6-6 6" /></svg>}
       </button>
     </form>
   );

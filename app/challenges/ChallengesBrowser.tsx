@@ -107,7 +107,7 @@ export default function ChallengesBrowser({ bp }: { bp: string }) {
   }, [challenges, category, orgType, query]);
 
   return (
-    <div style={{ background: "#fff", padding: "56px 40px 64px", borderTop: "1px solid rgba(64,50,34,0.09)" }}>
+    <div id="browse" style={{ background: "#fff", padding: "56px 40px 64px", borderTop: "1px solid rgba(64,50,34,0.09)", scrollMarginTop: 80 }}>
       <div style={{ maxWidth: 1180, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 22, flexWrap: "wrap", gap: 16 }}>
           <div>

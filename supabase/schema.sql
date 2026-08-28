@@ -1797,3 +1797,35 @@ drop policy if exists "org members manage their org's mentors" on public.mentors
 create policy "org members manage their org's mentors" on public.mentors
   for all using (organization_id is not null and public.is_org_member(organization_id))
   with check (organization_id is not null and public.is_org_member(organization_id));
+
+-- ---------------------------------------------------------------------------
+-- contact_messages: the public /contact form (app/contact/ContactForm.tsx)
+-- previously only set local React state and never persisted anything --
+-- visitors saw "Message sent" but nothing was actually saved or emailed.
+-- Same no-login staging-table pattern as ecosystem_signups: public insert,
+-- admin-only read/manage via the admin "Messages" tab.
+-- ---------------------------------------------------------------------------
+create table if not exists public.contact_messages (
+  id uuid primary key default gen_random_uuid(),
+  name text not null default '',
+  email text not null default '',
+  organization text not null default '',
+  reason text not null default '',
+  message text not null default '',
+  status text not null default 'new' check (status in ('new', 'read')),
+  created_at timestamptz not null default now()
+);
+
+alter table public.contact_messages enable row level security;
+
+drop policy if exists "anyone can submit a contact message" on public.contact_messages;
+create policy "anyone can submit a contact message" on public.contact_messages
+  for insert with check (true);
+
+drop policy if exists "admins manage contact messages" on public.contact_messages;
+create policy "admins manage contact messages" on public.contact_messages
+  for all using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  ) with check (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );

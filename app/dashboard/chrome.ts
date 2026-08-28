@@ -86,7 +86,7 @@ export function footerHtml() {
 
     <div style="display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-size:12.5px;color:rgba(255,255,255,0.4);flex-wrap:wrap;gap:10px;">
       <span>&copy; 2026 City Government of Baguio &middot; CPDSO</span>
-      <span>Privacy Policy &middot; IP Policy &middot; Data Privacy Act (RA 10173)</span>
+      <span><a class="ib-footlink" href="${BP}/terms" style="display:inline;color:inherit;">Terms of Service</a> &middot; <a class="ib-footlink" href="${BP}/privacy" style="display:inline;color:inherit;">Privacy Policy</a> &middot; IP Policy &middot; Data Privacy Act (RA 10173)</span>
     </div>
   </div>
 </div>

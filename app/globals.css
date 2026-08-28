@@ -184,6 +184,21 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
 }
 .ib-footlink:hover { color: #fff; transform: translateX(3px); }
 
+/* Split-panel auth pages (sign up / log in) — collapse to a single column
+   and hide the decorative branding panel below tablet width. */
+@media (max-width: 900px) {
+  .ib-auth-shell { grid-template-columns: 1fr !important; border-radius: 20px !important; }
+  .ib-auth-left { display: none !important; }
+  .ib-auth-right { padding: 40px 28px !important; }
+}
+
+/* Terms of Service / long-form legal pages — drop the sticky table of
+   contents below tablet width so the body has room to breathe. */
+@media (max-width: 860px) {
+  .ib-terms-grid { grid-template-columns: 1fr !important; }
+  .ib-terms-toc { display: none !important; }
+}
+
 /* Footer social icon badges */
 .ib-social-icon {
   display: flex;

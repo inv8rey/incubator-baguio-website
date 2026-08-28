@@ -9,6 +9,7 @@ import ChallengesTab from "./tabs/ChallengesTab";
 import EventsTab from "./tabs/EventsTab";
 import KnowledgeTab from "./tabs/KnowledgeTab";
 import EcosystemSignupsTab from "./tabs/EcosystemSignupsTab";
+import ContactMessagesTab from "./tabs/ContactMessagesTab";
 import PartnersTab from "./tabs/PartnersTab";
 import ChatbotKnowledgeTab from "./tabs/ChatbotKnowledgeTab";
 import SettingsTab from "./tabs/SettingsTab";
@@ -48,6 +49,12 @@ const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
       <path d="M19 8v6M22 11h-6" />
     </>
   ),
+  messages: (
+    <>
+      <rect x={3} y={5} width={18} height={14} rx={2} />
+      <path d="m3 7 9 6 9-6" />
+    </>
+  ),
   partners: (
     <>
       <circle cx={7} cy={7} r={3} />
@@ -82,17 +89,18 @@ export default function AdminApp() {
   const [page, setPage] = useState<TabId>("dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [liveCounts, setLiveCounts] = useState<{ startups: number | null; challenges: number | null; partners: number | null }>({ startups: null, challenges: null, partners: null });
+  const [liveCounts, setLiveCounts] = useState<{ startups: number | null; challenges: number | null; partners: number | null; messages: number | null }>({ startups: null, challenges: null, partners: null, messages: null });
 
   useEffect(() => {
     if (!supabase) return;
     async function loadCounts() {
-      const [s, c, o] = await Promise.all([
+      const [s, c, o, m] = await Promise.all([
         supabase!.from("startups").select("id", { count: "exact", head: true }),
         supabase!.from("challenges").select("id", { count: "exact", head: true }),
         supabase!.from("organizations").select("id", { count: "exact", head: true }),
+        supabase!.from("contact_messages").select("id", { count: "exact", head: true }).eq("status", "new"),
       ]);
-      setLiveCounts({ startups: s.count ?? 0, challenges: c.count ?? 0, partners: o.count ?? 0 });
+      setLiveCounts({ startups: s.count ?? 0, challenges: c.count ?? 0, partners: o.count ?? 0, messages: m.count ?? 0 });
     }
     loadCounts();
     const channel = supabase
@@ -100,6 +108,7 @@ export default function AdminApp() {
       .on("postgres_changes", { event: "*", schema: "public", table: "startups" }, loadCounts)
       .on("postgres_changes", { event: "*", schema: "public", table: "challenges" }, loadCounts)
       .on("postgres_changes", { event: "*", schema: "public", table: "organizations" }, loadCounts)
+      .on("postgres_changes", { event: "*", schema: "public", table: "contact_messages" }, loadCounts)
       .subscribe();
     return () => {
       supabase!.removeChannel(channel);
@@ -134,7 +143,7 @@ export default function AdminApp() {
         <div style={{ fontSize: "9.5px", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, color: "rgba(255,255,255,0.28)", padding: "8px 10px 6px" }}>Main</div>
         {NAV.map((n) => {
           const active = page === n.id;
-          const cnt = n.id === "startups" ? liveCounts.startups : n.id === "challenges" ? liveCounts.challenges : n.id === "partners" ? liveCounts.partners : n.cnt;
+          const cnt = n.id === "startups" ? liveCounts.startups : n.id === "challenges" ? liveCounts.challenges : n.id === "partners" ? liveCounts.partners : n.id === "messages" ? liveCounts.messages : n.cnt;
           return (
             <button
               key={n.id}
@@ -247,6 +256,7 @@ export default function AdminApp() {
         {page === "events" && <EventsTab searchQuery={searchQuery} />}
         {page === "knowledge" && <KnowledgeTab searchQuery={searchQuery} />}
         {page === "signups" && <EcosystemSignupsTab searchQuery={searchQuery} />}
+        {page === "messages" && <ContactMessagesTab searchQuery={searchQuery} />}
         {page === "partners" && <PartnersTab searchQuery={searchQuery} />}
         {page === "chatbot-kb" && <ChatbotKnowledgeTab searchQuery={searchQuery} />}
         {page === "settings" && <SettingsTab searchQuery={searchQuery} />}
