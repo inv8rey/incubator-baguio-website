@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { DARK, ORANGE } from "../data";
-import { BreakdownBars, TrendChart } from "../charts";
+import { BreakdownBars, LineChart } from "../charts";
 import { supabase } from "../../../lib/supabaseClient";
 
 interface Totals {
@@ -164,7 +164,7 @@ export default function AnalyticsPanel({ ready }: { ready: boolean }) {
           <div style={{ marginBottom: 20 }}>
             <div style={{ fontSize: 12.5, fontWeight: 600, color: "#5A544B", marginBottom: 10 }}>Daily views</div>
             {daily.length > 0 ? (
-              <TrendChart data={daily.map((d) => ({ label: shortDate(d.day), value: d.views }))} />
+              <LineChart data={daily.map((d) => ({ label: shortDate(d.day), value: d.views }))} />
             ) : (
               <div style={{ fontSize: 12.5, color: "#8B8479" }}>No pageviews recorded in the last 30 days.</div>
             )}

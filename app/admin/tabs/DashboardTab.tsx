@@ -339,7 +339,6 @@ export default function DashboardTab() {
     const key = o.org_type || "Other";
     orgCounts.set(key, (orgCounts.get(key) ?? 0) + 1);
   });
-  const orgTotal = orgs.length;
   const orgRows = [...orgCounts.entries()].sort((a, b) => b[1] - a[1]).map(([label, count]) => ({ label, count, color: ORG_TYPE_COLORS[label] ?? "#8B8479" }));
 
   const topFunded = startups
@@ -354,7 +353,7 @@ export default function DashboardTab() {
   const completeProfiles = profiles.filter((p) => p.full_name?.trim() && p.email?.trim()).length;
   const profileCompletionPct = profiles.length ? Math.round((completeProfiles / profiles.length) * 100) : 0;
 
-  // Opening Innovation
+  // Open Innovation
   const challengesPosted = curatedChallenges.length + submissions.length;
   const solutionsSubmitted = solutions.length;
 
@@ -476,7 +475,7 @@ export default function DashboardTab() {
       {/* OPENING INNOVATION / FUNDING AND STARTUP GROWTH */}
       <div className="ib-admin-grid-2-bottom" style={{ display: "grid", gridTemplateColumns: "1fr 1.6fr", gap: 16, alignItems: "start" }}>
         <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 18 }}>Opening Innovation</div>
+          <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 18 }}>Open Innovation</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
               <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Challenges Posted</div>
@@ -564,31 +563,23 @@ export default function DashboardTab() {
         </div>
       </div>
 
-      {/* BOTTOM ROW — Top Funded Startups / Ecosystem Partners by Type */}
-      <div className="ib-admin-grid-2-bottom" style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 16, alignItems: "start" }}>
-        <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Top Funded Startups</div>
-          <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 10 }}>By total funding raised on record</div>
-          <div style={{ fontSize: 30, fontWeight: 600, color: DARK, letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 16 }}>{formatPhp(totalFunding)}</div>
-          {topFunded.length === 0 ? (
-            <div style={{ fontSize: 12.5, color: "#8B8479" }}>No funding recorded yet.</div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {topFunded.map((f) => (
-                <div key={f.name} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5 }}>
-                  <span style={{ color: "#5A544B", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{f.name}</span>
-                  <span style={{ fontWeight: 600, color: DARK }}>{f.display}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Ecosystem Partners by Type</div>
-          <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 16 }}>TBIs, corporate, government, and community orgs</div>
-          {orgTotal > 0 ? <StageDonut data={orgRows} total={orgTotal} /> : <div style={{ fontSize: 12.5, color: "#8B8479", padding: "12px 0" }}>No organizations yet.</div>}
-        </div>
+      {/* TOP FUNDED STARTUPS — org-type breakdown now lives in Ecosystem Composition above, no need to repeat it here */}
+      <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Top Funded Startups</div>
+        <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 10 }}>By total funding raised on record</div>
+        <div style={{ fontSize: 30, fontWeight: 600, color: DARK, letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 16 }}>{formatPhp(totalFunding)}</div>
+        {topFunded.length === 0 ? (
+          <div style={{ fontSize: 12.5, color: "#8B8479" }}>No funding recorded yet.</div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {topFunded.map((f) => (
+              <div key={f.name} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5 }}>
+                <span style={{ color: "#5A544B", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{f.name}</span>
+                <span style={{ fontWeight: 600, color: DARK }}>{f.display}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
