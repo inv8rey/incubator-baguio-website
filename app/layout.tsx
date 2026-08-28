@@ -71,6 +71,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {/* Keyboard users land here first and can jump past the nav, which is
+            otherwise ~10 tab stops on every page. Visible only on focus. */}
+        <a href="#main" className="ib-skip-link">Skip to content</a>
         <PageLoader />
         <PostHogProvider>
           <AuthProvider>

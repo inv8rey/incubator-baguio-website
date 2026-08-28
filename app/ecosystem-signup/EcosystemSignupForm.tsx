@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
+import { checkFormGuard, honeypotProps } from "../../lib/formGuard";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } from "../dashboard/styles";
 import { SECTOR_FILTERS } from "../admin/data";
 import { MENTOR_SPECIALIZATIONS } from "../ecosystem/data";
@@ -69,6 +70,7 @@ export default function EcosystemSignupForm() {
   // Organization fields
   const [oName, setOName] = useState("");
   const [oOrgType, setOOrgType] = useState<string>(ORG_TYPES[0]);
+  const [honeypot, setHoneypot] = useState("");
   const [oType, setOType] = useState("");
   const [oDescription, setODescription] = useState("");
   const [oWebsite, setOWebsite] = useState("");
@@ -181,6 +183,14 @@ export default function EcosystemSignupForm() {
 
     setError("");
     setBusy(true);
+    const guard = await checkFormGuard(honeypot, "ecosystem-signup", 3);
+    if (!guard.ok) {
+      setBusy(false);
+      if (guard.error) setError(guard.error);
+      else setSubmitted(true);
+      return;
+    }
+
     const { error: err } = await supabase.from("ecosystem_signups").insert({
       entity_type: entityType,
       contact_name: effectiveContactName.trim(),
@@ -212,6 +222,7 @@ export default function EcosystemSignupForm() {
 
   return (
     <form onSubmit={submit} style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: 20 }}>
+      <input {...honeypotProps} value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
       <div>
         <label style={labelStyle}>I&rsquo;m submitting a&hellip;</label>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>

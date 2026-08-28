@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
+import { checkFormGuard, honeypotProps } from "../../lib/formGuard";
 
 const ORANGE = "#F26522";
 const DARK = "#1A1714";
@@ -51,6 +52,7 @@ export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [busy, setBusy] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [honeypot, setHoneypot] = useState("");
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -71,6 +73,17 @@ export default function ContactForm() {
       return;
     }
     setBusy(true);
+
+    const guard = await checkFormGuard(honeypot, "contact");
+    if (!guard.ok) {
+      setBusy(false);
+      // A tripped honeypot returns an empty message on purpose: show the
+      // normal success state so a bot learns nothing.
+      if (guard.error) setSubmitError(guard.error);
+      else setSubmitted(true);
+      return;
+    }
+
     const { error: err } = await supabase.from("contact_messages").insert({
       name: form.name.trim(),
       email: form.email.trim(),
@@ -102,6 +115,7 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={submit} style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "36px 40px", display: "flex", flexDirection: "column", gap: 18 }}>
+      <input {...honeypotProps} value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         <div>
           <label style={labelStyle}>Full name</label>

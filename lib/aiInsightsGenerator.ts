@@ -17,6 +17,7 @@ const CF_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 const SYSTEM_PROMPT = `You are an analyst for Incubator Baguio, a city-run startup ecosystem alliance. You'll be given a JSON snapshot of the ecosystem's current stats: startups, founders, funding, sectors, stages, TBI affiliations, partner organizations, ecosystem partners, Knowledge Hub resources, upcoming events, and recent activity across all of these.
 
@@ -30,7 +31,13 @@ export async function generateAndCacheInsights(source: "cron" | "manual") {
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) throw new Error("The backend isn't configured yet.");
   if (!CF_ACCOUNT_ID || !CF_API_TOKEN) throw new Error("AI insights aren't configured yet.");
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // Prefers the service-role key: since profiles and ai_insights were locked
+  // down (SEC-01 / SEC-06), the anon key can no longer read signup timestamps
+  // or write the cached result. The cron job has no user session of its own,
+  // so this is its only authenticated path. Falls back to the anon key so a
+  // deployment without the key still renders — with sparser stats, and the
+  // insert error surfaced rather than swallowed.
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY || SUPABASE_ANON_KEY);
   const [s, m, o, p, c, ch, ep, kr, ev] = await Promise.all([
     supabase.from("startups").select("id,name,sector,lifecycle_stage,tbi_affiliation,funding_raised,created_at"),
     supabase.from("mentors").select("id,name,created_at"),
@@ -40,7 +47,7 @@ export async function generateAndCacheInsights(source: "cron" | "manual") {
     supabase.from("challenges").select("id", { count: "exact", head: true }),
     supabase.from("ecosystem_partners").select("id,name,created_at"),
     supabase.from("knowledge_resources").select("id,title,category,created_at"),
-    supabase.from("event_submissions").select("id,title,category,status,event_date,created_at"),
+    supabase.from("public_events").select("id,title,category,status,event_date,created_at"),
   ]);
 
   const stats = computeAiStats({

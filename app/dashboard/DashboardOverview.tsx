@@ -237,9 +237,8 @@ export default function DashboardOverview() {
       }));
 
       const { data: eventRowsForFeed } = await supabase!
-        .from("event_submissions")
+        .from("public_events")
         .select("id,title,venue,event_date,category")
-        .eq("status", "approved")
         .gte("event_date", todayIso)
         .order("event_date", { ascending: true })
         .limit(3);
@@ -277,9 +276,8 @@ export default function DashboardOverview() {
       setRecommended([...challengeItems, ...opportunityItems, ...eventItems, ...submittedItems]);
 
       const { data: eventRows } = await supabase!
-        .from("event_submissions")
+        .from("public_events")
         .select("id,title,venue,event_date,event_time")
-        .eq("status", "approved")
         .gte("event_date", todayIso)
         .order("event_date", { ascending: true })
         .limit(3);

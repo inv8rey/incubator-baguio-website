@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "../../AuthProvider";
 import { supabase } from "../../../lib/supabaseClient";
@@ -9,6 +10,8 @@ import { slugify } from "../../../lib/slug";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } from "../styles";
 import { ORG_TYPES_WITH_ACADEME, ORG_SECTORS, ORG_EXPERTISE_SUGGESTIONS, ORG_CAN_OFFER_SUGGESTIONS, ORG_LOOKING_FOR_SUGGESTIONS, PHILIPPINE_REGIONS } from "../../../lib/organizationOptions";
 import TagChips from "../TagChips";
+
+const LocationPicker = dynamic(() => import("../../LocationPicker"), { ssr: false });
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -28,6 +31,8 @@ interface Organization {
   facebook_url: string;
   social_url: string;
   address: string;
+  latitude: number | null;
+  longitude: number | null;
   city: string;
   province: string;
   region: string;
@@ -58,6 +63,8 @@ function emptyEditForm(o: Organization) {
     facebook_url: o.facebook_url,
     social_url: o.social_url,
     address: o.address,
+    latitude: o.latitude ?? null,
+    longitude: o.longitude ?? null,
     city: o.city,
     province: o.province,
     region: o.region,
@@ -89,6 +96,8 @@ function mapRow(r: any): Organization {
     facebook_url: r.facebook_url || "",
     social_url: r.social_url || "",
     address: r.address || "",
+    latitude: r.latitude ?? null,
+    longitude: r.longitude ?? null,
     city: r.city || "",
     province: r.province || "",
     region: r.region || "",
@@ -377,6 +386,8 @@ export default function OrganizationManager() {
       facebook_url: editForm.facebook_url.trim(),
       social_url: editForm.social_url.trim(),
       address: editForm.address.trim(),
+      latitude: editForm.latitude,
+      longitude: editForm.longitude,
       city: editForm.city.trim(),
       province: editForm.province.trim(),
       region: editForm.region.trim(),
@@ -699,6 +710,24 @@ export default function OrganizationManager() {
               <div>
                 <label style={labelStyle}>Address</label>
                 <input style={inputStyle} value={editForm.address} onChange={(e) => setEditForm((f) => (f ? { ...f, address: e.target.value } : f))} placeholder="Street, barangay" />
+              </div>
+              <div>
+                <label style={labelStyle}>Pin your exact location</label>
+                <p style={{ margin: "0 0 8px", fontSize: 12.5, color: "#8B8479" }}>
+                  Search for your address or drag the marker. This is what places you on the ecosystem map.
+                </p>
+                <LocationPicker
+                  value={
+                    editForm.latitude != null && editForm.longitude != null
+                      ? { lat: editForm.latitude, lng: editForm.longitude, address: editForm.address }
+                      : null
+                  }
+                  onChange={(v) =>
+                    setEditForm((f) =>
+                      f ? { ...f, latitude: v?.lat ?? null, longitude: v?.lng ?? null, address: v?.address || f.address } : f
+                    )
+                  }
+                />
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                 <div>

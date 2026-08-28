@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { BAGUIO_CENTER } from "./ecosystem/EcosystemMap";
+import { BAGUIO_CENTER } from "./mapConstants";
 
 const ORANGE = "#F26522";
 

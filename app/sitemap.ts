@@ -19,6 +19,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/get-started/", changeFrequency: "monthly", priority: 0.6 },
     { path: "/login/", changeFrequency: "yearly", priority: 0.3 },
     { path: "/signup/", changeFrequency: "yearly", priority: 0.4 },
+    { path: "/events/", changeFrequency: "weekly", priority: 0.6 },
+    { path: "/search/", changeFrequency: "monthly", priority: 0.4 },
+    { path: "/terms/", changeFrequency: "yearly", priority: 0.3 },
+    { path: "/privacy/", changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const { data } = supabase ? await supabase.from("challenges").select("id,title") : { data: [] };
@@ -28,7 +32,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...challengeRoutes].map((r) => ({
+  // Public organization profiles — approved and public only, matching what
+  // app/organizations/[slug] will actually render.
+  const { data: orgRows } = supabase
+    ? await supabase.from("organizations").select("slug").eq("approval_status", "approved").eq("is_public", true)
+    : { data: [] };
+  const orgRoutes = (orgRows ?? []).map((o: { slug: string }) => ({
+    path: `/organizations/${o.slug}/`,
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  }));
+
+  return [...staticRoutes, ...challengeRoutes, ...orgRoutes].map((r) => ({
     url: `${SITE_URL}${r.path}`,
     lastModified: now,
     changeFrequency: r.changeFrequency,

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
+import { checkFormGuard, honeypotProps } from "../../lib/formGuard";
 
 const visitorTypes = [
   "Student",
@@ -60,6 +61,7 @@ export default function EvaluationForm() {
   const [updates, setUpdates] = useState("");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [honeypot, setHoneypot] = useState("");
   const [saving, setSaving] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -101,6 +103,12 @@ export default function EvaluationForm() {
       }
 
       setSaving(true);
+      const guard = await checkFormGuard(honeypot, "evaluation", 3);
+      if (!guard.ok) {
+        if (guard.error) throw new Error(guard.error);
+        return;
+      }
+
       const { error } = await supabase.from("consultation_feedback").insert({
         visitor_type: visitorType,
         visitor_type_other: visitorType === "Other" ? visitorTypeOther.trim() : "",
@@ -154,6 +162,7 @@ export default function EvaluationForm() {
 
   return (
     <form className="evaluation-form" onSubmit={submit}>
+      <input {...honeypotProps} value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
       <section className="evaluation-section">
         <h2 className="evaluation-question">
           <span>1</span>

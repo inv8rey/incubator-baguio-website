@@ -92,6 +92,14 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
   line-clamp: 3;
 }
 
+.ib-line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
 .ib-card-hover, .ib-row-hover, .ib-event-hover, .ib-resource-hover {
   transition: box-shadow .28s cubic-bezier(.22,.61,.36,1), background .28s ease, transform .28s cubic-bezier(.22,.61,.36,1), border-color .28s ease;
 }
@@ -1320,4 +1328,25 @@ img { max-width: 100%; height: auto; }
     height: 42px;
     justify-content: center;
   }
+}
+
+/* Skip-to-content: off-screen until focused, then pinned top-left so a
+   keyboard user can bypass the navigation on any page. */
+.ib-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+  background: #1a1714;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 0 0 10px 0;
+  text-decoration: none;
+}
+.ib-skip-link:focus {
+  left: 0;
+  outline: 2px solid #f26522;
+  outline-offset: 2px;
 }

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "../AuthProvider";
 import { supabase } from "../../lib/supabaseClient";
+import { checkFormGuard, honeypotProps } from "../../lib/formGuard";
 import { uploadEventSubmissionPoster } from "../../lib/uploadLogo";
 import TimeRangePicker from "./TimeRangePicker";
 import {
@@ -666,10 +667,11 @@ export default function CalendarClient() {
 
   useEffect(() => {
     if (!supabase) return;
+    // public_events, not event_submissions: the view exposes display columns
+    // only, keeping the organiser's email/phone off the public calendar.
     supabase
-      .from("event_submissions")
+      .from("public_events")
       .select("*")
-      .eq("status", "approved")
       .then(({ data }) => setApprovedEvents((data ?? []).map(mapEventRow)));
   }, []);
 

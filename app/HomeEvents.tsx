@@ -95,10 +95,11 @@ export default function HomeEvents({ bp }: { bp: string }) {
       setEvents([]);
       return;
     }
+    // public_events, not event_submissions: the view exposes display columns
+    // only, keeping the organiser's email/phone off the public site.
     const { data } = await supabase
-      .from("event_submissions")
+      .from("public_events")
       .select("*")
-      .eq("status", "approved")
       .gte("event_date", todayIso())
       .order("event_date", { ascending: true })
       .limit(4);

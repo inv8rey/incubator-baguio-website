@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { checkFormGuard, honeypotProps } from "../lib/formGuard";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -9,6 +10,7 @@ export default function NewsletterSignup() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [error, setError] = useState("");
+  const [honeypot, setHoneypot] = useState("");
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -22,6 +24,18 @@ export default function NewsletterSignup() {
     }
     setError("");
     setStatus("loading");
+
+    const guard = await checkFormGuard(honeypot, "newsletter");
+    if (!guard.ok) {
+      if (guard.error) {
+        setError(guard.error);
+        setStatus("error");
+      } else {
+        setStatus("done");
+      }
+      return;
+    }
+
     const { error: err } = await supabase.from("newsletter_subscribers").insert({ email: email.trim(), source: "homepage" });
     if (err) {
       // Unique-constraint violation just means they're already on the list.
@@ -74,6 +88,7 @@ export default function NewsletterSignup() {
           </div>
         ) : (
           <form onSubmit={submit} style={{ position: "relative" }}>
+            <input {...honeypotProps} value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <input
                 type="email"

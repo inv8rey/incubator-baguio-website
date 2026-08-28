@@ -42,6 +42,7 @@ export function navBarHtml(active?: string) {
       ${links}
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
+      <a href="${BP}/search" aria-label="Search the ecosystem" title="Search" style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9999px;border:1px solid rgba(255,255,255,0.18);text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.82)" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></a>
       <a href="${BP}/signup" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:8px;background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:11px 22px;border-radius:9999px;text-decoration:none;">Join the Ecosystem <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       <span class="ib-auth-slot"></span>
     </div>
@@ -78,6 +79,7 @@ export function footerHtml() {
           <a class="ib-footlink" href="${BP}/challenges">Challenges</a>
           <a class="ib-footlink" href="${BP}/knowledge">Knowledge Hub</a>
           <a class="ib-footlink" href="${BP}/ecosystem">Ecosystem</a>
+          <a class="ib-footlink" href="${BP}/search">Search</a>
           <a class="ib-footlink" href="${BP}/calendar">Calendar</a>
           <a class="ib-footlink" href="${BP}/get-started">Get Started</a>
           <a class="ib-footlink" href="${BP}/contact">Contact</a>

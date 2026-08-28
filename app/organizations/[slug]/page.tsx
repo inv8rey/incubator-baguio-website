@@ -92,6 +92,18 @@ ${navBarHtml("/ecosystem")}
     </div>
 
     <div style="display:flex;flex-direction:column;gap:20px;">
+      ${o.address || (o.latitude != null && o.longitude != null) ? `
+      <div style="background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:18px;padding:24px;">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#F26522;margin-bottom:16px;">Find them</div>
+        ${o.address ? `<p style="margin:0 0 14px;font-size:13.5px;line-height:1.6;color:#44444C;">${o.address}</p>` : ""}
+        <a href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(
+          o.latitude != null && o.longitude != null ? `${o.latitude},${o.longitude}` : `${o.address} ${location}`.trim()
+        )}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#285E7A;text-decoration:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#285E7A" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          Open in Google Maps
+        </a>
+      </div>` : ""}
+
       <div style="background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:18px;padding:24px;">
         <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#F26522;margin-bottom:16px;">Connect</div>
         <div style="display:flex;flex-direction:column;gap:12px;font-size:13.5px;">

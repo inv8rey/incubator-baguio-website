@@ -55,7 +55,7 @@ export default function AuthShell({ eyebrow, children }: { eyebrow: string; chil
         {/* LEFT — branding */}
         <div className="ib-auth-left" style={{ position: "relative", background: "#F6F2EA", padding: "48px 52px 32px", display: "flex", flexDirection: "column", overflow: "hidden", minHeight: 640 }}>
           <img
-            src={`${BP}/assets/baguio-cathedral-sunset.png`}
+            src={`${BP}/assets/baguio-cathedral-sunset.jpg`}
             alt=""
             aria-hidden
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center bottom", zIndex: 0 }}

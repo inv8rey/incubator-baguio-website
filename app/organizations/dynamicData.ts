@@ -26,6 +26,8 @@ export interface OrganizationProfile {
   looking_for: string[];
   approval_status: string;
   contact_public: boolean;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 // Public profile at /organizations/[slug] (PRD §11) -- only ever returns an
@@ -34,7 +36,13 @@ export interface OrganizationProfile {
 // like it's absent from the Ecosystem directory.
 export async function fetchOrganizationBySlug(slug: string): Promise<OrganizationProfile | null> {
   if (!supabase) return null;
-  const { data } = await supabase.from("organizations").select("*").eq("slug", slug).eq("is_public", true).maybeSingle();
+  const { data } = await supabase
+    .from("organizations")
+    .select("*")
+    .eq("slug", slug)
+    .eq("is_public", true)
+    .eq("approval_status", "approved")
+    .maybeSingle();
   if (!data) return null;
   return {
     id: data.id,
@@ -52,6 +60,8 @@ export async function fetchOrganizationBySlug(slug: string): Promise<Organizatio
     facebook_url: data.facebook_url || "",
     social_url: data.social_url || "",
     address: data.address || "",
+    latitude: data.latitude ?? null,
+    longitude: data.longitude ?? null,
     city: data.city || "",
     province: data.province || "",
     region: data.region || "",

@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useAuth } from "../../AuthProvider";
 import { supabase } from "../../../lib/supabaseClient";
 import { uploadMentorPhoto } from "../../../lib/uploadLogo";
 import { MENTOR_SPECIALIZATIONS } from "../../ecosystem/data";
 import { SECTOR_FILTERS } from "../../admin/data";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } from "../styles";
+
+const LocationPicker = dynamic(() => import("../../LocationPicker"), { ssr: false });
 
 const MAX_SPECIALIZATIONS = 3;
 
@@ -20,9 +23,12 @@ interface MentorProfile {
   photo_url: string;
   sector: string;
   social_link: string;
+  address: string;
+  latitude: number | null;
+  longitude: number | null;
 }
 
-const EMPTY = { name: "", position: "", company: "", bio: "", specializations: [] as string[], photo_url: "", sector: SECTOR_FILTERS[0].label, social_link: "" };
+const EMPTY = { name: "", position: "", company: "", bio: "", specializations: [] as string[], photo_url: "", sector: SECTOR_FILTERS[0].label, social_link: "", address: "", latitude: null as number | null, longitude: null as number | null };
 
 export default function MentorManager() {
   const { user, profile, refreshProfile } = useAuth();
@@ -40,7 +46,7 @@ export default function MentorManager() {
       const { data } = await supabase!.from("mentors").select("*").eq("owner_id", user.id).maybeSingle();
       if (data) {
         setMentor(data as MentorProfile);
-        setForm({ name: data.name, position: data.position, company: data.company, bio: data.bio, specializations: data.specializations ?? [], photo_url: data.photo_url, sector: data.sector || SECTOR_FILTERS[0].label, social_link: data.social_link || "" });
+        setForm({ name: data.name, position: data.position, company: data.company, bio: data.bio, specializations: data.specializations ?? [], photo_url: data.photo_url, sector: data.sector || SECTOR_FILTERS[0].label, social_link: data.social_link || "", address: data.address || "", latitude: data.latitude ?? null, longitude: data.longitude ?? null });
       } else {
         setForm((f) => ({ ...f, name: profile?.full_name || "" }));
       }
@@ -190,6 +196,24 @@ export default function MentorManager() {
         <div>
           <label style={labelStyle}>Facebook / LinkedIn / Website (optional)</label>
           <input style={inputStyle} value={form.social_link} onChange={(e) => update("social_link", e.target.value)} placeholder="https://" />
+        </div>
+        <div>
+          <label style={labelStyle}>Where you're based (optional)</label>
+          <p style={{ margin: "0 0 8px", fontSize: 12.5, color: "#8B8479" }}>
+            Helps founders find mentors near them. Search for a place or drag the marker.
+          </p>
+          <LocationPicker
+            value={
+              form.latitude != null && form.longitude != null
+                ? { lat: form.latitude, lng: form.longitude, address: form.address }
+                : null
+            }
+            onChange={(v) => {
+              update("latitude", v?.lat ?? null);
+              update("longitude", v?.lng ?? null);
+              if (v?.address) update("address", v.address);
+            }}
+          />
         </div>
         {error && <p style={{ color: "#E23A2E", fontSize: 13, margin: 0 }}>{error}</p>}
         {saved && <p style={{ color: "#1A6B3C", fontSize: 13, margin: 0 }}>Saved.</p>}
