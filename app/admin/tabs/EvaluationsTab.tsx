@@ -128,6 +128,15 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
     };
   }, []);
 
+  async function remove(id: string) {
+    if (!supabase) return;
+    if (!window.confirm("Delete this response permanently? This can't be undone.")) return;
+    const { error: err } = await supabase.from("consultation_feedback").delete().eq("id", id);
+    if (err) return window.alert(err.message);
+    setViewing(null);
+    load();
+  }
+
   const visitorTypes = useMemo(() => {
     const values = Array.from(new Set(rows.map(resolvedVisitorType).filter((v) => v !== "—")));
     return ["All", ...values.sort()];
@@ -291,6 +300,10 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
                   </div>
                 ))}
               </div>
+            </div>
+
+            <div style={{ borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 16, display: "flex" }}>
+              <button onClick={() => remove(viewing.id)} style={{ fontSize: 13, fontWeight: 600, color: "#8B8479", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer", marginLeft: "auto" }}>Delete</button>
             </div>
           </div>
         </div>

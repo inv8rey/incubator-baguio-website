@@ -35,9 +35,12 @@ interface Startup {
   latitude: number | null;
   longitude: number | null;
   founders: FounderRow[];
+  tbiAffiliation: string;
   initials: string;
   color: string;
 }
+
+const KNOWN_TBIS = ["UC InTTO", "SLU SIRIB", "UPB SILBI", "BSU-ATBI", "DOST Regional TBI"];
 
 const EMPTY_FORM = {
   name: "",
@@ -48,6 +51,7 @@ const EMPTY_FORM = {
   description: "",
   logoUrl: "",
   website: "",
+  tbiAffiliation: "",
 };
 
 export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string }) {
@@ -78,7 +82,12 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
       setLoaded(true);
       return;
     }
-    const { data } = await supabase.from("startups").select("*").order("created_at", { ascending: false });
+    const { data, error: err } = await supabase.from("startups").select("*").order("created_at", { ascending: false });
+    if (err) {
+      setError(err.message);
+      setLoaded(true);
+      return;
+    }
     setStartups(
       (data ?? []).map((s: any) => {
         const p = paletteFor(s.name);
@@ -96,6 +105,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
           latitude: s.latitude,
           longitude: s.longitude,
           founders: s.founders ?? [],
+          tbiAffiliation: s.tbi_affiliation ?? "",
           initials: initialsOf(s.name),
           color: p.color,
         };
@@ -126,7 +136,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
 
   function openEditModal(s: Startup) {
     setEditingId(s.id);
-    setForm({ name: s.name, sector: s.sector, stage: s.stage, funding: s.funding, since: s.since, description: s.description, logoUrl: s.logoUrl, website: s.website });
+    setForm({ name: s.name, sector: s.sector, stage: s.stage, funding: s.funding, since: s.since, description: s.description, logoUrl: s.logoUrl, website: s.website, tbiAffiliation: s.tbiAffiliation });
     setLocation(s.latitude != null && s.longitude != null ? { lat: s.latitude, lng: s.longitude, address: s.address } : null);
     setFounders(s.founders.length > 0 ? s.founders : [{ name: "", status: "Student Founder" }]);
     setError("");
@@ -184,6 +194,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
       description: form.description.trim(),
       logo_url: form.logoUrl,
       website: form.website.trim(),
+      tbi_affiliation: form.tbiAffiliation.trim(),
       address: location?.address ?? "",
       latitude: location?.lat ?? null,
       longitude: location?.lng ?? null,
@@ -222,6 +233,10 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
           <StatCard key={s.label} {...s} compact />
         ))}
       </div>
+
+      {loaded && !modalOpen && error && (
+        <div style={{ background: "rgba(226,58,46,0.08)", border: "1.5px solid rgba(226,58,46,0.2)", borderRadius: 12, padding: "10px 16px", color: "#E23A2E", fontSize: 13 }}>{error}</div>
+      )}
 
       <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(64,50,34,0.12)", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <div style={{ display: "flex", background: "#F5F4F0", borderRadius: 999, padding: 3, gap: 2 }}>
@@ -441,6 +456,22 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                   ))}
                 </select>
               </div>
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>TBI affiliation</label>
+              <input
+                list="tbi-affiliation-options"
+                value={form.tbiAffiliation}
+                onChange={(e) => update("tbiAffiliation", e.target.value)}
+                placeholder="e.g. UC InTTO (leave blank if independent)"
+                style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
+              />
+              <datalist id="tbi-affiliation-options">
+                {KNOWN_TBIS.map((t) => (
+                  <option key={t} value={t} />
+                ))}
+              </datalist>
             </div>
 
             <div>

@@ -283,6 +283,12 @@ create policy "admins can read consultation feedback" on public.consultation_fee
     exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
   );
 
+drop policy if exists "admins can delete consultation feedback" on public.consultation_feedback;
+create policy "admins can delete consultation feedback" on public.consultation_feedback
+  for delete using (
+    exists (select 1 from public.profiles where id = auth.uid() and is_admin = true)
+  );
+
 -- ---------------------------------------------------------------------------
 -- organizations: "Publish an organization"
 -- org_type mirrors app/ecosystem/data.ts EcosystemCategory values

@@ -89,18 +89,37 @@ export default function AdminApp() {
   const [page, setPage] = useState<TabId>("dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [liveCounts, setLiveCounts] = useState<{ startups: number | null; challenges: number | null; partners: number | null; messages: number | null }>({ startups: null, challenges: null, partners: null, messages: null });
+  const [liveCounts, setLiveCounts] = useState<{
+    startups: number | null;
+    challenges: number | null;
+    partners: number | null;
+    messages: number | null;
+    events: number | null;
+    knowledge: number | null;
+    signups: number | null;
+  }>({ startups: null, challenges: null, partners: null, messages: null, events: null, knowledge: null, signups: null });
 
   useEffect(() => {
     if (!supabase) return;
     async function loadCounts() {
-      const [s, c, o, m] = await Promise.all([
+      const [s, c, o, m, e, k, sg] = await Promise.all([
         supabase!.from("startups").select("id", { count: "exact", head: true }),
         supabase!.from("challenges").select("id", { count: "exact", head: true }),
         supabase!.from("organizations").select("id", { count: "exact", head: true }),
         supabase!.from("contact_messages").select("id", { count: "exact", head: true }).eq("status", "new"),
+        supabase!.from("event_submissions").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase!.from("knowledge_resources").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase!.from("ecosystem_signups").select("id", { count: "exact", head: true }).eq("status", "pending"),
       ]);
-      setLiveCounts({ startups: s.count ?? 0, challenges: c.count ?? 0, partners: o.count ?? 0, messages: m.count ?? 0 });
+      setLiveCounts({
+        startups: s.count ?? 0,
+        challenges: c.count ?? 0,
+        partners: o.count ?? 0,
+        messages: m.count ?? 0,
+        events: e.count ?? 0,
+        knowledge: k.count ?? 0,
+        signups: sg.count ?? 0,
+      });
     }
     loadCounts();
     const channel = supabase
@@ -109,6 +128,9 @@ export default function AdminApp() {
       .on("postgres_changes", { event: "*", schema: "public", table: "challenges" }, loadCounts)
       .on("postgres_changes", { event: "*", schema: "public", table: "organizations" }, loadCounts)
       .on("postgres_changes", { event: "*", schema: "public", table: "contact_messages" }, loadCounts)
+      .on("postgres_changes", { event: "*", schema: "public", table: "event_submissions" }, loadCounts)
+      .on("postgres_changes", { event: "*", schema: "public", table: "knowledge_resources" }, loadCounts)
+      .on("postgres_changes", { event: "*", schema: "public", table: "ecosystem_signups" }, loadCounts)
       .subscribe();
     return () => {
       supabase!.removeChannel(channel);
@@ -143,7 +165,15 @@ export default function AdminApp() {
         <div style={{ fontSize: "9.5px", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, color: "rgba(255,255,255,0.28)", padding: "8px 10px 6px" }}>Main</div>
         {NAV.map((n) => {
           const active = page === n.id;
-          const cnt = n.id === "startups" ? liveCounts.startups : n.id === "challenges" ? liveCounts.challenges : n.id === "partners" ? liveCounts.partners : n.id === "messages" ? liveCounts.messages : n.cnt;
+          const cnt =
+            n.id === "startups" ? liveCounts.startups
+            : n.id === "challenges" ? liveCounts.challenges
+            : n.id === "partners" ? liveCounts.partners
+            : n.id === "messages" ? liveCounts.messages
+            : n.id === "events" ? liveCounts.events
+            : n.id === "knowledge" ? liveCounts.knowledge
+            : n.id === "signups" ? liveCounts.signups
+            : n.cnt;
           return (
             <button
               key={n.id}
