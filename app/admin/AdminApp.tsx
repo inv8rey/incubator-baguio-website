@@ -6,6 +6,7 @@ import { NAV, ORANGE, SUBS, TITLES, type TabId } from "./data";
 import DashboardTab from "./tabs/DashboardTab";
 import StartupsTab from "./tabs/StartupsTab";
 import ChallengesTab from "./tabs/ChallengesTab";
+import ChallengeApplicationsTab from "./tabs/ChallengeApplicationsTab";
 import EventsTab from "./tabs/EventsTab";
 import KnowledgeTab from "./tabs/KnowledgeTab";
 import EcosystemSignupsTab from "./tabs/EcosystemSignupsTab";
@@ -30,6 +31,12 @@ const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
     </>
   ),
   challenges: <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />,
+  solutions: (
+    <>
+      <path d={"M9 18h6M10 22h4"} />
+      <path d={"M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"} />
+    </>
+  ),
   events: (
     <>
       <rect x={3} y={4} width={18} height={17} rx={2} />
@@ -94,15 +101,16 @@ export default function AdminApp() {
     challenges: number | null;
     partners: number | null;
     messages: number | null;
+    solutions: number | null;
     events: number | null;
     knowledge: number | null;
     signups: number | null;
-  }>({ startups: null, challenges: null, partners: null, messages: null, events: null, knowledge: null, signups: null });
+  }>({ startups: null, challenges: null, partners: null, messages: null, solutions: null, events: null, knowledge: null, signups: null });
 
   useEffect(() => {
     if (!supabase) return;
     async function loadCounts() {
-      const [s, c, o, m, e, k, sg] = await Promise.all([
+      const [s, c, o, m, e, k, sg, sol] = await Promise.all([
         supabase!.from("startups").select("id", { count: "exact", head: true }),
         supabase!.from("challenges").select("id", { count: "exact", head: true }),
         supabase!.from("organizations").select("id", { count: "exact", head: true }),
@@ -110,6 +118,7 @@ export default function AdminApp() {
         supabase!.from("event_submissions").select("id", { count: "exact", head: true }).eq("status", "pending"),
         supabase!.from("knowledge_resources").select("id", { count: "exact", head: true }).eq("status", "pending"),
         supabase!.from("ecosystem_signups").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase!.from("challenge_applications").select("id", { count: "exact", head: true }).eq("status", "new"),
       ]);
       setLiveCounts({
         startups: s.count ?? 0,
@@ -119,6 +128,7 @@ export default function AdminApp() {
         events: e.count ?? 0,
         knowledge: k.count ?? 0,
         signups: sg.count ?? 0,
+        solutions: sol.count ?? 0,
       });
     }
     loadCounts();
@@ -131,6 +141,7 @@ export default function AdminApp() {
       .on("postgres_changes", { event: "*", schema: "public", table: "event_submissions" }, loadCounts)
       .on("postgres_changes", { event: "*", schema: "public", table: "knowledge_resources" }, loadCounts)
       .on("postgres_changes", { event: "*", schema: "public", table: "ecosystem_signups" }, loadCounts)
+      .on("postgres_changes", { event: "*", schema: "public", table: "challenge_applications" }, loadCounts)
       .subscribe();
     return () => {
       supabase!.removeChannel(channel);
@@ -173,6 +184,7 @@ export default function AdminApp() {
             : n.id === "events" ? liveCounts.events
             : n.id === "knowledge" ? liveCounts.knowledge
             : n.id === "signups" ? liveCounts.signups
+            : n.id === "solutions" ? liveCounts.solutions
             : n.cnt;
           return (
             <button
@@ -282,6 +294,7 @@ export default function AdminApp() {
 
         {page === "dashboard" && <DashboardTab />}
         {page === "startups" && <StartupsTab searchQuery={searchQuery} />}
+        {page === "solutions" && <ChallengeApplicationsTab searchQuery={searchQuery} />}
         {page === "challenges" && <ChallengesTab searchQuery={searchQuery} />}
         {page === "events" && <EventsTab searchQuery={searchQuery} />}
         {page === "knowledge" && <KnowledgeTab searchQuery={searchQuery} />}
