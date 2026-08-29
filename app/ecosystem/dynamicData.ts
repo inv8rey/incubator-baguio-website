@@ -87,7 +87,20 @@ export async function fetchDynamicEcosystemPartners(): Promise<EcosystemPartnerE
 
 export async function fetchDynamicFundedProjects(): Promise<FundedProjectEntry[]> {
   if (!supabase) return [];
-  const { data } = await supabase.from("funded_projects").select("*").order("created_at", { ascending: false });
+  // Left join: ecosystem_partners(...) rides along on partner_id so the
+  // card can show that partner's logo without a second round trip. A
+  // project with no partner_id (or before the migration lands) just gets
+  // null back for the joined column.
+  let { data, error } = await supabase
+    .from("funded_projects")
+    .select("*, ecosystem_partners(name,logo_url)")
+    .order("created_at", { ascending: false });
+  // Falls back to the plain query if partner_id/the join isn't live yet
+  // (schema migration not yet applied) -- projects still render, just
+  // without a partner logo, rather than the section going empty.
+  if (error) {
+    ({ data } = await supabase.from("funded_projects").select("*").order("created_at", { ascending: false }));
+  }
   return (data ?? []).map((f: any) => {
     const p = paletteFor(f.title);
     return {
@@ -100,6 +113,8 @@ export async function fetchDynamicFundedProjects(): Promise<FundedProjectEntry[]
       color: p.color,
       bg: p.bg,
       initials: initialsOf(f.title),
+      partnerLogoUrl: f.ecosystem_partners?.logo_url || "",
+      partnerName: f.ecosystem_partners?.name || "",
     };
   });
 }

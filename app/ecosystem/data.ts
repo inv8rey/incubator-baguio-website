@@ -161,6 +161,8 @@ export interface FundedProjectEntry {
   color: string;
   bg: string;
   initials: string;
+  partnerLogoUrl: string;
+  partnerName: string;
 }
 
 // Nothing is seeded here anymore — every Ecosystem directory tab (Startups,

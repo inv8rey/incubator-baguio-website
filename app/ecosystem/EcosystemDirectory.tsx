@@ -198,12 +198,16 @@ const PROJECT_STATUS_COLORS: Record<string, { color: string; bg: string }> = {
   Upcoming: { color: "#D88A0A", bg: "rgba(245,166,35,0.14)" },
 };
 
-function FundedProjectCard({ title, fundingAgency, leadInstitution, duration, status, color, bg, initials }: FundedProjectEntry) {
+function FundedProjectCard({ title, fundingAgency, leadInstitution, duration, status, color, bg, initials, partnerLogoUrl, partnerName }: FundedProjectEntry) {
   const statusStyle = PROJECT_STATUS_COLORS[status] || { color: "#5A544B", bg: "#F6F2EA" };
   return (
     <div className="ib-card-hover" style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: 24, display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 16 }}>
-        <div style={{ width: 46, height: 46, borderRadius: 12, background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 600, color, flexShrink: 0 }}>{initials}</div>
+        {partnerLogoUrl ? (
+          <img src={partnerLogoUrl} alt={partnerName} title={partnerName} style={{ width: 46, height: 46, borderRadius: 12, objectFit: "contain", background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.1)", flexShrink: 0 }} />
+        ) : (
+          <div style={{ width: 46, height: 46, borderRadius: 12, background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 600, color, flexShrink: 0 }}>{initials}</div>
+        )}
         <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: statusStyle.color, background: statusStyle.bg, padding: "5px 11px", borderRadius: 9999, whiteSpace: "nowrap" }}>{status}</span>
       </div>
       <h3 style={{ margin: "0 0 14px", fontSize: 16.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{title}</h3>

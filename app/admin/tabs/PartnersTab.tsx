@@ -89,13 +89,16 @@ interface FundedProjectRow {
   leadInstitution: string;
   duration: string;
   status: string;
+  partnerId: string | null;
+  partnerName: string;
+  partnerLogoUrl: string;
 }
 
 const TYPE_MAX = 40;
 const EMPTY_MENTOR = { name: "", position: "", company: "", bio: "", specializations: [] as string[], photoUrl: "", sector: SECTOR_FILTERS[0].label, socialLink: "" };
 const EMPTY_ORG = { name: "", description: "", website: "", contact_email: "", logoUrl: "", coverUrl: "", type: "" };
 const EMPTY_PARTNER = { name: "", logoUrl: "" };
-const EMPTY_FUNDED_PROJECT = { title: "", fundingAgency: "", leadInstitution: "", duration: "", status: PROJECT_STATUSES[0] as string };
+const EMPTY_FUNDED_PROJECT = { title: "", fundingAgency: "", leadInstitution: "", duration: "", status: PROJECT_STATUSES[0] as string, partnerId: "" };
 
 export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string }) {
   const [category, setCategory] = useState<Category>("Mentors");
@@ -153,9 +156,24 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
         };
       })
     );
-    setPartners((partnerData ?? []).map((p: any) => ({ id: p.id, name: p.name, logoUrl: p.logo_url })));
+    const partnerRows = (partnerData ?? []).map((p: any) => ({ id: p.id, name: p.name, logoUrl: p.logo_url }));
+    setPartners(partnerRows);
+    const partnerById = new Map(partnerRows.map((p) => [p.id, p]));
     setFundedProjects(
-      (projectData ?? []).map((f: any) => ({ id: f.id, title: f.title, fundingAgency: f.funding_agency || "", leadInstitution: f.lead_institution || "", duration: f.duration || "", status: f.status || "Ongoing" }))
+      (projectData ?? []).map((f: any) => {
+        const linked = f.partner_id ? partnerById.get(f.partner_id) : null;
+        return {
+          id: f.id,
+          title: f.title,
+          fundingAgency: f.funding_agency || "",
+          leadInstitution: f.lead_institution || "",
+          duration: f.duration || "",
+          status: f.status || "Ongoing",
+          partnerId: f.partner_id || null,
+          partnerName: linked?.name || "",
+          partnerLogoUrl: linked?.logoUrl || "",
+        };
+      })
     );
     setLoaded(true);
   }
@@ -308,7 +326,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
   function openEditFundedProject(f: FundedProjectRow) {
     setEditingId(f.id);
-    setFundedProjectForm({ title: f.title, fundingAgency: f.fundingAgency, leadInstitution: f.leadInstitution, duration: f.duration, status: f.status });
+    setFundedProjectForm({ title: f.title, fundingAgency: f.fundingAgency, leadInstitution: f.leadInstitution, duration: f.duration, status: f.status, partnerId: f.partnerId || "" });
     setError("");
     setModalOpen(true);
   }
@@ -407,7 +425,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
       if (err) return setError(err.message);
     } else if (isFundedProjects) {
       if (!fundedProjectForm.title.trim()) return setError("Add a project title.");
-      const payload = { title: fundedProjectForm.title.trim(), funding_agency: fundedProjectForm.fundingAgency.trim(), lead_institution: fundedProjectForm.leadInstitution.trim(), duration: fundedProjectForm.duration.trim(), status: fundedProjectForm.status };
+      const payload = { title: fundedProjectForm.title.trim(), funding_agency: fundedProjectForm.fundingAgency.trim(), lead_institution: fundedProjectForm.leadInstitution.trim(), duration: fundedProjectForm.duration.trim(), status: fundedProjectForm.status, partner_id: fundedProjectForm.partnerId || null };
       const { error: err } = editingId
         ? await supabase.from("funded_projects").update(payload).eq("id", editingId)
         : await supabase.from("funded_projects").insert(payload);
@@ -606,7 +624,12 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
           filteredFundedProjects.map((f) => (
             <div key={f.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", padding: 18 }}>
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 8 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{f.title}</div>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 10, minWidth: 0 }}>
+                  {f.partnerLogoUrl && (
+                    <img src={f.partnerLogoUrl} alt={f.partnerName} title={f.partnerName} style={{ width: 30, height: 30, borderRadius: 8, objectFit: "contain", background: "#F5F4F0", border: "1px solid rgba(64,50,34,0.12)", flexShrink: 0 }} />
+                  )}
+                  <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{f.title}</div>
+                </div>
                 <span style={{ fontSize: 10.5, fontWeight: 600, color: "#285E7A", background: "rgba(40,94,122,0.10)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{f.status}</span>
               </div>
               <div style={{ fontSize: 11.5, color: "#8B8479", lineHeight: 1.5, marginBottom: 8 }}>
@@ -826,6 +849,32 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                     placeholder="e.g. Benguet State University"
                     style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
                   />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Ecosystem partner logo</label>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    {(() => {
+                      const selected = partners.find((p) => p.id === fundedProjectForm.partnerId);
+                      return selected?.logoUrl ? (
+                        <img src={selected.logoUrl} alt="" style={{ width: 38, height: 38, borderRadius: 9, objectFit: "contain", background: "#F5F4F0", border: "1px solid rgba(64,50,34,0.12)", flexShrink: 0 }} />
+                      ) : (
+                        <div style={{ width: 38, height: 38, borderRadius: 9, background: "#F5F4F0", border: "1px solid rgba(64,50,34,0.12)", flexShrink: 0 }} />
+                      );
+                    })()}
+                    <select
+                      value={fundedProjectForm.partnerId}
+                      onChange={(e) => setFundedProjectForm((f) => ({ ...f, partnerId: e.target.value }))}
+                      style={{ flex: 1, fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box", appearance: "auto" }}
+                    >
+                      <option value="">No logo (show initials)</option>
+                      {partners.map((p) => (
+                        <option key={p.id} value={p.id}>{p.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div style={{ fontSize: 11, color: "#8B8479", marginTop: 4 }}>
+                    Picks from the logos managed under the &ldquo;Ecosystem Partners&rdquo; category above &mdash; add one there first if it&rsquo;s missing.
+                  </div>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   <div>
