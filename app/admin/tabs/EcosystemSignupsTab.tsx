@@ -52,6 +52,18 @@ function payloadLogo(p: Record<string, unknown>): string {
   return typeof p.logo_url === "string" ? p.logo_url : "";
 }
 
+function timeAgo(iso: string): string {
+  const ms = Date.now() - new Date(iso).getTime();
+  const mins = Math.round(ms / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.round(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.round(hrs / 24);
+  if (days < 7) return `${days}d ago`;
+  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
 export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?: string }) {
   const [signups, setSignups] = useState<SignupRow[]>([]);
   const [visitCount, setVisitCount] = useState<number | null>(null);
@@ -81,6 +93,10 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
 
   const q = searchQuery.toLowerCase();
   const filtered = signups.filter((s) => s.status === status && (!q || payloadName(s.payload).toLowerCase().includes(q) || s.contact_name.toLowerCase().includes(q)));
+
+  const weekMs = 7 * 24 * 60 * 60 * 1000;
+  const recentCount = signups.filter((s) => Date.now() - new Date(s.created_at).getTime() < weekMs).length;
+  const recentSignups = signups.slice(0, 5);
 
   async function reject(id: string) {
     if (!supabase) return;
@@ -162,6 +178,33 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
 
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
+        <div style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>Total signups</div>
+          <div style={{ fontSize: 26, fontWeight: 700, color: DARK }}>{signups.length}</div>
+        </div>
+        <div style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>New this week</div>
+          <div style={{ fontSize: 26, fontWeight: 700, color: DARK }}>{recentCount}</div>
+        </div>
+        <div style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1.5px solid rgba(64,50,34,0.12)", gridColumn: "span 2", minWidth: 0 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 8 }}>Most recent</div>
+          {recentSignups.length ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {recentSignups.map((s) => (
+                <div key={s.id} onClick={() => setViewing(s)} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, cursor: "pointer" }}>
+                  <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", color: ENTITY_COLORS[s.entity_type].color, background: ENTITY_COLORS[s.entity_type].bg, padding: "2px 7px", borderRadius: 999, flexShrink: 0 }}>{ENTITY_LABELS[s.entity_type]}</span>
+                  <span style={{ color: DARK, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{payloadName(s.payload)}</span>
+                  <span style={{ color: "#8B8479", flexShrink: 0, marginLeft: "auto" }}>{timeAgo(s.created_at)}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ fontSize: 12.5, color: "#8B8479" }}>No submissions yet.</div>
+          )}
+        </div>
+      </div>
+
       <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(64,50,34,0.12)", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#5A544B", flexShrink: 0 }}>
           <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2}><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z" /><circle cx={12} cy={12} r={3} /></svg>
