@@ -7,6 +7,7 @@ import { supabase } from "../../lib/supabaseClient";
 import { checkFormGuard, honeypotProps } from "../../lib/formGuard";
 import { uploadEventSubmissionPoster } from "../../lib/uploadLogo";
 import TimeRangePicker from "./TimeRangePicker";
+import EventsCarousel, { CATEGORY_GLYPHS, type CarouselEvent } from "../EventsCarousel";
 import {
   CATEGORY_COLORS,
   DARK,
@@ -26,9 +27,6 @@ import {
 } from "./data";
 
 const HAIRLINE = "rgba(64,50,34,0.10)";
-const CARD_W = 268;
-const CARD_GAP = 18;
-const CARD_STEP = CARD_W + CARD_GAP;
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const CATEGORIES = Object.keys(CATEGORY_COLORS) as EventCategory[];
@@ -144,17 +142,6 @@ function DayChip({ data, compact }: { data: ChipData; compact?: boolean }) {
   );
 }
 
-const CATEGORY_COVER_PATTERNS: Record<EventCategory, string> = {
-  Workshop: "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10",
-  Webinar: "M15 10l4.553-2.277A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
-  "Demo Day": "M13 2L3 14h9l-1 8 10-12h-9l1-8z",
-  Conference: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm7 0a3 3 0 0 0 0-6M23 21v-2a4 4 0 0 0-3-3.87",
-  Networking: "M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z",
-  Competition: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
-  Government: "M3 21h18M3 7v1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7H3l2-4h14l2 4M5 21V10.85M19 21V10.85M9 21v-4a3 3 0 0 1 6 0v4",
-  Other: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
-};
-
 function shortDate(iso: string) {
   const [, m, d] = iso.split("-").map(Number);
   return `${MONTH_NAMES[m - 1].slice(0, 3)} ${String(d).padStart(2, "0")}`;
@@ -166,210 +153,6 @@ function dateRangeLabel(start: string, end?: string) {
   const [, sm] = start.split("-").map(Number);
   const [, em, ed] = end.split("-").map(Number);
   return sm === em ? `${shortDate(start)}–${String(ed).padStart(2, "0")}` : `${shortDate(start)} – ${shortDate(end)}`;
-}
-
-// ---------------------------------------------------------------------------
-// Upcoming-events carousel shown above the calendar. Deliberately image-free:
-// every card's artwork is generated from the event's own category (colour +
-// the same outline glyph the agenda rows use), so a newly submitted event
-// looks finished without anyone having to upload a poster.
-// ---------------------------------------------------------------------------
-
-// How many cards are FULLY visible in a strip of the given width. The last
-// card on a row needs no gap after it, so the available width is measured
-// with one extra gap added back.
-function cardsPerPage(width: number) {
-  return Math.max(1, Math.floor((width + CARD_GAP) / CARD_STEP));
-}
-
-function weekdayOf(iso: string) {
-  const [y, m, d] = iso.split("-").map(Number);
-  return WEEKDAYS[new Date(y, m - 1, d).getDay()];
-}
-
-function MetaLine({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
-  return (
-    <div style={{ display: "flex", alignItems: "flex-start", gap: 9, fontSize: 13, color: "#5A544B", lineHeight: 1.45 }}>
-      <span style={{ display: "flex", flexShrink: 0, marginTop: 1 }}>{icon}</span>
-      <span>{children}</span>
-    </div>
-  );
-}
-
-function UpcomingEventsCarousel({ events, onOpenAll }: { events: CityEvent[]; onOpenAll: () => void }) {
-  const scroller = useRef<HTMLDivElement | null>(null);
-  const [page, setPage] = useState(0);
-  const [pages, setPages] = useState(1);
-
-  // Page count is derived from measured widths rather than a fixed card count,
-  // so it stays right when the viewport changes the number of visible cards.
-  function measure() {
-    const el = scroller.current;
-    if (!el) return;
-    const per = cardsPerPage(el.clientWidth);
-    setPages(Math.max(1, Math.ceil(events.length / per)));
-    setPage(Math.round(el.scrollLeft / (per * CARD_STEP)));
-  }
-
-  useEffect(() => {
-    measure();
-    const el = scroller.current;
-    if (!el) return;
-    el.addEventListener("scroll", measure, { passive: true });
-    window.addEventListener("resize", measure);
-    return () => {
-      el.removeEventListener("scroll", measure);
-      window.removeEventListener("resize", measure);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [events.length]);
-
-  function nudge(dir: 1 | -1) {
-    const el = scroller.current;
-    if (!el) return;
-    const per = cardsPerPage(el.clientWidth);
-    el.scrollBy({ left: dir * per * CARD_STEP, behavior: "smooth" });
-  }
-
-  if (events.length === 0) return null;
-
-  return (
-    <div className="ib-cal-hero" style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 28, alignItems: "center", marginBottom: 30 }}>
-      <div>
-        <div style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: ORANGE, marginBottom: 12 }}>
-          Upcoming ecosystem events
-        </div>
-        <h1 style={{ margin: "0 0 12px", fontSize: 31, fontWeight: 600, letterSpacing: "-0.028em", color: DARK, lineHeight: 1.14 }}>
-          What&rsquo;s happening in our ecosystem
-        </h1>
-        <p style={{ margin: "0 0 22px", fontSize: 14.5, lineHeight: 1.6, color: "#5A544B" }}>
-          Join workshops, networking sessions, and mentoring opportunities.
-        </p>
-        <button
-          onClick={onOpenAll}
-          style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 14, fontWeight: 600, color: "#fff", background: DARK, border: "none", padding: "13px 24px", borderRadius: 9999, cursor: "pointer" }}
-        >
-          View all events
-          <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-        </button>
-      </div>
-
-      <div style={{ position: "relative", minWidth: 0 }}>
-        <div
-          ref={scroller}
-          className="ib-cal-scroller"
-          style={{ display: "flex", gap: 18, overflowX: "auto", scrollSnapType: "x mandatory", paddingBottom: 4 }}
-        >
-          {events.map((e) => {
-            const cc = CATEGORY_COLORS[e.category];
-            return (
-              <article
-                key={e.id}
-                className="ib-cal-card"
-                style={{
-                  position: "relative",
-                  flex: "0 0 auto",
-                  width: CARD_W,
-                  minHeight: 286,
-                  borderRadius: 20,
-                  border: `1px solid ${cc.color}26`,
-                  overflow: "hidden",
-                  scrollSnapAlign: "start",
-                  padding: "22px 24px",
-                  display: "flex",
-                  flexDirection: "column",
-                  background: `linear-gradient(158deg, ${cc.color}1F 0%, ${cc.color}0A 46%, #FFFFFF 100%)`,
-                }}
-              >
-                {/* Generated artwork — the category glyph, oversized and faint,
-                    bled off the bottom-right corner in place of a photo. */}
-                <svg
-                  aria-hidden="true"
-                  width={190}
-                  height={190}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke={cc.color}
-                  strokeWidth={0.8}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  style={{ position: "absolute", right: -34, bottom: -34, opacity: 0.16, pointerEvents: "none" }}
-                >
-                  <path d={CATEGORY_COVER_PATTERNS[e.category]} />
-                </svg>
-
-                <div style={{ position: "relative", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 16 }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: cc.color, background: "rgba(255,255,255,0.75)", padding: "5px 11px", borderRadius: 9999 }}>
-                    {e.category}
-                  </span>
-                  {e.registrationLink ? (
-                    <a
-                      href={e.registrationLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Open ${e.title}`}
-                      style={{ width: 34, height: 34, borderRadius: 9999, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, textDecoration: "none", boxShadow: "0 1px 3px rgba(17,17,20,0.10)" }}
-                    >
-                      <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={DARK} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M7 17 17 7M8 7h9v9" /></svg>
-                    </a>
-                  ) : null}
-                </div>
-
-                <h3 style={{ position: "relative", margin: "0 0 18px", fontSize: 21, fontWeight: 600, letterSpacing: "-0.02em", color: DARK, lineHeight: 1.22 }}>
-                  {e.title}
-                </h3>
-
-                <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 9, marginTop: "auto" }}>
-                  <MetaLine icon={<svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} strokeLinecap="round"><rect x={3} y={4} width={18} height={17} rx={2} /><path d="M3 9h18M8 2v4M16 2v4" /></svg>}>
-                    {dateRangeLabel(e.date, e.endDate)}, {e.date.slice(0, 4)} &middot; {weekdayOf(e.date)}
-                  </MetaLine>
-                  {e.time && (
-                    <MetaLine icon={<svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} strokeLinecap="round"><circle cx={12} cy={12} r={9} /><path d="M12 7v5l3 2" /></svg>}>
-                      {e.time}
-                    </MetaLine>
-                  )}
-                  {e.venue && (
-                    <MetaLine icon={<svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" /><circle cx={12} cy={10} r={3} /></svg>}>
-                      {e.venue}
-                    </MetaLine>
-                  )}
-                </div>
-              </article>
-            );
-          })}
-        </div>
-
-        {pages > 1 && (
-          <>
-            <button
-              onClick={() => nudge(-1)}
-              aria-label="Previous events"
-              className="ib-cal-arrow"
-              style={{ left: -21 }}
-            >
-              <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={DARK} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-            </button>
-            <button
-              onClick={() => nudge(1)}
-              aria-label="More events"
-              className="ib-cal-arrow"
-              style={{ right: -21 }}
-            >
-              <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={DARK} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-            </button>
-            <div style={{ display: "flex", justifyContent: "center", gap: 7, marginTop: 16 }}>
-              {Array.from({ length: pages }, (_, i) => (
-                <span
-                  key={i}
-                  style={{ width: i === page ? 18 : 6, height: 6, borderRadius: 9999, background: i === page ? ORANGE : "rgba(64,50,34,0.18)", transition: "width .2s ease, background .2s ease" }}
-                />
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
 }
 
 function EventRow({ e }: { e: CityEvent }) {
@@ -401,7 +184,7 @@ function EventRow({ e }: { e: CityEvent }) {
           <img src={e.posterUrl} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
         ) : (
           <svg width={52} height={52} viewBox="0 0 24 24" fill="none" stroke={cc.color} strokeWidth={1.2} strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.35 }}>
-            <path d={CATEGORY_COVER_PATTERNS[e.category]} />
+            <path d={CATEGORY_GLYPHS[e.category]} />
           </svg>
         )}
         <span style={{ position: "absolute", top: 10, left: 12, fontSize: 9.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 8px", borderRadius: 9999 }}>{e.category}</span>
@@ -1049,7 +832,18 @@ export default function CalendarClient() {
       allEvents
         .filter((e) => (e.endDate ? e.endDate >= todayIso : e.date >= todayIso))
         .sort((a, b) => a.date.localeCompare(b.date))
-        .slice(0, 12),
+        .slice(0, 12)
+        .map<CarouselEvent>((e) => ({
+          id: e.id,
+          title: e.title,
+          category: e.category,
+          date: e.date,
+          endDate: e.endDate,
+          time: e.time,
+          venue: e.venue,
+          href: e.registrationLink || "#browse-calendar",
+          external: !!e.registrationLink,
+        })),
     [allEvents, todayIso]
   );
 
@@ -1061,13 +855,23 @@ export default function CalendarClient() {
       <div style={{ maxWidth: 1440, margin: "0 auto" }}>
         {/* UPCOMING EVENTS CAROUSEL */}
         {mode === "events" && (
-          <UpcomingEventsCarousel
-            events={upcomingForCarousel}
-            onOpenAll={() => {
-              clearFilters();
-              setView("Agenda");
-            }}
-          />
+          <div style={{ marginBottom: 30 }}>
+            <EventsCarousel
+              events={upcomingForCarousel}
+              background="transparent"
+              heading={
+                <h1 style={{ margin: "0 0 12px", fontSize: 31, fontWeight: 600, letterSpacing: "-0.028em", color: DARK, lineHeight: 1.14 }}>
+                  What&rsquo;s happening in our ecosystem
+                </h1>
+              }
+              intro="Join workshops, pitch events, mentoring sessions, and networking opportunities. Together, we build ideas into impact."
+              ctaLabel="View all events"
+              onCta={() => {
+                clearFilters();
+                setView("Agenda");
+              }}
+            />
+          </div>
         )}
 
         {/* MODE TOGGLE + ACTIONS */}
@@ -1110,6 +914,7 @@ export default function CalendarClient() {
         </div>
 
         {/* FILTER BAR */}
+        <div id="browse-calendar" style={{ scrollMarginTop: 80 }} />
         <div className="ib-events-filterbar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, marginBottom: 20, flexWrap: "wrap" }}>
           <div className="ib-events-filters" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", flex: 1, minWidth: 0 }}>
             <div style={{ position: "relative", minWidth: 220 }}>
