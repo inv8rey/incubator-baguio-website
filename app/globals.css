@@ -1399,3 +1399,19 @@ img { max-width: 100%; height: auto; }
   .ib-cal-card { transition: none; }
   .ib-cal-card:hover { transform: none; }
 }
+
+/* ---- Beta feedback badge (sits on the chat bubble's corner) ------------- */
+@keyframes ib-feedback-ping {
+  0% { transform: scale(1); opacity: 0.9; }
+  75%, 100% { transform: scale(1.7); opacity: 0; }
+}
+.ib-feedback-star { transition: transform .15s ease, box-shadow .15s ease; }
+.ib-feedback-star:hover { transform: translateY(-1px); box-shadow: 0 6px 16px -2px rgba(17,17,20,0.28); }
+
+@media (max-width: 600px) {
+  /* Mirrors .ib-chat-bubble's own mobile drop to bottom:22px, keeping the
+     star pinned to the bubble's new top-left corner instead of floating
+     in empty space above it. */
+  .ib-feedback-star { bottom: 60px !important; }
+  .ib-feedback-popup { bottom: 94px !important; right: 12px !important; width: calc(100vw - 24px) !important; max-width: 300px; }
+}

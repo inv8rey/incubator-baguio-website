@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import ChatBubble from "./ChatBubble";
+import FeedbackBadge from "./FeedbackBadge";
 import ChatPanel from "./ChatPanel";
 import type { ChatUiMessage } from "./types";
 
@@ -106,6 +107,7 @@ export default function ChatWidget() {
   return (
     <>
       {!open && <ChatBubble onClick={openWidget} showPulse={showPulse} />}
+      <FeedbackBadge hidden={open} />
       {open && (
         <ChatPanel
           messages={messages}
