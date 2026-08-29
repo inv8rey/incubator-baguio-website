@@ -231,6 +231,8 @@ export default function EcosystemDirectory() {
   const [sort, setSort] = useState<SortOrder>("random");
   const [sectorFilter, setSectorFilter] = useState<string | null>(null);
   const [specializationFilter, setSpecializationFilter] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [institutionFilter, setInstitutionFilter] = useState<string | null>(null);
   const [highlightId, setHighlightId] = useState<string | null>(null);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -239,6 +241,8 @@ export default function EcosystemDirectory() {
     setQuery("");
     setSectorFilter(null);
     setSpecializationFilter(null);
+    setStatusFilter(null);
+    setInstitutionFilter(null);
     setHighlightId(null);
   }
 
@@ -328,6 +332,15 @@ export default function EcosystemDirectory() {
     [allStartups]
   );
 
+  const availableProjectStatuses = useMemo(
+    () => Array.from(new Set(allFundedProjects.map((f) => f.status).filter(Boolean))).sort(),
+    [allFundedProjects]
+  );
+  const availableInstitutions = useMemo(
+    () => Array.from(new Set(allFundedProjects.map((f) => f.leadInstitution).filter(Boolean))).sort(),
+    [allFundedProjects]
+  );
+
   const filtered = useMemo(() => {
     let list: any[];
     if (tab === "Startups") {
@@ -352,6 +365,8 @@ export default function EcosystemDirectory() {
       list = allMakerspaces.filter((m) => matches([m.name, m.type, m.description], query));
     } else if (tab === "Funded Projects") {
       list = allFundedProjects.filter((f) => matches([f.title, f.fundingAgency, f.leadInstitution, f.status], query));
+      if (statusFilter) list = list.filter((f) => f.status === statusFilter);
+      if (institutionFilter) list = list.filter((f) => f.leadInstitution === institutionFilter);
     } else {
       list = allCommunity.filter((c) => matches([c.name, c.type, c.description], query));
     }
@@ -361,7 +376,7 @@ export default function EcosystemDirectory() {
       const bn = b.name ?? b.title ?? "";
       return sort === "az" ? an.localeCompare(bn) : bn.localeCompare(an);
     });
-  }, [tab, query, sort, sectorFilter, specializationFilter, allStartups, allMentors, allTbis, allAcademe, allCompanies, allServiceProviders, allGovernment, allCoworking, allMakerspaces, allCommunity, allFundedProjects]);
+  }, [tab, query, sort, sectorFilter, specializationFilter, statusFilter, institutionFilter, allStartups, allMentors, allTbis, allAcademe, allCompanies, allServiceProviders, allGovernment, allCoworking, allMakerspaces, allCommunity, allFundedProjects]);
 
   return (
     <div style={{ background: "#fff", padding: "72px 40px", borderTop: "1px solid rgba(64,50,34,0.09)" }}>
@@ -434,6 +449,30 @@ export default function EcosystemDirectory() {
                   <option key={sp} value={sp}>{sp}</option>
                 ))}
               </select>
+            )}
+            {tab === "Funded Projects" && (
+              <>
+                <select
+                  value={statusFilter ?? ""}
+                  onChange={(e) => setStatusFilter(e.target.value || null)}
+                  style={{ height: 44, fontSize: 13.5, fontWeight: 600, color: DARK, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.14)", borderRadius: 9999, padding: "0 16px", outline: "none", appearance: "auto", cursor: "pointer" }}
+                >
+                  <option value="">All statuses</option>
+                  {availableProjectStatuses.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+                <select
+                  value={institutionFilter ?? ""}
+                  onChange={(e) => setInstitutionFilter(e.target.value || null)}
+                  style={{ height: 44, fontSize: 13.5, fontWeight: 600, color: DARK, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.14)", borderRadius: 9999, padding: "0 16px", outline: "none", appearance: "auto", cursor: "pointer" }}
+                >
+                  <option value="">All institutions</option>
+                  {availableInstitutions.map((i) => (
+                    <option key={i} value={i}>{i}</option>
+                  ))}
+                </select>
+              </>
             )}
             <div style={{ height: 44, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.14)", borderRadius: 9999, display: "flex", alignItems: "center", gap: 10, padding: "0 18px", minWidth: 240 }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2}><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
