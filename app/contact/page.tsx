@@ -26,7 +26,7 @@ ${navBarHtml()}
 
 <!-- CONTACT INFO -->
 <div style="background:#F6F2EA;padding:56px 40px 0;">
-  <div style="max-width:1080px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
+  <div class="ib-contact-grid" style="max-width:1080px;margin:0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;">
     ${[
       ["#F26522", "rgba(242,101,34,0.12)", `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="2"><path d="M3 8.5 12 13l9-4.5"></path><rect x="3" y="5" width="18" height="14" rx="2"></rect></svg>`, "Email", `<a href="mailto:incubatorbaguio63@gmail.com" style="font-size:14.5px;font-weight:600;color:#1A1714;text-decoration:none;">incubatorbaguio63@gmail.com</a>`],
       ["#285E7A", "rgba(40,94,122,0.12)", `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#285E7A" stroke-width="2"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"></path></svg>`, "Visit", `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("SIGLAT Youth Innovation Hub, Baguio City")}" target="_blank" rel="noopener noreferrer" style="font-size:14.5px;font-weight:600;color:#1A1714;text-decoration:none;">SIGLAT Youth Innovation Hub, Baguio City</a>`],
@@ -34,7 +34,7 @@ ${navBarHtml()}
     ].map((c) => `
     <div style="background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:18px;padding:24px;display:flex;align-items:center;gap:14px;">
       <div style="width:46px;height:46px;border-radius:12px;background:${c[1]};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${c[2]}</div>
-      <div><div style="font-size:11.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#8B8479;margin-bottom:4px;">${c[3]}</div>${c[4]}</div>
+      <div style="min-width:0;overflow-wrap:anywhere;"><div style="font-size:11.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#8B8479;margin-bottom:4px;">${c[3]}</div>${c[4]}</div>
     </div>`).join("")}
   </div>
 </div>

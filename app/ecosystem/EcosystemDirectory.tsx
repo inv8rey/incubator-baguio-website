@@ -9,6 +9,27 @@ const DARK = "#1A1714";
 const ORANGE = "#F26522";
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
+// Shared by every filter/sort <select> in the directory's toolbar.
+// minWidth/maxWidth are load-bearing: a <select> is intrinsically as wide as
+// its longest <option> ("Artificial Intelligence & Emerging Technologies" in
+// the sector list), and as a flex item its default min-width:auto stops it
+// shrinking — which pushed the page 53px past a 320px viewport.
+const filterSelectStyle: React.CSSProperties = {
+  height: 44,
+  fontSize: 13.5,
+  fontWeight: 600,
+  color: DARK,
+  background: "#F6F2EA",
+  border: "1px solid rgba(64,50,34,0.14)",
+  borderRadius: 9999,
+  padding: "0 16px",
+  outline: "none",
+  appearance: "auto",
+  cursor: "pointer",
+  minWidth: 0,
+  maxWidth: "100%",
+};
+
 function matches(haystacks: string[], query: string) {
   const q = query.trim().toLowerCase();
   if (!q) return true;
@@ -425,12 +446,17 @@ export default function EcosystemDirectory() {
               </button>
             ))}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          {/* minWidth: 0 — as a flex item this defaults to min-width:auto and
+              refuses to shrink below its widest child. The sector <select> is
+              intrinsically as wide as "Artificial Intelligence & Emerging
+              Technologies", so without this the toolbar forced the page 53px
+              past a 320px viewport. */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", minWidth: 0 }}>
             {tab === "Startups" && (
               <select
                 value={sectorFilter ?? ""}
                 onChange={(e) => setSectorFilter(e.target.value || null)}
-                style={{ height: 44, fontSize: 13.5, fontWeight: 600, color: DARK, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.14)", borderRadius: 9999, padding: "0 16px", outline: "none", appearance: "auto", cursor: "pointer" }}
+                style={filterSelectStyle}
               >
                 <option value="">All sectors</option>
                 {availableSectors.map((sec) => (
@@ -442,7 +468,7 @@ export default function EcosystemDirectory() {
               <select
                 value={specializationFilter ?? ""}
                 onChange={(e) => setSpecializationFilter(e.target.value || null)}
-                style={{ height: 44, fontSize: 13.5, fontWeight: 600, color: DARK, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.14)", borderRadius: 9999, padding: "0 16px", outline: "none", appearance: "auto", cursor: "pointer" }}
+                style={filterSelectStyle}
               >
                 <option value="">All specializations</option>
                 {MENTOR_SPECIALIZATIONS.map((sp) => (
@@ -455,7 +481,7 @@ export default function EcosystemDirectory() {
                 <select
                   value={statusFilter ?? ""}
                   onChange={(e) => setStatusFilter(e.target.value || null)}
-                  style={{ height: 44, fontSize: 13.5, fontWeight: 600, color: DARK, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.14)", borderRadius: 9999, padding: "0 16px", outline: "none", appearance: "auto", cursor: "pointer" }}
+                  style={filterSelectStyle}
                 >
                   <option value="">All statuses</option>
                   {availableProjectStatuses.map((s) => (
@@ -465,7 +491,7 @@ export default function EcosystemDirectory() {
                 <select
                   value={institutionFilter ?? ""}
                   onChange={(e) => setInstitutionFilter(e.target.value || null)}
-                  style={{ height: 44, fontSize: 13.5, fontWeight: 600, color: DARK, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.14)", borderRadius: 9999, padding: "0 16px", outline: "none", appearance: "auto", cursor: "pointer" }}
+                  style={filterSelectStyle}
                 >
                   <option value="">All institutions</option>
                   {availableInstitutions.map((i) => (
@@ -487,7 +513,7 @@ export default function EcosystemDirectory() {
               value={sort}
               onChange={(e) => setSort(e.target.value as SortOrder)}
               aria-label="Sort"
-              style={{ height: 44, fontSize: 13.5, fontWeight: 600, color: DARK, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.14)", borderRadius: 9999, padding: "0 16px", outline: "none", appearance: "auto", cursor: "pointer" }}
+              style={filterSelectStyle}
             >
               <option value="random">Sort: Random</option>
               <option value="az">Sort: A to Z</option>

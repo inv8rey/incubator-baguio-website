@@ -553,10 +553,16 @@ img { max-width: 100%; height: auto; }
     grid-template-columns: repeat(2, 1fr) !important;
   }
 
-  /* Programs hero: image panel drops below the text column */
+  /* Programs hero: image panel drops below the text column. minmax(0,1fr)
+     rather than a bare 1fr — a bare 1fr column still floors at its content's
+     intrinsic width, which held the hero at 336px inside a 320px phone and
+     let the section's overflow:hidden clip the right edge off. */
   .ib-programs-hero {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: minmax(0, 1fr) !important;
     min-height: 0 !important;
+  }
+  .ib-programs-hero > * {
+    min-width: 0;
   }
   .ib-programs-hero > div:last-child {
     min-height: 280px;
@@ -1432,3 +1438,24 @@ img { max-width: 100%; height: auto; }
 }
 .ib-gallery-page-arrow:hover:not(:disabled) { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.24); }
 .ib-gallery-page-arrow:disabled { opacity: 0.32; cursor: default; }
+
+/* Grid/flex children default to min-width:auto, i.e. they refuse to shrink
+   below their own content's intrinsic width. On narrow phones that made the
+   ecosystem cards (307px) overflow their 284px column, pushing the page
+   sideways. min-width:0 lets the column bound them; it only has any effect
+   when the content would otherwise overflow, so wider screens are untouched. */
+.ib-ecosystem-grid > *,
+.ib-knowledge-grid > *,
+.ib-events-grid > * {
+  min-width: 0;
+}
+
+/* Contact page's three info cards: the longest one ("SIGLAT Youth Innovation
+   Hub, Baguio City" next to a 46px icon) needs ~326px, so three of them stop
+   fitting well before tablet width. Two up, then one. */
+@media (max-width: 1000px) {
+  .ib-contact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 680px) {
+  .ib-contact-grid { grid-template-columns: minmax(0, 1fr) !important; }
+}

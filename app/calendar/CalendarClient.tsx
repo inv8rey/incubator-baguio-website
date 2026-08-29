@@ -980,8 +980,14 @@ export default function CalendarClient() {
 
         <div style={{ display: "grid", gridTemplateColumns: "2.2fr 0.85fr", gap: 20, alignItems: "start" }} className="ib-events-grid">
           {/* CALENDAR / AGENDA */}
+          {/* minWidth: 0 is load-bearing on these grid children. A grid item
+              defaults to min-width:auto, i.e. it refuses to shrink below its
+              content's intrinsic width — which made this card 512px wide
+              inside a 339px column on a phone, and the card's own
+              overflow:hidden then clipped the right ~35% of the calendar
+              with no way to scroll to it. */}
           {view !== "Agenda" ? (
-            <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "24px 24px 18px" }}>
+            <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "24px 24px 18px", minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
                 <div style={{ fontSize: 19, fontWeight: 600, color: DARK, letterSpacing: "-0.01em" }}>
                   {view === "Week" ? `Week of ${formatLong(isoOf(weekCells[0].date))}` : `${MONTH_NAMES[month]} ${year}`}
@@ -1098,7 +1104,7 @@ export default function CalendarClient() {
               </div>
             </div>
           ) : (
-            <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "24px 28px" }}>
+            <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "24px 28px", minWidth: 0 }}>
               <div style={{ fontSize: 17, fontWeight: 600, color: DARK, marginBottom: 14 }}>All upcoming {itemsLabel}</div>
               {mode === "events" ? (
                 <>
@@ -1115,7 +1121,7 @@ export default function CalendarClient() {
           )}
 
           {/* SIDEBAR */}
-          <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "22px 24px" }}>
+          <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "22px 24px", minWidth: 0 }}>
             {mode === "events" ? (
               daySelection ? (
                 <>
