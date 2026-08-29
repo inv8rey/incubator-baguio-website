@@ -169,7 +169,9 @@ ${navBarHtml("/about")}
           <div style="position:absolute;inset:0;background:linear-gradient(90deg,#161210 6%,rgba(22,18,16,0.86) 34%,rgba(22,18,16,0.22) 78%,transparent);"></div>
         </div>
 
-        <div style="position:relative;padding:34px 32px;display:flex;flex-direction:column;max-width:76%;">
+        <!-- 80%, not less: "Startup Commercialization" needs ~364px on one
+             line and wraps awkwardly below this, misaligning the two cards. -->
+        <div style="position:relative;padding:34px 32px;display:flex;flex-direction:column;max-width:80%;">
           <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
             <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${c.icon}</svg>
             <span style="font-size:15px;font-weight:600;color:rgba(255,255,255,0.55);letter-spacing:0.04em;">${c.n}</span>
