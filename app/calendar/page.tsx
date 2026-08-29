@@ -11,16 +11,11 @@ export const metadata: Metadata = {
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
+// No page header: the carousel's own "What's happening in our ecosystem"
+// heading opens the page, so a "Calendar" title above it was a second
+// competing headline saying less.
 const TOP_HTML = `
 ${navBarHtml("/calendar")}
-
-<!-- PAGE HEADER -->
-<div style="background:#fff;padding:40px 40px 28px;border-bottom:1px solid rgba(64,50,34,0.09);">
-  <div style="max-width:1300px;margin:0 auto;">
-    <h1 style="margin:0 0 8px;font-size:34px;font-weight:600;letter-spacing:-0.025em;color:#1A1714;">Calendar</h1>
-    <p style="margin:0;font-size:14.5px;color:#5A544B;">Browse ecosystem events, or book time with a mentor for 1:1 consultation.</p>
-  </div>
-</div>
 `;
 
 const BOTTOM_HTML = `

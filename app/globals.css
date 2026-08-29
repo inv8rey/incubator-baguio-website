@@ -1360,3 +1360,50 @@ img { max-width: 100%; height: auto; }
   outline: 2px solid #f26522;
   outline-offset: 2px;
 }
+
+/* ---- Calendar: upcoming-events carousel ---------------------------------
+   Cards carry no photography — each one's artwork is generated from its
+   category colour and glyph, so an event looks complete the moment it's
+   submitted, with no poster upload required. */
+.ib-cal-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 1px solid rgba(64, 50, 34, 0.12);
+  box-shadow: 0 4px 14px -4px rgba(17, 17, 20, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.ib-cal-arrow:hover {
+  background: #FBFAF6;
+  box-shadow: 0 8px 20px -6px rgba(17, 17, 20, 0.22);
+}
+.ib-cal-arrow:active { transform: translateY(-50%) scale(0.94); }
+
+/* The strip scrolls, but a visible bar under the cards reads as chrome the
+   design doesn't have. Arrows and dots carry the affordance instead. */
+.ib-cal-scroller { scrollbar-width: none; -ms-overflow-style: none; }
+.ib-cal-scroller::-webkit-scrollbar { display: none; }
+
+.ib-cal-card { transition: transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease; }
+.ib-cal-card:hover { transform: translateY(-3px); box-shadow: 0 16px 32px -14px rgba(17, 17, 20, 0.22); }
+
+@media (max-width: 1080px) {
+  /* Copy sits above the strip so the cards keep their full width. */
+  .ib-cal-hero { grid-template-columns: 1fr !important; gap: 22px !important; }
+  /* Off-canvas arrows would be clipped once the strip is full-bleed. */
+  .ib-cal-arrow { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ib-cal-card { transition: none; }
+  .ib-cal-card:hover { transform: none; }
+}

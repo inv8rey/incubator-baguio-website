@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "../AuthProvider";
 import { supabase } from "../../lib/supabaseClient";
@@ -26,6 +26,9 @@ import {
 } from "./data";
 
 const HAIRLINE = "rgba(64,50,34,0.10)";
+const CARD_W = 268;
+const CARD_GAP = 18;
+const CARD_STEP = CARD_W + CARD_GAP;
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const CATEGORIES = Object.keys(CATEGORY_COLORS) as EventCategory[];
@@ -163,6 +166,210 @@ function dateRangeLabel(start: string, end?: string) {
   const [, sm] = start.split("-").map(Number);
   const [, em, ed] = end.split("-").map(Number);
   return sm === em ? `${shortDate(start)}–${String(ed).padStart(2, "0")}` : `${shortDate(start)} – ${shortDate(end)}`;
+}
+
+// ---------------------------------------------------------------------------
+// Upcoming-events carousel shown above the calendar. Deliberately image-free:
+// every card's artwork is generated from the event's own category (colour +
+// the same outline glyph the agenda rows use), so a newly submitted event
+// looks finished without anyone having to upload a poster.
+// ---------------------------------------------------------------------------
+
+// How many cards are FULLY visible in a strip of the given width. The last
+// card on a row needs no gap after it, so the available width is measured
+// with one extra gap added back.
+function cardsPerPage(width: number) {
+  return Math.max(1, Math.floor((width + CARD_GAP) / CARD_STEP));
+}
+
+function weekdayOf(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return WEEKDAYS[new Date(y, m - 1, d).getDay()];
+}
+
+function MetaLine({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <div style={{ display: "flex", alignItems: "flex-start", gap: 9, fontSize: 13, color: "#5A544B", lineHeight: 1.45 }}>
+      <span style={{ display: "flex", flexShrink: 0, marginTop: 1 }}>{icon}</span>
+      <span>{children}</span>
+    </div>
+  );
+}
+
+function UpcomingEventsCarousel({ events, onOpenAll }: { events: CityEvent[]; onOpenAll: () => void }) {
+  const scroller = useRef<HTMLDivElement | null>(null);
+  const [page, setPage] = useState(0);
+  const [pages, setPages] = useState(1);
+
+  // Page count is derived from measured widths rather than a fixed card count,
+  // so it stays right when the viewport changes the number of visible cards.
+  function measure() {
+    const el = scroller.current;
+    if (!el) return;
+    const per = cardsPerPage(el.clientWidth);
+    setPages(Math.max(1, Math.ceil(events.length / per)));
+    setPage(Math.round(el.scrollLeft / (per * CARD_STEP)));
+  }
+
+  useEffect(() => {
+    measure();
+    const el = scroller.current;
+    if (!el) return;
+    el.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    return () => {
+      el.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [events.length]);
+
+  function nudge(dir: 1 | -1) {
+    const el = scroller.current;
+    if (!el) return;
+    const per = cardsPerPage(el.clientWidth);
+    el.scrollBy({ left: dir * per * CARD_STEP, behavior: "smooth" });
+  }
+
+  if (events.length === 0) return null;
+
+  return (
+    <div className="ib-cal-hero" style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 28, alignItems: "center", marginBottom: 30 }}>
+      <div>
+        <div style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: ORANGE, marginBottom: 12 }}>
+          Upcoming ecosystem events
+        </div>
+        <h1 style={{ margin: "0 0 12px", fontSize: 31, fontWeight: 600, letterSpacing: "-0.028em", color: DARK, lineHeight: 1.14 }}>
+          What&rsquo;s happening in our ecosystem
+        </h1>
+        <p style={{ margin: "0 0 22px", fontSize: 14.5, lineHeight: 1.6, color: "#5A544B" }}>
+          Join workshops, networking sessions, and mentoring opportunities.
+        </p>
+        <button
+          onClick={onOpenAll}
+          style={{ display: "inline-flex", alignItems: "center", gap: 9, fontSize: 14, fontWeight: 600, color: "#fff", background: DARK, border: "none", padding: "13px 24px", borderRadius: 9999, cursor: "pointer" }}
+        >
+          View all events
+          <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </button>
+      </div>
+
+      <div style={{ position: "relative", minWidth: 0 }}>
+        <div
+          ref={scroller}
+          className="ib-cal-scroller"
+          style={{ display: "flex", gap: 18, overflowX: "auto", scrollSnapType: "x mandatory", paddingBottom: 4 }}
+        >
+          {events.map((e) => {
+            const cc = CATEGORY_COLORS[e.category];
+            return (
+              <article
+                key={e.id}
+                className="ib-cal-card"
+                style={{
+                  position: "relative",
+                  flex: "0 0 auto",
+                  width: CARD_W,
+                  minHeight: 286,
+                  borderRadius: 20,
+                  border: `1px solid ${cc.color}26`,
+                  overflow: "hidden",
+                  scrollSnapAlign: "start",
+                  padding: "22px 24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  background: `linear-gradient(158deg, ${cc.color}1F 0%, ${cc.color}0A 46%, #FFFFFF 100%)`,
+                }}
+              >
+                {/* Generated artwork — the category glyph, oversized and faint,
+                    bled off the bottom-right corner in place of a photo. */}
+                <svg
+                  aria-hidden="true"
+                  width={190}
+                  height={190}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke={cc.color}
+                  strokeWidth={0.8}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ position: "absolute", right: -34, bottom: -34, opacity: 0.16, pointerEvents: "none" }}
+                >
+                  <path d={CATEGORY_COVER_PATTERNS[e.category]} />
+                </svg>
+
+                <div style={{ position: "relative", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 16 }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: cc.color, background: "rgba(255,255,255,0.75)", padding: "5px 11px", borderRadius: 9999 }}>
+                    {e.category}
+                  </span>
+                  {e.registrationLink ? (
+                    <a
+                      href={e.registrationLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Open ${e.title}`}
+                      style={{ width: 34, height: 34, borderRadius: 9999, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, textDecoration: "none", boxShadow: "0 1px 3px rgba(17,17,20,0.10)" }}
+                    >
+                      <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={DARK} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M7 17 17 7M8 7h9v9" /></svg>
+                    </a>
+                  ) : null}
+                </div>
+
+                <h3 style={{ position: "relative", margin: "0 0 18px", fontSize: 21, fontWeight: 600, letterSpacing: "-0.02em", color: DARK, lineHeight: 1.22 }}>
+                  {e.title}
+                </h3>
+
+                <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 9, marginTop: "auto" }}>
+                  <MetaLine icon={<svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} strokeLinecap="round"><rect x={3} y={4} width={18} height={17} rx={2} /><path d="M3 9h18M8 2v4M16 2v4" /></svg>}>
+                    {dateRangeLabel(e.date, e.endDate)}, {e.date.slice(0, 4)} &middot; {weekdayOf(e.date)}
+                  </MetaLine>
+                  {e.time && (
+                    <MetaLine icon={<svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} strokeLinecap="round"><circle cx={12} cy={12} r={9} /><path d="M12 7v5l3 2" /></svg>}>
+                      {e.time}
+                    </MetaLine>
+                  )}
+                  {e.venue && (
+                    <MetaLine icon={<svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" /><circle cx={12} cy={10} r={3} /></svg>}>
+                      {e.venue}
+                    </MetaLine>
+                  )}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        {pages > 1 && (
+          <>
+            <button
+              onClick={() => nudge(-1)}
+              aria-label="Previous events"
+              className="ib-cal-arrow"
+              style={{ left: -21 }}
+            >
+              <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={DARK} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+            </button>
+            <button
+              onClick={() => nudge(1)}
+              aria-label="More events"
+              className="ib-cal-arrow"
+              style={{ right: -21 }}
+            >
+              <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={DARK} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+            <div style={{ display: "flex", justifyContent: "center", gap: 7, marginTop: 16 }}>
+              {Array.from({ length: pages }, (_, i) => (
+                <span
+                  key={i}
+                  style={{ width: i === page ? 18 : 6, height: 6, borderRadius: 9999, background: i === page ? ORANGE : "rgba(64,50,34,0.18)", transition: "width .2s ease, background .2s ease" }}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
 }
 
 function EventRow({ e }: { e: CityEvent }) {
@@ -835,12 +1042,34 @@ export default function CalendarClient() {
     setFormat(null);
     setSelectedIso(null);
   }
+  // Carousel list is intentionally unfiltered: it's a standing "what's on"
+  // strip above the calendar, not a second view of the filtered results.
+  const upcomingForCarousel = useMemo(
+    () =>
+      allEvents
+        .filter((e) => (e.endDate ? e.endDate >= todayIso : e.date >= todayIso))
+        .sort((a, b) => a.date.localeCompare(b.date))
+        .slice(0, 12),
+    [allEvents, todayIso]
+  );
+
   const itemsLabel = mode === "events" ? "events" : "sessions";
   const availableForModal = MENTOR_SLOTS.filter((s) => !bookedIds.has(s.id));
 
   return (
-    <div style={{ background: "#F6F2EA", padding: "24px 32px 56px" }}>
+    <div style={{ background: "#F6F2EA", padding: "40px 32px 56px" }}>
       <div style={{ maxWidth: 1440, margin: "0 auto" }}>
+        {/* UPCOMING EVENTS CAROUSEL */}
+        {mode === "events" && (
+          <UpcomingEventsCarousel
+            events={upcomingForCarousel}
+            onOpenAll={() => {
+              clearFilters();
+              setView("Agenda");
+            }}
+          />
+        )}
+
         {/* MODE TOGGLE + ACTIONS */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, marginBottom: 18, flexWrap: "wrap" }}>
           {/* White, not the page's own #F6F2EA -- as a segmented control it has
