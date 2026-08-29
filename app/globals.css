@@ -1415,3 +1415,20 @@ img { max-width: 100%; height: auto; }
   .ib-feedback-star { bottom: 60px !important; }
   .ib-feedback-popup { bottom: 94px !important; right: 12px !important; width: calc(100vw - 24px) !important; max-width: 300px; }
 }
+
+/* ---- Gallery page pagination ------------------------------------------- */
+.ib-gallery-page-arrow {
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease;
+}
+.ib-gallery-page-arrow:hover:not(:disabled) { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.24); }
+.ib-gallery-page-arrow:disabled { opacity: 0.32; cursor: default; }

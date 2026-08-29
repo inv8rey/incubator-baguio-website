@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { DARK } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
 import { uploadGalleryPhoto } from "../../../lib/uploadLogo";
+import { GALLERY_CATEGORIES, type GalleryCategory } from "../../galleryShared";
 
 interface Row {
   id: string;
@@ -12,6 +13,8 @@ interface Row {
   credit: string;
   event_date: string | null;
   post_url: string;
+  category: GalleryCategory;
+  location: string;
 }
 
 const HAIR = "rgba(64,50,34,0.12)";
@@ -31,6 +34,8 @@ function PhotoCard({
   const [credit, setCredit] = useState(row.credit);
   const [eventDate, setEventDate] = useState(row.event_date ?? "");
   const [postUrl, setPostUrl] = useState(row.post_url);
+  const [category, setCategory] = useState<GalleryCategory>(row.category);
+  const [location, setLocation] = useState(row.location);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -40,9 +45,17 @@ function PhotoCard({
     setCredit(row.credit);
     setEventDate(row.event_date ?? "");
     setPostUrl(row.post_url);
-  }, [row.caption, row.credit, row.event_date, row.post_url]);
+    setCategory(row.category);
+    setLocation(row.location);
+  }, [row.caption, row.credit, row.event_date, row.post_url, row.category, row.location]);
 
-  const dirty = caption !== row.caption || credit !== row.credit || eventDate !== (row.event_date ?? "") || postUrl !== row.post_url;
+  const dirty =
+    caption !== row.caption ||
+    credit !== row.credit ||
+    eventDate !== (row.event_date ?? "") ||
+    postUrl !== row.post_url ||
+    category !== row.category ||
+    location !== row.location;
 
   async function save() {
     if (!supabase) return;
@@ -50,7 +63,7 @@ function PhotoCard({
     setError("");
     const { error: err } = await supabase
       .from("gallery_photos")
-      .update({ caption, credit, event_date: eventDate || null, post_url: postUrl })
+      .update({ caption, credit, event_date: eventDate || null, post_url: postUrl, category, location })
       .eq("id", row.id);
     if (err) setError(err.message);
     else onChanged();
@@ -74,6 +87,17 @@ function PhotoCard({
         </span>
       </div>
 
+      <select
+        value={category}
+        onChange={(e) => setCategory(e.target.value as GalleryCategory)}
+        aria-label="Category"
+        style={{ fontSize: 13, fontWeight: 600, padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${HAIR}`, outline: "none", color: DARK, background: "#fff", cursor: "pointer" }}
+      >
+        {GALLERY_CATEGORIES.map((c) => (
+          <option key={c} value={c}>{c}</option>
+        ))}
+      </select>
+
       <input
         value={caption}
         onChange={(e) => setCaption(e.target.value)}
@@ -95,6 +119,12 @@ function PhotoCard({
           style={{ fontSize: 13, padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${HAIR}`, outline: "none", color: DARK }}
         />
       </div>
+      <input
+        value={location}
+        onChange={(e) => setLocation(e.target.value)}
+        placeholder="Location, e.g. Incubator Baguio Office"
+        style={{ fontSize: 13, padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${HAIR}`, outline: "none", color: DARK }}
+      />
       <input
         value={postUrl}
         onChange={(e) => setPostUrl(e.target.value)}
@@ -128,6 +158,7 @@ function PhotoCard({
 export default function GalleryTab() {
   const [rows, setRows] = useState<Row[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [uploadCategory, setUploadCategory] = useState<GalleryCategory>("Ecosystem");
   const [error, setError] = useState("");
   const [missingTable, setMissingTable] = useState(false);
 
@@ -169,7 +200,7 @@ export default function GalleryTab() {
     try {
       for (const file of files) {
         const url = await uploadGalleryPhoto(file);
-        const { error: err } = await supabase.from("gallery_photos").insert({ image_url: url });
+        const { error: err } = await supabase.from("gallery_photos").insert({ image_url: url, category: uploadCategory });
         if (err) throw new Error(err.message);
       }
       load();
@@ -183,9 +214,21 @@ export default function GalleryTab() {
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 20 }}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
         <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.6, color: "#5A544B", maxWidth: 620 }}>
-          Photos shown in the homepage gallery, sorted by event date &mdash; most recent first. The lead photo (shown large) is whichever has the latest date, so set dates to
-          control the order. Landscape images at least 1200px wide work best; the homepage shows up to 8. Under 2MB each.
+          Photos shown on the homepage strip and the full <code>/gallery</code> page, sorted by event date &mdash; most recent first. The lead photo (shown large) is whichever
+          has the latest date, so set dates to control the order. A category filter only appears on the gallery page once that category has at least one photo. Landscape images
+          at least 1200px wide work best; the homepage shows up to 8. Under 2MB each.
         </p>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+        <select
+          value={uploadCategory}
+          onChange={(e) => setUploadCategory(e.target.value as GalleryCategory)}
+          aria-label="Category for new photos"
+          style={{ fontSize: 13, fontWeight: 600, color: DARK, background: "#fff", border: `1.5px solid ${HAIR}`, borderRadius: 9999, padding: "10px 16px", cursor: "pointer", outline: "none" }}
+        >
+          {GALLERY_CATEGORIES.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
         <label
           style={{
             flexShrink: 0,
@@ -201,6 +244,7 @@ export default function GalleryTab() {
           {uploading ? "Uploading…" : "Add photos"}
           <input type="file" accept="image/*" multiple onChange={handleUpload} disabled={uploading} style={{ display: "none" }} />
         </label>
+        </div>
       </div>
 
       {error && <p style={{ margin: 0, fontSize: 13, color: "#E23A2E" }}>{error}</p>}

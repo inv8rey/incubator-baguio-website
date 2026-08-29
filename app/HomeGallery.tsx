@@ -2,35 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
-
-const DARK = "#1A1714";
-
-interface GalleryPhoto {
-  id: string;
-  imageUrl: string;
-  caption: string;
-  credit: string;
-  eventDate: string | null;
-  postUrl: string;
-}
-
-function mapRow(r: any): GalleryPhoto {
-  return {
-    id: r.id,
-    imageUrl: r.image_url,
-    caption: r.caption || "",
-    credit: r.credit || "",
-    eventDate: r.event_date || null,
-    postUrl: r.post_url || "",
-  };
-}
-
-// "2026-08-12" -> "Aug 12, 2026", parsed as calendar date (not UTC-shifted).
-function formatEventDate(iso: string | null): string {
-  if (!iso) return "";
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
+import { GalleryLightbox, formatEventDate, mapGalleryRow, type GalleryPhoto } from "./galleryShared";
 
 /**
  * Homepage activity gallery. Photos are admin-managed in Supabase
@@ -53,7 +25,7 @@ export default function HomeGallery({ bp }: { bp: string }) {
       .order("event_date", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false })
       .limit(8);
-    setPhotos((data ?? []).map(mapRow));
+    setPhotos((data ?? []).map(mapGalleryRow));
   }, []);
 
   useEffect(() => {
@@ -68,25 +40,9 @@ export default function HomeGallery({ bp }: { bp: string }) {
     };
   }, [load]);
 
-  // Escape closes the lightbox; arrow keys step through photos. The listener
-  // only exists while it's open, and only re-binds when the photo count
-  // changes (not on every index change) so it always sees the latest index
-  // via the functional setState updates below.
-  useEffect(() => {
-    if (lightboxIndex === null || !photos) return;
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setLightboxIndex(null);
-      else if (e.key === "ArrowRight") setLightboxIndex((i) => (i === null ? i : (i + 1) % photos!.length));
-      else if (e.key === "ArrowLeft") setLightboxIndex((i) => (i === null ? i : (i - 1 + photos!.length) % photos!.length));
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [lightboxIndex !== null, photos]);
-
   // Still loading, or genuinely empty — render nothing either way.
   if (!photos || photos.length === 0) return null;
 
-  const lightbox = lightboxIndex !== null ? photos[lightboxIndex] : null;
   function step(dir: -1 | 1) {
     setLightboxIndex((i) => (i === null ? i : (i + dir + photos!.length) % photos!.length));
   }
@@ -108,10 +64,10 @@ export default function HomeGallery({ bp }: { bp: string }) {
             </p>
           </div>
           <a
-            href={`${bp}/calendar/`}
+            href={`${bp}/gallery/`}
             style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 14, fontWeight: 600, color: "#fff", textDecoration: "none", paddingBottom: 4, borderBottom: "1.5px solid rgba(242,101,34,0.55)" }}
           >
-            See what&rsquo;s next
+            View Ecosystem Gallery
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F26522" strokeWidth={2.2}><path d="M5 12h14M13 6l6 6-6 6" /></svg>
           </a>
         </div>
@@ -186,167 +142,8 @@ export default function HomeGallery({ bp }: { bp: string }) {
         </div>
       </div>
 
-      {lightbox && (
-        <div
-          onClick={() => setLightboxIndex(null)}
-          role="dialog"
-          aria-modal="true"
-          aria-label={lightbox.caption || "Photo"}
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 1000,
-            background: "rgba(10,8,7,0.9)",
-            backdropFilter: "blur(6px)",
-            WebkitBackdropFilter: "blur(6px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 28,
-          }}
-        >
-          <div style={{ position: "relative", maxWidth: 1000, width: "100%" }} onClick={(e) => e.stopPropagation()}>
-          <div style={{ position: "relative" }}>
-            <img
-              src={lightbox.imageUrl}
-              alt={lightbox.caption || ""}
-              style={{ width: "100%", maxHeight: "78vh", objectFit: "contain", borderRadius: 16, display: "block" }}
-            />
-
-            {photos.length > 1 && (
-              <>
-                <button
-                  onClick={() => step(-1)}
-                  aria-label="Previous photo"
-                  style={{
-                    position: "absolute",
-                    left: 12,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: 44,
-                    height: 44,
-                    borderRadius: 9999,
-                    background: "rgba(10,8,7,0.55)",
-                    border: "1px solid rgba(255,255,255,0.22)",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4}><path d="M15 18l-6-6 6-6" /></svg>
-                </button>
-                <button
-                  onClick={() => step(1)}
-                  aria-label="Next photo"
-                  style={{
-                    position: "absolute",
-                    right: 12,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: 44,
-                    height: 44,
-                    borderRadius: 9999,
-                    background: "rgba(10,8,7,0.55)",
-                    border: "1px solid rgba(255,255,255,0.22)",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4}><path d="M9 6l6 6-6 6" /></svg>
-                </button>
-
-                {/* Thumbnail of the next photo, sitting in the corner of the
-                    main image — clicking either it or the arrow above advances. */}
-                <button
-                  onClick={() => step(1)}
-                  aria-label={`Next: ${photos[(lightboxIndex! + 1) % photos.length].caption || "photo"}`}
-                  style={{
-                    position: "absolute",
-                    right: 12,
-                    bottom: 12,
-                    width: 56,
-                    height: 56,
-                    borderRadius: 12,
-                    padding: 0,
-                    border: "2px solid rgba(255,255,255,0.6)",
-                    overflow: "hidden",
-                    cursor: "pointer",
-                    boxShadow: "0 8px 20px -6px rgba(0,0,0,0.6)",
-                  }}
-                >
-                  <img
-                    src={photos[(lightboxIndex! + 1) % photos.length].imageUrl}
-                    alt=""
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
-                </button>
-              </>
-            )}
-          </div>
-
-            {(lightbox.caption || lightbox.credit || lightbox.eventDate || lightbox.postUrl) && (
-              <div style={{ marginTop: 16, textAlign: "center" }}>
-                {lightbox.caption && <div style={{ fontSize: 15.5, fontWeight: 600, color: "#fff" }}>{lightbox.caption}</div>}
-                {(lightbox.eventDate || lightbox.credit) && (
-                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", marginTop: 4 }}>
-                    {[formatEventDate(lightbox.eventDate), lightbox.credit].filter(Boolean).join(" · ")}
-                  </div>
-                )}
-                {lightbox.postUrl && (
-                  <a
-                    href={lightbox.postUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    style={{
-                      marginTop: 14,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 7,
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: "#fff",
-                      textDecoration: "none",
-                      background: "#F26522",
-                      padding: "9px 18px",
-                      borderRadius: 9999,
-                    }}
-                  >
-                    View post
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.6}><path d="M7 17 17 7M8 7h9v9" /></svg>
-                  </a>
-                )}
-              </div>
-            )}
-
-            <button
-              onClick={() => setLightboxIndex(null)}
-              aria-label="Close"
-              style={{
-                position: "absolute",
-                top: -14,
-                right: -14,
-                width: 40,
-                height: 40,
-                borderRadius: 9999,
-                background: "#fff",
-                border: "none",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 8px 20px -6px rgba(0,0,0,0.5)",
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={DARK} strokeWidth={2.4} strokeLinecap="round">
-                <path d="M6 6l12 12M18 6L6 18" />
-              </svg>
-            </button>
-          </div>
-        </div>
+      {lightboxIndex !== null && (
+        <GalleryLightbox photos={photos} index={lightboxIndex} onClose={() => setLightboxIndex(null)} onStep={step} />
       )}
     </div>
   );
