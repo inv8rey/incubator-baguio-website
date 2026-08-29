@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import AdminLoginForm from "./AdminLoginForm";
+import AdminLoginForm from "../../admin/login/AdminLoginForm";
 
 export const metadata: Metadata = {
   title: "Admin Log In — Incubator Baguio",
@@ -9,7 +10,11 @@ export const metadata: Metadata = {
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
-export default function AdminLoginPage() {
+export default async function AdminSlugLoginPage({ params }: { params: Promise<{ adminSlug: string }> }) {
+  const { adminSlug } = await params;
+  const secret = process.env.ADMIN_ROUTE_SLUG;
+  if (!secret || adminSlug !== secret) return notFound();
+
   return (
     <main style={{ minHeight: "100vh", background: "#100D0B", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div style={{ width: "100%", maxWidth: 420 }}>
@@ -20,7 +25,7 @@ export default function AdminLoginPage() {
           <div style={{ fontSize: 16, fontWeight: 600, color: "#fff" }}>Incubator Baguio Admin</div>
         </div>
         <Suspense fallback={null}>
-          <AdminLoginForm bp={BP} />
+          <AdminLoginForm adminBase={`${BP}/${secret}`} />
         </Suspense>
       </div>
     </main>

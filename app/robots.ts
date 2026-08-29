@@ -7,7 +7,11 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/admin/", "/dashboard", "/dashboard/", "/evaluation", "/evaluation/"],
+        // The admin panel is intentionally absent from this list: it now
+        // lives at an unguessable, unlinked path (ADMIN_ROUTE_SLUG), and
+        // robots.txt is public — a disallow entry would advertise exactly
+        // the path it's supposed to hide.
+        disallow: ["/dashboard", "/dashboard/", "/evaluation", "/evaluation/"],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

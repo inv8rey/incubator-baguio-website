@@ -5,7 +5,10 @@ import { useAuth } from "./AuthProvider";
 const ORANGE = "#F26522";
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
-export default function RequireAdmin({ children }: { children: React.ReactNode }) {
+// adminBase is the live secret path (e.g. "/ib-ac7017e71ef0"), passed down
+// from the [adminSlug] route so this component never hardcodes it — nothing
+// here or in the bundle reveals where the admin panel actually lives.
+export default function RequireAdmin({ children, adminBase }: { children: React.ReactNode; adminBase: string }) {
   const { configured, user, profile, loading, refreshProfile } = useAuth();
 
   if (loading) {
@@ -33,7 +36,7 @@ export default function RequireAdmin({ children }: { children: React.ReactNode }
           </p>
           <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
             <a
-              href={`${BP}/admin/login/?redirect=${encodeURIComponent(`${BP}/admin/`)}`}
+              href={`${BP}${adminBase}/login/?redirect=${encodeURIComponent(`${BP}${adminBase}/`)}`}
               style={{ fontSize: 14, fontWeight: 600, color: "#fff", textDecoration: "none", background: ORANGE, padding: "12px 24px", borderRadius: 9999 }}
             >
               {user ? "Log in with a different account" : "Log in"}

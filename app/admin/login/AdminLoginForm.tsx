@@ -27,9 +27,13 @@ const labelStyle: React.CSSProperties = {
   marginBottom: 7,
 };
 
-export default function AdminLoginForm({ bp }: { bp: string }) {
+// adminBase is the full base path to the live admin panel, e.g.
+// "/ib-ac7017e71ef0" (or with a NEXT_PUBLIC_BASE_PATH prefix) — passed in by
+// the caller rather than assumed here, since this form has no way to know
+// the current secret slug on its own.
+export default function AdminLoginForm({ adminBase }: { adminBase: string }) {
   const params = useSearchParams();
-  const redirect = params.get("redirect") || `${bp}/admin/`;
+  const redirect = params.get("redirect") || `${adminBase}/`;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
