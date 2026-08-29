@@ -1,32 +1,42 @@
 import { requireAdmin } from "../../../../lib/requireAdmin";
 import { postHogConfigured, runHogQL } from "../../../../lib/postHogQuery";
 
+// Only these three windows are accepted. The value is interpolated straight
+// into HogQL, so it must never come from the query string unvalidated.
+const ALLOWED_DAYS = [7, 30, 90] as const;
+type Days = (typeof ALLOWED_DAYS)[number];
+
+function parseDays(raw: string | null): Days {
+  const n = Number(raw);
+  return (ALLOWED_DAYS as readonly number[]).includes(n) ? (n as Days) : 30;
+}
+
 // $current_url is what PostHogPageView (app/PostHogProvider.tsx) actually
 // sends on every capture -- despite the name, it's already just the path
 // (+ query string), e.g. "/challenges" or "/challenges?category=Government".
 // Stripping the query string here groups those back into one page.
-const TOTALS_QUERY = `
+const totalsQuery = (d: Days) => `
   select
-    countIf(timestamp >= now() - interval 30 day) as views30,
-    countIf(timestamp >= now() - interval 60 day and timestamp < now() - interval 30 day) as viewsPrev30,
-    uniqIf(person_id, timestamp >= now() - interval 30 day) as visitors30,
-    uniqIf(person_id, timestamp >= now() - interval 60 day and timestamp < now() - interval 30 day) as visitorsPrev30
+    countIf(timestamp >= now() - interval ${d} day) as views,
+    countIf(timestamp >= now() - interval ${d * 2} day and timestamp < now() - interval ${d} day) as viewsPrev,
+    uniqIf(person_id, timestamp >= now() - interval ${d} day) as visitors,
+    uniqIf(person_id, timestamp >= now() - interval ${d * 2} day and timestamp < now() - interval ${d} day) as visitorsPrev
   from events
   where event = '$pageview'
 `;
 
-const DAILY_QUERY = `
+const dailyQuery = (d: Days) => `
   select toDate(timestamp) as day, count() as views, uniq(person_id) as visitors
   from events
-  where event = '$pageview' and timestamp >= now() - interval 30 day
+  where event = '$pageview' and timestamp >= now() - interval ${d} day
   group by day
   order by day
 `;
 
-const TOP_PAGES_QUERY = `
+const topPagesQuery = (d: Days) => `
   select splitByChar('?', properties.$current_url)[1] as page, count() as views
   from events
-  where event = '$pageview' and timestamp >= now() - interval 30 day and page != ''
+  where event = '$pageview' and timestamp >= now() - interval ${d} day and page != ''
   group by page
   order by views desc
   limit 8
@@ -42,11 +52,13 @@ export async function GET(req: Request) {
     return Response.json({ configured: false });
   }
 
+  const days = parseDays(new URL(req.url).searchParams.get("days"));
+
   try {
     const [totalsRows, dailyRows, pagesRows] = await Promise.all([
-      runHogQL(TOTALS_QUERY),
-      runHogQL(DAILY_QUERY),
-      runHogQL(TOP_PAGES_QUERY),
+      runHogQL(totalsQuery(days)),
+      runHogQL(dailyQuery(days)),
+      runHogQL(topPagesQuery(days)),
     ]);
 
     const t = totalsRows[0] ?? [0, 0, 0, 0];
@@ -55,11 +67,12 @@ export async function GET(req: Request) {
 
     return Response.json({
       configured: true,
+      days,
       totals: {
-        views30: Number(t[0]) || 0,
-        viewsPrev30: Number(t[1]) || 0,
-        visitors30: Number(t[2]) || 0,
-        visitorsPrev30: Number(t[3]) || 0,
+        views: Number(t[0]) || 0,
+        viewsPrev: Number(t[1]) || 0,
+        visitors: Number(t[2]) || 0,
+        visitorsPrev: Number(t[3]) || 0,
       },
       daily,
       topPages,

@@ -379,6 +379,7 @@ export default function DashboardTab() {
   const approvedSignups = signups.filter((s) => s.status === "approved").length;
   const conversionPct = totalVisits ? Math.round((approvedSignups / totalVisits) * 1000) / 10 : null;
   const dailyVisitSeries = dailySeries(signupVisits.map((v) => v.created_at), VISIT_DAYS);
+  const dailySignupSeries = dailySeries(signups.map((s) => s.created_at), VISIT_DAYS);
 
   const activity = [
     ...startups.slice(0, 8).map((s) => ({ key: `s-${s.id}`, name: s.name, note: "joined as a new startup", created_at: s.created_at })),
@@ -540,8 +541,28 @@ export default function DashboardTab() {
             <div style={{ fontSize: 24, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? (conversionPct == null ? "—" : `${conversionPct}%`) : "—"}</div>
           </div>
         </div>
-        <div style={{ fontSize: 12.5, fontWeight: 600, color: "#5A544B", marginBottom: 10 }}>Daily visits (last {VISIT_DAYS} days)</div>
-        {totalVisits > 0 ? <LineChart data={dailyVisitSeries} color={ORANGE} /> : <div style={{ fontSize: 12.5, color: "#8B8479" }}>No signup page visits recorded yet.</div>}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 10, flexWrap: "wrap" }}>
+          <div style={{ fontSize: 12.5, fontWeight: 600, color: "#5A544B" }}>Daily activity (last {VISIT_DAYS} days)</div>
+          <div style={{ display: "flex", gap: 12 }}>
+            {[{ c: ORANGE, n: "Page visits" }, { c: "#285E7A", n: "Submissions" }].map((s) => (
+              <span key={s.n} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11.5, fontWeight: 600, color: "#5A544B" }}>
+                <span style={{ width: 9, height: 9, borderRadius: "50%", background: s.c, display: "inline-block" }} />
+                {s.n}
+              </span>
+            ))}
+          </div>
+        </div>
+        {totalVisits > 0 || signups.length > 0 ? (
+          <LineChart
+            labels={dailyVisitSeries.map((d) => d.label)}
+            series={[
+              { name: "Page visits", color: ORANGE, values: dailyVisitSeries.map((d) => d.value) },
+              { name: "Submissions", color: "#285E7A", values: dailySignupSeries.map((d) => d.value) },
+            ]}
+          />
+        ) : (
+          <div style={{ fontSize: 12.5, color: "#8B8479" }}>No signup page visits recorded yet.</div>
+        )}
       </div>
 
       {/* ACTIVITY FEED */}
