@@ -308,7 +308,9 @@ export default function EcosystemDirectory() {
     { id: "Mentors", label: "Mentors", count: allMentors.length },
     { id: "TBIs", label: "TBIs", count: allTbis.length },
     { id: "Academe", label: "Academe", count: allAcademe.length },
-    { id: "Companies", label: "Companies", count: allCompanies.length },
+    // Companies hidden from the directory for now — data stays intact
+    // (allCompanies, the Companies branch below) so this is a one-line
+    // revert, not a data change.
     { id: "Service Providers", label: "Service Providers", count: allServiceProviders.length },
     { id: "Government", label: "Government", count: allGovernment.length },
     { id: "Community", label: "Community", count: allCommunity.length },
@@ -364,7 +366,7 @@ export default function EcosystemDirectory() {
           <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: ORANGE, marginBottom: 12 }}>Ecosystem database</div>
           <h2 style={{ margin: 0, fontSize: 38, fontWeight: 500, letterSpacing: "-0.025em", color: DARK }}>Browse the people and places building Baguio</h2>
           <p style={{ margin: "14px auto 0", fontSize: 15, lineHeight: 1.6, color: "#5A544B", maxWidth: 560 }}>
-            Search across registered startups, mentors, TBIs, companies, service providers, government, community partners, coworking spaces, and makerspaces.
+            Search across registered startups, mentors, TBIs, service providers, government, community partners, coworking spaces, and makerspaces.
           </p>
         </div>
 
