@@ -108,6 +108,95 @@ ${navBarHtml("/about")}
     </div>
   </div>
 </div>
+
+<!-- TWO PATHS -->
+<div style="position:relative;background:#0E0B09;padding:78px 40px 84px;overflow:hidden;">
+  <!-- Diagonal accents, top-left and bottom-right -->
+  <div style="position:absolute;top:-90px;left:-120px;width:420px;height:190px;background:linear-gradient(115deg,#F26522,#8A3410 70%,transparent);transform:rotate(-38deg);opacity:0.85;pointer-events:none;"></div>
+  <div style="position:absolute;bottom:-90px;right:-120px;width:420px;height:190px;background:linear-gradient(115deg,#F26522,#8A3410 70%,transparent);transform:rotate(-38deg);opacity:0.85;pointer-events:none;"></div>
+
+  <div style="position:relative;max-width:1140px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:46px;">
+      <div style="font-size:12.5px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;">How we help projects</div>
+      <div style="width:120px;height:2px;background:#F26522;margin:12px auto 24px;"></div>
+      <h2 style="margin:0;font-size:46px;font-weight:600;letter-spacing:-0.03em;color:#fff;line-height:1.08;">Two paths to move<br><span style="color:#F26522;">your idea forward.</span></h2>
+      <p style="margin:20px auto 0;font-size:16.5px;line-height:1.6;color:rgba(255,255,255,0.62);max-width:520px;">Not every project needs the same kind of support. We help you find the path that fits your idea.</p>
+    </div>
+
+    <div class="ib-paths-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:26px;">
+      ${[
+        {
+          n: "01",
+          // Classical building — the city adopting a solution
+          icon: `<path d="M3 21h18M4 21V10M20 21V10M12 3 3 8h18l-9-5Z"></path><path d="M8 21V12M12 21V12M16 21V12"></path>`,
+          title: "City Adoption",
+          lead: "Turn your idea into a solution for Baguio.",
+          desc: "We help promising projects develop, test, and connect with the city for possible adoption.",
+          steps: [
+            { label: "Develop", icon: `<path d="M9 18h6M10 21h4"></path><path d="M12 3a6 6 0 0 0-3.5 10.9c.3.2.5.6.5 1v1h6v-1c0-.4.2-.8.5-1A6 6 0 0 0 12 3Z"></path>` },
+            { label: "Pilot", icon: `<path d="M9 3h6M10 3v6.5L5.5 18A2 2 0 0 0 7.2 21h9.6a2 2 0 0 0 1.7-3L14 9.5V3"></path><path d="M8 15h8"></path>` },
+            { label: "Adopt", icon: `<path d="M4 21V8l8-5 8 5v13"></path><path d="M9 21v-6h6v6"></path>` },
+          ],
+          cta: "Explore City Challenges",
+          href: `${BP}/challenges`,
+          image: `${BP}/assets/baguio-cathedral-sunset.jpg`,
+          alt: "Baguio City at sunset",
+        },
+        {
+          n: "02",
+          // Rocket — taking a product to market
+          icon: `<path d="M5 14.5 3 21l6.5-2"></path><path d="M14.5 5.5C17.5 2.5 21.5 2.5 21.5 2.5s0 4-3 7L11 17l-4-4Z"></path><circle cx="15.5" cy="8.5" r="1.3"></circle>`,
+          title: "Startup Commercialization",
+          lead: "Turn your idea into a business.",
+          desc: "We help projects validate, develop, and prepare solutions for the market.",
+          steps: [
+            { label: "Validate", icon: `<circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path>` },
+            { label: "Develop", icon: `<circle cx="12" cy="12" r="3.2"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path>` },
+            { label: "Launch", icon: `<path d="M3 17 9 11l4 4 8-8"></path><path d="M15 7h6v6"></path>` },
+          ],
+          cta: "Explore Startup Opportunities",
+          href: `${BP}/programs`,
+          image: "",
+          alt: "",
+        },
+      ].map((c) => `
+      <div class="ib-path-card" style="position:relative;background:#161210;border:1px solid rgba(255,255,255,0.09);border-radius:20px;overflow:hidden;min-height:430px;display:flex;">
+        <!-- Imagery bleeds from the right, faded into the card so the copy stays readable -->
+        <div style="position:absolute;inset:0 0 0 42%;overflow:hidden;">
+          ${c.image
+            ? `<img src="${c.image}" alt="${c.alt}" style="width:100%;height:100%;object-fit:cover;display:block;">`
+            : `<div style="width:100%;height:100%;background:radial-gradient(120% 90% at 100% 30%,rgba(242,101,34,0.42),transparent 62%),linear-gradient(200deg,#2A1710,#120D0A 70%);"></div>`}
+          <div style="position:absolute;inset:0;background:linear-gradient(90deg,#161210 6%,rgba(22,18,16,0.86) 34%,rgba(22,18,16,0.22) 78%,transparent);"></div>
+        </div>
+
+        <div style="position:relative;padding:34px 32px;display:flex;flex-direction:column;max-width:76%;">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+            <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${c.icon}</svg>
+            <span style="font-size:15px;font-weight:600;color:rgba(255,255,255,0.55);letter-spacing:0.04em;">${c.n}</span>
+            <span style="width:26px;height:1.5px;background:rgba(242,101,34,0.7);"></span>
+          </div>
+
+          <h3 style="margin:0 0 10px;font-size:29px;font-weight:600;letter-spacing:-0.025em;color:#fff;line-height:1.12;">${c.title}</h3>
+          <p style="margin:0 0 14px;font-size:17px;font-weight:500;line-height:1.4;color:rgba(255,255,255,0.9);">${c.lead}</p>
+          <p style="margin:0 0 26px;font-size:14.5px;line-height:1.6;color:rgba(255,255,255,0.55);">${c.desc}</p>
+
+          <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:28px;flex-wrap:wrap;">
+            ${c.steps.map((s, i) => `
+            ${i > 0 ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.32)" stroke-width="2.4" stroke-linecap="round" style="margin-top:16px;flex-shrink:0;"><path d="m9 6 6 6-6 6"></path></svg>` : ""}
+            <div style="text-align:center;width:64px;flex-shrink:0;">
+              <div style="width:46px;height:46px;border-radius:9999px;border:1.5px solid rgba(242,101,34,0.55);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F26522" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${s.icon}</svg>
+              </div>
+              <div style="font-size:12.5px;color:rgba(255,255,255,0.72);">${s.label}</div>
+            </div>`).join("")}
+          </div>
+
+          <a href="${c.href}" class="ib-cta-orange" style="margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:14.5px;padding:13px 26px;border-radius:9999px;text-decoration:none;">${c.cta} <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        </div>
+      </div>`).join("")}
+    </div>
+  </div>
+</div>
 `;
 
 const ABOUT_HTML_BOTTOM = `
