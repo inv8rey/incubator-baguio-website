@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { DARK } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
+import { slugify } from "../../../lib/slug";
 
 const STATUSES = ["pending", "approved", "rejected"] as const;
 type Status = (typeof STATUSES)[number];
@@ -150,6 +151,9 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
         cover_url: p.cover_url || "",
         contact_email: row.email,
         owner_id: null,
+        // organizations.slug is not-null + unique with no DB default --
+        // every insert path has to supply one itself.
+        slug: `${slugify(String(p.name || "organization"))}-${Math.random().toString(36).slice(2, 8)}`,
       });
       insertError = err?.message ?? null;
     }

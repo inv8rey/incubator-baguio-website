@@ -6,6 +6,7 @@ import { supabase } from "../../../lib/supabaseClient";
 import { initialsOf, paletteFor } from "../../../lib/visualIdentity";
 import { uploadMentorPhoto, uploadOrgLogo, uploadOrgCoverImage, uploadPartnerLogo } from "../../../lib/uploadLogo";
 import { triggerSheetSync, type SyncableTable } from "../../../lib/syncSheetClient";
+import { slugify } from "../../../lib/slug";
 import { MENTOR_SPECIALIZATIONS } from "../../ecosystem/data";
 
 // Only these 3 organization categories mirror to a Google Sheet today (the
@@ -434,9 +435,14 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     } else {
       if (!orgForm.name.trim()) return setError("Add a name.");
       const payload = { name: orgForm.name.trim(), org_type: category, description: orgForm.description.trim(), website: orgForm.website.trim(), contact_email: orgForm.contact_email.trim(), logo_url: orgForm.logoUrl, cover_url: orgForm.coverUrl, type: orgForm.type.trim() };
+      // organizations.slug is not-null + unique with no DB default (see
+      // schema.sql's organizations_slug_idx) -- every insert path has to
+      // supply one itself. The random suffix keeps it unique without a
+      // lookup, matching the pattern already used for member-created orgs
+      // in OrganizationManager.tsx.
       const { error: err } = editingId
         ? await supabase.from("organizations").update(payload).eq("id", editingId)
-        : await supabase.from("organizations").insert(payload);
+        : await supabase.from("organizations").insert({ ...payload, slug: `${slugify(orgForm.name.trim())}-${Math.random().toString(36).slice(2, 8)}` });
       if (err) return setError(err.message);
       const sheetTable = ORG_SHEET_TABLE[category as OrgType];
       if (sheetTable) triggerSheetSync(sheetTable);
