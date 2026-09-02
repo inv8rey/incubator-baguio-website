@@ -106,10 +106,19 @@ export default function SignupForm({ bp }: { bp: string }) {
     }
     const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
     setBusy(true);
+    // Without this, Supabase sends the confirmation link to whatever "Site
+    // URL" is set in the dashboard's Auth settings -- which defaults to
+    // http://localhost:3000 and stays there until someone changes it, so
+    // every confirmation email points at a dev server that isn't running.
+    // This pins it to wherever the signup actually happened instead. The
+    // target still has to be on the project's Redirect URLs allow list
+    // (Authentication -> URL Configuration) or Supabase silently falls back
+    // to the Site URL anyway.
+    const emailRedirectTo = `${window.location.origin}${bp}/dashboard/`;
     const { data, error: err } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName, wants_updates: wantsUpdates } },
+      options: { data: { full_name: fullName, wants_updates: wantsUpdates }, emailRedirectTo },
     });
     if (err) {
       setBusy(false);
