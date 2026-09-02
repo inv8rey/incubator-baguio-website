@@ -5,6 +5,16 @@ import { useEffect, useRef, useState } from "react";
 const FORM_URL = "https://forms.gle/zQrVsjn1iBrT1Vdj9";
 const SEEN_KEY = "ib-feedback-seen";
 
+// Remember that this visitor has already been shown the nudge, so it never
+// auto-opens again. Wrapped because Safari private mode and "block site data"
+// throw on access rather than returning null — an uncaught throw here would
+// take the whole widget down.
+function markSeen() {
+  try {
+    localStorage.setItem(SEEN_KEY, "1");
+  } catch {}
+}
+
 function SparkleIcon({ size = 16, color = "#F26522" }: { size?: number; color?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
@@ -32,8 +42,8 @@ export default function FeedbackBadge({ hidden }: { hidden: boolean }) {
   const popupRef = useRef<HTMLDivElement | null>(null);
   const starRef = useRef<HTMLButtonElement | null>(null);
 
-  // First-visit nudge: open once on its own, same "seen" pattern the chat
-  // bubble's pulse ring uses, so a returning visitor isn't interrupted again.
+  // First-visit nudge: open once on its own, so a returning visitor isn't
+  // interrupted again.
   useEffect(() => {
     let seen = true;
     try {
@@ -45,6 +55,11 @@ export default function FeedbackBadge({ hidden }: { hidden: boolean }) {
       const t = setTimeout(() => {
         setOpen(true);
         setEverOpened(true);
+        // Mark it seen at the moment it auto-opens, not just when the star is
+        // clicked. Previously only toggle() wrote this, so a visitor who
+        // ignored or dismissed the nudge never got the flag set and was
+        // re-interrupted on every subsequent page load.
+        markSeen();
       }, 1600);
       return () => clearTimeout(t);
     }
@@ -55,7 +70,7 @@ export default function FeedbackBadge({ hidden }: { hidden: boolean }) {
     function onOutside(e: MouseEvent) {
       const target = e.target as Node;
       if (popupRef.current?.contains(target) || starRef.current?.contains(target)) return;
-      setOpen(false);
+      dismiss();
     }
     document.addEventListener("mousedown", onOutside);
     return () => document.removeEventListener("mousedown", onOutside);
@@ -64,9 +79,13 @@ export default function FeedbackBadge({ hidden }: { hidden: boolean }) {
   function toggle() {
     setOpen((v) => !v);
     setEverOpened(true);
-    try {
-      localStorage.setItem(SEEN_KEY, "1");
-    } catch {}
+    markSeen();
+  }
+
+  function dismiss() {
+    setOpen(false);
+    setEverOpened(true);
+    markSeen();
   }
 
   if (hidden) return null;
@@ -162,7 +181,7 @@ export default function FeedbackBadge({ hidden }: { hidden: boolean }) {
             </span>
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={dismiss}
               aria-label="Close"
               style={{
                 border: "none",
@@ -189,7 +208,7 @@ export default function FeedbackBadge({ hidden }: { hidden: boolean }) {
             href={FORM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => setOpen(false)}
+            onClick={dismiss}
             style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13.5, fontWeight: 600, color: "#F26522", textDecoration: "none" }}
           >
             Share feedback
