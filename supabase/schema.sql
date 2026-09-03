@@ -2390,6 +2390,15 @@ create policy "members read profiles they are entitled to" on public.profiles
     or public.has_pending_request_from(id)
   );
 
+-- 2026-09-03: profiles had no admin-update policy at all before this --
+-- only "users can update their own profile" (auth.uid() = id). Added for
+-- the Members admin tab, which needs to toggle is_mentor / is_admin on
+-- someone else's account. See 2026-09-03-admin-manage-profiles.sql.
+drop policy if exists "admins update any profile" on public.profiles;
+create policy "admins update any profile" on public.profiles
+  for update using (public.is_site_admin())
+  with check (public.is_site_admin());
+
 
 -- Every other policy added in that migration used the same inline pattern.
 -- None of them recursed (they sit on other tables), but each one forced an

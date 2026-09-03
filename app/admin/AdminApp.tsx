@@ -10,6 +10,7 @@ import ChallengeApplicationsTab from "./tabs/ChallengeApplicationsTab";
 import EventsTab from "./tabs/EventsTab";
 import KnowledgeTab from "./tabs/KnowledgeTab";
 import EcosystemSignupsTab from "./tabs/EcosystemSignupsTab";
+import MembersTab from "./tabs/MembersTab";
 import ContactMessagesTab from "./tabs/ContactMessagesTab";
 import NewsletterTab from "./tabs/NewsletterTab";
 import PartnersTab from "./tabs/PartnersTab";
@@ -55,6 +56,14 @@ const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
       <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
       <circle cx={9} cy={7} r={4} />
       <path d="M19 8v6M22 11h-6" />
+    </>
+  ),
+  members: (
+    <>
+      <circle cx={9} cy={8} r={3.5} />
+      <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
+      <circle cx={17} cy={7} r={2.5} />
+      <path d="M21 19c0-2.4-1.8-4.5-4-5" />
     </>
   ),
   messages: (
@@ -306,6 +315,7 @@ export default function AdminApp() {
         {page === "events" && <EventsTab searchQuery={searchQuery} />}
         {page === "knowledge" && <KnowledgeTab searchQuery={searchQuery} />}
         {page === "signups" && <EcosystemSignupsTab searchQuery={searchQuery} />}
+        {page === "members" && <MembersTab searchQuery={searchQuery} />}
         {page === "messages" && <ContactMessagesTab searchQuery={searchQuery} />}
         {page === "newsletter" && <NewsletterTab searchQuery={searchQuery} />}
         {page === "partners" && <PartnersTab searchQuery={searchQuery} />}
