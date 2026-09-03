@@ -156,7 +156,7 @@ export default function SignupForm({ bp }: { bp: string }) {
         <a href={`${bp}/login/${redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ""}`} style={{ color: ORANGE, fontWeight: 600, textDecoration: "none" }}>Log in</a>
       </p>
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 16 }}>
           <div>
             <label style={labelStyle}>First name</label>
             <div style={{ position: "relative" }}>
@@ -181,7 +181,7 @@ export default function SignupForm({ bp }: { bp: string }) {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 16 }}>
           <div>
             <label style={labelStyle}>Password</label>
             <div style={{ position: "relative" }}>

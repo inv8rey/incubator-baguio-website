@@ -55,8 +55,8 @@ ${navBarHtml("/challenges")}
 
 <!-- BODY -->
 <div style="background:#F6F2EA;padding:56px 40px 64px;">
-  <div style="max-width:880px;margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr;gap:32px;align-items:start;">
-    <div style="display:flex;flex-direction:column;gap:28px;">
+  <div class="ib-challenge-body-grid" style="max-width:880px;margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr;gap:32px;align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:28px;min-width:0;">
       ${c.problem.length > 0 ? `
       <div style="background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:18px;padding:28px 30px;">
         <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#F26522;margin-bottom:14px;">The Challenge</div>
@@ -78,7 +78,7 @@ ${navBarHtml("/challenges")}
       </div>` : ""}
     </div>
 
-    <div style="display:flex;flex-direction:column;gap:20px;">
+    <div style="display:flex;flex-direction:column;gap:20px;min-width:0;">
       <div style="background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:18px;padding:26px;">
         <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#8B8479;margin-bottom:16px;">Challenge details</div>
         <div style="display:flex;flex-direction:column;">

@@ -112,7 +112,7 @@ function ProfileSection() {
                 <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
               </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            <div className="ib-2col-field-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
               <div>
                 <label style={labelStyle}>Full name</label>
                 <input style={inputStyle} required value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Juan Dela Cruz" />
@@ -249,7 +249,7 @@ function PasswordSection() {
     <div style={cardStyle}>
       <h2 style={{ margin: "0 0 20px", fontSize: 18, fontWeight: 600, color: DARK }}>Password</h2>
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+        <div className="ib-2col-field-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
           <div>
             <label style={labelStyle}>New password</label>
             <input style={inputStyle} type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />

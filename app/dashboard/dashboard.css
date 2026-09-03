@@ -40,3 +40,11 @@
 @media (max-width: 620px) {
   .ib-userdash-content { padding: 24px 16px 40px !important; }
 }
+
+/* Account Settings' name/password field pairs: at 320-420px, inside a
+   36px-padded card, a 1fr-1fr grid leaves each input ~100px wide -- too
+   narrow for its placeholder text, which then collides with the
+   show/hide-password eye icon. Stack to one column below 480px. */
+@media (max-width: 480px) {
+  .ib-2col-field-grid { grid-template-columns: 1fr !important; }
+}
