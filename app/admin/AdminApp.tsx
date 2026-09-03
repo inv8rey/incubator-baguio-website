@@ -11,6 +11,7 @@ import EventsTab from "./tabs/EventsTab";
 import KnowledgeTab from "./tabs/KnowledgeTab";
 import EcosystemSignupsTab from "./tabs/EcosystemSignupsTab";
 import ContactMessagesTab from "./tabs/ContactMessagesTab";
+import NewsletterTab from "./tabs/NewsletterTab";
 import PartnersTab from "./tabs/PartnersTab";
 import ChatbotKnowledgeTab from "./tabs/ChatbotKnowledgeTab";
 import SettingsTab from "./tabs/SettingsTab";
@@ -60,6 +61,12 @@ const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
     <>
       <rect x={3} y={5} width={18} height={14} rx={2} />
       <path d="m3 7 9 6 9-6" />
+    </>
+  ),
+  newsletter: (
+    <>
+      <rect x={4} y={3} width={16} height={18} rx={2} />
+      <path d="M8 8h8M8 12h8M8 16h5" />
     </>
   ),
   partners: (
@@ -300,6 +307,7 @@ export default function AdminApp() {
         {page === "knowledge" && <KnowledgeTab searchQuery={searchQuery} />}
         {page === "signups" && <EcosystemSignupsTab searchQuery={searchQuery} />}
         {page === "messages" && <ContactMessagesTab searchQuery={searchQuery} />}
+        {page === "newsletter" && <NewsletterTab searchQuery={searchQuery} />}
         {page === "partners" && <PartnersTab searchQuery={searchQuery} />}
         {page === "chatbot-kb" && <ChatbotKnowledgeTab searchQuery={searchQuery} />}
         {page === "settings" && <SettingsTab searchQuery={searchQuery} />}
