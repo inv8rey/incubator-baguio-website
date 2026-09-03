@@ -79,15 +79,14 @@ const CATEGORIES: Category[] = [
     title: "Ecosystem & Support",
     color: "#1A6B3C",
     terms: [
-      { term: "Incubator", definition: "An organization that supports early-stage startups with resources such as mentorship, workspace, and networking — typically working with companies still shaping their idea or business model, over a longer and less structured timeline than an accelerator." },
+      { term: "Technology Business Incubator", definition: "An organization that supports early-stage, technology-based startups with resources such as workspace, mentorship, funding linkages, and networking — typically based at a university, research institution, or government program, and working with companies over a longer, less structured timeline than an accelerator." },
       { term: "Accelerator", definition: "A fixed-term, cohort-based program that helps startups grow quickly through mentorship, structured curriculum, and often a small investment — usually culminating in a demo day, and shorter and more intensive than an incubator." },
-      { term: "TBI (Technology Business Incubator)", definition: "A formally recognized incubator, often based at a university or research institution, that supports the commercialization of technology-based startups and research outputs." },
       { term: "Mentor", definition: "An experienced individual — often a founder, executive, or subject-matter expert — who provides guidance, feedback, and connections to a startup founder, without necessarily holding equity or a formal role." },
       { term: "Co-working Space", definition: "A shared workspace used by founders, freelancers, and small teams, offering desks, meeting rooms, and often a built-in community of other entrepreneurs." },
       { term: "Demo Day", definition: "An event, usually at the end of an accelerator program, where startups pitch their progress to an audience of investors, mentors, and press." },
       { term: "Pitch Deck", definition: "A short slide presentation founders use to explain their business to investors, partners, or customers — typically covering the problem, solution, market, traction, team, and funding ask." },
       { term: "Open Innovation", definition: "An approach where an organization looks outside its own walls — to startups, researchers, or the public — to source and develop new ideas and solutions, rather than relying only on internal R&D." },
-      { term: "Challenge", definition: "A problem statement published by an organization (government, industry, or academia) inviting innovators, startups, or researchers to propose and submit solutions." },
+      { term: "Startup Ecosystem", definition: "The network of founders, startups, investors, mentors, incubators, accelerators, universities, and government bodies in a given place, whose interactions and support for one another determine how easily new companies can start and grow there." },
     ],
   },
   {
