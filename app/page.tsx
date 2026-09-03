@@ -43,6 +43,7 @@ ${navBarHtml()}
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       <a href="${BP}/ecosystem-signup" class="ib-cta-ghost" style="display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:600;font-size:15.5px;padding:15px 28px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.02);">Join the Ecosystem</a>
     </div>
+    <a href="${BP}/startup-terms" style="display:block;margin-top:18px;font-size:13.5px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;">New to startups? See our glossary &rarr;</a>
   </div>
 </div>
 `;
