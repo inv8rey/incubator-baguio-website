@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { useAuth } from "../AuthProvider";
 import { checkAccountRateLimit } from "../../lib/formGuard";
 import { initialsOf, paletteFor } from "../../lib/visualIdentity";
-import { fetchThreads, postThread, type ForumThread } from "./dynamicData";
+import { displayNameOf, fetchThreads, postThread, type ForumThread } from "./dynamicData";
 
 const DARK = "#1A1714";
 const ORANGE = "#F26522";
@@ -19,7 +19,7 @@ const inputStyle: React.CSSProperties = {
   color: DARK,
   background: "#F6F2EA",
   border: "1px solid rgba(64,50,34,0.14)",
-  borderRadius: 10,
+  borderRadius: 12,
   padding: "12px 14px",
   outline: "none",
   fontFamily: "inherit",
@@ -49,6 +49,14 @@ function Avatar({ name, photoUrl, size = 40 }: { name: string; photoUrl?: string
   );
 }
 
+function ChatIcon({ color }: { color: string }) {
+  return (
+    <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+
 export default function ForumBrowser({ bp }: { bp: string }) {
   const { user, profile } = useAuth();
   const [threads, setThreads] = useState<ForumThread[]>([]);
@@ -56,6 +64,7 @@ export default function ForumBrowser({ bp }: { bp: string }) {
   const [composing, setComposing] = useState(false);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [query, setQuery] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -82,6 +91,12 @@ export default function ForumBrowser({ bp }: { bp: string }) {
       supabase?.removeChannel(channel);
     };
   }, []);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return threads;
+    return threads.filter((t) => `${t.title} ${t.body} ${t.authorName}`.toLowerCase().includes(q));
+  }, [threads, query]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -111,20 +126,25 @@ export default function ForumBrowser({ bp }: { bp: string }) {
     }
   }
 
+  const firstName = profile ? displayNameOf(profile).split(" ")[0] : "";
+
   return (
     <div style={{ background: "#F6F2EA", padding: "48px 40px 64px" }}>
-      <div style={{ maxWidth: 880, margin: "0 auto" }}>
-        <div style={{ marginBottom: 24 }}>
-          {user && profile ? (
-            composing ? (
-              <form onSubmit={submit} style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 18, padding: 24, display: "flex", flexDirection: "column", gap: 12 }}>
-                <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="What do you want to talk about?" maxLength={140} style={inputStyle} autoFocus />
-                <textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="Add some detail..." rows={4} maxLength={4000} style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit" }} />
+      <div style={{ maxWidth: 700, margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
+        {/* COMPOSER — a social-feed "what's on your mind" box, not a plain button */}
+        {user && profile ? (
+          <div style={{ background: "#fff", borderRadius: 20, padding: composing ? 22 : 10, boxShadow: "var(--ib-shadow-sm)", border: "1px solid rgba(64,50,34,0.08)" }}>
+            {composing ? (
+              <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                  <Avatar name={displayNameOf(profile)} photoUrl={profile.photo_url} size={38} />
+                  <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
+                    <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="What do you want to talk about?" maxLength={140} style={{ ...inputStyle, fontWeight: 600 }} autoFocus />
+                    <textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="Add some detail..." rows={4} maxLength={4000} style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit" }} />
+                  </div>
+                </div>
                 {error && <p style={{ margin: 0, fontSize: 12.5, color: "#E23A2E" }}>{error}</p>}
-                <div style={{ display: "flex", gap: 8 }}>
-                  <button type="submit" disabled={busy} style={{ fontSize: 13.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 999, padding: "10px 20px", cursor: busy ? "default" : "pointer", opacity: busy ? 0.7 : 1 }}>
-                    {busy ? "Posting…" : "Post discussion"}
-                  </button>
+                <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
                   <button
                     type="button"
                     onClick={() => {
@@ -135,51 +155,90 @@ export default function ForumBrowser({ bp }: { bp: string }) {
                   >
                     Cancel
                   </button>
+                  <button type="submit" disabled={busy} style={{ fontSize: 13.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 999, padding: "10px 22px", cursor: busy ? "default" : "pointer", opacity: busy ? 0.7 : 1 }}>
+                    {busy ? "Posting…" : "Post"}
+                  </button>
                 </div>
               </form>
             ) : (
               <button
                 onClick={() => setComposing(true)}
-                style={{ fontSize: 14, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 999, padding: "12px 22px", cursor: "pointer" }}
+                style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", background: "none", border: "none", cursor: "pointer", padding: "6px 8px", textAlign: "left" }}
               >
-                Start a discussion
+                <Avatar name={displayNameOf(profile)} photoUrl={profile.photo_url} size={38} />
+                <span style={{ flex: 1, fontSize: 14, color: MUTED, background: "#F6F2EA", borderRadius: 999, padding: "11px 18px" }}>
+                  What&rsquo;s on your mind, {firstName}?
+                </span>
               </button>
-            )
-          ) : (
+            )}
+          </div>
+        ) : (
+          <div style={{ background: "#fff", borderRadius: 20, padding: 22, boxShadow: "var(--ib-shadow-sm)", border: "1px solid rgba(64,50,34,0.08)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 14, color: BODY }}>Have something to ask or share?</span>
             <a
               href={`${bp}/login/?redirect=${encodeURIComponent(`${bp}/community/`)}`}
-              style={{ display: "inline-block", fontSize: 14, fontWeight: 600, color: "#fff", background: DARK, borderRadius: 999, padding: "12px 22px", textDecoration: "none" }}
+              style={{ display: "inline-block", fontSize: 13.5, fontWeight: 600, color: "#fff", background: DARK, borderRadius: 999, padding: "10px 20px", textDecoration: "none", whiteSpace: "nowrap" }}
             >
-              Log in to start a discussion
+              Log in to post
             </a>
-          )}
+          </div>
+        )}
+
+        {/* SEARCH */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+          <div style={{ position: "relative", flex: 1, minWidth: 220 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)" }}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search discussions..."
+              style={{ width: "100%", boxSizing: "border-box", fontSize: 13.5, color: DARK, background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 999, padding: "11px 16px 11px 40px", outline: "none" }}
+            />
+          </div>
+          <span style={{ fontSize: 12.5, color: MUTED, whiteSpace: "nowrap" }}>
+            {filtered.length} discussion{filtered.length === 1 ? "" : "s"}
+          </span>
         </div>
 
+        {/* FEED */}
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          {threads.map((t) => (
-            <a
-              key={t.id}
-              href={`${bp}/community/${t.id}/`}
-              className="ib-card-hover"
-              style={{ display: "flex", gap: 14, alignItems: "flex-start", background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 16, padding: 22, textDecoration: "none" }}
-            >
-              <Avatar name={t.authorName} photoUrl={t.authorPhotoUrl} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <h3 style={{ margin: "0 0 6px", fontSize: 16.5, fontWeight: 600, color: DARK, lineHeight: 1.35 }}>{t.title}</h3>
-                <p className="ib-line-clamp-3" style={{ margin: "0 0 10px", fontSize: 13.5, lineHeight: 1.55, color: BODY }}>{t.body}</p>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 12, color: MUTED }}>
-                  <span style={{ fontWeight: 600, color: "#5A544B" }}>{t.authorName}</span>
-                  <span>&middot;</span>
-                  <span>{timeAgo(t.createdAt)}</span>
-                  <span>&middot;</span>
-                  <span>{t.replyCount} repl{t.replyCount === 1 ? "y" : "ies"}</span>
+          {filtered.map((t) => {
+            const isNew = Date.now() - new Date(t.createdAt).getTime() < 3600_000;
+            return (
+              <a
+                key={t.id}
+                href={`${bp}/community/${t.id}/`}
+                className="ib-card-hover"
+                style={{ display: "flex", gap: 14, alignItems: "flex-start", background: "#fff", borderRadius: 20, padding: 22, textDecoration: "none", boxShadow: "var(--ib-shadow-sm)", border: "1px solid rgba(64,50,34,0.07)" }}
+              >
+                <Avatar name={t.authorName} photoUrl={t.authorPhotoUrl} size={44} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3, flexWrap: "wrap" }}>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#5A544B" }}>{t.authorName}</span>
+                    <span style={{ fontSize: 11.5, color: MUTED }}>{timeAgo(t.createdAt)}</span>
+                    {isNew && (
+                      <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: ORANGE, background: "rgba(242,101,34,0.12)", padding: "2px 8px", borderRadius: 999 }}>New</span>
+                    )}
+                  </div>
+                  <h3 style={{ margin: "0 0 6px", fontSize: 17, fontWeight: 600, color: DARK, lineHeight: 1.35 }}>{t.title}</h3>
+                  <p className="ib-line-clamp-3" style={{ margin: "0 0 12px", fontSize: 13.5, lineHeight: 1.55, color: BODY }}>{t.body}</p>
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 600, color: MUTED, background: "#F6F2EA", borderRadius: 999, padding: "5px 12px" }}>
+                    <ChatIcon color="#8B8479" />
+                    {t.replyCount} repl{t.replyCount === 1 ? "y" : "ies"}
+                  </div>
                 </div>
-              </div>
-            </a>
-          ))}
+              </a>
+            );
+          })}
+
+          {loaded && filtered.length === 0 && threads.length > 0 && (
+            <div style={{ padding: "40px 20px", textAlign: "center", color: MUTED, fontSize: 14, background: "#fff", borderRadius: 20, border: "1px dashed rgba(64,50,34,0.14)" }}>
+              No discussions match &ldquo;{query}&rdquo;.
+            </div>
+          )}
 
           {loaded && threads.length === 0 && (
-            <div style={{ padding: "40px 20px", textAlign: "center", color: MUTED, fontSize: 14, background: "#fff", borderRadius: 18, border: "1px dashed rgba(64,50,34,0.14)" }}>
+            <div style={{ padding: "48px 20px", textAlign: "center", color: MUTED, fontSize: 14, background: "#fff", borderRadius: 20, border: "1px dashed rgba(64,50,34,0.14)" }}>
               No discussions yet — be the first to start one.
             </div>
           )}

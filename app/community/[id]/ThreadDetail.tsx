@@ -173,9 +173,9 @@ export default function ThreadDetail({ threadId, bp }: { threadId: string; bp: s
     <div style={{ background: "#F6F2EA", padding: "40px 40px 64px" }}>
       <div style={{ maxWidth: 820, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
         {thread && (
-          <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 18, padding: 26 }}>
+          <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.07)", boxShadow: "var(--ib-shadow-sm)", borderRadius: 20, padding: 26 }}>
             <div style={{ display: "flex", gap: 14, alignItems: "flex-start", marginBottom: 16 }}>
-              <Avatar name={thread.authorName} photoUrl={thread.authorPhotoUrl} />
+              <Avatar name={thread.authorName} photoUrl={thread.authorPhotoUrl} size={44} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <h1 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 600, color: DARK, letterSpacing: "-0.01em" }}>{thread.title}</h1>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: MUTED }}>
@@ -207,7 +207,7 @@ export default function ThreadDetail({ threadId, bp }: { threadId: string; bp: s
         </div>
 
         {replies.map((r) => (
-          <div key={r.id} style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 16, padding: 20 }}>
+          <div key={r.id} style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.07)", boxShadow: "var(--ib-shadow-sm)", borderRadius: 18, padding: 20 }}>
             <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
               <Avatar name={r.authorName} photoUrl={r.authorPhotoUrl} size={32} />
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -239,7 +239,7 @@ export default function ThreadDetail({ threadId, bp }: { threadId: string; bp: s
         ))}
 
         {user && profile ? (
-          <form onSubmit={submitReply} style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 16, padding: 20, display: "flex", flexDirection: "column", gap: 10 }}>
+          <form onSubmit={submitReply} style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.07)", boxShadow: "var(--ib-shadow-sm)", borderRadius: 18, padding: 20, display: "flex", flexDirection: "column", gap: 10 }}>
             <textarea value={replyBody} onChange={(e) => setReplyBody(e.target.value)} placeholder="Add a reply..." rows={3} maxLength={4000} style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit" }} />
             {error && <p style={{ margin: 0, fontSize: 12.5, color: "#E23A2E" }}>{error}</p>}
             <button
