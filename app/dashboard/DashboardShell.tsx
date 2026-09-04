@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuth } from "../AuthProvider";
 import RequireAuth from "../RequireAuth";
 import DashboardSidebar from "./DashboardSidebar";
+import NotificationBell from "./NotificationBell";
 import { BASE_PATH } from "./chrome";
 import "./dashboard.css";
 
@@ -39,17 +40,22 @@ export default function DashboardShell({ active, children }: { active: string; c
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", minWidth: 0, background: "#F6F2EA" }}>
-        <button
-          className="ib-userdash-burger"
-          onClick={() => setMenuOpen(true)}
-          aria-label="Open menu"
-          style={{ display: "none", width: 36, height: 36, borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.12)", background: "#fff", flexDirection: "column", justifyContent: "center", gap: 4, cursor: "pointer", margin: "16px 0 0 16px" }}
-        >
-          <span style={{ width: 16, height: 2, background: "#1A1714", margin: "0 auto", borderRadius: 2 }} />
-          <span style={{ width: 16, height: 2, background: "#1A1714", margin: "0 auto", borderRadius: 2 }} />
-          <span style={{ width: 16, height: 2, background: "#1A1714", margin: "0 auto", borderRadius: 2 }} />
-        </button>
-        <div className="ib-userdash-content" style={{ padding: "40px 40px 64px", flex: 1 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px 0 16px" }}>
+          <button
+            className="ib-userdash-burger"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Open menu"
+            style={{ display: "none", width: 36, height: 36, borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.12)", background: "#fff", flexDirection: "column", justifyContent: "center", gap: 4, cursor: "pointer" }}
+          >
+            <span style={{ width: 16, height: 2, background: "#1A1714", margin: "0 auto", borderRadius: 2 }} />
+            <span style={{ width: 16, height: 2, background: "#1A1714", margin: "0 auto", borderRadius: 2 }} />
+            <span style={{ width: 16, height: 2, background: "#1A1714", margin: "0 auto", borderRadius: 2 }} />
+          </button>
+          <div style={{ marginLeft: "auto" }}>
+            <NotificationBell />
+          </div>
+        </div>
+        <div className="ib-userdash-content" style={{ padding: "16px 40px 64px", flex: 1 }}>
           {children}
         </div>
       </div>
