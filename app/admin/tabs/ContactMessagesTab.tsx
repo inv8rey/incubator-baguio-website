@@ -112,8 +112,8 @@ export default function ContactMessagesTab({ searchQuery = "" }: { searchQuery?:
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6, flexWrap: "wrap" }}>
                 <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: sc.color, background: sc.bg, padding: "3px 9px", borderRadius: 999 }}>{STATUS_LABELS[r.status]}</span>
                 <span style={{ fontSize: 14.5, fontWeight: 600, color: DARK }}>{r.name}</span>
-                <span style={{ fontSize: 12, color: "#8B8479" }}>{r.reason}</span>
-                <span style={{ fontSize: 11.5, color: "#8B8479", marginLeft: "auto" }}>{new Date(r.created_at).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" })}</span>
+                <span style={{ fontSize: 12, color: "#6E685F" }}>{r.reason}</span>
+                <span style={{ fontSize: 11.5, color: "#6E685F", marginLeft: "auto" }}>{new Date(r.created_at).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" })}</span>
               </div>
               <div style={{ fontSize: 12.5, color: "#5A544B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.message}</div>
             </button>
@@ -121,7 +121,7 @@ export default function ContactMessagesTab({ searchQuery = "" }: { searchQuery?:
         })}
 
         {loaded && filtered.length === 0 && (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ padding: "28px 20px", textAlign: "center", color: "#6E685F", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             No messages{status !== "all" ? ` marked ${STATUS_LABELS[status as Status].toLowerCase()}` : ""}.
           </div>
         )}
@@ -132,20 +132,20 @@ export default function ContactMessagesTab({ searchQuery = "" }: { searchQuery?:
           <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 18, padding: 26, width: "100%", maxWidth: 480, display: "flex", flexDirection: "column", gap: 14, maxHeight: "88vh", overflowY: "auto" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div>
-                <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 4 }}>{viewing.reason}</div>
+                <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 4 }}>{viewing.reason}</div>
                 <div style={{ fontSize: 16.5, fontWeight: 600, color: DARK }}>{viewing.name}</div>
               </div>
-              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#8B8479", lineHeight: 1, flexShrink: 0 }}>×</button>
+              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#6E685F", lineHeight: 1, flexShrink: 0 }}>×</button>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13 }}>
-              <div><span style={{ color: "#8B8479" }}>Email:</span> <a href={`mailto:${viewing.email}`} style={{ color: "#F26522", fontWeight: 600 }}>{viewing.email}</a></div>
-              {viewing.organization && <div><span style={{ color: "#8B8479" }}>Organization:</span> <strong>{viewing.organization}</strong></div>}
-              <div><span style={{ color: "#8B8479" }}>Received:</span> <strong>{new Date(viewing.created_at).toLocaleString()}</strong></div>
+              <div><span style={{ color: "#6E685F" }}>Email:</span> <a href={`mailto:${viewing.email}`} style={{ color: "#F26522", fontWeight: 600 }}>{viewing.email}</a></div>
+              {viewing.organization && <div><span style={{ color: "#6E685F" }}>Organization:</span> <strong>{viewing.organization}</strong></div>}
+              <div><span style={{ color: "#6E685F" }}>Received:</span> <strong>{new Date(viewing.created_at).toLocaleString()}</strong></div>
               <div style={{ borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 10, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{viewing.message}</div>
             </div>
             <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
               <a href={`mailto:${viewing.email}`} style={{ fontSize: 13, fontWeight: 600, color: "#fff", background: "#1A6B3C", border: "none", borderRadius: 999, padding: "9px 18px", textDecoration: "none" }}>Reply by email</a>
-              <button onClick={() => remove(viewing.id)} style={{ fontSize: 13, fontWeight: 600, color: "#8B8479", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer", marginLeft: "auto" }}>Delete</button>
+              <button onClick={() => remove(viewing.id)} style={{ fontSize: 13, fontWeight: 600, color: "#6E685F", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer", marginLeft: "auto" }}>Delete</button>
             </div>
           </div>
         </div>

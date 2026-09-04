@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "../../AuthProvider";
 import { supabase } from "../../../lib/supabaseClient";
 import { uploadMentorPhoto } from "../../../lib/uploadLogo";
@@ -8,10 +9,12 @@ import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } f
 import { PROFILE_AREAS_OF_INTEREST, PROFILE_SKILLS, PROFILE_LOOKING_FOR, PROFILE_CAN_OFFER } from "../../../lib/profileOptions";
 import TagChips from "../TagChips";
 
-const sectionTitle: React.CSSProperties = { fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 12 };
+const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
+const sectionTitle: React.CSSProperties = { fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 12 };
 
 function ProfileSection() {
   const { profile, refreshProfile } = useAuth();
+  const router = useRouter();
   const [photoUrl, setPhotoUrl] = useState(profile?.photo_url || "");
   const [fullName, setFullName] = useState(profile?.full_name || "");
   const [preferredName, setPreferredName] = useState(profile?.preferred_name || "");
@@ -26,7 +29,6 @@ function ProfileSection() {
   const [uploading, setUploading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     if (!profile) return;
@@ -62,7 +64,6 @@ function ProfileSection() {
     if (!supabase || !profile) return;
     if (!fullName.trim()) return setError("Add your full name.");
     setError("");
-    setSaved(false);
     setBusy(true);
     const { error: err } = await supabase
       .from("profiles")
@@ -85,8 +86,11 @@ function ProfileSection() {
       setError(err.message);
       return;
     }
+    // Recomputes everywhere that reads profile from AuthProvider's context
+    // (e.g. the dashboard's setup-progress ring), then lands on a real view
+    // of the saved profile instead of leaving the user staring at a toast.
     await refreshProfile();
-    setSaved(true);
+    router.push(`${BP}/dashboard/profile/`);
   }
 
   return (
@@ -102,14 +106,14 @@ function ProfileSection() {
               {photoUrl ? (
                 <img src={photoUrl} alt="" style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover" }} />
               ) : (
-                <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10.5, textAlign: "center" }}>No photo</div>
+                <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10.5, textAlign: "center" }}>No photo</div>
               )}
               <div>
                 <label style={{ display: "inline-block", fontSize: 13, fontWeight: 600, color: ORANGE, cursor: "pointer" }}>
                   {uploading ? "Uploading…" : "Upload photo"}
                   <input type="file" accept="image/*" onChange={handlePhotoChange} disabled={uploading} style={{ display: "none" }} />
                 </label>
-                <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
+                <div style={{ fontSize: 11.5, color: "#6E685F", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
               </div>
             </div>
             <div className="ib-2col-field-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
@@ -169,7 +173,6 @@ function ProfileSection() {
           </div>
         </div>
 
-        {saved && <p style={{ margin: 0, fontSize: 13, color: "#1A6B3C", fontWeight: 600 }}>Profile updated successfully.</p>}
         {error && <p style={{ margin: 0, fontSize: 13, color: "#E23A2E" }}>{error}</p>}
 
         <div>
@@ -305,7 +308,7 @@ function OrganizationVisibilitySection() {
         {orgs.map((o) => (
           <div key={o.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.1)", borderRadius: 10, padding: "10px 14px" }}>
             <span style={{ fontSize: 13, fontWeight: 600, color: DARK }}>{o.name}</span>
-            <span style={{ fontSize: 11.5, fontWeight: 600, color: o.is_public ? "#1A6B3C" : "#8B8479" }}>
+            <span style={{ fontSize: 11.5, fontWeight: 600, color: o.is_public ? "#1A6B3C" : "#6E685F" }}>
               {o.approval_status === "pending" ? "Pending review" : o.is_public ? "Public" : "Hidden"}
             </span>
           </div>

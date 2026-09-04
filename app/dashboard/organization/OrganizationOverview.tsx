@@ -147,7 +147,7 @@ function Overview({ orgId }: { orgId: string }) {
   }, [orgId]);
 
   if (!loaded || !org) {
-    return <div style={{ padding: "40px 0", textAlign: "center", color: "#8B8479", fontSize: 14 }}>Loading&hellip;</div>;
+    return <div style={{ padding: "40px 0", textAlign: "center", color: "#6E685F", fontSize: 14 }}>Loading&hellip;</div>;
   }
 
   const { checks, pct } = completeness(org);
@@ -170,7 +170,7 @@ function Overview({ orgId }: { orgId: string }) {
         )}
         <div>
           <h2 style={{ margin: 0, fontSize: 22, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{org.name}</h2>
-          <div style={{ fontSize: 13, color: "#8B8479" }}>{org.org_type}{org.type ? ` · ${org.type}` : ""}</div>
+          <div style={{ fontSize: 13, color: "#6E685F" }}>{org.org_type}{org.type ? ` · ${org.type}` : ""}</div>
         </div>
       </div>
       <p style={{ margin: "10px 0 24px", fontSize: 14, color: "#5A544B" }}>Here&rsquo;s what&rsquo;s happening with your organization on Incubator Baguio.</p>
@@ -210,7 +210,7 @@ function Overview({ orgId }: { orgId: string }) {
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 9, minWidth: 168 }} className="ib-dashboard-nextstep-checks">
                   {checks.map((c, i) => (
-                    <div key={c.label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: c.done ? DARK : "#8B8479" }}>
+                    <div key={c.label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: c.done ? DARK : "#6E685F" }}>
                       <span style={{ width: 17, height: 17, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: c.done ? "#1A6B3C" : "#fff", border: c.done ? "none" : "1.5px solid rgba(64,50,34,0.18)" }}>
                         {c.done && <svg width={9} height={9} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={3}><path d="M20 6 9 17l-5-5" /></svg>}
                       </span>
@@ -238,7 +238,7 @@ function Overview({ orgId }: { orgId: string }) {
                 </div>
                 <div style={{ fontSize: 22, fontWeight: 600, color: DARK, letterSpacing: "-0.02em", marginBottom: 2 }}>{s.value}</div>
                 <div style={{ fontSize: 12.5, fontWeight: 600, color: DARK, marginBottom: 2 }}>{s.label}</div>
-                <div style={{ fontSize: 11, color: "#8B8479" }}>{s.note}</div>
+                <div style={{ fontSize: 11, color: "#6E685F" }}>{s.note}</div>
               </div>
             ))}
           </div>
@@ -279,14 +279,14 @@ function Overview({ orgId }: { orgId: string }) {
           <div style={cardStyle}>
             <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 14 }}>Recent activity</div>
             {activity.length === 0 ? (
-              <div style={{ fontSize: 12.5, color: "#8B8479" }}>Nothing submitted yet — post a challenge, event, or resource to see it here.</div>
+              <div style={{ fontSize: 12.5, color: "#6E685F" }}>Nothing submitted yet — post a challenge, event, or resource to see it here.</div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {activity.map((a) => (
                   <div key={a.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                     <div style={{ minWidth: 0 }}>
                       <div style={{ fontSize: 12.5, fontWeight: 600, color: DARK, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.title}</div>
-                      <div style={{ fontSize: 11, color: "#8B8479" }}>{a.kind}</div>
+                      <div style={{ fontSize: 11, color: "#6E685F" }}>{a.kind}</div>
                     </div>
                     <span style={{ fontSize: 10.5, fontWeight: 600, color: STATUS_BADGE[a.status].color, background: STATUS_BADGE[a.status].bg, padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{STATUS_BADGE[a.status].label}</span>
                   </div>
@@ -297,7 +297,7 @@ function Overview({ orgId }: { orgId: string }) {
 
           <div style={cardStyle}>
             <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 6 }}>Need help or have questions?</div>
-            <p style={{ margin: "0 0 10px", fontSize: 12, color: "#8B8479" }}>Reach out to our team.</p>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "#6E685F" }}>Reach out to our team.</p>
             <a href="mailto:incubatorbaguio63@gmail.com" style={{ fontSize: 12.5, fontWeight: 600, color: ORANGE, textDecoration: "none" }}>incubatorbaguio63@gmail.com</a>
           </div>
         </div>
@@ -308,7 +308,7 @@ function Overview({ orgId }: { orgId: string }) {
 
 export default function OrganizationOverview() {
   const { selectedOrg, loaded } = useRequiredOrg();
-  if (!loaded) return <div style={{ padding: "40px 0", textAlign: "center", color: "#8B8479", fontSize: 14 }}>Loading&hellip;</div>;
+  if (!loaded) return <div style={{ padding: "40px 0", textAlign: "center", color: "#6E685F", fontSize: 14 }}>Loading&hellip;</div>;
   if (!selectedOrg) return <OrgRequiredNotice />;
   return <Overview orgId={selectedOrg.id} />;
 }

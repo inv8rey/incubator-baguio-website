@@ -69,7 +69,7 @@ function resolvedVisitPurpose(row: FeedbackRow) {
 function StatBox({ label, value, note }: { label: string; value: string; note?: string }) {
   return (
     <div style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", padding: "16px 18px" }}>
-      <div style={{ fontSize: 11, color: "#8B8479", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>{label}</div>
+      <div style={{ fontSize: 11, color: "#6E685F", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>{label}</div>
       <div style={{ color: DARK, fontSize: 26, fontWeight: 600, marginTop: 8, lineHeight: 1 }}>{value}</div>
       {note && <div style={{ color: "#5A544B", fontSize: 12.5, marginTop: 7 }}>{note}</div>}
     </div>
@@ -79,7 +79,7 @@ function StatBox({ label, value, note }: { label: string; value: string; note?: 
 function DetailLine({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div style={{ color: "#8B8479", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>{label}</div>
+      <div style={{ color: "#6E685F", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>{label}</div>
       <div style={{ color: DARK, fontSize: 13.5, fontWeight: 600, lineHeight: 1.45, whiteSpace: "pre-wrap" }}>{value}</div>
     </div>
   );
@@ -232,7 +232,7 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 7, flexWrap: "wrap" }}>
                   <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: ORANGE, background: "rgba(242,101,34,0.12)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap" }}>{resolvedVisitorType(row)}</span>
                   <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#285E7A", background: "rgba(40,94,122,0.10)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap" }}>{resolvedVisitPurpose(row)}</span>
-                  <span style={{ fontSize: 12, color: "#8B8479" }}>{displayDate(row.created_at)}</span>
+                  <span style={{ fontSize: 12, color: "#6E685F" }}>{displayDate(row.created_at)}</span>
                 </div>
                 <div style={{ color: DARK, fontSize: 15, fontWeight: 600, lineHeight: 1.35 }}>
                   {row.startup_name || row.respondent_role || row.organization_contact ? clean(row.startup_name || row.respondent_role || row.organization_contact) : "Anonymous visitor"}
@@ -244,7 +244,7 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
               <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
                 <div style={{ textAlign: "right" }}>
                   <div style={{ color: DARK, fontSize: 20, fontWeight: 600, lineHeight: 1 }}>{scoreLabel(avg)}</div>
-                  <div style={{ color: "#8B8479", fontSize: 10.5, marginTop: 3 }}>avg rating</div>
+                  <div style={{ color: "#6E685F", fontSize: 10.5, marginTop: 3 }}>avg rating</div>
                 </div>
                 <button onClick={() => setViewing(row)} style={{ fontSize: 12, fontWeight: 600, color: "#285E7A", background: "none", border: "1.5px solid rgba(40,94,122,0.3)", borderRadius: 999, padding: "7px 14px", cursor: "pointer" }}>View</button>
               </div>
@@ -253,7 +253,7 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
         })}
 
         {loaded && !error && filtered.length === 0 && (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ padding: "28px 20px", textAlign: "center", color: "#6E685F", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             No consultation feedback yet.
           </div>
         )}
@@ -268,7 +268,7 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
                 <div style={{ color: DARK, fontSize: 19, fontWeight: 600, lineHeight: 1.25 }}>{clean(viewing.startup_name || resolvedVisitorType(viewing))}</div>
                 <div style={{ color: "#5A544B", fontSize: 12.5, marginTop: 5 }}>{displayDate(viewing.created_at)}</div>
               </div>
-              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 20, color: "#8B8479", lineHeight: 1, flexShrink: 0 }}>x</button>
+              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 20, color: "#6E685F", lineHeight: 1, flexShrink: 0 }}>x</button>
             </div>
 
             <div className="ib-admin-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 14 }}>
@@ -291,7 +291,7 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
             </div>
 
             <div style={{ borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 16 }}>
-              <div style={{ color: "#8B8479", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Ratings</div>
+              <div style={{ color: "#6E685F", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Ratings</div>
               <div style={{ display: "grid", gap: 8 }}>
                 {RATING_LABELS.map((label) => (
                   <div key={label} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 34px", gap: 12, alignItems: "center", fontSize: 13 }}>
@@ -303,7 +303,7 @@ export default function EvaluationsTab({ searchQuery = "" }: { searchQuery?: str
             </div>
 
             <div style={{ borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 16, display: "flex" }}>
-              <button onClick={() => remove(viewing.id)} style={{ fontSize: 13, fontWeight: 600, color: "#8B8479", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer", marginLeft: "auto" }}>Delete</button>
+              <button onClick={() => remove(viewing.id)} style={{ fontSize: 13, fontWeight: 600, color: "#6E685F", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer", marginLeft: "auto" }}>Delete</button>
             </div>
           </div>
         </div>

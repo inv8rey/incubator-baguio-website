@@ -75,7 +75,7 @@ export default function AuthShell({ eyebrow, children }: { eyebrow: string; chil
               <img src={`${BP}/assets/ib-icon.png`} alt="Incubator Baguio" style={{ width: 40, height: 40, borderRadius: 10, objectFit: "contain" }} />
               <div>
                 <div style={{ fontSize: 16, fontWeight: 700, color: DARK, lineHeight: 1.2 }}>Incubator Baguio</div>
-                <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginTop: 2 }}>Baguio City&rsquo;s Innovation Platform</div>
+                <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6E685F", marginTop: 2 }}>Baguio City&rsquo;s Innovation Platform</div>
               </div>
             </a>
 
@@ -94,7 +94,7 @@ export default function AuthShell({ eyebrow, children }: { eyebrow: string; chil
                   </span>
                   <div>
                     <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK }}>{f.title}</div>
-                    <div style={{ fontSize: 12.5, lineHeight: 1.5, color: "#8B8479", marginTop: 2 }}>{f.desc}</div>
+                    <div style={{ fontSize: 12.5, lineHeight: 1.5, color: "#6E685F", marginTop: 2 }}>{f.desc}</div>
                   </div>
                 </div>
               ))}

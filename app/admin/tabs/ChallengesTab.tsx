@@ -103,7 +103,7 @@ function ChallengeFormModal({ challenge, onClose, onSaved }: { challenge: Challe
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <div style={{ fontSize: 20, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{isEdit ? "Edit challenge" : "Add challenge"}</div>
-            <div style={{ fontSize: 12.5, color: "#8B8479", marginTop: 3 }}>Goes live on the Challenges page immediately.</div>
+            <div style={{ fontSize: 12.5, color: "#6E685F", marginTop: 3 }}>Goes live on the Challenges page immediately.</div>
           </div>
           <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#5A544B", flexShrink: 0 }}>&times;</button>
         </div>
@@ -281,7 +281,7 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
           { label: "Avg. Applications", value: stats.avgApplications },
         ].map((s) => (
           <div key={s.label} style={{ background: "#fff", border: "1.5px solid rgba(64,50,34,0.12)", borderRadius: 14, padding: "16px 18px" }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "#8B8479", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{s.label}</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: "#6E685F", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{s.label}</div>
             <div style={{ fontSize: 24, fontWeight: 600, color: DARK }}>{s.value}</div>
           </div>
         ))}
@@ -300,7 +300,7 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
                 <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.02em", color: cat?.color, background: cat?.bg, padding: "5px 12px", borderRadius: 999, whiteSpace: "nowrap" }}>
                   {cat?.emoji} {c.category}
                 </span>
-                <span style={{ fontSize: 11, fontWeight: 600, color: c.status === "Open" ? "#1A6B3C" : "#8B8479", background: c.status === "Open" ? "rgba(26,107,60,0.12)" : "rgba(154,149,139,0.14)", padding: "4px 10px", borderRadius: 999 }}>{c.status}</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: c.status === "Open" ? "#1A6B3C" : "#6E685F", background: c.status === "Open" ? "rgba(26,107,60,0.12)" : "rgba(154,149,139,0.14)", padding: "4px 10px", borderRadius: 999 }}>{c.status}</span>
               </div>
               <h3 style={{ fontSize: 18, fontWeight: 600, color: DARK, letterSpacing: "-0.02em", lineHeight: 1.2, marginBottom: 10 }}>{c.title}</h3>
               <p style={{ fontSize: 13.5, lineHeight: 1.55, color: "#5A544B", marginBottom: 18, flex: 1 }}>{c.summary}</p>
@@ -310,7 +310,7 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: DARK, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.org_name}</div>
-                  <div style={{ fontSize: 11, color: "#8B8479", marginTop: 1 }}>{applicationCounts[c.id] ?? 0} applications</div>
+                  <div style={{ fontSize: 11, color: "#6E685F", marginTop: 1 }}>{applicationCounts[c.id] ?? 0} applications</div>
                 </div>
               </div>
               <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
@@ -339,16 +339,16 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
           }}
         >
           <div style={{ width: 48, height: 48, borderRadius: 999, background: "#EDEAE5", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
-            <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} strokeLinecap="round">
+            <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2} strokeLinecap="round">
               <path d="M12 5v14M5 12h14" />
             </svg>
           </div>
           <div style={{ fontSize: 15, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Add a new challenge</div>
-          <p style={{ fontSize: 13.5, color: "#8B8479", lineHeight: 1.4, maxWidth: 200 }}>Curated challenges shown on the public Challenges page.</p>
+          <p style={{ fontSize: 13.5, color: "#6E685F", lineHeight: 1.4, maxWidth: 200 }}>Curated challenges shown on the public Challenges page.</p>
         </div>
 
         {loaded && filtered.length === 0 && challenges.length > 0 && (
-          <div style={{ gridColumn: "1 / -1", padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ gridColumn: "1 / -1", padding: "28px 20px", textAlign: "center", color: "#6E685F", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             No challenges match your search.
           </div>
         )}
@@ -374,11 +374,11 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
             <p style={{ fontSize: 14, lineHeight: 1.6, color: "#5A544B", margin: 0 }}>{viewing.summary}</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               <div style={{ background: "#F5F4F0", borderRadius: 10, padding: "12px 14px" }}>
-                <div style={{ fontSize: 11, color: "#8B8479", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Applications</div>
+                <div style={{ fontSize: 11, color: "#6E685F", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Applications</div>
                 <div style={{ fontSize: 22, fontWeight: 600, color: DARK }}>{applicationCounts[viewing.id] ?? 0}</div>
               </div>
               <div style={{ background: "#F5F4F0", borderRadius: 10, padding: "12px 14px" }}>
-                <div style={{ fontSize: 11, color: "#8B8479", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Applications close</div>
+                <div style={{ fontSize: 11, color: "#6E685F", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Applications close</div>
                 <div style={{ fontSize: 16, fontWeight: 600, color: DARK }}>{viewing.deadline_date || "—"}</div>
               </div>
             </div>
@@ -388,7 +388,7 @@ export default function ChallengesTab({ searchQuery = "" }: { searchQuery?: stri
               </div>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{viewing.org_name}</div>
-                <div style={{ fontSize: 12, color: "#8B8479", marginTop: 2 }}>{viewing.org_type}</div>
+                <div style={{ fontSize: 12, color: "#6E685F", marginTop: 2 }}>{viewing.org_type}</div>
               </div>
             </div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>

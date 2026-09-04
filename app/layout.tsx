@@ -3,6 +3,7 @@ import "./globals.css";
 import Interactive from "./Interactive";
 import AuthProvider from "./AuthProvider";
 import AuthNav from "./AuthNav";
+import HeaderSearch from "./HeaderSearch";
 import PageLoader from "./PageLoader";
 import PostHogProvider from "./PostHogProvider";
 import ChatWidget from "./ChatWidget/ChatWidget";
@@ -80,6 +81,7 @@ export default function RootLayout({
             {children}
             <Interactive />
             <AuthNav />
+            <HeaderSearch />
             <ChatWidget />
           </AuthProvider>
         </PostHogProvider>

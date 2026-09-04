@@ -10,7 +10,7 @@ import { displayNameOf, fetchThreads, postThread, type ForumThread } from "./dyn
 const DARK = "#1A1714";
 const ORANGE = "#F26522";
 const BODY = "#44444C";
-const MUTED = "#8B8479";
+const MUTED = "#6E685F";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
@@ -187,7 +187,7 @@ export default function ForumBrowser({ bp }: { bp: string }) {
         {/* SEARCH */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
           <div style={{ position: "relative", flex: 1, minWidth: 220 }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)" }}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2} style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)" }}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -223,7 +223,7 @@ export default function ForumBrowser({ bp }: { bp: string }) {
                   <h3 style={{ margin: "0 0 6px", fontSize: 17, fontWeight: 600, color: DARK, lineHeight: 1.35 }}>{t.title}</h3>
                   <p className="ib-line-clamp-3" style={{ margin: "0 0 12px", fontSize: 13.5, lineHeight: 1.55, color: BODY }}>{t.body}</p>
                   <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 600, color: MUTED, background: "#F6F2EA", borderRadius: 999, padding: "5px 12px" }}>
-                    <ChatIcon color="#8B8479" />
+                    <ChatIcon color="#6E685F" />
                     {t.replyCount} repl{t.replyCount === 1 ? "y" : "ies"}
                   </div>
                 </div>

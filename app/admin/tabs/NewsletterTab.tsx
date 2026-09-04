@@ -89,15 +89,15 @@ export default function NewsletterTab({ searchQuery = "" }: { searchQuery?: stri
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 }}>
         <div style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>Total subscribers</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>Total subscribers</div>
           <div style={{ fontSize: 26, fontWeight: 700, color: DARK }}>{rows.length}</div>
         </div>
         <div style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>New this week</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>New this week</div>
           <div style={{ fontSize: 26, fontWeight: 700, color: DARK }}>{recentCount}</div>
         </div>
         <div style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1.5px solid rgba(64,50,34,0.12)", minWidth: 0 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 8 }}>By source</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 8 }}>By source</div>
           {sourceCounts.size ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
               {[...sourceCounts.entries()].sort((a, b) => b[1] - a[1]).map(([src, count]) => (
@@ -108,13 +108,13 @@ export default function NewsletterTab({ searchQuery = "" }: { searchQuery?: stri
               ))}
             </div>
           ) : (
-            <div style={{ fontSize: 12.5, color: "#8B8479" }}>No subscribers yet.</div>
+            <div style={{ fontSize: 12.5, color: "#6E685F" }}>No subscribers yet.</div>
           )}
         </div>
       </div>
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div style={{ fontSize: 12.5, color: "#8B8479" }}>
+        <div style={{ fontSize: 12.5, color: "#6E685F" }}>
           Showing <strong style={{ color: DARK }}>{filtered.length}</strong> of {rows.length}
         </div>
         <button
@@ -145,7 +145,7 @@ export default function NewsletterTab({ searchQuery = "" }: { searchQuery?: stri
       <div style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", overflow: "hidden" }}>
         {filtered.length > 0 ? (
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ display: "flex", padding: "10px 18px", borderBottom: "1px solid rgba(64,50,34,0.08)", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "#8B8479" }}>
+            <div style={{ display: "flex", padding: "10px 18px", borderBottom: "1px solid rgba(64,50,34,0.08)", fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "#6E685F" }}>
               <span style={{ flex: 1 }}>Email</span>
               <span style={{ width: 110 }}>Source</span>
               <span style={{ width: 120, textAlign: "right" }}>Subscribed</span>
@@ -155,7 +155,7 @@ export default function NewsletterTab({ searchQuery = "" }: { searchQuery?: stri
               <div key={r.id} style={{ display: "flex", alignItems: "center", padding: "12px 18px", borderBottom: "1px solid rgba(64,50,34,0.05)", fontSize: 13.5 }}>
                 <span style={{ flex: 1, color: DARK, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", paddingRight: 12 }}>{r.email}</span>
                 <span style={{ width: 110, fontSize: 11.5, fontWeight: 600, color: "#5A544B", textTransform: "capitalize" }}>{r.source || "—"}</span>
-                <span style={{ width: 120, fontSize: 12, color: "#8B8479", textAlign: "right" }}>{timeAgo(r.created_at)}</span>
+                <span style={{ width: 120, fontSize: 12, color: "#6E685F", textAlign: "right" }}>{timeAgo(r.created_at)}</span>
                 <span style={{ width: 32, textAlign: "right" }}>
                   <button
                     onClick={() => remove(r.id, r.email)}
@@ -169,7 +169,7 @@ export default function NewsletterTab({ searchQuery = "" }: { searchQuery?: stri
             ))}
           </div>
         ) : (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13 }}>
+          <div style={{ padding: "28px 20px", textAlign: "center", color: "#6E685F", fontSize: 13 }}>
             {loaded ? (searchQuery ? "No subscribers match your search." : "No newsletter subscribers yet.") : "Loading…"}
           </div>
         )}

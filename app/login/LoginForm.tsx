@@ -33,7 +33,7 @@ const fieldIconStyle: React.CSSProperties = {
   left: 13,
   top: "50%",
   transform: "translateY(-50%)",
-  color: "#8B8479",
+  color: "#6E685F",
   pointerEvents: "none",
 };
 
@@ -80,7 +80,7 @@ export default function LoginForm({ bp }: { bp: string }) {
 
   return (
     <div>
-      <h2 style={{ margin: "0 0 6px", fontSize: 30, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Welcome back</h2>
+      <h1 style={{ margin: "0 0 6px", fontSize: 30, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Welcome back</h1>
       <p style={{ margin: "0 0 26px", fontSize: 13.5, color: "#5A544B" }}>
         New here?{" "}
         <a href={`${bp}/signup/${redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ""}`} style={{ color: ORANGE, fontWeight: 600, textDecoration: "none" }}>Create an account</a>
@@ -100,8 +100,8 @@ export default function LoginForm({ bp }: { bp: string }) {
           </div>
           <div style={{ position: "relative" }}>
             <span style={fieldIconStyle}><LockIcon /></span>
-            <input style={inputStyle} type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
-            <button type="button" onClick={() => setShowPassword((s) => !s)} aria-label={showPassword ? "Hide password" : "Show password"} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#8B8479", cursor: "pointer", display: "flex" }}>
+            <input style={{ ...inputStyle, paddingRight: 48 }} type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
+            <button type="button" onClick={() => setShowPassword((s) => !s)} aria-label={showPassword ? "Hide password" : "Show password"} style={{ position: "absolute", right: 2, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, background: "none", border: "none", color: "#6E685F", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <EyeIcon off={showPassword} />
             </button>
           </div>

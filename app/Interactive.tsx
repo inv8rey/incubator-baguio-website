@@ -35,11 +35,14 @@ export default function Interactive() {
       );
       const cta = nav.querySelector<HTMLAnchorElement>("a.ib-cta-orange");
       // If the CTA sits in a small button group (e.g. alongside a
-      // "Contact Us" link), hide/clone the whole group, not just the
-      // orange button, so the secondary link isn't stranded on mobile.
+      // "Contact Us" link, or the account-menu slot AuthNav.tsx portals
+      // into), hide/clone the whole group, not just the orange button, so
+      // the secondary link/slot isn't stranded on mobile.
       const ctaGroup = cta?.parentElement;
       const hasSiblingLink =
-        !!ctaGroup && ctaGroup !== nav && ctaGroup.querySelectorAll("a").length > 1;
+        !!ctaGroup &&
+        ctaGroup !== nav &&
+        (ctaGroup.querySelectorAll("a").length > 1 || !!ctaGroup.querySelector(".ib-auth-slot"));
       if (links) {
         links.classList.add("ib-navlinks");
         (hasSiblingLink ? ctaGroup : cta)?.classList.add("ib-desktop-cta");

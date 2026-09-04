@@ -94,7 +94,7 @@ const TOP_HTML = `
 
 <!-- BACKED BY -->
 <div style="background:#fff;padding:16px 40px 8px;text-align:center;">
-  <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#8B8479;">Backed by</div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#6E685F;">Backed by</div>
 </div>
 `;
 
@@ -120,7 +120,7 @@ const BOTTOM_HTML = `
     <img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:26px;width:auto;">
     <div style="font-size:14px;font-weight:600;color:#fff;">Incubator Baguio</div>
   </div>
-  <p style="margin:0;font-size:12.5px;color:rgba(255,255,255,0.4);">&copy; 2026 City Government of Baguio &middot; CPDSO &mdash; Launching August 2026</p>
+  <p style="margin:0;font-size:12.5px;color:rgba(255,255,255,0.55);">&copy; 2026 City Government of Baguio &middot; CPDSO &mdash; Launching August 2026</p>
 </div>
 `;
 

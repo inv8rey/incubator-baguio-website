@@ -135,7 +135,7 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <div style={{ fontSize: 20, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{isEdit ? "Edit resource" : "Add resource"}</div>
-            <div style={{ fontSize: 12.5, color: "#8B8479", marginTop: 3 }}>Goes live on the Knowledge Hub immediately.</div>
+            <div style={{ fontSize: 12.5, color: "#6E685F", marginTop: 3 }}>Goes live on the Knowledge Hub immediately.</div>
           </div>
           <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#5A544B", flexShrink: 0 }}>&times;</button>
         </div>
@@ -183,10 +183,10 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
                     <input type="file" accept="image/*" onChange={handleCoverChange} disabled={coverUploading} style={{ display: "none" }} />
                   </label>
                   {coverImageUrl && (
-                    <button type="button" onClick={() => setCoverImageUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#8B8479", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
+                    <button type="button" onClick={() => setCoverImageUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#6E685F", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
                   )}
                 </div>
-                <div style={{ fontSize: 11, color: "#8B8479", marginTop: 6 }}>Shown as a banner on the card. Landscape works best.</div>
+                <div style={{ fontSize: 11, color: "#6E685F", marginTop: 6 }}>Shown as a banner on the card. Landscape works best.</div>
               </div>
               <div>
                 <label style={modalLabelStyle}>Funding amount (optional)</label>
@@ -199,7 +199,7 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
               <div>
                 <label style={modalLabelStyle}>Application deadline (optional)</label>
                 <input type="date" value={deadlineDate} onChange={(e) => setDeadlineDate(e.target.value)} style={modalInputStyle} />
-                <div style={{ fontSize: 11, color: "#8B8479", marginTop: 6 }}>Once this date passes, the card automatically grays out on the Knowledge Hub. Leave blank for an ongoing or rolling call.</div>
+                <div style={{ fontSize: 11, color: "#6E685F", marginTop: 6 }}>Once this date passes, the card automatically grays out on the Knowledge Hub. Leave blank for an ongoing or rolling call.</div>
               </div>
             </div>
           )}
@@ -213,8 +213,8 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
               </label>
               {fileUrl && (
                 <>
-                  <a href={fileUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12.5, color: "#8B8479" }}>View current file</a>
-                  <button type="button" onClick={() => setFileUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#8B8479", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
+                  <a href={fileUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12.5, color: "#6E685F" }}>View current file</a>
+                  <button type="button" onClick={() => setFileUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#6E685F", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
                 </>
               )}
             </div>
@@ -227,7 +227,7 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
             <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} style={{ width: 16, height: 16, cursor: "pointer" }} />
             <span style={{ fontSize: 13, fontWeight: 600, color: DARK }}>Feature this resource</span>
           </label>
-          <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: -8 }}>Featured resources are pinned to the top of the Knowledge Hub, above the rest.</div>
+          <div style={{ fontSize: 11.5, color: "#6E685F", marginTop: -8 }}>Featured resources are pinned to the top of the Knowledge Hub, above the rest.</div>
 
           {error && <p style={{ color: "#E23A2E", fontSize: 12.5, margin: 0 }}>{error}</p>}
 
@@ -363,7 +363,7 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
                   <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: STATUS_BADGE[r.status].color, background: STATUS_BADGE[r.status].bg, padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{STATUS_BADGE[r.status].label}</span>
                 )}
                 {r.owner_id && (
-                  <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: "#8B8479", background: "#F5F4F0", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>Member submission</span>
+                  <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: "#6E685F", background: "#F5F4F0", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>Member submission</span>
                 )}
                 {r.category === FUNDING_CATEGORY && (() => {
                   const info = fundingDeadlineInfo(r.deadline_date);
@@ -381,7 +381,7 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
             </div>
             <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
               {(r.file_url || r.link_url) && (
-                <a href={r.file_url || r.link_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: "#8B8479", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "7px 14px", cursor: "pointer", textDecoration: "none" }}>View</a>
+                <a href={r.file_url || r.link_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: "#6E685F", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "7px 14px", cursor: "pointer", textDecoration: "none" }}>View</a>
               )}
               {r.status === "pending" && (
                 <>
@@ -399,7 +399,7 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
         ))}
 
         {loaded && filtered.length === 0 && (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ padding: "28px 20px", textAlign: "center", color: "#6E685F", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             No resources yet.
           </div>
         )}

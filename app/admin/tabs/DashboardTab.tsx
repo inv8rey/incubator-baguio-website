@@ -312,7 +312,7 @@ export default function DashboardTab() {
   const sectorTotal = startups.length || 1;
   const sectorRows = [...sectorCounts.entries()]
     .sort((a, b) => b[1] - a[1])
-    .map(([label, count]) => ({ label, count, pct: Math.round((count / sectorTotal) * 1000) / 10, color: SECTOR_COLOR_MAP[label] ?? "#8B8479" }));
+    .map(([label, count]) => ({ label, count, pct: Math.round((count / sectorTotal) * 1000) / 10, color: SECTOR_COLOR_MAP[label] ?? "#6E685F" }));
 
   const stageCounts = new Map<string, number>();
   startups.forEach((s) => {
@@ -320,8 +320,8 @@ export default function DashboardTab() {
     stageCounts.set(key, (stageCounts.get(key) ?? 0) + 1);
   });
   const stageRows = [
-    ...STAGE_ORDER.filter((label) => stageCounts.has(label)).map((label) => ({ label, count: stageCounts.get(label)!, color: STAGE_BADGE[label]?.color ?? "#8B8479" })),
-    ...[...stageCounts.entries()].filter(([label]) => !STAGE_ORDER.includes(label)).map(([label, count]) => ({ label, count, color: "#8B8479" })),
+    ...STAGE_ORDER.filter((label) => stageCounts.has(label)).map((label) => ({ label, count: stageCounts.get(label)!, color: STAGE_BADGE[label]?.color ?? "#6E685F" })),
+    ...[...stageCounts.entries()].filter(([label]) => !STAGE_ORDER.includes(label)).map(([label, count]) => ({ label, count, color: "#6E685F" })),
   ];
   const stageTotal = startups.length;
 
@@ -339,7 +339,7 @@ export default function DashboardTab() {
     const key = o.org_type || "Other";
     orgCounts.set(key, (orgCounts.get(key) ?? 0) + 1);
   });
-  const orgRows = [...orgCounts.entries()].sort((a, b) => b[1] - a[1]).map(([label, count]) => ({ label, count, color: ORG_TYPE_COLORS[label] ?? "#8B8479" }));
+  const orgRows = [...orgCounts.entries()].sort((a, b) => b[1] - a[1]).map(([label, count]) => ({ label, count, color: ORG_TYPE_COLORS[label] ?? "#6E685F" }));
 
   const topFunded = startups
     .map((s) => ({ name: s.name, amount: parsePhp(s.funding_raised), display: s.funding_raised }))
@@ -397,7 +397,7 @@ export default function DashboardTab() {
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 20 }}>
       {supabase && (
-        <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, fontWeight: 600, color: live ? "#1A6B3C" : "#8B8479" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, fontWeight: 600, color: live ? "#1A6B3C" : "#6E685F" }}>
           <span style={{ width: 7, height: 7, borderRadius: "50%", background: live ? "#22C55E" : "#C9C5BB", display: "inline-block" }} />
           {live ? "Live — updates automatically" : "Connecting…"}
         </div>
@@ -416,11 +416,11 @@ export default function DashboardTab() {
               </svg>
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 4 }}>{k.label}</div>
+              <div style={{ fontSize: 11.5, color: "#6E685F", fontWeight: 500, marginBottom: 4 }}>{k.label}</div>
               <div style={{ fontSize: 28, fontWeight: 600, color: DARK, letterSpacing: "-0.025em", lineHeight: 1.1 }}>{loaded ? k.value : "—"}</div>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
-                <span style={{ fontSize: 11.5, fontWeight: 600, color: k.delta.positive === null ? "#8B8479" : k.delta.positive ? "#22C55E" : "#E23A2E" }}>{loaded ? k.delta.text : ""}</span>
-                <span style={{ fontSize: 11, color: "#8B8479" }}>{loaded && k.delta.text !== "—" ? "last 8 weeks" : ""}</span>
+                <span style={{ fontSize: 11.5, fontWeight: 600, color: k.delta.positive === null ? "#6E685F" : k.delta.positive ? "#22C55E" : "#E23A2E" }}>{loaded ? k.delta.text : ""}</span>
+                <span style={{ fontSize: 11, color: "#6E685F" }}>{loaded && k.delta.text !== "—" ? "last 8 weeks" : ""}</span>
               </div>
               <div style={{ marginTop: 8 }}>
                 <Sparkline data={k.spark} color={k.color} />
@@ -434,19 +434,19 @@ export default function DashboardTab() {
       <div className="ib-admin-grid-3-mid" style={{ display: "grid", gridTemplateColumns: "2fr 1.2fr 1.5fr", gap: 16, alignItems: "start" }}>
         <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
           <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Startups by Sector</div>
-          <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 18 }}>{startups.length} startups across {sectorCounts.size} sectors</div>
+          <div style={{ fontSize: 11.5, color: "#6E685F", marginBottom: 18 }}>{startups.length} startups across {sectorCounts.size} sectors</div>
           <BreakdownBars data={sectorRows} />
         </div>
 
         <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
           <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Startups by Stage</div>
-          <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 18 }}>Distribution by development stage</div>
-          {stageTotal > 0 ? <StageDonut data={stageRows} total={stageTotal} /> : <div style={{ fontSize: 12.5, color: "#8B8479", padding: "12px 0" }}>No startups yet.</div>}
+          <div style={{ fontSize: 11.5, color: "#6E685F", marginBottom: 18 }}>Distribution by development stage</div>
+          {stageTotal > 0 ? <StageDonut data={stageRows} total={stageTotal} /> : <div style={{ fontSize: 12.5, color: "#6E685F", padding: "12px 0" }}>No startups yet.</div>}
         </div>
 
         <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
           <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Startups by TBI</div>
-          <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 18 }}>Including independently operating startups</div>
+          <div style={{ fontSize: 11.5, color: "#6E685F", marginBottom: 18 }}>Including independently operating startups</div>
           <BreakdownBars data={tbiRows} labelWidth={170} />
         </div>
       </div>
@@ -456,19 +456,19 @@ export default function DashboardTab() {
         <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 18 }}>Knowledge Hub</div>
         <div className="ib-admin-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16 }}>
           <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
-            <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Resources Published</div>
+            <div style={{ fontSize: 11.5, color: "#6E685F", fontWeight: 500, marginBottom: 6 }}>Resources Published</div>
             <div style={{ fontSize: 26, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? resourcesPublished : "—"}</div>
-            <div style={{ fontSize: 11, color: "#8B8479", marginTop: 6 }}>From the Knowledge Hub</div>
+            <div style={{ fontSize: 11, color: "#6E685F", marginTop: 6 }}>From the Knowledge Hub</div>
           </div>
           <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
-            <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Resources Viewed</div>
+            <div style={{ fontSize: 11.5, color: "#6E685F", fontWeight: 500, marginBottom: 6 }}>Resources Viewed</div>
             <div style={{ fontSize: 26, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? resourcesViewed.toLocaleString() : "—"}</div>
-            <div style={{ fontSize: 11, color: "#8B8479", marginTop: 6 }}>Total opens across all resources</div>
+            <div style={{ fontSize: 11, color: "#6E685F", marginTop: 6 }}>Total opens across all resources</div>
           </div>
           <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
-            <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Profile Completion</div>
+            <div style={{ fontSize: 11.5, color: "#6E685F", fontWeight: 500, marginBottom: 6 }}>Profile Completion</div>
             <div style={{ fontSize: 26, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? `${profileCompletionPct}%` : "—"}</div>
-            <div style={{ fontSize: 11, color: "#8B8479", marginTop: 6 }}>Profiles with name and email set</div>
+            <div style={{ fontSize: 11, color: "#6E685F", marginTop: 6 }}>Profiles with name and email set</div>
           </div>
         </div>
       </div>
@@ -479,11 +479,11 @@ export default function DashboardTab() {
           <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 18 }}>Open Innovation</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
-              <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Challenges Posted</div>
+              <div style={{ fontSize: 11.5, color: "#6E685F", fontWeight: 500, marginBottom: 6 }}>Challenges Posted</div>
               <div style={{ fontSize: 26, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? challengesPosted : "—"}</div>
             </div>
             <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
-              <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Solutions Submitted</div>
+              <div style={{ fontSize: 11.5, color: "#6E685F", fontWeight: 500, marginBottom: 6 }}>Solutions Submitted</div>
               <div style={{ fontSize: 26, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? solutionsSubmitted : "—"}</div>
             </div>
           </div>
@@ -493,20 +493,20 @@ export default function DashboardTab() {
           <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 18 }}>Funding and Startup Growth</div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14 }}>
             <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
-              <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Funding Raised</div>
+              <div style={{ fontSize: 11.5, color: "#6E685F", fontWeight: 500, marginBottom: 6 }}>Funding Raised</div>
               <div style={{ fontSize: 22, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? formatPhp(totalFunding) : "—"}</div>
             </div>
             <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
-              <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Grants Received</div>
+              <div style={{ fontSize: 11.5, color: "#6E685F", fontWeight: 500, marginBottom: 6 }}>Grants Received</div>
               <div style={{ fontSize: 22, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? formatPhp(grantsReceived) : "—"}</div>
             </div>
             <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
-              <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Startups Active</div>
+              <div style={{ fontSize: 11.5, color: "#6E685F", fontWeight: 500, marginBottom: 6 }}>Startups Active</div>
               <div style={{ fontSize: 22, fontWeight: 600, color: "#1A6B3C", letterSpacing: "-0.02em" }}>{loaded ? startupsActive : "—"}</div>
             </div>
             <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
-              <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Startups Closed</div>
-              <div style={{ fontSize: 22, fontWeight: 600, color: "#8B8479", letterSpacing: "-0.02em" }}>{loaded ? startupsClosed : "—"}</div>
+              <div style={{ fontSize: 11.5, color: "#6E685F", fontWeight: 500, marginBottom: 6 }}>Startups Closed</div>
+              <div style={{ fontSize: 22, fontWeight: 600, color: "#6E685F", letterSpacing: "-0.02em" }}>{loaded ? startupsClosed : "—"}</div>
             </div>
           </div>
         </div>
@@ -515,29 +515,29 @@ export default function DashboardTab() {
       {/* ECOSYSTEM COMPOSITION */}
       <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
         <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Ecosystem Composition</div>
-        <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 18 }}>Members by type in the ecosystem database</div>
+        <div style={{ fontSize: 11.5, color: "#6E685F", marginBottom: 18 }}>Members by type in the ecosystem database</div>
         {compositionRows.length > 0 ? (
           <BreakdownBars data={compositionRows.map((r) => ({ ...r, pct: Math.round((r.count / compositionTotal) * 1000) / 10 }))} labelWidth={170} />
         ) : (
-          <div style={{ fontSize: 12.5, color: "#8B8479", padding: "12px 0" }}>No ecosystem members yet.</div>
+          <div style={{ fontSize: 12.5, color: "#6E685F", padding: "12px 0" }}>No ecosystem members yet.</div>
         )}
       </div>
 
       {/* SIGNUPS FROM WEBSITE */}
       <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
         <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Signups from Website</div>
-        <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 18 }}>How many visitors to the ecosystem signup page become ecosystem members</div>
+        <div style={{ fontSize: 11.5, color: "#6E685F", marginBottom: 18 }}>How many visitors to the ecosystem signup page become ecosystem members</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 20 }}>
           <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
-            <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Page Visits</div>
+            <div style={{ fontSize: 11.5, color: "#6E685F", fontWeight: 500, marginBottom: 6 }}>Page Visits</div>
             <div style={{ fontSize: 24, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? totalVisits.toLocaleString() : "—"}</div>
           </div>
           <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
-            <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Became Members</div>
+            <div style={{ fontSize: 11.5, color: "#6E685F", fontWeight: 500, marginBottom: 6 }}>Became Members</div>
             <div style={{ fontSize: 24, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? approvedSignups.toLocaleString() : "—"}</div>
           </div>
           <div style={{ background: "#FAF8F4", borderRadius: 12, padding: "16px 18px" }}>
-            <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>Conversion Rate</div>
+            <div style={{ fontSize: 11.5, color: "#6E685F", fontWeight: 500, marginBottom: 6 }}>Conversion Rate</div>
             <div style={{ fontSize: 24, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{loaded ? (conversionPct == null ? "—" : `${conversionPct}%`) : "—"}</div>
           </div>
         </div>
@@ -561,16 +561,16 @@ export default function DashboardTab() {
             ]}
           />
         ) : (
-          <div style={{ fontSize: 12.5, color: "#8B8479" }}>No signup page visits recorded yet.</div>
+          <div style={{ fontSize: 12.5, color: "#6E685F" }}>No signup page visits recorded yet.</div>
         )}
       </div>
 
       {/* ACTIVITY FEED */}
       <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
         <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Recent Activity</div>
-        <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 16 }}>Latest updates from the ecosystem</div>
+        <div style={{ fontSize: 11.5, color: "#6E685F", marginBottom: 16 }}>Latest updates from the ecosystem</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-          {activity.length === 0 && <div style={{ fontSize: 12.5, color: "#8B8479", padding: "8px 0" }}>No activity yet.</div>}
+          {activity.length === 0 && <div style={{ fontSize: 12.5, color: "#6E685F", padding: "8px 0" }}>No activity yet.</div>}
           {activity.map((a, i) => (
             <div key={a.key} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0", borderBottom: i < activity.length - 1 ? "1px solid rgba(64,50,34,0.05)" : "none" }}>
               <div style={{ width: 36, height: 36, borderRadius: "50%", background: a.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 600, flexShrink: 0 }}>{a.initials}</div>
@@ -578,7 +578,7 @@ export default function DashboardTab() {
                 <span style={{ fontSize: 13, fontWeight: 600, color: DARK }}>{a.name}</span>
                 <span style={{ fontSize: 13, color: "#5A544B" }}> {a.note}</span>
               </div>
-              <span style={{ fontSize: 11.5, color: "#8B8479", flexShrink: 0 }}>{a.time}</span>
+              <span style={{ fontSize: 11.5, color: "#6E685F", flexShrink: 0 }}>{a.time}</span>
             </div>
           ))}
         </div>
@@ -587,10 +587,10 @@ export default function DashboardTab() {
       {/* TOP FUNDED STARTUPS — org-type breakdown now lives in Ecosystem Composition above, no need to repeat it here */}
       <div style={{ background: "#fff", borderRadius: 16, padding: "22px 24px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
         <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 3 }}>Top Funded Startups</div>
-        <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 10 }}>By total funding raised on record</div>
+        <div style={{ fontSize: 11.5, color: "#6E685F", marginBottom: 10 }}>By total funding raised on record</div>
         <div style={{ fontSize: 30, fontWeight: 600, color: DARK, letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 16 }}>{formatPhp(totalFunding)}</div>
         {topFunded.length === 0 ? (
-          <div style={{ fontSize: 12.5, color: "#8B8479" }}>No funding recorded yet.</div>
+          <div style={{ fontSize: 12.5, color: "#6E685F" }}>No funding recorded yet.</div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {topFunded.map((f) => (

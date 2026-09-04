@@ -42,9 +42,9 @@ export function navBarHtml(active?: string) {
     <div style="display:flex;gap:22px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.72);">
       ${links}
     </div>
+    <a href="${BP}/search" class="ib-search-trigger" aria-label="Search the ecosystem" title="Search" style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:9999px;border:1px solid rgba(255,255,255,0.18);text-decoration:none;flex-shrink:0;position:relative;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.82)" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></a>
     <div style="display:flex;align-items:center;gap:10px;">
-      <a href="${BP}/search" aria-label="Search the ecosystem" title="Search" style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9999px;border:1px solid rgba(255,255,255,0.18);text-decoration:none;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.82)" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></a>
-      <a href="${BP}/signup" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:8px;background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:11px 22px;border-radius:9999px;text-decoration:none;">Join the Ecosystem <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a href="${BP}/signup" class="ib-cta-orange ib-join-cta" style="display:inline-flex;align-items:center;gap:8px;background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:11px 22px;border-radius:9999px;text-decoration:none;">Sign up <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       <span class="ib-auth-slot"></span>
     </div>
   </div>
@@ -74,7 +74,7 @@ export function footerHtml() {
         <p style="margin:0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,0.5);max-width:280px;">Baguio City Research and Innovation Alliance. Operationalized under Ordinance No. 63, s.2023 by the CPDSO, City Government of Baguio.</p>
       </div>
       <div>
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Explore</div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:16px;">Explore</div>
         <div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);">
           <a class="ib-footlink" href="${BP}/programs">Programs</a>
           <a class="ib-footlink" href="${BP}/challenges">Challenges</a>
@@ -89,7 +89,7 @@ export function footerHtml() {
         </div>
       </div>
       <div>
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Apply</div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:16px;">Apply</div>
         <div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);">
           <a class="ib-footlink" href="${BP}/dashboard/innovator">Innovator Incubation</a>
           <a class="ib-footlink" href="${BP}/challenges/post">Post a Challenge</a>
@@ -98,7 +98,7 @@ export function footerHtml() {
         </div>
       </div>
       <div>
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;">Contact</div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:16px;">Contact</div>
         <div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);margin-bottom:16px;">
           <span>SIGLAT Youth Innovation Hub, Baguio City</span>
           <a class="ib-footlink" href="mailto:incubatorbaguio63@gmail.com">incubatorbaguio63@gmail.com</a>
@@ -110,7 +110,7 @@ export function footerHtml() {
       </div>
     </div>
 
-    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-size:12.5px;color:rgba(255,255,255,0.4);flex-wrap:wrap;gap:10px;">
+    <div class="ib-footer-legal" style="display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-size:12.5px;color:rgba(255,255,255,0.55);flex-wrap:wrap;gap:10px;">
       <span>&copy; 2026 City Government of Baguio &middot; CPDSO</span>
       <span><a class="ib-footlink" href="${BP}/terms" style="display:inline;color:inherit;">Terms of Service</a> &middot; <a class="ib-footlink" href="${BP}/privacy" style="display:inline;color:inherit;">Privacy Policy</a> &middot; IP Policy &middot; Data Privacy Act (RA 10173)</span>
     </div>

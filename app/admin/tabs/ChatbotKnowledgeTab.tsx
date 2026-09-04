@@ -133,7 +133,7 @@ export default function ChatbotKnowledgeTab({ searchQuery = "" }: { searchQuery?
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
       <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(64,50,34,0.12)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div style={{ fontSize: 12.5, color: "#8B8479", maxWidth: 460 }}>
+        <div style={{ fontSize: 12.5, color: "#6E685F", maxWidth: 460 }}>
           Private documents the chat assistant can search — never shown on the public site. PDF only, 15MB max.
         </div>
         <label style={{ fontSize: 12.5, fontWeight: 600, color: "#fff", background: uploading ? "#C9C6BE" : ORANGE, border: "none", borderRadius: 999, padding: "8px 16px", cursor: uploading ? "default" : "pointer", flexShrink: 0 }}>
@@ -181,7 +181,7 @@ export default function ChatbotKnowledgeTab({ searchQuery = "" }: { searchQuery?
         })}
 
         {loaded && filtered.length === 0 && (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ padding: "28px 20px", textAlign: "center", color: "#6E685F", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             No documents yet.
           </div>
         )}

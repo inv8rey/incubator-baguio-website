@@ -252,7 +252,7 @@ export default function EcosystemSignupForm() {
 
         {entityType === "organization" && (
           <div style={{ marginTop: 14 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#8B8479", marginBottom: 8 }}>What kind of organization?</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#6E685F", marginBottom: 8 }}>What kind of organization?</div>
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
               {ORG_TYPES.map((t) => {
                 const active = oOrgType === t;
@@ -287,7 +287,7 @@ export default function EcosystemSignupForm() {
           {logoUrl ? (
             <img src={logoUrl} alt="" style={{ width: 52, height: 52, borderRadius: entityType === "mentor" ? 9999 : 12, objectFit: "cover" }} />
           ) : (
-            <div style={{ width: 52, height: 52, borderRadius: entityType === "mentor" ? 9999 : 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10, textAlign: "center" }}>
+            <div style={{ width: 52, height: 52, borderRadius: entityType === "mentor" ? 9999 : 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10, textAlign: "center" }}>
               No {entityType === "mentor" ? "photo" : "logo"}
             </div>
           )}
@@ -296,7 +296,7 @@ export default function EcosystemSignupForm() {
               {uploading ? "Uploading…" : `Upload ${entityType === "mentor" ? "photo" : "logo"}`}
               <input type="file" accept="image/*" onChange={handleLogoChange} disabled={uploading} style={{ display: "none" }} />
             </label>
-            <div style={{ fontSize: 11, color: "#8B8479", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
+            <div style={{ fontSize: 11, color: "#6E685F", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
           </div>
         </div>
       </div>
@@ -363,7 +363,7 @@ export default function EcosystemSignupForm() {
           </div>
           <div>
             <label style={labelStyle}>What is your biggest challenge today?</label>
-            <p style={{ margin: "-2px 0 8px", fontSize: 12, lineHeight: 1.5, color: "#8B8479" }}>
+            <p style={{ margin: "-2px 0 8px", fontSize: 12, lineHeight: 1.5, color: "#6E685F" }}>
               Tell us the biggest challenge you&rsquo;re currently facing so we can better connect you with the right opportunities and support.
             </p>
             <textarea style={textareaStyle} value={suChallenge} onChange={(e) => setSuChallenge(e.target.value)} placeholder="e.g. Finding customers, raising funding, building the team..." />
@@ -397,7 +397,7 @@ export default function EcosystemSignupForm() {
                       type="button"
                       onClick={() => removeFounder(i)}
                       aria-label="Remove founder"
-                      style={{ width: 34, height: 34, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", color: "#8B8479", cursor: "pointer", fontSize: 16, lineHeight: 1 }}
+                      style={{ width: 34, height: 34, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", color: "#6E685F", cursor: "pointer", fontSize: 16, lineHeight: 1 }}
                     >
                       &times;
                     </button>
@@ -435,7 +435,7 @@ export default function EcosystemSignupForm() {
           <div>
             <label style={{ ...labelStyle, display: "flex", justifyContent: "space-between" }}>
               <span>Specialization</span>
-              <span style={{ color: "#8B8479", fontWeight: 500 }}>{mSpecializations.length}/{MAX_SPECIALIZATIONS}</span>
+              <span style={{ color: "#6E685F", fontWeight: 500 }}>{mSpecializations.length}/{MAX_SPECIALIZATIONS}</span>
             </label>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {MENTOR_SPECIALIZATIONS.map((s) => {
@@ -468,7 +468,7 @@ export default function EcosystemSignupForm() {
             <div>
               <label style={{ ...labelStyle, display: "flex", justifyContent: "space-between" }}>
                 <span>Sector</span>
-                {mSectors.length > 0 && <span style={{ color: "#8B8479", fontWeight: 500 }}>{mSectors.length} selected</span>}
+                {mSectors.length > 0 && <span style={{ color: "#6E685F", fontWeight: 500 }}>{mSectors.length} selected</span>}
               </label>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {SECTOR_FILTERS.map((s) => {
@@ -494,7 +494,7 @@ export default function EcosystemSignupForm() {
                   );
                 })}
               </div>
-              <div style={{ fontSize: 11, color: "#8B8479", marginTop: 6 }}>Which sectors is your expertise in? Pick as many as apply.</div>
+              <div style={{ fontSize: 11, color: "#6E685F", marginTop: 6 }}>Which sectors is your expertise in? Pick as many as apply.</div>
             </div>
           )}
           <div>
@@ -535,7 +535,7 @@ export default function EcosystemSignupForm() {
                 {coverUrl ? (
                   <img src={coverUrl} alt="" style={{ width: 84, height: 52, borderRadius: 10, objectFit: "cover" }} />
                 ) : (
-                  <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10, textAlign: "center" }}>
+                  <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10, textAlign: "center" }}>
                     No cover
                   </div>
                 )}
@@ -544,7 +544,7 @@ export default function EcosystemSignupForm() {
                     {uploadingCover ? "Uploading…" : "Upload cover photo"}
                     <input type="file" accept="image/*" onChange={handleCoverChange} disabled={uploadingCover} style={{ display: "none" }} />
                   </label>
-                  <div style={{ fontSize: 11, color: "#8B8479", marginTop: 2 }}>Shown as the banner on your Ecosystem directory card.</div>
+                  <div style={{ fontSize: 11, color: "#6E685F", marginTop: 2 }}>Shown as the banner on your Ecosystem directory card.</div>
                 </div>
               </div>
             </div>

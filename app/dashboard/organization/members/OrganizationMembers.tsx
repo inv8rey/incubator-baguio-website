@@ -53,7 +53,7 @@ function Roster({ orgId }: { orgId: string }) {
         Everyone with access to manage this organization&rsquo;s profile. Adding a second person is handled by Incubator Baguio &mdash; contact us to request one.
       </p>
       {!loaded ? (
-        <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>Loading…</p>
+        <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>Loading…</p>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {members.map((m) => (
@@ -63,7 +63,7 @@ function Roster({ orgId }: { orgId: string }) {
               </div>
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK }}>{m.full_name}</div>
-                <div style={{ fontSize: 12, color: "#8B8479" }}>{m.email}</div>
+                <div style={{ fontSize: 12, color: "#6E685F" }}>{m.email}</div>
               </div>
               <span style={{ fontSize: 11, fontWeight: 600, color: m.role === "owner" ? ORANGE : "#5A544B", background: m.role === "owner" ? "rgba(242,101,34,0.1)" : "#fff", border: m.role === "owner" ? "none" : "1px solid rgba(64,50,34,0.13)", padding: "4px 11px", borderRadius: 999, textTransform: "capitalize", flexShrink: 0 }}>
                 {m.role}
@@ -78,7 +78,7 @@ function Roster({ orgId }: { orgId: string }) {
 
 export default function OrganizationMembers() {
   const { selectedOrg, loaded } = useRequiredOrg();
-  if (!loaded) return <div style={{ padding: "40px 0", textAlign: "center", color: "#8B8479", fontSize: 14 }}>Loading&hellip;</div>;
+  if (!loaded) return <div style={{ padding: "40px 0", textAlign: "center", color: "#6E685F", fontSize: 14 }}>Loading&hellip;</div>;
   if (!selectedOrg) return <OrgRequiredNotice />;
   return <Roster orgId={selectedOrg.id} />;
 }

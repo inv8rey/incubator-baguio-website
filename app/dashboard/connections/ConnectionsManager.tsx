@@ -84,9 +84,9 @@ export default function ConnectionsManager() {
       {isMentor && (
         <div style={cardStyle}>
           <h2 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600, color: DARK }}>Requests received</h2>
-          <p style={{ margin: "0 0 18px", fontSize: 13, color: "#8B8479" }}>Founders who want to connect with you as a mentor.</p>
+          <p style={{ margin: "0 0 18px", fontSize: 13, color: "#6E685F" }}>Founders who want to connect with you as a mentor.</p>
           {received.length === 0 ? (
-            <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>No requests yet.</p>
+            <p style={{ margin: 0, fontSize: 13.5, color: "#6E685F" }}>No requests yet.</p>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {received.map((r) => (
@@ -94,7 +94,7 @@ export default function ConnectionsManager() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
                     <div>
                       <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{r.profiles?.full_name || "Unknown"}</div>
-                      <div style={{ fontSize: 12.5, color: "#8B8479" }}>{r.profiles?.email}</div>
+                      <div style={{ fontSize: 12.5, color: "#6E685F" }}>{r.profiles?.email}</div>
                     </div>
                     <StatusBadge status={r.status} />
                   </div>
@@ -118,16 +118,16 @@ export default function ConnectionsManager() {
 
       <div style={cardStyle}>
         <h2 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600, color: DARK }}>Requests you've sent</h2>
-        <p style={{ margin: "0 0 18px", fontSize: 13, color: "#8B8479" }}>Mentors you've asked to connect with from the Ecosystem directory.</p>
+        <p style={{ margin: "0 0 18px", fontSize: 13, color: "#6E685F" }}>Mentors you've asked to connect with from the Ecosystem directory.</p>
         {sent.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>You haven't reached out to any mentors yet.</p>
+          <p style={{ margin: 0, fontSize: 13.5, color: "#6E685F" }}>You haven't reached out to any mentors yet.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {sent.map((s) => (
               <div key={s.id} style={rowItemStyle}>
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{s.mentors?.name || "Mentor"}</div>
-                  {s.message && <div style={{ fontSize: 12.5, color: "#8B8479" }}>{s.message}</div>}
+                  {s.message && <div style={{ fontSize: 12.5, color: "#6E685F" }}>{s.message}</div>}
                 </div>
                 <StatusBadge status={s.status} />
               </div>

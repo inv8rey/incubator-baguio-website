@@ -101,7 +101,7 @@ export default function SearchClient({ initialQuery }: { initialQuery: string })
           Search the ecosystem
         </label>
         <div style={{ position: "relative", marginBottom: 20 }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} style={{ position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2} style={{ position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
             <circle cx="11" cy="11" r="7" />
             <path d="m20 20-3.5-3.5" />
           </svg>
@@ -158,7 +158,7 @@ export default function SearchClient({ initialQuery }: { initialQuery: string })
         )}
 
         {status === "loading" && (
-          <p style={{ fontSize: 14, color: "#8B8479", padding: "20px 0" }}>Searching…</p>
+          <p style={{ fontSize: 14, color: "#6E685F", padding: "20px 0" }}>Searching…</p>
         )}
 
         {status === "error" && (
@@ -169,13 +169,13 @@ export default function SearchClient({ initialQuery }: { initialQuery: string })
         )}
 
         {tooShort && (
-          <p style={{ fontSize: 14, color: "#8B8479", padding: "20px 0" }}>Type at least {MIN_QUERY} characters.</p>
+          <p style={{ fontSize: 14, color: "#6E685F", padding: "20px 0" }}>Type at least {MIN_QUERY} characters.</p>
         )}
 
         {status === "idle" && !tooShort && (
           <div style={{ background: "#fff", border: "1px dashed rgba(64,50,34,0.16)", borderRadius: 18, padding: "40px 32px", textAlign: "center" }}>
             <p style={{ margin: "0 0 6px", fontSize: 15, fontWeight: 600, color: DARK }}>Search across the whole ecosystem</p>
-            <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479", lineHeight: 1.6 }}>
+            <p style={{ margin: 0, fontSize: 13.5, color: "#6E685F", lineHeight: 1.6 }}>
               One box for startups, mentors, organizations, innovation challenges, Knowledge Hub resources, and events.
             </p>
           </div>
@@ -184,7 +184,7 @@ export default function SearchClient({ initialQuery }: { initialQuery: string })
         {status === "done" && shown.length === 0 && (
           <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 18, padding: "36px 32px", textAlign: "center" }}>
             <p style={{ margin: "0 0 6px", fontSize: 15, fontWeight: 600, color: DARK }}>No matches for &ldquo;{query.trim()}&rdquo;</p>
-            <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>Try a shorter word, or a sector or organization name.</p>
+            <p style={{ margin: 0, fontSize: 13.5, color: "#6E685F" }}>Try a shorter word, or a sector or organization name.</p>
           </div>
         )}
 
@@ -211,7 +211,7 @@ export default function SearchClient({ initialQuery }: { initialQuery: string })
                     <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: ks.color, background: ks.bg, padding: "3px 9px", borderRadius: 9999 }}>
                       {h.kind}
                     </span>
-                    {h.subtitle && <span style={{ fontSize: 12.5, color: "#8B8479" }}>{h.subtitle}</span>}
+                    {h.subtitle && <span style={{ fontSize: 12.5, color: "#6E685F" }}>{h.subtitle}</span>}
                   </div>
                   <div style={{ fontSize: 16, fontWeight: 600, color: DARK, letterSpacing: "-0.012em", marginBottom: h.description ? 5 : 0 }}>
                     {h.title}

@@ -94,7 +94,7 @@ export default function TimeRangePicker({ value, onChange }: { value: string; on
           onChange={(e) => { setStart(e.target.value); setTouched(true); }}
           style={fieldStyle}
         />
-        <span style={{ fontSize: 12.5, color: "#8B8479" }}>to</span>
+        <span style={{ fontSize: 12.5, color: "#6E685F" }}>to</span>
         <input
           type="time"
           aria-label="End time"
@@ -105,11 +105,11 @@ export default function TimeRangePicker({ value, onChange }: { value: string; on
         />
       </div>
       {unreadable ? (
-        <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#8B8479" }}>
+        <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#6E685F" }}>
           Currently saved as &ldquo;{value.trim()}&rdquo;. Pick a start time to replace it.
         </p>
       ) : (
-        <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#8B8479" }}>
+        <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#6E685F" }}>
           {start ? `Shows as “${composeTimeRange(start, end)}”` : "Leave blank if the time isn’t set yet."}
         </p>
       )}

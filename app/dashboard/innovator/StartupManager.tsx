@@ -128,7 +128,7 @@ export default function StartupManager() {
             {form.logo_url ? (
               <img src={form.logo_url} alt="" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
             ) : (
-              <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10.5, textAlign: "center" }}>
+              <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10.5, textAlign: "center" }}>
                 No logo
               </div>
             )}
@@ -137,7 +137,7 @@ export default function StartupManager() {
                 {uploading ? "Uploading…" : "Upload logo"}
                 <input type="file" accept="image/*" onChange={handleLogoChange} disabled={uploading} style={{ display: "none" }} />
               </label>
-              <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
+              <div style={{ fontSize: 11.5, color: "#6E685F", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
@@ -167,7 +167,7 @@ export default function StartupManager() {
           <div>
             <label style={{ ...labelStyle, display: "flex", justifyContent: "space-between" }}>
               <span>Description</span>
-              <span style={{ fontWeight: 500, color: "#8B8479" }}>{form.description.length}/{DESCRIPTION_MAX}</span>
+              <span style={{ fontWeight: 500, color: "#6E685F" }}>{form.description.length}/{DESCRIPTION_MAX}</span>
             </label>
             <textarea style={{ ...inputStyle, minHeight: 90, resize: "vertical" }} maxLength={DESCRIPTION_MAX} value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="What does this innovation do?" />
           </div>
@@ -206,7 +206,7 @@ export default function StartupManager() {
                       type="button"
                       onClick={() => removeFounder(i)}
                       aria-label="Remove founder"
-                      style={{ width: 34, height: 34, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", color: "#8B8479", cursor: "pointer", fontSize: 16, lineHeight: 1 }}
+                      style={{ width: 34, height: 34, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", color: "#6E685F", cursor: "pointer", fontSize: 16, lineHeight: 1 }}
                     >
                       &times;
                     </button>
@@ -238,7 +238,7 @@ export default function StartupManager() {
       <div style={cardStyle}>
         <h2 style={{ margin: "0 0 18px", fontSize: 18, fontWeight: 600, color: DARK }}>Your innovations ({startups.length})</h2>
         {startups.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>No innovation profiles yet.</p>
+          <p style={{ margin: 0, fontSize: 13.5, color: "#6E685F" }}>No innovation profiles yet.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {startups.map((s) => (
@@ -251,7 +251,7 @@ export default function StartupManager() {
                   )}
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{s.name}</div>
-                    <div style={{ fontSize: 12.5, color: "#8B8479" }}>{s.sector}{s.lifecycle_stage ? ` · ${s.lifecycle_stage}` : ""}</div>
+                    <div style={{ fontSize: 12.5, color: "#6E685F" }}>{s.sector}{s.lifecycle_stage ? ` · ${s.lifecycle_stage}` : ""}</div>
                   </div>
                 </div>
                 <button onClick={() => remove(s.id)} style={{ fontSize: 12.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer" }}>

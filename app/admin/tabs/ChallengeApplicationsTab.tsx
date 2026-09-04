@@ -19,7 +19,7 @@ const STATUS_COLORS: Record<Status, { color: string; bg: string }> = {
   new: { color: "#D88A0A", bg: "rgba(245,166,35,0.14)" },
   shortlisted: { color: "#285E7A", bg: "rgba(40,94,122,0.12)" },
   accepted: { color: "#1A6B3C", bg: "rgba(26,107,60,0.12)" },
-  rejected: { color: "#8B8479", bg: "rgba(64,50,34,0.08)" },
+  rejected: { color: "#6E685F", bg: "rgba(64,50,34,0.08)" },
 };
 
 interface ApplicationRow {
@@ -53,7 +53,7 @@ function formatDate(iso: string) {
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 4 }}>{label}</div>
+      <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 4 }}>{label}</div>
       <div style={{ fontSize: 13.5, color: DARK, lineHeight: 1.5, whiteSpace: "pre-wrap" }}>{value || "—"}</div>
     </div>
   );
@@ -237,7 +237,7 @@ export default function ChallengeApplicationsTab({ searchQuery = "" }: { searchQ
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 5, flexWrap: "wrap" }}>
                   <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: sc.color, background: sc.bg, padding: "3px 9px", borderRadius: 999 }}>{STATUS_LABELS[r.status]}</span>
                   <span style={{ fontSize: 14.5, fontWeight: 600, color: DARK }}>{name}</span>
-                  <span style={{ fontSize: 11.5, color: "#8B8479", marginLeft: "auto" }}>{formatDate(r.created_at)}</span>
+                  <span style={{ fontSize: 11.5, color: "#6E685F", marginLeft: "auto" }}>{formatDate(r.created_at)}</span>
                 </div>
                 <div style={{ fontSize: 12.5, color: ORANGE, fontWeight: 600, marginBottom: 4 }}>
                   {titles[r.challenge_id] ?? "Unknown challenge"}
@@ -251,7 +251,7 @@ export default function ChallengeApplicationsTab({ searchQuery = "" }: { searchQ
         })}
 
         {loaded && !error && filtered.length === 0 && (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ padding: "28px 20px", textAlign: "center", color: "#6E685F", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             {rows.length === 0
               ? "No solutions submitted yet. They'll appear here as teams apply to challenges."
               : `No ${status === "all" ? "" : STATUS_LABELS[status as Status].toLowerCase() + " "}submissions match these filters.`}
@@ -269,9 +269,9 @@ export default function ChallengeApplicationsTab({ searchQuery = "" }: { searchQ
                   {titles[viewing.challenge_id] ?? "Unknown challenge"}
                 </div>
                 <div style={{ fontSize: 19, fontWeight: 600, color: DARK, lineHeight: 1.25 }}>{displayName(viewing)}</div>
-                <div style={{ fontSize: 12.5, color: "#8B8479", marginTop: 5 }}>Submitted {formatDate(viewing.created_at)}</div>
+                <div style={{ fontSize: 12.5, color: "#6E685F", marginTop: 5 }}>Submitted {formatDate(viewing.created_at)}</div>
               </div>
-              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 20, color: "#8B8479", lineHeight: 1, flexShrink: 0 }}>×</button>
+              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 20, color: "#6E685F", lineHeight: 1, flexShrink: 0 }}>×</button>
             </div>
 
             <div className="ib-admin-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: 14 }}>
@@ -289,7 +289,7 @@ export default function ChallengeApplicationsTab({ searchQuery = "" }: { searchQ
             </div>
 
             <div style={{ borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 16 }}>
-              <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 8 }}>
+              <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 8 }}>
                 Internal review note
               </div>
               <textarea
@@ -323,7 +323,7 @@ export default function ChallengeApplicationsTab({ searchQuery = "" }: { searchQ
               </a>
               <button
                 onClick={() => remove(viewing.id)}
-                style={{ fontSize: 12.5, fontWeight: 600, color: "#8B8479", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 16px", cursor: "pointer", marginLeft: "auto" }}
+                style={{ fontSize: 12.5, fontWeight: 600, color: "#6E685F", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 16px", cursor: "pointer", marginLeft: "auto" }}
               >
                 Delete
               </button>

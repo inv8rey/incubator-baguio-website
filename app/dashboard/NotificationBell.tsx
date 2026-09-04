@@ -208,7 +208,7 @@ export default function NotificationBell() {
             What&rsquo;s new
           </div>
           {items.length === 0 ? (
-            <div style={{ padding: "28px 18px", textAlign: "center", fontSize: 12.5, color: "#8B8479" }}>You&rsquo;re all caught up.</div>
+            <div style={{ padding: "28px 18px", textAlign: "center", fontSize: 12.5, color: "#6E685F" }}>You&rsquo;re all caught up.</div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column" }}>
               {items.map((it) => {
@@ -221,10 +221,10 @@ export default function NotificationBell() {
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: s.color, background: s.bg, padding: "2px 8px", borderRadius: 999, flexShrink: 0 }}>{it.kind}</span>
-                      <span style={{ fontSize: 11, color: "#8B8479", marginLeft: "auto", flexShrink: 0 }}>{timeAgo(it.createdAt)}</span>
+                      <span style={{ fontSize: 11, color: "#6E685F", marginLeft: "auto", flexShrink: 0 }}>{timeAgo(it.createdAt)}</span>
                     </div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: DARK, lineHeight: 1.35 }}>{it.title}</div>
-                    <div style={{ fontSize: 11.5, color: "#8B8479" }}>{it.tag}</div>
+                    <div style={{ fontSize: 11.5, color: "#6E685F" }}>{it.tag}</div>
                   </a>
                 );
               })}

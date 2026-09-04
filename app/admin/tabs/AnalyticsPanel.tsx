@@ -169,7 +169,7 @@ export default function AnalyticsPanel({ ready }: { ready: boolean }) {
           </button>
         </div>
       </div>
-      <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 18 }}>Page views and visitors from PostHog, last {range} days</div>
+      <div style={{ fontSize: 11.5, color: "#6E685F", marginBottom: 18 }}>Page views and visitors from PostHog, last {range} days</div>
 
       {error && <div style={{ fontSize: 13, color: "#E23A2E", padding: "8px 0" }}>{error}</div>}
 
@@ -198,16 +198,16 @@ export default function AnalyticsPanel({ ready }: { ready: boolean }) {
               { label: "Busiest Day", value: busiest ? busiest.views.toLocaleString() : "—", delta: null, foot: busiest ? shortDate(busiest.day) : "no data yet" },
             ].map((k) => (
               <div key={k.label} style={{ background: "#FAF8F4", borderRadius: 12, padding: "14px 16px", minWidth: 0 }}>
-                <div style={{ fontSize: 11.5, color: "#8B8479", fontWeight: 500, marginBottom: 6 }}>{k.label}</div>
+                <div style={{ fontSize: 11.5, color: "#6E685F", fontWeight: 500, marginBottom: 6 }}>{k.label}</div>
                 <div style={{ fontSize: 24, fontWeight: 600, color: DARK, letterSpacing: "-0.02em", lineHeight: 1 }}>{k.value}</div>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, minHeight: 15 }}>
                   {k.delta ? (
                     <>
-                      <span style={{ fontSize: 11.5, fontWeight: 600, color: k.delta.positive === null ? "#8B8479" : k.delta.positive ? "#22C55E" : "#E23A2E" }}>{k.delta.text}</span>
-                      <span style={{ fontSize: 11, color: "#8B8479" }}>{k.delta.text !== "—" ? k.foot : ""}</span>
+                      <span style={{ fontSize: 11.5, fontWeight: 600, color: k.delta.positive === null ? "#6E685F" : k.delta.positive ? "#22C55E" : "#E23A2E" }}>{k.delta.text}</span>
+                      <span style={{ fontSize: 11, color: "#6E685F" }}>{k.delta.text !== "—" ? k.foot : ""}</span>
                     </>
                   ) : (
-                    <span style={{ fontSize: 11, color: "#8B8479" }}>{k.foot}</span>
+                    <span style={{ fontSize: 11, color: "#6E685F" }}>{k.foot}</span>
                   )}
                 </div>
               </div>
@@ -248,7 +248,7 @@ export default function AnalyticsPanel({ ready }: { ready: boolean }) {
             {daily.length > 0 && chartSeries.length > 0 ? (
               <LineChart labels={daily.map((d) => shortDate(d.day))} series={chartSeries} />
             ) : (
-              <div style={{ fontSize: 12.5, color: "#8B8479", padding: "20px 0" }}>
+              <div style={{ fontSize: 12.5, color: "#6E685F", padding: "20px 0" }}>
                 {daily.length === 0 ? `No pageviews recorded in the last ${range} days.` : "Select at least one series to plot."}
               </div>
             )}

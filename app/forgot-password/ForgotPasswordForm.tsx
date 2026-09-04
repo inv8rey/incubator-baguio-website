@@ -32,7 +32,7 @@ const fieldIconStyle: React.CSSProperties = {
   left: 13,
   top: "50%",
   transform: "translateY(-50%)",
-  color: "#8B8479",
+  color: "#6E685F",
   pointerEvents: "none",
 };
 

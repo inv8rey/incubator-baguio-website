@@ -101,7 +101,7 @@ export default function KnowledgeDirectory() {
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                 <span style={{ fontSize: 13.5, fontWeight: 600, color: active ? c.color : DARK }}>{c.id}</span>
-                <span style={{ fontSize: 10.5, fontWeight: 600, color: active ? c.color : "#8B8479", background: active ? "#fff" : "rgba(64,50,34,0.09)", padding: "2px 7px", borderRadius: 999, flexShrink: 0 }}>{count}</span>
+                <span style={{ fontSize: 10.5, fontWeight: 600, color: active ? c.color : "#6E685F", background: active ? "#fff" : "rgba(64,50,34,0.09)", padding: "2px 7px", borderRadius: 999, flexShrink: 0 }}>{count}</span>
               </div>
               <p style={{ margin: 0, fontSize: 12, lineHeight: 1.45, color: "#5A544B" }}>{c.description}</p>
             </button>
@@ -111,7 +111,7 @@ export default function KnowledgeDirectory() {
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap", marginBottom: 24 }}>
         <div style={{ position: "relative", flex: 1, minWidth: 220, maxWidth: 360 }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -124,7 +124,7 @@ export default function KnowledgeDirectory() {
             Clear filter &times;
           </button>
         ) : (
-          <span style={{ fontSize: 12.5, color: "#8B8479" }}>
+          <span style={{ fontSize: 12.5, color: "#6E685F" }}>
             {filtered.length} resource{filtered.length === 1 ? "" : "s"}
           </span>
         )}
@@ -178,7 +178,7 @@ export default function KnowledgeDirectory() {
                   )}
                   <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
                     {cat && (
-                      <span style={{ display: "inline-block", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: isClosed ? "#8B8479" : cat.color, background: isClosed ? "rgba(64,50,34,0.08)" : cat.bg, padding: "4px 10px", borderRadius: 9999, whiteSpace: "nowrap" }}>
+                      <span style={{ display: "inline-block", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: isClosed ? "#6E685F" : cat.color, background: isClosed ? "rgba(64,50,34,0.08)" : cat.bg, padding: "4px 10px", borderRadius: 9999, whiteSpace: "nowrap" }}>
                         {cat.id}
                       </span>
                     )}
@@ -196,26 +196,26 @@ export default function KnowledgeDirectory() {
                   {isFunding && (r.fundingAmount || r.targetParticipants) && (
                     <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(64,50,34,0.09)" }}>
                       {r.fundingAmount && (
-                        <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12.5, color: isClosed ? "#8B8479" : DARK, fontWeight: 600 }}>
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={isClosed ? "#8B8479" : "#1A6B3C"} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="9" /><path d="M12 7v10M9 9.5c0-1.4 1.3-2.5 3-2.5s3 1 3 2.2c0 2.8-6 1.3-6 4.1 0 1.2 1.3 2.2 3 2.2s3-1.1 3-2.5" /></svg>
+                        <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12.5, color: isClosed ? "#6E685F" : DARK, fontWeight: 600 }}>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={isClosed ? "#6E685F" : "#1A6B3C"} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="9" /><path d="M12 7v10M9 9.5c0-1.4 1.3-2.5 3-2.5s3 1 3 2.2c0 2.8-6 1.3-6 4.1 0 1.2 1.3 2.2 3 2.2s3-1.1 3-2.5" /></svg>
                           {r.fundingAmount}
                         </div>
                       )}
                       {r.targetParticipants && (
                         <div style={{ display: "flex", alignItems: "flex-start", gap: 7, fontSize: 12.5, color: "#5A544B" }}>
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1.5 }}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1.5 }}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg>
                           <span>{r.targetParticipants}</span>
                         </div>
                       )}
                     </div>
                   )}
 
-                  {r.source && <p style={{ margin: "10px 0 0", fontSize: 12, color: "#8B8479" }}>{r.source}</p>}
+                  {r.source && <p style={{ margin: "10px 0 0", fontSize: 12, color: "#6E685F" }}>{r.source}</p>}
                   {isClosed ? (
                     // No link at all once a call is closed -- an "Apply Now"
                     // button that still works just leads a founder to submit
                     // into a form that no longer accepts entries.
-                    <span style={{ marginTop: 16, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#8B8479", background: "rgba(64,50,34,0.08)", padding: "10px 18px", borderRadius: 9999 }}>
+                    <span style={{ marginTop: 16, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#6E685F", background: "rgba(64,50,34,0.08)", padding: "10px 18px", borderRadius: 9999 }}>
                       Applications closed
                     </span>
                   ) : (
@@ -225,7 +225,7 @@ export default function KnowledgeDirectory() {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => supabase?.rpc("increment_resource_views", { p_resource_id: r.id })}
-                        style={{ marginTop: 16, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#fff", background: isFunding ? "#1A6B3C" : "#1A1714", textDecoration: "none", padding: "10px 18px", borderRadius: 9999 }}
+                        style={{ marginTop: 16, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#fff", background: isFunding ? "#1A6B3C" : "#1A1714", textDecoration: "none", padding: "10px 18px", minHeight: 44, boxSizing: "border-box", borderRadius: 9999 }}
                       >
                         {ctaLabel}
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.4}><path d="M7 17 17 7M7 7h10v10" /></svg>
@@ -239,7 +239,7 @@ export default function KnowledgeDirectory() {
         </div>
       ) : (
         loaded && (
-          <div style={{ padding: "40px 20px", textAlign: "center", color: "#8B8479", fontSize: 14, background: "#F6F2EA", borderRadius: 18, border: "1px dashed rgba(64,50,34,0.14)" }}>
+          <div style={{ padding: "40px 20px", textAlign: "center", color: "#6E685F", fontSize: 14, background: "#F6F2EA", borderRadius: 18, border: "1px dashed rgba(64,50,34,0.14)" }}>
             No resources {tab !== "All" ? `in ${tab} ` : ""}yet{query ? " matching your search" : ""}.
           </div>
         )

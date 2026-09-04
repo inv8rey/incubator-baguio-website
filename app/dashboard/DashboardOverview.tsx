@@ -399,7 +399,7 @@ export default function DashboardOverview() {
                     { label: "Your Innovations", done: step2Done },
                     { label: "Get Involved", done: step3Done },
                   ].map((item) => (
-                    <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: item.done ? DARK : "#8B8479" }}>
+                    <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: item.done ? DARK : "#6E685F" }}>
                       <span style={{ width: 17, height: 17, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: item.done ? "#1A6B3C" : "#fff", border: item.done ? "none" : "1.5px solid rgba(64,50,34,0.18)" }}>
                         {item.done && <svg width={9} height={9} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={3}><path d="M20 6 9 17l-5-5" /></svg>}
                       </span>
@@ -427,7 +427,7 @@ export default function DashboardOverview() {
                 </div>
                 <div style={{ fontSize: 22, fontWeight: 600, color: DARK, letterSpacing: "-0.02em", marginBottom: 2 }}>{s.value ?? "…"}</div>
                 <div style={{ fontSize: 12.5, fontWeight: 600, color: DARK, marginBottom: 2 }}>{s.label}</div>
-                <div style={{ fontSize: 11, color: "#8B8479" }}>{s.note}</div>
+                <div style={{ fontSize: 11, color: "#6E685F" }}>{s.note}</div>
               </div>
             ))}
           </div>
@@ -439,7 +439,7 @@ export default function DashboardOverview() {
               <a href={`${BP}/challenges/`} style={{ fontSize: 12.5, fontWeight: 600, color: ORANGE, textDecoration: "none" }}>View all</a>
             </div>
             {recommended.length === 0 ? (
-              <div style={{ fontSize: 13, color: "#8B8479" }}>Nothing new right now — check back soon.</div>
+              <div style={{ fontSize: 13, color: "#6E685F" }}>Nothing new right now — check back soon.</div>
             ) : (
               <ScrollCarousel>
                 {recommended.map((r) => {
@@ -459,11 +459,11 @@ export default function DashboardOverview() {
                         aria-label={isSaved ? "Remove from saved" : "Save"}
                         style={{ background: "none", border: "none", padding: 0, cursor: "pointer", flexShrink: 0, lineHeight: 0 }}
                       >
-                        <svg width={15} height={15} viewBox="0 0 24 24" fill={isSaved ? ORANGE : "none"} stroke={isSaved ? ORANGE : "#8B8479"} strokeWidth={1.8}><path d="M6 4h12v17l-6-4-6 4V4Z" /></svg>
+                        <svg width={15} height={15} viewBox="0 0 24 24" fill={isSaved ? ORANGE : "none"} stroke={isSaved ? ORANGE : "#6E685F"} strokeWidth={1.8}><path d="M6 4h12v17l-6-4-6 4V4Z" /></svg>
                       </button>
                     </div>
                     <h3 style={{ margin: "0 0 6px", fontSize: 14, fontWeight: 600, color: DARK, lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{r.title}</h3>
-                    <div style={{ fontSize: 11.5, color: "#8B8479", marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.meta}</div>
+                    <div style={{ fontSize: 11.5, color: "#6E685F", marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.meta}</div>
                     {r.detail && <div style={{ fontSize: 11.5, color: "#5A544B" }}>{r.detail}</div>}
                   </a>
                   );
@@ -487,7 +487,7 @@ export default function DashboardOverview() {
                 const content = (
                   <>
                     <span style={{ width: 26, height: 26, borderRadius: 8, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">{a.icon}</svg>
+                      <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">{a.icon}</svg>
                     </span>
                     <span style={{ fontSize: 13, color: DARK, flex: 1 }}>{a.label}</span>
                     <span style={{ fontSize: 13, fontWeight: 600, color: DARK }}>{a.value ?? 0}</span>
@@ -508,7 +508,7 @@ export default function DashboardOverview() {
               <a href={`${BP}/calendar/`} style={{ fontSize: 12, fontWeight: 600, color: ORANGE, textDecoration: "none" }}>View calendar</a>
             </div>
             {events.length === 0 ? (
-              <div style={{ fontSize: 12.5, color: "#8B8479" }}>No upcoming events yet — check the calendar.</div>
+              <div style={{ fontSize: 12.5, color: "#6E685F" }}>No upcoming events yet — check the calendar.</div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {events.map((e) => {
@@ -521,7 +521,7 @@ export default function DashboardOverview() {
                       </div>
                       <div style={{ minWidth: 0 }}>
                         <div style={{ fontSize: 12.5, fontWeight: 600, color: DARK, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{e.title}</div>
-                        <div style={{ fontSize: 11, color: "#8B8479" }}>{e.venue}{e.event_time ? ` · ${e.event_time}` : ""}</div>
+                        <div style={{ fontSize: 11, color: "#6E685F" }}>{e.venue}{e.event_time ? ` · ${e.event_time}` : ""}</div>
                       </div>
                     </div>
                   );
@@ -551,18 +551,18 @@ export default function DashboardOverview() {
       <div style={{ ...cardStyle, marginTop: 20, display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }} className="ib-dashboard-help">
         <div>
           <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, marginBottom: 2 }}>Need help or have questions?</div>
-          <div style={{ fontSize: 12, color: "#8B8479" }}>Reach out to our team.</div>
+          <div style={{ fontSize: 12, color: "#6E685F" }}>Reach out to our team.</div>
         </div>
         <a href="mailto:incubatorbaguio63@gmail.com" style={{ textDecoration: "none" }}>
           <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, marginBottom: 2 }}>Email us</div>
-          <div style={{ fontSize: 12, color: "#8B8479" }}>incubatorbaguio63@gmail.com</div>
+          <div style={{ fontSize: 12, color: "#6E685F" }}>incubatorbaguio63@gmail.com</div>
         </a>
         <a href={`${BP}/knowledge/`} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", textDecoration: "none" }}>
           <div>
             <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, marginBottom: 2 }}>Visit Knowledge Hub</div>
-            <div style={{ fontSize: 12, color: "#8B8479" }}>Guides, FAQs, and resources</div>
+            <div style={{ fontSize: 12, color: "#6E685F" }}>Guides, FAQs, and resources</div>
           </div>
-          <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2.2}><path d="m9 6 6 6-6 6" /></svg>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2.2}><path d="m9 6 6 6-6 6" /></svg>
         </a>
       </div>
     </div>

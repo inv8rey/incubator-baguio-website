@@ -19,7 +19,7 @@ import {
 const DARK = "#1A1714";
 const ORANGE = "#F26522";
 const BODY = "#44444C";
-const MUTED = "#8B8479";
+const MUTED = "#6E685F";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
@@ -185,7 +185,7 @@ export default function ThreadDetail({ threadId, bp }: { threadId: string; bp: s
                 </div>
               </div>
               {user?.id === thread.authorId && (
-                <button onClick={removeThread} style={{ fontSize: 12, fontWeight: 600, color: "#8B8479", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "6px 12px", cursor: "pointer", flexShrink: 0 }}>
+                <button onClick={removeThread} style={{ fontSize: 12, fontWeight: 600, color: "#6E685F", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "6px 12px", cursor: "pointer", flexShrink: 0 }}>
                   Delete
                 </button>
               )}

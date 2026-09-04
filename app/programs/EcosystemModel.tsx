@@ -14,6 +14,8 @@ interface StepData {
   title: string;
   theme: string;
   purpose: string;
+  /** One concrete, plain-language example — shown so the four pillars read as distinct. */
+  example: string;
   /** Accent used for the numeral, sub-head, chevron watermark and markers. */
   color: string;
   /** Card field — a warm off-white, not a pastel. */
@@ -40,9 +42,10 @@ const STEPS: StepData[] = [
     key: "founder-development",
     number: "01",
     title: "Project Development",
-    theme: "Turning ideas and research into solutions ready for the real world.",
+    theme: "We help you strengthen an idea before you build it.",
     purpose:
-      "We help students, researchers, innovators, and project teams strengthen promising ideas by providing mentoring, technical guidance, validation support, and connections to relevant experts and institutions.",
+      "One-on-one mentoring, technical guidance, and validation support for students, researchers, and founders working on an early-stage idea.",
+    example: "Example: a student with a water-quality sensor concept gets matched with an engineer mentor to test and refine it before pitching.",
     color: "#D9531E",
     bg: "#FBF3EC",
     bgDeep: "#F3DFCD",
@@ -55,9 +58,10 @@ const STEPS: StepData[] = [
     key: "ecosystem-building",
     number: "02",
     title: "Ecosystem Collaboration",
-    theme: "Bringing the right people together to move solutions forward.",
+    theme: "We introduce you to the people who can actually help.",
     purpose:
-      "We connect government, universities, researchers, industry, communities, and innovation partners to share expertise, resources, facilities, and opportunities for collaboration.",
+      "Warm introductions across government, universities, industry, and community groups — so you're not cold-emailing your way to the right partner.",
+    example: "Example: a founder needing lab access gets introduced directly to a university research center that has one.",
     color: "#22596F",
     bg: "#EEF3F6",
     bgDeep: "#D5E3EA",
@@ -70,9 +74,10 @@ const STEPS: StepData[] = [
     key: "open-innovation",
     number: "03",
     title: "Open Innovation & City Adoption",
-    theme: "Connecting city challenges with solutions that can make a difference.",
+    theme: "We turn real city problems into challenges anyone can solve.",
     purpose:
-      "We identify priority challenges under the City Research and Innovation Agenda and connect them with researchers, innovators, students, and organizations to develop, test, and refine solutions for potential adoption by the City.",
+      "Government offices and organizations post an actual problem they're facing; you build and pilot a solution, with a path to the City adopting it.",
+    example: "Example: the traffic office posts a congestion problem; a local team builds and pilot-tests a fix on one busy street.",
     color: "#8E2749",
     bg: "#F8F0F3",
     bgDeep: "#EDD6DE",
@@ -86,9 +91,10 @@ const STEPS: StepData[] = [
     key: "ecosystem-intelligence",
     number: "04",
     title: "Innovation Intelligence",
-    theme: "Using evidence to guide what Baguio needs next.",
+    theme: "We track the ecosystem so decisions use evidence, not guesses.",
     purpose:
-      "We gather research, project, stakeholder, and ecosystem data to identify priority needs, track innovation initiatives, measure results, and inform future research, programs, and policy.",
+      "Data on who's building what, where the gaps are, and what's working — published so programs and policy can respond to the real picture.",
+    example: "Example: an annual report shows too few mentors for the health-tech sector, so the next mentor drive targets that gap.",
     color: "#17603A",
     bg: "#EFF4F1",
     bgDeep: "#D6E6DC",
@@ -374,7 +380,8 @@ export default function EcosystemModel() {
 
                   <h3 style={{ margin: "0 0 10px", fontSize: 24, fontWeight: 600, letterSpacing: "-0.02em", color: DARK, lineHeight: 1.15 }}>{s.title}</h3>
                   <p style={{ margin: "0 0 12px", fontSize: 14.5, fontWeight: 600, lineHeight: 1.4, color: s.color, maxWidth: 400 }}>{s.theme}</p>
-                  <p style={{ margin: "0 0 20px", fontSize: 13.5, lineHeight: 1.6, color: MUTED, maxWidth: 420 }}>{s.purpose}</p>
+                  <p style={{ margin: "0 0 12px", fontSize: 13.5, lineHeight: 1.6, color: MUTED, maxWidth: 420 }}>{s.purpose}</p>
+                  <p style={{ margin: "0 0 20px", fontSize: 12.5, lineHeight: 1.55, color: s.color, maxWidth: 420, fontStyle: "italic" }}>{s.example}</p>
 
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 22 }}>
                     {s.highlights.map((h) => (
@@ -410,6 +417,8 @@ export default function EcosystemModel() {
                       color: "#fff",
                       background: s.color,
                       padding: "11px 20px",
+                      minHeight: 44,
+                      boxSizing: "border-box",
                       borderRadius: 9999,
                       textDecoration: "none",
                     }}

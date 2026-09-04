@@ -20,7 +20,7 @@ export default function EcosystemPartnersMarquee() {
   return (
     <div style={{ background: "#FCFAF6", padding: "56px 0 48px", borderTop: "1px solid rgba(64,50,34,0.09)", overflow: "hidden" }}>
       <div style={{ textAlign: "center", marginBottom: 30 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#8B8479" }}>Ecosystem partners</div>
+        <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#6E685F" }}>Ecosystem partners</div>
       </div>
       {!partners ? (
         <div style={{ display: "flex", justifyContent: "center", gap: 18 }}>

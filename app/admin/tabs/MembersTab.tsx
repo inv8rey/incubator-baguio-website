@@ -41,7 +41,7 @@ function tagRow(label: string, items: string[]) {
   if (!items.length) return null;
   return (
     <div>
-      <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>{label}</div>
+      <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>{label}</div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
         {items.map((it) => (
           <span key={it} style={{ fontSize: 12, fontWeight: 500, color: "#5A544B", background: "#F5F4F0", borderRadius: 999, padding: "4px 10px" }}>{it}</span>
@@ -111,24 +111,24 @@ export default function MembersTab({ searchQuery = "" }: { searchQuery?: string 
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12 }}>
         <div style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>Total members</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>Total members</div>
           <div style={{ fontSize: 26, fontWeight: 700, color: DARK }}>{rows.length}</div>
         </div>
         <div style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>New this week</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>New this week</div>
           <div style={{ fontSize: 26, fontWeight: 700, color: DARK }}>{recentCount}</div>
         </div>
         <div style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>Mentors</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>Mentors</div>
           <div style={{ fontSize: 26, fontWeight: 700, color: DARK }}>{mentorCount}</div>
         </div>
         <div style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>Admins</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>Admins</div>
           <div style={{ fontSize: 26, fontWeight: 700, color: DARK }}>{adminCount}</div>
         </div>
       </div>
 
-      <div style={{ fontSize: 12.5, color: "#8B8479" }}>
+      <div style={{ fontSize: 12.5, color: "#6E685F" }}>
         Showing <strong style={{ color: DARK }}>{filtered.length}</strong> of {rows.length}
       </div>
 
@@ -156,15 +156,15 @@ export default function MembersTab({ searchQuery = "" }: { searchQuery?: string 
                       {r.is_admin && <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", color: "#9E2A52", background: "rgba(158,42,82,0.12)", padding: "2px 8px", borderRadius: 999 }}>Admin</span>}
                       {r.is_mentor && <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", color: "#3A5FA0", background: "rgba(58,95,160,0.12)", padding: "2px 8px", borderRadius: 999 }}>Mentor</span>}
                     </div>
-                    <div style={{ fontSize: 12.5, color: "#8B8479", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.email}{r.org_affiliation ? ` · ${r.org_affiliation}` : ""}</div>
+                    <div style={{ fontSize: 12.5, color: "#6E685F", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.email}{r.org_affiliation ? ` · ${r.org_affiliation}` : ""}</div>
                   </div>
-                  <span style={{ fontSize: 12, color: "#8B8479", flexShrink: 0 }}>{timeAgo(r.created_at)}</span>
+                  <span style={{ fontSize: 12, color: "#6E685F", flexShrink: 0 }}>{timeAgo(r.created_at)}</span>
                 </button>
               );
             })}
           </div>
         ) : (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13 }}>
+          <div style={{ padding: "28px 20px", textAlign: "center", color: "#6E685F", fontSize: 13 }}>
             {loaded ? (searchQuery ? "No members match your search." : "No registered members yet.") : "Loading…"}
           </div>
         )}
@@ -184,16 +184,16 @@ export default function MembersTab({ searchQuery = "" }: { searchQuery?: string 
                 )}
                 <div>
                   <div style={{ fontSize: 17, fontWeight: 600, color: DARK }}>{viewing.full_name || "(no name set)"}</div>
-                  {viewing.role_title && <div style={{ fontSize: 12.5, color: "#8B8479" }}>{viewing.role_title}{viewing.org_affiliation ? ` · ${viewing.org_affiliation}` : ""}</div>}
+                  {viewing.role_title && <div style={{ fontSize: 12.5, color: "#6E685F" }}>{viewing.role_title}{viewing.org_affiliation ? ` · ${viewing.org_affiliation}` : ""}</div>}
                 </div>
               </div>
-              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#8B8479", lineHeight: 1, flexShrink: 0 }}>×</button>
+              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#6E685F", lineHeight: 1, flexShrink: 0 }}>×</button>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13 }}>
-              <div><span style={{ color: "#8B8479" }}>Email:</span> <a href={`mailto:${viewing.email}`} style={{ color: "#F26522", fontWeight: 600 }}>{viewing.email}</a></div>
-              {viewing.location && <div><span style={{ color: "#8B8479" }}>Location:</span> <strong>{viewing.location}</strong></div>}
-              <div><span style={{ color: "#8B8479" }}>Joined:</span> <strong>{new Date(viewing.created_at).toLocaleString()}</strong></div>
+              <div><span style={{ color: "#6E685F" }}>Email:</span> <a href={`mailto:${viewing.email}`} style={{ color: "#F26522", fontWeight: 600 }}>{viewing.email}</a></div>
+              {viewing.location && <div><span style={{ color: "#6E685F" }}>Location:</span> <strong>{viewing.location}</strong></div>}
+              <div><span style={{ color: "#6E685F" }}>Joined:</span> <strong>{new Date(viewing.created_at).toLocaleString()}</strong></div>
               {viewing.bio && <p style={{ margin: 0, lineHeight: 1.6, color: "#44444C", borderTop: "1px solid rgba(64,50,34,0.08)", paddingTop: 10 }}>{viewing.bio}</p>}
             </div>
 

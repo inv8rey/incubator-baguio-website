@@ -121,7 +121,7 @@ export default function ForumTab({ searchQuery = "" }: { searchQuery?: string })
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
                 <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: sc.color, background: sc.bg, padding: "3px 9px", borderRadius: 999 }}>{STATUS_LABELS[r.status]}</span>
                 <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#5A544B", background: "#F5F4F0", padding: "3px 9px", borderRadius: 999 }}>{r.target_type}</span>
-                <span style={{ fontSize: 11.5, color: "#8B8479", marginLeft: "auto" }}>{timeAgo(r.created_at)}</span>
+                <span style={{ fontSize: 11.5, color: "#6E685F", marginLeft: "auto" }}>{timeAgo(r.created_at)}</span>
               </div>
               <div style={{ fontSize: 13, color: "#44444C", lineHeight: 1.55, whiteSpace: "pre-wrap", marginBottom: r.reason ? 10 : 14, background: "#F6F2EA", borderRadius: 10, padding: "10px 14px" }}>{r.target_preview || "(no preview)"}</div>
               {r.reason && <div style={{ fontSize: 12.5, color: "#5A544B", marginBottom: 14 }}><strong style={{ color: DARK }}>Reason:</strong> {r.reason}</div>}
@@ -145,7 +145,7 @@ export default function ForumTab({ searchQuery = "" }: { searchQuery?: string })
         })}
 
         {loaded && filtered.length === 0 && (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ padding: "28px 20px", textAlign: "center", color: "#6E685F", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             No {STATUS_LABELS[status].toLowerCase()} reports.
           </div>
         )}

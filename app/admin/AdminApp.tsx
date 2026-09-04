@@ -302,16 +302,16 @@ export default function AdminApp() {
           </button>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 21, fontWeight: 600, color: "#1A1714", letterSpacing: "-0.02em", lineHeight: 1.1 }}>{TITLES[page]}</div>
-            <div className="ib-admin-pagesub" style={{ fontSize: 12, color: "#8B8479", marginTop: 2 }}>{SUBS[page]}</div>
+            <div className="ib-admin-pagesub" style={{ fontSize: 12, color: "#6E685F", marginTop: 2 }}>{SUBS[page]}</div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <div className="ib-admin-search" style={{ display: "flex", alignItems: "center", gap: 7, background: "#F5F4F0", border: "1.5px solid rgba(64,50,34,0.12)", borderRadius: 9, padding: "7px 14px", minWidth: 220 }}>
-              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} strokeLinecap="round">
+              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2} strokeLinecap="round">
                 <circle cx={11} cy={11} r={7} />
                 <path d="m20 20-3.5-3.5" />
               </svg>
               <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} style={{ border: "none", background: "transparent", fontSize: 12.5, color: "#1A1714", width: "100%", outline: "none" }} />
-              <span style={{ fontSize: 10, color: "#8B8479", background: "rgba(64,50,34,0.10)", borderRadius: 4, padding: "1px 5px", fontWeight: 500 }}>⌘K</span>
+              <span style={{ fontSize: 10, color: "#6E685F", background: "rgba(64,50,34,0.10)", borderRadius: 4, padding: "1px 5px", fontWeight: 500 }}>⌘K</span>
             </div>
             <div style={{ width: 36, height: 36, borderRadius: "50%", background: `linear-gradient(135deg,${ORANGE},#FF9A6C)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 600, flexShrink: 0 }}>
               LG

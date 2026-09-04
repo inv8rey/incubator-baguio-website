@@ -184,37 +184,37 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
         <div style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>Total signups</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>Total signups</div>
           <div style={{ fontSize: 26, fontWeight: 700, color: DARK }}>{signups.length}</div>
         </div>
         <div style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>New this week</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>New this week</div>
           <div style={{ fontSize: 26, fontWeight: 700, color: DARK }}>{recentCount}</div>
         </div>
         <div style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1.5px solid rgba(64,50,34,0.12)", gridColumn: "span 2", minWidth: 0 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 8 }}>Most recent</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 8 }}>Most recent</div>
           {recentSignups.length ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {recentSignups.map((s) => (
                 <div key={s.id} onClick={() => setViewing(s)} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, cursor: "pointer" }}>
                   <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", color: ENTITY_COLORS[s.entity_type].color, background: ENTITY_COLORS[s.entity_type].bg, padding: "2px 7px", borderRadius: 999, flexShrink: 0 }}>{ENTITY_LABELS[s.entity_type]}</span>
                   <span style={{ color: DARK, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{payloadName(s.payload)}</span>
-                  <span style={{ color: "#8B8479", flexShrink: 0, marginLeft: "auto" }}>{timeAgo(s.created_at)}</span>
+                  <span style={{ color: "#6E685F", flexShrink: 0, marginLeft: "auto" }}>{timeAgo(s.created_at)}</span>
                 </div>
               ))}
             </div>
           ) : (
-            <div style={{ fontSize: 12.5, color: "#8B8479" }}>No submissions yet.</div>
+            <div style={{ fontSize: 12.5, color: "#6E685F" }}>No submissions yet.</div>
           )}
         </div>
       </div>
 
       <div style={{ background: "#fff", borderRadius: 14, padding: "14px 18px", border: "1.5px solid rgba(64,50,34,0.12)", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#5A544B", flexShrink: 0 }}>
-          <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2}><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z" /><circle cx={12} cy={12} r={3} /></svg>
+          <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2}><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z" /><circle cx={12} cy={12} r={3} /></svg>
           <span>
             <strong style={{ color: DARK, fontWeight: 600 }}>{visitCount ?? "—"}</strong> page visits
-            {visitCount ? <span style={{ color: "#8B8479" }}> &middot; {signups.length} submitted ({Math.round((signups.length / visitCount) * 100)}%)</span> : null}
+            {visitCount ? <span style={{ color: "#6E685F" }}> &middot; {signups.length} submitted ({Math.round((signups.length / visitCount) * 100)}%)</span> : null}
           </span>
         </div>
         <div style={{ width: 1, alignSelf: "stretch", background: "rgba(64,50,34,0.11)" }} />
@@ -283,7 +283,7 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
         })}
 
         {loaded && filtered.length === 0 && (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ padding: "28px 20px", textAlign: "center", color: "#6E685F", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             No {STATUS_LABELS[status].toLowerCase()} submissions.
           </div>
         )}
@@ -304,18 +304,18 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
                   <div style={{ fontSize: 16.5, fontWeight: 600, color: DARK }}>{payloadName(viewing.payload)}</div>
                 </div>
               </div>
-              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#8B8479", lineHeight: 1, flexShrink: 0 }}>×</button>
+              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#6E685F", lineHeight: 1, flexShrink: 0 }}>×</button>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13 }}>
               {Object.entries(viewing.payload)
                 .filter(([k]) => k !== "name" && k !== "logo_url")
                 .map(([k, v]) => (
-                  <div key={k}><span style={{ color: "#8B8479" }}>{humanize(k)}:</span> <strong>{displayValue(v)}</strong></div>
+                  <div key={k}><span style={{ color: "#6E685F" }}>{humanize(k)}:</span> <strong>{displayValue(v)}</strong></div>
                 ))}
               <div style={{ borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 10 }}>
-                <div><span style={{ color: "#8B8479" }}>Contact:</span> <strong>{viewing.contact_name}</strong></div>
-                <div><span style={{ color: "#8B8479" }}>Email:</span> <strong>{viewing.email}</strong></div>
-                {viewing.phone && <div><span style={{ color: "#8B8479" }}>Phone:</span> <strong>{viewing.phone}</strong></div>}
+                <div><span style={{ color: "#6E685F" }}>Contact:</span> <strong>{viewing.contact_name}</strong></div>
+                <div><span style={{ color: "#6E685F" }}>Email:</span> <strong>{viewing.email}</strong></div>
+                {viewing.phone && <div><span style={{ color: "#6E685F" }}>Phone:</span> <strong>{viewing.phone}</strong></div>}
               </div>
             </div>
             {error && <p style={{ color: "#E23A2E", fontSize: 12.5, margin: 0 }}>{error}</p>}
@@ -328,7 +328,7 @@ export default function EcosystemSignupsTab({ searchQuery = "" }: { searchQuery?
               {viewing.status !== "rejected" && (
                 <button onClick={() => reject(viewing.id)} style={{ fontSize: 13, fontWeight: 600, color: "#E23A2E", background: "none", border: "1.5px solid rgba(226,58,46,0.3)", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}>Reject</button>
               )}
-              <button onClick={() => remove(viewing.id)} style={{ fontSize: 13, fontWeight: 600, color: "#8B8479", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer", marginLeft: "auto" }}>Delete</button>
+              <button onClick={() => remove(viewing.id)} style={{ fontSize: 13, fontWeight: 600, color: "#6E685F", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer", marginLeft: "auto" }}>Delete</button>
             </div>
           </div>
         </div>

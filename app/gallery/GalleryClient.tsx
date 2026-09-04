@@ -255,7 +255,7 @@ export default function GalleryClient() {
                 </button>
                 {pageNumbers(safePage, totalPages).map((n, i) =>
                   n === "…" ? (
-                    <span key={`gap-${i}`} style={{ color: "rgba(255,255,255,0.4)", padding: "0 4px" }}>…</span>
+                    <span key={`gap-${i}`} style={{ color: "rgba(255,255,255,0.55)", padding: "0 4px" }}>…</span>
                   ) : (
                     <button
                       key={n}

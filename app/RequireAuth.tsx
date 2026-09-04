@@ -15,7 +15,7 @@ export default function RequireAuth({
   const { configured, user, loading } = useAuth();
 
   if (loading) {
-    return <div style={{ padding: "80px 40px", textAlign: "center", color: "#8B8479", fontSize: 14 }}>Loading&hellip;</div>;
+    return <div style={{ padding: "80px 40px", textAlign: "center", color: "#6E685F", fontSize: 14 }}>Loading&hellip;</div>;
   }
 
   if (!user) {

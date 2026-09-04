@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { DARK, ORANGE } from "./data";
 
 const GRID = "rgba(64,50,34,0.09)";
-const AXIS_TEXT = "#8B8479";
+const AXIS_TEXT = "#6E685F";
 
 /** Live pixel width of an element, so charts can be drawn in real pixel
  *  coordinates instead of a stretched viewBox. */

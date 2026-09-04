@@ -125,7 +125,7 @@ export default function LocationPicker({ value, onChange }: { value: LocationVal
       </div>
       {error && <p style={{ color: "#E23A2E", fontSize: 11.5, margin: "0 0 8px" }}>{error}</p>}
       <div ref={containerRef} style={{ width: "100%", height: 220, borderRadius: 12, overflow: "hidden", border: "1.5px solid rgba(64,50,34,0.14)" }} />
-      <div style={{ fontSize: 11, color: "#8B8479", marginTop: 6 }}>
+      <div style={{ fontSize: 11, color: "#6E685F", marginTop: 6 }}>
         Search an address or click/drag the pin to set the exact spot. {value ? `Currently at ${value.lat.toFixed(5)}, ${value.lng.toFixed(5)}.` : "No location set yet — defaults to Baguio center on the map."}
       </div>
     </div>

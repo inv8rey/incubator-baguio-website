@@ -37,7 +37,7 @@ ${navBarHtml()}
       <span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">Baguio City&rsquo;s Innovation Platform</span>
     </div>
     <h1 style="margin:0;font-size:74px;line-height:1.02;font-weight:500;letter-spacing:-0.042em;color:#fff;">Building Baguio&rsquo;s <span style="color:#F26522;">Innovation Ecosystem.</span></h1>
-    <p style="margin:28px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:600px;">Incubator Baguio connects government, academia, industry, researchers, startups, and innovators around the Baguio City Research and Innovation Agenda to develop solutions, create opportunities, and strengthen the City&rsquo;s innovation ecosystem.</p>
+    <p style="margin:28px auto 0;font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:600px;">One platform connecting government, academia, industry, and innovators &mdash; so good ideas find the support they need.</p>
     <div style="display:flex;gap:12px;justify-content:center;margin-top:38px;flex-wrap:wrap;">
       <a href="${BP}/programs" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:15.5px;padding:15px 30px;border-radius:9999px;text-decoration:none;box-shadow:0 16px 40px -14px rgba(242,101,34,0.7);">Explore Opportunities
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
@@ -93,7 +93,7 @@ const HOME_HTML_BOTTOM_A = `
         <span style="font-size:11.5px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:#F26522;">Innovation Challenges</span>
       </div>
       <h2 style="margin:0 0 16px;font-size:40px;font-weight:500;letter-spacing:-0.032em;color:#1A1714;line-height:1.14;">Problem statements from across the Quadruple Helix</h2>
-      <p style="margin:0;font-size:16px;line-height:1.68;color:#5A544B;">Every sector of the city brings its own open problems. Anyone in the ecosystem can pick one up and build against it.</p>
+      <p style="margin:0;font-size:16px;line-height:1.68;color:#5A544B;">Real problems, posted by the people facing them &mdash; open for anyone to solve.</p>
     </div>
     <div class="ib-challenge-cats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
       ${[
@@ -163,8 +163,8 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }} />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_TOP }} />
       <HomeStats />
-      <WhoWeAre />
       <EcosystemModel />
+      <WhoWeAre />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_A }} />
       <HomeOpenChallenges bp={BP} />
       <FeaturedStartups bp={BP} />

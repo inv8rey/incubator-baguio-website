@@ -45,12 +45,12 @@ export async function sendEventApprovalEmail(event: ApprovedEvent): Promise<{ se
       <h1 style="font-size: 22px; font-weight: 600; margin: 0 0 16px;">Your event is on the calendar</h1>
       <p style="font-size: 15px; line-height: 1.6; margin: 0 0 20px;">Hi ${event.contactName || "there"}, &ldquo;${event.title}&rdquo; has been approved and is now live on the Incubator Baguio public calendar.</p>
       <table style="font-size: 14px; line-height: 1.7; margin: 0 0 24px;">
-        <tr><td style="color: #8B8479; padding-right: 12px;">When</td><td>${when}${event.eventTime ? `, ${event.eventTime}` : ""}</td></tr>
-        <tr><td style="color: #8B8479; padding-right: 12px;">Venue</td><td>${event.venue || "—"}</td></tr>
-        <tr><td style="color: #8B8479; padding-right: 12px;">Organizer</td><td>${event.org}</td></tr>
+        <tr><td style="color: #6E685F; padding-right: 12px;">When</td><td>${when}${event.eventTime ? `, ${event.eventTime}` : ""}</td></tr>
+        <tr><td style="color: #6E685F; padding-right: 12px;">Venue</td><td>${event.venue || "—"}</td></tr>
+        <tr><td style="color: #6E685F; padding-right: 12px;">Organizer</td><td>${event.org}</td></tr>
       </table>
       <a href="https://incubator-baguio.vercel.app/calendar/" style="display: inline-block; background: #F26522; color: #fff; font-weight: 600; font-size: 14px; padding: 12px 22px; border-radius: 9999px; text-decoration: none;">View the calendar</a>
-      <p style="font-size: 13px; color: #8B8479; margin: 24px 0 0;">Questions? Reply to this email or reach us at ${REPLY_TO}.</p>
+      <p style="font-size: 13px; color: #6E685F; margin: 24px 0 0;">Questions? Reply to this email or reach us at ${REPLY_TO}.</p>
     </div>
   `;
 

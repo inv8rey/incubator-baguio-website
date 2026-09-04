@@ -183,13 +183,13 @@ export default function ApplyForm({ challenge, bp }: { challenge: ApplyChallenge
                   justifyContent: "center",
                   fontSize: 12.5,
                   fontWeight: 600,
-                  color: i <= step ? "#fff" : "#8B8479",
+                  color: i <= step ? "#fff" : "#6E685F",
                   background: i <= step ? ORANGE : "#F6F2EA",
                 }}
               >
                 {i < step ? "✓" : i + 1}
               </span>
-              <span style={{ fontSize: 13, fontWeight: 600, color: i === step ? DARK : "#8B8479", whiteSpace: "nowrap" }}>{label}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: i === step ? DARK : "#6E685F", whiteSpace: "nowrap" }}>{label}</span>
             </div>
             {i < STEPS.length - 1 && <span style={{ flex: 1, height: 1.5, background: i < step ? ORANGE : "rgba(64,50,34,0.13)", margin: "0 14px" }} />}
           </div>
@@ -274,13 +274,13 @@ export default function ApplyForm({ challenge, bp }: { challenge: ApplyChallenge
       {step === 2 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <div style={{ background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.11)", borderRadius: 14, padding: "20px 22px" }}>
-            <div style={{ fontSize: 11.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "#8B8479", marginBottom: 14 }}>Review your application</div>
+            <div style={{ fontSize: 11.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "#6E685F", marginBottom: 14 }}>Review your application</div>
             <dl style={{ margin: 0, display: "grid", gridTemplateColumns: "140px 1fr", rowGap: 10, columnGap: 12, fontSize: 13.5 }}>
-              <dt style={{ color: "#8B8479" }}>Challenge</dt><dd style={{ margin: 0, color: DARK, fontWeight: 600 }}>{challenge.title}</dd>
-              <dt style={{ color: "#8B8479" }}>Team</dt><dd style={{ margin: 0, color: DARK }}>{form.teamName || "—"} ({form.teamSize || "?"} people)</dd>
-              <dt style={{ color: "#8B8479" }}>Contact</dt><dd style={{ margin: 0, color: DARK }}>{form.contactName || "—"} &middot; {form.email || "—"}</dd>
-              <dt style={{ color: "#8B8479" }}>Affiliation</dt><dd style={{ margin: 0, color: DARK }}>{form.affiliation || "—"} &middot; {form.role || "—"}{form.role === "Student" && form.course ? ` (${form.course})` : ""}</dd>
-              <dt style={{ color: "#8B8479" }}>Approach</dt><dd style={{ margin: 0, color: "#44444C", lineHeight: 1.5 }}>{form.approach || "—"}</dd>
+              <dt style={{ color: "#6E685F" }}>Challenge</dt><dd style={{ margin: 0, color: DARK, fontWeight: 600 }}>{challenge.title}</dd>
+              <dt style={{ color: "#6E685F" }}>Team</dt><dd style={{ margin: 0, color: DARK }}>{form.teamName || "—"} ({form.teamSize || "?"} people)</dd>
+              <dt style={{ color: "#6E685F" }}>Contact</dt><dd style={{ margin: 0, color: DARK }}>{form.contactName || "—"} &middot; {form.email || "—"}</dd>
+              <dt style={{ color: "#6E685F" }}>Affiliation</dt><dd style={{ margin: 0, color: DARK }}>{form.affiliation || "—"} &middot; {form.role || "—"}{form.role === "Student" && form.course ? ` (${form.course})` : ""}</dd>
+              <dt style={{ color: "#6E685F" }}>Approach</dt><dd style={{ margin: 0, color: "#44444C", lineHeight: 1.5 }}>{form.approach || "—"}</dd>
             </dl>
           </div>
           <label style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 13.5, color: "#44444C", cursor: "pointer" }}>

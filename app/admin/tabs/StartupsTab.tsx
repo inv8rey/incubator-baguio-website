@@ -321,7 +321,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                     textTransform: "uppercase",
                     letterSpacing: "0.05em",
                     fontWeight: 600,
-                    color: "#8B8479",
+                    color: "#6E685F",
                     padding: i === 0 ? "12px 14px 12px 20px" : "12px 14px",
                     borderBottom: "1.5px solid rgba(64,50,34,0.12)",
                   }}
@@ -349,7 +349,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                         <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
                           <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK }}>{s.name}</div>
                           {s.status === "closed" && (
-                            <span style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "#8B8479", background: "rgba(64,50,34,0.08)", padding: "2px 7px", borderRadius: 999 }}>Closed</span>
+                            <span style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "#6E685F", background: "rgba(64,50,34,0.08)", padding: "2px 7px", borderRadius: 999 }}>Closed</span>
                           )}
                         </div>
                       </div>
@@ -360,7 +360,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                     <span style={{ fontSize: 10.5, fontWeight: 600, padding: "3px 9px", borderRadius: 999, color: badge.color, background: badge.bg }}>● {s.stage}</span>
                   </td>
                   <td style={{ padding: "13px 14px", verticalAlign: "middle", fontWeight: 600, color: DARK }}>{s.funding || "—"}</td>
-                  <td style={{ padding: "13px 14px", verticalAlign: "middle", color: "#8B8479" }}>{s.since || "—"}</td>
+                  <td style={{ padding: "13px 14px", verticalAlign: "middle", color: "#6E685F" }}>{s.since || "—"}</td>
                   <td style={{ padding: "13px 14px", verticalAlign: "middle" }}>
                     <div style={{ display: "flex", gap: 12 }}>
                       <button onClick={() => openEditModal(s)} style={{ fontSize: 12, fontWeight: 600, color: "#285E7A", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
@@ -376,7 +376,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
             })}
             {loaded && filtered.length === 0 && (
               <tr>
-                <td colSpan={6} style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13 }}>
+                <td colSpan={6} style={{ padding: "28px 20px", textAlign: "center", color: "#6E685F", fontSize: 13 }}>
                   {startups.length === 0 ? "No startups yet — add the first one." : "No startups match these filters."}
                 </td>
               </tr>
@@ -397,7 +397,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div style={{ fontSize: 16.5, fontWeight: 600, color: DARK }}>{editingId ? "Edit startup" : "Add startup"}</div>
-              <button type="button" onClick={closeModal} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#8B8479", lineHeight: 1 }}>
+              <button type="button" onClick={closeModal} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#6E685F", lineHeight: 1 }}>
                 ×
               </button>
             </div>
@@ -406,7 +406,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
               {form.logoUrl ? (
                 <img src={form.logoUrl} alt="" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
               ) : (
-                <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10.5, textAlign: "center" }}>
+                <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10.5, textAlign: "center" }}>
                   No logo
                 </div>
               )}
@@ -415,7 +415,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                   {uploading ? "Uploading…" : "Upload logo"}
                   <input type="file" accept="image/*" onChange={handleLogoChange} disabled={uploading} style={{ display: "none" }} />
                 </label>
-                <div style={{ fontSize: 11, color: "#8B8479", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
+                <div style={{ fontSize: 11, color: "#6E685F", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
               </div>
             </div>
 
@@ -434,7 +434,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
             <div>
               <label style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>
                 <span>Description</span>
-                <span style={{ color: "#8B8479", fontWeight: 500 }}>{form.description.length}/{DESCRIPTION_MAX}</span>
+                <span style={{ color: "#6E685F", fontWeight: 500 }}>{form.description.length}/{DESCRIPTION_MAX}</span>
               </label>
               <textarea
                 value={form.description}
@@ -497,7 +497,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                 placeholder="https://facebook.com/... or https://..."
                 style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
               />
-              <div style={{ fontSize: 11, color: "#8B8479", marginTop: 4 }}>Shown as a link button on the startup's public card.</div>
+              <div style={{ fontSize: 11, color: "#6E685F", marginTop: 4 }}>Shown as a link button on the startup's public card.</div>
             </div>
 
             <div>
@@ -530,7 +530,7 @@ export default function StartupsTab({ searchQuery = "" }: { searchQuery?: string
                         type="button"
                         onClick={() => removeFounder(i)}
                         aria-label="Remove founder"
-                        style={{ width: 30, height: 30, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", color: "#8B8479", cursor: "pointer", fontSize: 15, lineHeight: 1 }}
+                        style={{ width: 30, height: 30, flexShrink: 0, borderRadius: 9999, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", color: "#6E685F", cursor: "pointer", fontSize: 15, lineHeight: 1 }}
                       >
                         &times;
                       </button>

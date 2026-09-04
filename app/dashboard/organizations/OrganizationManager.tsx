@@ -422,7 +422,7 @@ export default function OrganizationManager() {
   }
 
   if (!loaded) {
-    return <div style={{ padding: "40px 0", textAlign: "center", color: "#8B8479", fontSize: 14 }}>Loading&hellip;</div>;
+    return <div style={{ padding: "40px 0", textAlign: "center", color: "#6E685F", fontSize: 14 }}>Loading&hellip;</div>;
   }
 
   // ---- Registration form: first organization, or "+ Register another" ----
@@ -445,14 +445,14 @@ export default function OrganizationManager() {
               {createForm.logo_url ? (
                 <img src={createForm.logo_url} alt="" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
               ) : (
-                <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10.5, textAlign: "center" }}>No logo</div>
+                <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10.5, textAlign: "center" }}>No logo</div>
               )}
               <div>
                 <label style={{ display: "inline-block", fontSize: 13, fontWeight: 600, color: ORANGE, cursor: "pointer" }}>
                   {uploading ? "Uploading…" : "Upload logo"}
                   <input type="file" accept="image/*" onChange={handleCreateLogoChange} disabled={uploading} style={{ display: "none" }} />
                 </label>
-                <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
+                <div style={{ fontSize: 11.5, color: "#6E685F", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
               </div>
             </div>
           </div>
@@ -522,14 +522,14 @@ export default function OrganizationManager() {
                 {createForm.cover_url ? (
                   <img src={createForm.cover_url} alt="" style={{ width: 84, height: 52, borderRadius: 10, objectFit: "cover" }} />
                 ) : (
-                  <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10, textAlign: "center" }}>No cover</div>
+                  <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10, textAlign: "center" }}>No cover</div>
                 )}
                 <div>
                   <label style={{ display: "inline-block", fontSize: 13, fontWeight: 600, color: ORANGE, cursor: "pointer" }}>
                     {uploadingCover ? "Uploading…" : "Upload cover photo"}
                     <input type="file" accept="image/*" onChange={handleCreateCoverChange} disabled={uploadingCover} style={{ display: "none" }} />
                   </label>
-                  <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 2 }}>Shown as the banner on your Ecosystem directory card.</div>
+                  <div style={{ fontSize: 11.5, color: "#6E685F", marginTop: 2 }}>Shown as the banner on your Ecosystem directory card.</div>
                 </div>
               </div>
             </div>
@@ -586,7 +586,7 @@ export default function OrganizationManager() {
                 )}
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 14.5, fontWeight: 600, color: DARK }}>{o.name}</div>
-                  <div style={{ fontSize: 12.5, color: "#8B8479", marginTop: 2 }}>{o.org_type}{o.type ? ` · ${o.type}` : ""}</div>
+                  <div style={{ fontSize: 12.5, color: "#6E685F", marginTop: 2 }}>{o.org_type}{o.type ? ` · ${o.type}` : ""}</div>
                 </div>
                 <span style={{ fontSize: 11, fontWeight: 600, color: b.color, background: b.bg, padding: "5px 11px", borderRadius: 9999, flexShrink: 0, whiteSpace: "nowrap" }}>{chipLabel}</span>
               </button>
@@ -613,26 +613,26 @@ export default function OrganizationManager() {
         <form onSubmit={submitEdit} style={{ display: "flex", flexDirection: "column", gap: 26 }}>
           {/* Basic Information */}
           <div>
-            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 12 }}>Basic Information</div>
+            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 12 }}>Basic Information</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 {editForm.logo_url ? (
                   <img src={editForm.logo_url} alt="" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
                 ) : (
-                  <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10.5, textAlign: "center" }}>No logo</div>
+                  <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10.5, textAlign: "center" }}>No logo</div>
                 )}
                 <div>
                   <label style={{ display: "inline-block", fontSize: 13, fontWeight: 600, color: ORANGE, cursor: "pointer" }}>
                     {uploading ? "Uploading…" : "Upload logo"}
                     <input type="file" accept="image/*" onChange={handleLogoChange} disabled={uploading} style={{ display: "none" }} />
                   </label>
-                  <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
+                  <div style={{ fontSize: 11.5, color: "#6E685F", marginTop: 2 }}>PNG or JPG, up to 2MB</div>
                 </div>
               </div>
 
               <div>
                 <label style={labelStyle}>Organization name</label>
-                <input style={{ ...inputStyle, color: "#8B8479" }} value={org.name} disabled />
+                <input style={{ ...inputStyle, color: "#6E685F" }} value={org.name} disabled />
                 {org.pending_name ? (
                   <p style={{ margin: "6px 0 0", fontSize: 12, color: "#D88A0A" }}>Requested change to &ldquo;{org.pending_name}&rdquo; is pending Incubator Baguio approval.</p>
                 ) : (
@@ -643,15 +643,15 @@ export default function OrganizationManager() {
                       onChange={(e) => setEditForm((f) => (f ? { ...f, nameChangeInput: e.target.value } : f))}
                       placeholder="Request a different official name"
                     />
-                    <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#8B8479" }}>This change requires approval from Incubator Baguio.</p>
+                    <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#6E685F" }}>This change requires approval from Incubator Baguio.</p>
                   </div>
                 )}
               </div>
 
               <div>
                 <label style={labelStyle}>Organization type</label>
-                <input style={{ ...inputStyle, color: "#8B8479" }} value={org.org_type} disabled />
-                <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#8B8479" }}>Contact Incubator Baguio to change your organization type.</p>
+                <input style={{ ...inputStyle, color: "#6E685F" }} value={org.org_type} disabled />
+                <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#6E685F" }}>Contact Incubator Baguio to change your organization type.</p>
               </div>
 
               <div>
@@ -673,7 +673,7 @@ export default function OrganizationManager() {
 
           {/* Contact Information */}
           <div>
-            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 12 }}>Contact Information</div>
+            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 12 }}>Contact Information</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
               <div>
                 <label style={labelStyle}>Official email</label>
@@ -700,12 +700,12 @@ export default function OrganizationManager() {
               <input type="checkbox" checked={editForm.contact_public} onChange={(e) => setEditForm((f) => (f ? { ...f, contact_public: e.target.checked } : f))} />
               Show this contact information on the public profile
             </label>
-            <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#8B8479" }}>Off by default. Your representative&rsquo;s personal details are never shown either way.</p>
+            <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#6E685F" }}>Off by default. Your representative&rsquo;s personal details are never shown either way.</p>
           </div>
 
           {/* Location */}
           <div>
-            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 12 }}>Location</div>
+            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 12 }}>Location</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <div>
                 <label style={labelStyle}>Address</label>
@@ -713,7 +713,7 @@ export default function OrganizationManager() {
               </div>
               <div>
                 <label style={labelStyle}>Pin your exact location</label>
-                <p style={{ margin: "0 0 8px", fontSize: 12.5, color: "#8B8479" }}>
+                <p style={{ margin: "0 0 8px", fontSize: 12.5, color: "#6E685F" }}>
                   Search for your address or drag the marker. This is what places you on the ecosystem map.
                 </p>
                 <LocationPicker
@@ -757,7 +757,7 @@ export default function OrganizationManager() {
 
           {/* Ecosystem Information */}
           <div>
-            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 12 }}>Ecosystem Information</div>
+            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 12 }}>Ecosystem Information</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <div>
                 <label style={labelStyle}>Sectors / Areas of Focus</label>
@@ -786,7 +786,7 @@ export default function OrganizationManager() {
 
           {/* Collaboration */}
           <div>
-            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#8B8479", marginBottom: 12 }}>Collaboration</div>
+            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 12 }}>Collaboration</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <div>
                 <label style={labelStyle}>We Can Offer</label>
@@ -806,7 +806,7 @@ export default function OrganizationManager() {
                 {editForm.cover_url ? (
                   <img src={editForm.cover_url} alt="" style={{ width: 84, height: 52, borderRadius: 10, objectFit: "cover" }} />
                 ) : (
-                  <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10, textAlign: "center" }}>No cover</div>
+                  <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10, textAlign: "center" }}>No cover</div>
                 )}
                 <label style={{ fontSize: 12.5, fontWeight: 600, color: ORANGE, cursor: "pointer" }}>
                   {uploadingCover ? "Uploading…" : "Upload cover photo"}
@@ -848,11 +848,11 @@ export default function OrganizationManager() {
           {org.logo_url ? (
             <img src={org.logo_url} alt="" style={{ width: 56, height: 56, borderRadius: 14, objectFit: "cover" }} />
           ) : (
-            <div style={{ width: 56, height: 56, borderRadius: 14, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 11, textAlign: "center" }}>No logo</div>
+            <div style={{ width: 56, height: 56, borderRadius: 14, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 11, textAlign: "center" }}>No logo</div>
           )}
           <div>
             <h2 style={{ margin: 0, fontSize: 19, fontWeight: 600, color: DARK }}>{org.name}</h2>
-            <div style={{ fontSize: 13, color: "#8B8479", marginTop: 2 }}>{org.org_type}{org.type ? ` · ${org.type}` : ""}</div>
+            <div style={{ fontSize: 13, color: "#6E685F", marginTop: 2 }}>{org.org_type}{org.type ? ` · ${org.type}` : ""}</div>
           </div>
         </div>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -881,7 +881,7 @@ export default function OrganizationManager() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {checks.map((c, i) => (
-            <div key={c.label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: c.done ? DARK : "#8B8479" }}>
+            <div key={c.label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: c.done ? DARK : "#6E685F" }}>
               <span style={{ width: 18, height: 18, borderRadius: 9999, display: "flex", alignItems: "center", justifyContent: "center", background: c.done ? "rgba(26,107,60,0.12)" : "#F6F2EA", color: c.done ? "#1A6B3C" : "#C4BEB4", fontSize: 11, flexShrink: 0 }}>
                 {c.done ? "✓" : "○"}
               </span>

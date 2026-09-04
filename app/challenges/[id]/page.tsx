@@ -80,7 +80,7 @@ ${navBarHtml("/challenges")}
 
     <div style="display:flex;flex-direction:column;gap:20px;min-width:0;">
       <div style="background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:18px;padding:26px;">
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#8B8479;margin-bottom:16px;">Challenge details</div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#6E685F;margin-bottom:16px;">Challenge details</div>
         <div style="display:flex;flex-direction:column;">
           ${[
             ["Status", `<span style="display:inline-flex;align-items:center;font-size:13px;font-weight:600;color:#1A6B3C;background:rgba(26,107,60,0.12);padding:6px 16px;border-radius:9999px;">${c.status}</span>`],
@@ -90,14 +90,14 @@ ${navBarHtml("/challenges")}
             ["Submissions", `<span style="font-size:14.5px;font-weight:600;color:#1A1714;">${totalSolvers} received</span>`],
           ].map(([label, value], i, arr) => `
           <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 0;${i < arr.length - 1 ? "border-bottom:1px solid rgba(64,50,34,0.11);" : ""}">
-            <span style="font-size:14.5px;color:#8B8479;">${label}</span>
+            <span style="font-size:14.5px;color:#6E685F;">${label}</span>
             ${value}
           </div>`).join("")}
         </div>
       </div>
 
       <div style="background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:18px;padding:26px;">
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#8B8479;margin-bottom:16px;">Posted by</div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#6E685F;margin-bottom:16px;">Posted by</div>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div style="width:34px;height:34px;border-radius:8px;background:${c.orgColor};display:flex;align-items:center;justify-content:center;font-size:${c.orgInitialsFontSize};font-weight:600;color:#fff;">${c.orgInitials}</div><span style="font-size:14px;font-weight:600;color:#1A1714;">${c.orgName}</span></div>
         <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:#5A544B;">${c.orgFull}</p>
         <a href="mailto:${c.contactEmail}" style="font-size:13px;font-weight:600;color:#F26522;text-decoration:none;">${c.contactEmail}</a>
@@ -121,12 +121,12 @@ ${navBarHtml("/challenges")}
         <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:10px;">Registered solvers</div>
         <h2 style="margin:0;font-size:30px;font-weight:600;letter-spacing:-0.02em;color:#1A1714;">Teams currently working on this</h2>
       </div>
-      <span style="font-size:14px;color:#8B8479;">${totalSolvers} group${totalSolvers === 1 ? "" : "s"} registered</span>
+      <span style="font-size:14px;color:#6E685F;">${totalSolvers} group${totalSolvers === 1 ? "" : "s"} registered</span>
     </div>
 
     ${totalSolvers === 0 ? `
     <div style="border:1.5px dashed rgba(64,50,34,0.18);border-radius:18px;padding:40px 26px;text-align:center;">
-      <p style="margin:0;font-size:14px;color:#8B8479;">No teams have registered yet. Be the first to apply.</p>
+      <p style="margin:0;font-size:14px;color:#6E685F;">No teams have registered yet. Be the first to apply.</p>
     </div>` : `
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
       ${visibleSolvers.map((s) => `
@@ -134,14 +134,14 @@ ${navBarHtml("/challenges")}
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;">
           <div style="display:flex;align-items:center;gap:12px;">
             <div style="width:44px;height:44px;border-radius:11px;background:${s.color};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;flex-shrink:0;">${s.initials}</div>
-            <div><div style="font-size:16px;font-weight:600;color:#1A1714;">${s.name}</div><div style="font-size:12.5px;color:#8B8479;margin-top:2px;">Team &middot; ${s.members} members</div></div>
+            <div><div style="font-size:16px;font-weight:600;color:#1A1714;">${s.name}</div><div style="font-size:12.5px;color:#6E685F;margin-top:2px;">Team &middot; ${s.members} members</div></div>
           </div>
         </div>
         ${s.description ? `<p style="margin:0 0 18px;font-size:13.5px;line-height:1.6;color:#5A544B;flex:1;">${s.description}</p>` : ""}
         <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;margin-bottom:18px;">
-          ${s.affiliation ? `<div style="display:flex;gap:6px;"><span style="color:#8B8479;min-width:74px;">Affiliation</span><span style="font-weight:600;color:#1A1714;">${s.affiliation}</span></div>` : ""}
-          ${s.track ? `<div style="display:flex;gap:6px;"><span style="color:#8B8479;min-width:74px;">Track</span><span style="font-weight:600;color:#1A1714;">${s.track}</span></div>` : ""}
-          <div style="display:flex;gap:6px;"><span style="color:#8B8479;min-width:74px;">Registered</span><span style="font-weight:600;color:#1A1714;">${s.registered}</span></div>
+          ${s.affiliation ? `<div style="display:flex;gap:6px;"><span style="color:#6E685F;min-width:74px;">Affiliation</span><span style="font-weight:600;color:#1A1714;">${s.affiliation}</span></div>` : ""}
+          ${s.track ? `<div style="display:flex;gap:6px;"><span style="color:#6E685F;min-width:74px;">Track</span><span style="font-weight:600;color:#1A1714;">${s.track}</span></div>` : ""}
+          <div style="display:flex;gap:6px;"><span style="color:#6E685F;min-width:74px;">Registered</span><span style="font-weight:600;color:#1A1714;">${s.registered}</span></div>
         </div>
         <a href="${BP}/challenges/${c.slug}/apply/" style="display:flex;align-items:center;justify-content:center;gap:7px;font-size:13.5px;font-weight:600;color:#fff;background:#1A1714;padding:11px 16px;border-radius:9999px;text-decoration:none;">Collaborate
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
@@ -149,9 +149,9 @@ ${navBarHtml("/challenges")}
       ${totalSolvers > visibleSolvers.length ? `
       <div style="border:1.5px dashed rgba(64,50,34,0.18);border-radius:18px;padding:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;">
         <div style="width:48px;height:48px;border-radius:9999px;background:#F6F2EA;display:flex;align-items:center;justify-content:center;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B8479" stroke-width="2.4"><path d="M12 5v14M5 12h14"></path></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6E685F" stroke-width="2.4"><path d="M12 5v14M5 12h14"></path></svg>
         </div>
-        <div><div style="font-size:15px;font-weight:600;color:#1A1714;margin-bottom:6px;">${totalSolvers - visibleSolvers.length} more teams registered</div><p style="margin:0;font-size:13px;line-height:1.55;color:#8B8479;">Full solver list visible to challenge poster and Incubator Baguio staff.</p></div>
+        <div><div style="font-size:15px;font-weight:600;color:#1A1714;margin-bottom:6px;">${totalSolvers - visibleSolvers.length} more teams registered</div><p style="margin:0;font-size:13px;line-height:1.55;color:#6E685F;">Full solver list visible to challenge poster and Incubator Baguio staff.</p></div>
         <a href="${BP}/challenges/${c.slug}/apply/" style="font-size:13.5px;font-weight:600;color:#F26522;text-decoration:none;">Join as a solver &rarr;</a>
       </div>` : ""}
     </div>`}

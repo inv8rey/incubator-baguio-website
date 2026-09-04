@@ -9,22 +9,32 @@ const DARK = "#1A1714";
 const ORANGE = "#F26522";
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
+const ALL_CATEGORIES: EcosystemCategory[] = ["Startups", "Mentors", "TBIs", "Academe", "Companies", "Service Providers", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs", "Funded Projects"];
+
 // Shared by every filter/sort <select> in the directory's toolbar.
 // minWidth/maxWidth are load-bearing: a <select> is intrinsically as wide as
 // its longest <option> ("Artificial Intelligence & Emerging Technologies" in
 // the sector list), and as a flex item its default min-width:auto stops it
 // shrinking — which pushed the page 53px past a 320px viewport.
+// appearance:auto's native dropdown arrow sits flush against the select's
+// padding-box, which on a 9999px-radius pill reads as crowding the curved
+// edge. Swap to a custom chevron (appearance:none + background-image) with
+// its own breathing room instead of the 16px shared with the pill's corner.
+const CHEVRON_SVG =
+  "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236E685F' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E";
+
 const filterSelectStyle: React.CSSProperties = {
   height: 44,
   fontSize: 13.5,
   fontWeight: 600,
   color: DARK,
-  background: "#F6F2EA",
+  background: `#F6F2EA url("${CHEVRON_SVG}") no-repeat right 16px center`,
+  backgroundSize: "12px",
   border: "1px solid rgba(64,50,34,0.14)",
   borderRadius: 9999,
-  padding: "0 16px",
+  padding: "0 38px 0 16px",
   outline: "none",
-  appearance: "auto",
+  appearance: "none",
   cursor: "pointer",
   minWidth: 0,
   maxWidth: "100%",
@@ -67,6 +77,18 @@ function ObfuscatedEmail({ email, style }: { email: string; style?: React.CSSPro
   );
 }
 
+// Every logo/photo/cover in the directory already has a placeholder for
+// when no URL is on file — but a URL that IS on file can still 404 (deleted
+// upload, expired storage link) and an <img> just renders blank in that
+// case since there's no built-in retry/fallback. This swaps to the same
+// placeholder the "no URL" branch would have rendered once the image
+// actually fails to load.
+function SafeImg({ src, fallback, ...imgProps }: { src?: string; fallback: React.ReactNode; alt: string } & React.ImgHTMLAttributes<HTMLImageElement>) {
+  const [failed, setFailed] = useState(false);
+  if (!src || failed) return <>{fallback}</>;
+  return <img src={src} onError={() => setFailed(true)} {...imgProps} />;
+}
+
 // Mentors without an uploaded photo fall back to a branded gradient card
 // (orange or black, chosen deterministically per name) instead of a photo.
 function mentorFallbackGradient(name: string): string {
@@ -95,35 +117,41 @@ function OrgPhotoCard({ name, type, description, color, bg, initials, logoUrl, c
   return (
     <div className="ib-card-hover ib-org-photo-card" style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, overflow: "hidden", display: "flex", flexDirection: "column" }}>
       <div style={{ position: "relative", height: 150, flexShrink: 0 }}>
-        {coverUrl ? (
-          <img src={coverUrl} alt={`${name} cover`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        ) : (
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              background: "repeating-linear-gradient(135deg,#F6F2EA,#F6F2EA 11px,#EDEAE1 11px,#EDEAE1 22px)",
-            }}
-          />
-        )}
+        <SafeImg
+          src={coverUrl}
+          alt={`${name} cover`}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          fallback={
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                background: "repeating-linear-gradient(135deg,#F6F2EA,#F6F2EA 11px,#EDEAE1 11px,#EDEAE1 22px)",
+              }}
+            />
+          }
+        />
         {type && (
           <span style={{ position: "absolute", top: 12, right: 12, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color, background: "#fff", padding: "4px 10px", borderRadius: 9999, boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
             {type}
           </span>
         )}
-        {logoUrl ? (
-          <img src={logoUrl} alt={`${name} logo`} style={{ position: "absolute", left: 16, bottom: -18, width: 46, height: 46, borderRadius: 12, objectFit: "contain", background: "#fff", border: "2px solid #fff", boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }} />
-        ) : (
-          <div style={{ position: "absolute", left: 16, bottom: -18, width: 46, height: 46, borderRadius: 12, background: bg, color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 600, border: "2px solid #fff", boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
-            {initials}
-          </div>
-        )}
+        <SafeImg
+          src={logoUrl}
+          alt={`${name} logo`}
+          style={{ position: "absolute", left: 16, bottom: -18, width: 46, height: 46, borderRadius: 12, objectFit: "contain", background: "#fff", border: "2px solid #fff", boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}
+          fallback={
+            <div style={{ position: "absolute", left: 16, bottom: -18, width: 46, height: 46, borderRadius: 12, background: bg, color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 600, border: "2px solid #fff", boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
+              {initials}
+            </div>
+          }
+        />
       </div>
       <div style={{ padding: "30px 22px 22px", display: "flex", flexDirection: "column", flex: 1 }}>
         <h3 style={{ margin: "0 0 10px", fontSize: 16.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{name}</h3>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12, fontSize: 12, color: "#5A544B" }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2}><path d="M12 22s7-6.5 7-12A7 7 0 0 0 5 10c0 5.5 7 12 7 12Z" /><circle cx="12" cy="10" r="2.5" /></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2}><path d="M12 22s7-6.5 7-12A7 7 0 0 0 5 10c0 5.5 7 12 7 12Z" /><circle cx="12" cy="10" r="2.5" /></svg>
             Baguio City
           </span>
         </div>
@@ -168,11 +196,12 @@ function OrgListCard({ name, badge, description, color, bg, initials, logoUrl, w
   return (
     <div className="ib-card-hover ib-org-list-card" style={{ position: "relative", background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: 24, display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex", gap: 14, marginBottom: 16 }}>
-        {logoUrl ? (
-          <img src={logoUrl} alt={`${name} logo`} style={{ width: 64, height: 64, borderRadius: 14, objectFit: "contain", background: "#fff", border: "1px solid rgba(64,50,34,0.11)", flexShrink: 0, padding: 6, boxSizing: "border-box" }} />
-        ) : (
-          <div style={{ width: 64, height: 64, borderRadius: 14, background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 600, color, flexShrink: 0 }}>{initials}</div>
-        )}
+        <SafeImg
+          src={logoUrl}
+          alt={`${name} logo`}
+          style={{ width: 64, height: 64, borderRadius: 14, objectFit: "contain", background: "#fff", border: "1px solid rgba(64,50,34,0.11)", flexShrink: 0, padding: 6, boxSizing: "border-box" }}
+          fallback={<div style={{ width: 64, height: 64, borderRadius: 14, background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 600, color, flexShrink: 0 }}>{initials}</div>}
+        />
         <div style={{ minWidth: 0 }}>
           {badge && (
             <span style={{ display: "inline-block", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color, background: bg, padding: "4px 10px", borderRadius: 9999, marginBottom: 6 }}>
@@ -224,18 +253,113 @@ function FundedProjectCard({ title, fundingAgency, leadInstitution, duration, st
   return (
     <div className="ib-card-hover" style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: 24, display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 16 }}>
-        {partnerLogoUrl ? (
-          <img src={partnerLogoUrl} alt={partnerName} title={partnerName} style={{ width: 46, height: 46, borderRadius: 12, objectFit: "contain", background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.1)", flexShrink: 0 }} />
-        ) : (
-          <div style={{ width: 46, height: 46, borderRadius: 12, background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 600, color, flexShrink: 0 }}>{initials}</div>
-        )}
+        <SafeImg
+          src={partnerLogoUrl}
+          alt={partnerName}
+          title={partnerName}
+          style={{ width: 46, height: 46, borderRadius: 12, objectFit: "contain", background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.1)", flexShrink: 0 }}
+          fallback={<div style={{ width: 46, height: 46, borderRadius: 12, background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 600, color, flexShrink: 0 }}>{initials}</div>}
+        />
         <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: statusStyle.color, background: statusStyle.bg, padding: "5px 11px", borderRadius: 9999, whiteSpace: "nowrap" }}>{status}</span>
       </div>
       <h3 style={{ margin: "0 0 14px", fontSize: 16.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{title}</h3>
       <div style={{ display: "flex", flexDirection: "column", gap: 9, borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 14, fontSize: 13, color: "#44444C" }}>
-        <div><span style={{ color: "#8B8479" }}>Funding agency: </span>{fundingAgency || "—"}</div>
-        <div><span style={{ color: "#8B8479" }}>Lead institution: </span>{leadInstitution || "—"}</div>
-        <div><span style={{ color: "#8B8479" }}>Duration: </span>{duration || "—"}</div>
+        <div><span style={{ color: "#6E685F" }}>Funding agency: </span>{fundingAgency || "—"}</div>
+        <div><span style={{ color: "#6E685F" }}>Lead institution: </span>{leadInstitution || "—"}</div>
+        <div><span style={{ color: "#6E685F" }}>Duration: </span>{duration || "—"}</div>
+      </div>
+    </div>
+  );
+}
+
+// Extracted so a broken photoUrl (upload deleted, expired link) can fall
+// back to the same gradient placeholder the "no photo on file" case uses —
+// that swap needs its own failed-to-load state, which a plain .map() callback
+// can't hold.
+function MentorFlipCard({ m, isHighlighted, cardRef }: { m: DynamicMentorEntry; isHighlighted: boolean; cardRef: (el: HTMLDivElement | null) => void }) {
+  const [photoFailed, setPhotoFailed] = useState(false);
+  const photoUrl = photoFailed ? undefined : m.photoUrl;
+  return (
+    <div
+      ref={cardRef}
+      className="ib-mentor-flip"
+      style={{
+        height: 300,
+        borderRadius: 18,
+        boxShadow: isHighlighted ? `0 0 0 3px ${ORANGE}, 0 0 0 7px rgba(242,101,34,0.16)` : undefined,
+      }}
+    >
+      <div className="ib-mentor-flip-inner">
+        {/* FRONT */}
+        <div
+          className="ib-mentor-flip-face"
+          style={{ background: photoUrl ? "#1A1714" : mentorFallbackGradient(m.name) }}
+        >
+          {photoUrl && (
+            <img src={photoUrl} alt={m.name} onError={() => setPhotoFailed(true)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+          )}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: photoUrl
+                ? "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.05) 70%)"
+                : "linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 55%)",
+            }}
+          />
+          <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "18px 18px 16px" }}>
+            <h3 style={{ margin: "0 0 2px", fontSize: 16.5, fontWeight: 600, color: "#fff" }}>{m.name}</h3>
+            <p style={{ margin: "0 0 12px", fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.75)" }}>{[m.position, m.company].filter(Boolean).join(" · ")}</p>
+            <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                {(m.specializations ?? []).slice(0, 1).map((s) => (
+                  <span key={s} style={{ fontSize: 10.5, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.18)", backdropFilter: "blur(4px)", padding: "4px 9px", borderRadius: 9999 }}>{s}</span>
+                ))}
+              </div>
+              <ConnectMentorButton mentorId={m.id} mentorName={m.name} variant="icon" />
+            </div>
+          </div>
+        </div>
+
+        {/* BACK — bio */}
+        <div
+          className="ib-mentor-flip-face ib-mentor-flip-back"
+          style={{ background: "#1A1714", padding: "20px 20px 18px", display: "flex", flexDirection: "column" }}
+        >
+          <h3 style={{ margin: "0 0 2px", fontSize: 15.5, fontWeight: 600, color: "#fff" }}>{m.name}</h3>
+          {m.sector && (
+            <p style={{ margin: "0 0 10px", fontSize: 11, fontWeight: 600, color: ORANGE }}>{m.sector}</p>
+          )}
+          <p
+            style={{
+              margin: m.sector ? 0 : "10px 0 0",
+              fontSize: 12.5,
+              lineHeight: 1.6,
+              color: "rgba(255,255,255,0.78)",
+              flex: 1,
+              overflow: "hidden",
+              display: "-webkit-box",
+              WebkitLineClamp: m.socialLink ? 7 : 9,
+              WebkitBoxOrient: "vertical",
+            }}
+          >
+            {m.bio || "This mentor hasn't added a bio yet."}
+          </p>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 12 }}>
+            {m.socialLink ? (
+              <a
+                href={m.socialLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: 11.5, fontWeight: 600, color: "#fff", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}
+              >
+                Visit profile
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+              </a>
+            ) : <span />}
+            <ConnectMentorButton mentorId={m.id} mentorName={m.name} variant="icon" />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -267,17 +391,21 @@ export default function EcosystemDirectory() {
     setHighlightId(null);
   }
 
-  // Deep-link support for "/ecosystem?tab=mentors&id=<id>" (used by the
-  // chat widget's result cards) — jumps straight to the right tab and
-  // scrolls/highlights the matching card once its data has loaded.
+  // Deep-link support for "/ecosystem?tab=<category>" (from the homepage
+  // stat tiles) and "/ecosystem?tab=mentors&id=<id>" (used by the chat
+  // widget's result cards) — jumps straight to the right tab, and
+  // scrolls/highlights the matching card once its data has loaded if an id
+  // was given. Matched case-insensitively so both "startups" and "Startups"
+  // (and "tbis") work.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tabParam = params.get("tab");
     const id = params.get("id");
-    if (!id) return;
-    if (tabParam === "mentors") setTab("Mentors");
-    else if (tabParam === "startups") setTab("Startups");
-    setHighlightId(id);
+    if (tabParam) {
+      const match = ALL_CATEGORIES.find((c) => c.toLowerCase() === tabParam.toLowerCase());
+      if (match) setTab(match);
+    }
+    if (id) setHighlightId(id);
   }, []);
 
   const [dynStartups, setDynStartups] = useState<StartupEntry[]>([]);
@@ -423,6 +551,8 @@ export default function EcosystemDirectory() {
                   background: tab === t.id ? DARK : "#F6F2EA",
                   border: "none",
                   padding: "10px 18px",
+                  minHeight: 44,
+                  boxSizing: "border-box",
                   borderRadius: 9999,
                   cursor: "pointer",
                   display: "inline-flex",
@@ -435,7 +565,7 @@ export default function EcosystemDirectory() {
                   style={{
                     fontSize: 11,
                     fontWeight: 600,
-                    color: tab === t.id ? "#fff" : "#8B8479",
+                    color: tab === t.id ? "#fff" : "#6E685F",
                     background: tab === t.id ? "rgba(255,255,255,0.18)" : "rgba(64,50,34,0.11)",
                     padding: "2px 7px",
                     borderRadius: 9999,
@@ -501,7 +631,7 @@ export default function EcosystemDirectory() {
               </>
             )}
             <div style={{ height: 44, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.14)", borderRadius: 9999, display: "flex", alignItems: "center", gap: 10, padding: "0 18px", minWidth: 240 }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2}><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2}><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -539,7 +669,7 @@ export default function EcosystemDirectory() {
         </div>
 
         {filtered.length === 0 && (
-          <p style={{ textAlign: "center", fontSize: 14, color: "#8B8479", padding: "32px 0" }}>No {tab.toLowerCase()} match &ldquo;{query}&rdquo;.</p>
+          <p style={{ textAlign: "center", fontSize: 14, color: "#6E685F", padding: "32px 0" }}>No {tab.toLowerCase()} match &ldquo;{query}&rdquo;.</p>
         )}
 
         {view === "map" && filtered.length > 0 && (
@@ -563,7 +693,7 @@ export default function EcosystemDirectory() {
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
             </div>
             <h3 style={{ margin: 0, fontSize: 17, fontWeight: 600, color: DARK }}>Map view is on its way</h3>
-            <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479", maxWidth: 360 }}>
+            <p style={{ margin: 0, fontSize: 13.5, color: "#6E685F", maxWidth: 360 }}>
               We&rsquo;re plotting the ecosystem on a real map. For now, switch back to the list view to browse everyone.
             </p>
           </div>
@@ -589,11 +719,12 @@ export default function EcosystemDirectory() {
                 }}
               >
                 <div style={{ display: "flex", gap: 14, marginBottom: 16 }}>
-                  {s.logoUrl ? (
-                    <img src={s.logoUrl} alt={`${s.name} logo`} style={{ width: 52, height: 52, borderRadius: 12, objectFit: "contain", background: "#fff", border: "1px solid rgba(64,50,34,0.11)", flexShrink: 0, padding: 5, boxSizing: "border-box" }} />
-                  ) : (
-                    <div style={{ width: 52, height: 52, borderRadius: 12, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, fontWeight: 600, color: s.color, flexShrink: 0 }}>{s.initial}</div>
-                  )}
+                  <SafeImg
+                    src={s.logoUrl}
+                    alt={`${s.name} logo`}
+                    style={{ width: 52, height: 52, borderRadius: 12, objectFit: "contain", background: "#fff", border: "1px solid rgba(64,50,34,0.11)", flexShrink: 0, padding: 5, boxSizing: "border-box" }}
+                    fallback={<div style={{ width: 52, height: 52, borderRadius: 12, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, fontWeight: 600, color: s.color, flexShrink: 0 }}>{s.initial}</div>}
+                  />
                   <div style={{ minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", gap: 6 }}>
                     <span style={{ display: "inline-block", alignSelf: "flex-start", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: s.color, background: s.bg, padding: "4px 10px", borderRadius: 9999, lineHeight: 1.35 }}>{s.sector}</span>
                     <h3 style={{ margin: 0, fontSize: 17, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{s.name}</h3>
@@ -629,97 +760,16 @@ export default function EcosystemDirectory() {
 
         {view === "list" && tab === "Mentors" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18 }} className="ib-ecosystem-grid">
-            {(filtered as DynamicMentorEntry[]).map((m) => {
-              const photoUrl = m.photoUrl;
-              const isHighlighted = highlightId === m.id;
-              return (
-                <div
-                  key={m.name}
-                  ref={(el) => {
-                    cardRefs.current[m.id] = el;
-                  }}
-                  className="ib-mentor-flip"
-                  style={{
-                    height: 300,
-                    borderRadius: 18,
-                    boxShadow: isHighlighted ? `0 0 0 3px ${ORANGE}, 0 0 0 7px rgba(242,101,34,0.16)` : undefined,
-                  }}
-                >
-                  <div className="ib-mentor-flip-inner">
-                    {/* FRONT */}
-                    <div
-                      className="ib-mentor-flip-face"
-                      style={{ background: photoUrl ? "#1A1714" : mentorFallbackGradient(m.name) }}
-                    >
-                      {photoUrl && (
-                        <img src={photoUrl} alt={m.name} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
-                      )}
-                      <div
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          background: photoUrl
-                            ? "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.05) 70%)"
-                            : "linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 55%)",
-                        }}
-                      />
-                      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "18px 18px 16px" }}>
-                        <h3 style={{ margin: "0 0 2px", fontSize: 16.5, fontWeight: 600, color: "#fff" }}>{m.name}</h3>
-                        <p style={{ margin: "0 0 12px", fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.75)" }}>{[m.position, m.company].filter(Boolean).join(" · ")}</p>
-                        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
-                          <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
-                            {(m.specializations ?? []).slice(0, 1).map((s) => (
-                              <span key={s} style={{ fontSize: 10.5, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.18)", backdropFilter: "blur(4px)", padding: "4px 9px", borderRadius: 9999 }}>{s}</span>
-                            ))}
-                          </div>
-                          <ConnectMentorButton mentorId={m.id} mentorName={m.name} variant="icon" />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* BACK — bio */}
-                    <div
-                      className="ib-mentor-flip-face ib-mentor-flip-back"
-                      style={{ background: "#1A1714", padding: "20px 20px 18px", display: "flex", flexDirection: "column" }}
-                    >
-                      <h3 style={{ margin: "0 0 2px", fontSize: 15.5, fontWeight: 600, color: "#fff" }}>{m.name}</h3>
-                      {m.sector && (
-                        <p style={{ margin: "0 0 10px", fontSize: 11, fontWeight: 600, color: ORANGE }}>{m.sector}</p>
-                      )}
-                      <p
-                        style={{
-                          margin: m.sector ? 0 : "10px 0 0",
-                          fontSize: 12.5,
-                          lineHeight: 1.6,
-                          color: "rgba(255,255,255,0.78)",
-                          flex: 1,
-                          overflow: "hidden",
-                          display: "-webkit-box",
-                          WebkitLineClamp: m.socialLink ? 7 : 9,
-                          WebkitBoxOrient: "vertical",
-                        }}
-                      >
-                        {m.bio || "This mentor hasn't added a bio yet."}
-                      </p>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 12 }}>
-                        {m.socialLink ? (
-                          <a
-                            href={m.socialLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ fontSize: 11.5, fontWeight: 600, color: "#fff", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}
-                          >
-                            Visit profile
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-                          </a>
-                        ) : <span />}
-                        <ConnectMentorButton mentorId={m.id} mentorName={m.name} variant="icon" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            {(filtered as DynamicMentorEntry[]).map((m) => (
+              <MentorFlipCard
+                key={m.name}
+                m={m}
+                isHighlighted={highlightId === m.id}
+                cardRef={(el) => {
+                  cardRefs.current[m.id] = el;
+                }}
+              />
+            ))}
           </div>
         )}
 

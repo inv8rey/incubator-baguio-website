@@ -79,7 +79,7 @@ export function fundingDeadlineInfo(iso: string | null | undefined): DeadlineInf
   const daysLeft = Math.round((target.getTime() - today.getTime()) / 86400000);
   const formatted = target.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
-  if (daysLeft < 0) return { label: "Applications closed", color: "#8B8479", closed: true };
+  if (daysLeft < 0) return { label: "Applications closed", color: "#6E685F", closed: true };
   if (daysLeft === 0) return { label: "Applications close today", color: "#E23A2E", closed: false };
   const color = daysLeft <= 10 ? "#E23A2E" : daysLeft <= 25 ? "#D88A0A" : "#1A6B3C";
   return { label: `Apply by ${formatted}`, color, closed: false };

@@ -142,7 +142,7 @@ function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; o
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <div style={{ fontSize: 20, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>{isEdit ? "Edit event" : "Add event"}</div>
-            <div style={{ fontSize: 12.5, color: "#8B8479", marginTop: 3 }}>{isEdit ? "Changes save immediately." : "Goes live on the calendar immediately."}</div>
+            <div style={{ fontSize: 12.5, color: "#6E685F", marginTop: 3 }}>{isEdit ? "Changes save immediately." : "Goes live on the calendar immediately."}</div>
           </div>
           <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#5A544B", flexShrink: 0 }}>&times;</button>
         </div>
@@ -161,7 +161,7 @@ function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; o
                 <input type="file" accept="image/*" onChange={handlePosterChange} disabled={posterUploading} style={{ display: "none" }} />
               </label>
               {posterUrl && (
-                <button type="button" onClick={() => setPosterUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#8B8479", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
+                <button type="button" onClick={() => setPosterUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#6E685F", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
               )}
             </div>
           </div>
@@ -358,7 +358,7 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
                   <span style={{ fontSize: 14.5, fontWeight: 600, color: DARK }}>{e.title}</span>
                   <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: sc.color, background: sc.bg, padding: "3px 9px", borderRadius: 999 }}>{STATUS_LABELS[e.status]}</span>
                 </div>
-                <div style={{ fontSize: 12, color: "#8B8479", marginBottom: 8 }}>
+                <div style={{ fontSize: 12, color: "#6E685F", marginBottom: 8 }}>
                   {formatDate(e.event_date)}{e.event_time ? ` · ${e.event_time}` : ""} · {e.venue || "TBD"} · {e.org} ({e.org_type})
                 </div>
                 <div style={{ fontSize: 12.5, color: "#5A544B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -380,7 +380,7 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
         })}
 
         {loaded && filtered.length === 0 && (
-          <div style={{ padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ padding: "28px 20px", textAlign: "center", color: "#6E685F", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             No {STATUS_LABELS[status].toLowerCase()} submissions.
           </div>
         )}
@@ -391,29 +391,29 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
           <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 18, padding: 26, width: "100%", maxWidth: 480, display: "flex", flexDirection: "column", gap: 14, maxHeight: "88vh", overflowY: "auto" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div style={{ fontSize: 16.5, fontWeight: 600, color: DARK }}>{viewing.title}</div>
-              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#8B8479", lineHeight: 1 }}>×</button>
+              <button onClick={() => setViewing(null)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#6E685F", lineHeight: 1 }}>×</button>
             </div>
             {viewing.poster_url && (
               <img src={viewing.poster_url} alt="" style={{ width: "100%", borderRadius: 12, objectFit: "cover", maxHeight: 220 }} />
             )}
             <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13 }}>
-              <div><span style={{ color: "#8B8479" }}>Category:</span> <strong>{viewing.category}</strong></div>
-              <div><span style={{ color: "#8B8479" }}>When:</span> <strong>{formatDate(viewing.event_date)}{viewing.end_date ? ` – ${formatDate(viewing.end_date)}` : ""}{viewing.event_time ? `, ${viewing.event_time}` : ""}</strong></div>
-              <div><span style={{ color: "#8B8479" }}>Venue:</span> <strong>{viewing.venue || "—"}</strong> ({viewing.format})</div>
-              <div><span style={{ color: "#8B8479" }}>Organizer:</span> <strong>{viewing.org}</strong> ({viewing.org_type})</div>
+              <div><span style={{ color: "#6E685F" }}>Category:</span> <strong>{viewing.category}</strong></div>
+              <div><span style={{ color: "#6E685F" }}>When:</span> <strong>{formatDate(viewing.event_date)}{viewing.end_date ? ` – ${formatDate(viewing.end_date)}` : ""}{viewing.event_time ? `, ${viewing.event_time}` : ""}</strong></div>
+              <div><span style={{ color: "#6E685F" }}>Venue:</span> <strong>{viewing.venue || "—"}</strong> ({viewing.format})</div>
+              <div><span style={{ color: "#6E685F" }}>Organizer:</span> <strong>{viewing.org}</strong> ({viewing.org_type})</div>
               {viewing.description && (
                 <div>
-                  <span style={{ color: "#8B8479" }}>Description:</span>
+                  <span style={{ color: "#6E685F" }}>Description:</span>
                   <p style={{ margin: "4px 0 0", lineHeight: 1.55 }}>{viewing.description}</p>
                 </div>
               )}
               {viewing.registration_link && (
-                <div><span style={{ color: "#8B8479" }}>Registration link:</span> <a href={viewing.registration_link} target="_blank" rel="noopener noreferrer" style={{ color: "#285E7A", fontWeight: 600 }}>{viewing.registration_link}</a></div>
+                <div><span style={{ color: "#6E685F" }}>Registration link:</span> <a href={viewing.registration_link} target="_blank" rel="noopener noreferrer" style={{ color: "#285E7A", fontWeight: 600 }}>{viewing.registration_link}</a></div>
               )}
               <div style={{ borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 10 }}>
-                <div><span style={{ color: "#8B8479" }}>Contact:</span> <strong>{viewing.contact_name}</strong></div>
-                <div><span style={{ color: "#8B8479" }}>Email:</span> <strong>{viewing.email}</strong></div>
-                {viewing.phone && <div><span style={{ color: "#8B8479" }}>Phone:</span> <strong>{viewing.phone}</strong></div>}
+                <div><span style={{ color: "#6E685F" }}>Contact:</span> <strong>{viewing.contact_name}</strong></div>
+                <div><span style={{ color: "#6E685F" }}>Email:</span> <strong>{viewing.email}</strong></div>
+                {viewing.phone && <div><span style={{ color: "#6E685F" }}>Phone:</span> <strong>{viewing.phone}</strong></div>}
               </div>
             </div>
             <div style={{ display: "flex", gap: 8, marginTop: 6, flexWrap: "wrap" }}>
@@ -424,7 +424,7 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
               {viewing.status !== "rejected" && (
                 <button onClick={() => setEventStatus(viewing.id, "rejected")} style={{ fontSize: 13, fontWeight: 600, color: "#E23A2E", background: "none", border: "1.5px solid rgba(226,58,46,0.3)", borderRadius: 999, padding: "9px 18px", cursor: "pointer" }}>Reject</button>
               )}
-              <button onClick={() => remove(viewing.id)} style={{ fontSize: 13, fontWeight: 600, color: "#8B8479", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer", marginLeft: "auto" }}>Delete</button>
+              <button onClick={() => remove(viewing.id)} style={{ fontSize: 13, fontWeight: 600, color: "#6E685F", background: "none", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 999, padding: "9px 18px", cursor: "pointer", marginLeft: "auto" }}>Delete</button>
             </div>
           </div>
         </div>

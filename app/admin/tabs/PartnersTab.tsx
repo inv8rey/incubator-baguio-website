@@ -531,7 +531,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
               )}
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{m.name}</div>
-                <div style={{ fontSize: 11.5, color: "#8B8479", margin: "3px 0 8px" }}>{m.position}{m.company ? ` · ${m.company}` : ""}</div>
+                <div style={{ fontSize: 11.5, color: "#6E685F", margin: "3px 0 8px" }}>{m.position}{m.company ? ` · ${m.company}` : ""}</div>
                 <div style={{ display: "flex", gap: 12 }}>
                   <button onClick={() => openEditMentor(m)} style={{ fontSize: 11.5, fontWeight: 600, color: "#285E7A", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Edit</button>
                   <button onClick={() => deleteMentor(m.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Delete</button>
@@ -546,7 +546,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
               {p.logoUrl ? (
                 <img src={p.logoUrl} alt="" style={{ width: 44, height: 44, borderRadius: 10, objectFit: "contain", background: "#F5F4F0", flexShrink: 0 }} />
               ) : (
-                <div style={{ width: 44, height: 44, borderRadius: 10, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 9.5, textAlign: "center", flexShrink: 0 }}>No logo</div>
+                <div style={{ width: 44, height: 44, borderRadius: 10, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 9.5, textAlign: "center", flexShrink: 0 }}>No logo</div>
               )}
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{p.name}</div>
@@ -568,7 +568,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                 : o.approvalStatus === "suspended"
                 ? { label: "Suspended", color: "#E23A2E", bg: "rgba(226,58,46,0.10)" }
                 : !o.isPublic
-                ? { label: "Hidden", color: "#8B8479", bg: "#F5F4F0" }
+                ? { label: "Hidden", color: "#6E685F", bg: "#F5F4F0" }
                 : null;
             return (
               <div key={o.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", padding: 18, display: "flex", gap: 12 }}>
@@ -589,7 +589,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                       </span>
                     )}
                   </div>
-                  <div style={{ fontSize: 11.5, color: "#8B8479", margin: "1px 0 8px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{o.description || "No description yet"}</div>
+                  <div style={{ fontSize: 11.5, color: "#6E685F", margin: "1px 0 8px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{o.description || "No description yet"}</div>
                   {o.pendingName && (
                     <div style={{ fontSize: 11.5, color: "#5A544B", background: "#F6F2EA", borderRadius: 8, padding: "6px 9px", marginBottom: 8 }}>
                       Requested name change: <strong>{o.pendingName}</strong>
@@ -609,7 +609,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                     )}
                     {o.approvalStatus === "approved" && o.isPublic && (
                       <>
-                        <button onClick={() => hideOrg(o.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#8B8479", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Hide</button>
+                        <button onClick={() => hideOrg(o.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#6E685F", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Hide</button>
                         <button onClick={() => suspendOrg(o.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Suspend</button>
                       </>
                     )}
@@ -638,7 +638,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                 </div>
                 <span style={{ fontSize: 10.5, fontWeight: 600, color: "#285E7A", background: "rgba(40,94,122,0.10)", padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{f.status}</span>
               </div>
-              <div style={{ fontSize: 11.5, color: "#8B8479", lineHeight: 1.5, marginBottom: 8 }}>
+              <div style={{ fontSize: 11.5, color: "#6E685F", lineHeight: 1.5, marginBottom: 8 }}>
                 {f.fundingAgency && <div>Funding agency: {f.fundingAgency}</div>}
                 {f.leadInstitution && <div>Lead institution: {f.leadInstitution}</div>}
                 {f.duration && <div>Duration: {f.duration}</div>}
@@ -651,7 +651,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
           ))}
 
         {loaded && ((isMentors && filteredMentors.length === 0) || (isPartners && filteredPartners.length === 0) || (isFundedProjects && filteredFundedProjects.length === 0) || (isOrg && filteredOrgs.length === 0)) && (
-          <div style={{ gridColumn: "1 / -1", padding: "28px 20px", textAlign: "center", color: "#8B8479", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
+          <div style={{ gridColumn: "1 / -1", padding: "28px 20px", textAlign: "center", color: "#6E685F", fontSize: 13, background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)" }}>
             No {category.toLowerCase()} yet.
           </div>
         )}
@@ -671,7 +671,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
               <div style={{ fontSize: 16.5, fontWeight: 600, color: DARK }}>
                 {editingId ? "Edit" : "Add"} {isMentors ? "mentor" : isPartners ? "partner logo" : isFundedProjects ? "funded project" : singularCategory(category).toLowerCase()}
               </div>
-              <button type="button" onClick={closeModal} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#8B8479", lineHeight: 1 }}>×</button>
+              <button type="button" onClick={closeModal} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 18, color: "#6E685F", lineHeight: 1 }}>×</button>
             </div>
 
             {isMentors ? (
@@ -680,7 +680,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                   {mentorForm.photoUrl ? (
                     <img src={mentorForm.photoUrl} alt="" style={{ width: 52, height: 52, borderRadius: 9999, objectFit: "cover" }} />
                   ) : (
-                    <div style={{ width: 52, height: 52, borderRadius: 9999, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10.5, textAlign: "center" }}>
+                    <div style={{ width: 52, height: 52, borderRadius: 9999, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10.5, textAlign: "center" }}>
                       No photo
                     </div>
                   )}
@@ -689,7 +689,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                       {uploading ? "Uploading…" : "Upload photo"}
                       <input type="file" accept="image/*" onChange={handlePhotoChange} disabled={uploading} style={{ display: "none" }} />
                     </label>
-                    <div style={{ fontSize: 11, color: "#8B8479", marginTop: 2 }}>Shown as the card background on the Ecosystem directory.</div>
+                    <div style={{ fontSize: 11, color: "#6E685F", marginTop: 2 }}>Shown as the card background on the Ecosystem directory.</div>
                   </div>
                 </div>
                 <div>
@@ -728,7 +728,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                 <div>
                   <label style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>
                     <span>Specialization</span>
-                    <span style={{ color: "#8B8479", fontWeight: 500 }}>{mentorForm.specializations.length}/{MAX_SPECIALIZATIONS}</span>
+                    <span style={{ color: "#6E685F", fontWeight: 500 }}>{mentorForm.specializations.length}/{MAX_SPECIALIZATIONS}</span>
                   </label>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {MENTOR_SPECIALIZATIONS.map((s) => {
@@ -774,7 +774,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                 <div>
                   <label style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>
                     <span>Bio</span>
-                    <span style={{ color: "#8B8479", fontWeight: 500 }}>{mentorForm.bio.length}/{BIO_MAX}</span>
+                    <span style={{ color: "#6E685F", fontWeight: 500 }}>{mentorForm.bio.length}/{BIO_MAX}</span>
                   </label>
                   <textarea
                     value={mentorForm.bio}
@@ -800,7 +800,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                   {partnerForm.logoUrl ? (
                     <img src={partnerForm.logoUrl} alt="" style={{ width: 68, height: 52, borderRadius: 12, objectFit: "contain", background: "#F5F4F0" }} />
                   ) : (
-                    <div style={{ width: 68, height: 52, borderRadius: 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10.5, textAlign: "center" }}>
+                    <div style={{ width: 68, height: 52, borderRadius: 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10.5, textAlign: "center" }}>
                       No logo
                     </div>
                   )}
@@ -809,7 +809,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                       {uploading ? "Uploading…" : "Upload logo"}
                       <input type="file" accept="image/*" onChange={handlePartnerLogoChange} disabled={uploading} style={{ display: "none" }} />
                     </label>
-                    <div style={{ fontSize: 11, color: "#8B8479", marginTop: 2 }}>Shown in the homepage&rsquo;s scrolling ecosystem partners strip. A transparent PNG/SVG-style logo works best.</div>
+                    <div style={{ fontSize: 11, color: "#6E685F", marginTop: 2 }}>Shown in the homepage&rsquo;s scrolling ecosystem partners strip. A transparent PNG/SVG-style logo works best.</div>
                   </div>
                 </div>
                 <div>
@@ -822,7 +822,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                     maxLength={NAME_MAX}
                     style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
                   />
-                  <div style={{ fontSize: 11, color: "#8B8479", marginTop: 4 }}>Used as alt text and shown only if no logo is uploaded.</div>
+                  <div style={{ fontSize: 11, color: "#6E685F", marginTop: 4 }}>Used as alt text and shown only if no logo is uploaded.</div>
                 </div>
               </>
             ) : isFundedProjects ? (
@@ -878,7 +878,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                       ))}
                     </select>
                   </div>
-                  <div style={{ fontSize: 11, color: "#8B8479", marginTop: 4 }}>
+                  <div style={{ fontSize: 11, color: "#6E685F", marginTop: 4 }}>
                     Picks from the logos managed under the &ldquo;Ecosystem Partners&rdquo; category above &mdash; add one there first if it&rsquo;s missing.
                   </div>
                 </div>
@@ -912,7 +912,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                   {orgForm.logoUrl ? (
                     <img src={orgForm.logoUrl} alt="" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
                   ) : (
-                    <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10.5, textAlign: "center" }}>
+                    <div style={{ width: 52, height: 52, borderRadius: 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10.5, textAlign: "center" }}>
                       No logo
                     </div>
                   )}
@@ -921,7 +921,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                       {uploading ? "Uploading…" : "Upload logo"}
                       <input type="file" accept="image/*" onChange={handleOrgLogoChange} disabled={uploading} style={{ display: "none" }} />
                     </label>
-                    <div style={{ fontSize: 11, color: "#8B8479", marginTop: 2 }}>Shown on the Ecosystem directory card.</div>
+                    <div style={{ fontSize: 11, color: "#6E685F", marginTop: 2 }}>Shown on the Ecosystem directory card.</div>
                   </div>
                 </div>
                 {(category === "Coworking Spaces" || category === "Makerspaces & Labs") && (
@@ -929,7 +929,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                     {orgForm.coverUrl ? (
                       <img src={orgForm.coverUrl} alt="" style={{ width: 84, height: 52, borderRadius: 10, objectFit: "cover" }} />
                     ) : (
-                      <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10.5, textAlign: "center" }}>
+                      <div style={{ width: 84, height: 52, borderRadius: 10, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10.5, textAlign: "center" }}>
                         No cover
                       </div>
                     )}
@@ -938,7 +938,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                         {uploading ? "Uploading…" : "Upload cover image"}
                         <input type="file" accept="image/*" onChange={handleOrgCoverChange} disabled={uploading} style={{ display: "none" }} />
                       </label>
-                      <div style={{ fontSize: 11, color: "#8B8479", marginTop: 2 }}>Banner photo shown at the top of the card.</div>
+                      <div style={{ fontSize: 11, color: "#6E685F", marginTop: 2 }}>Banner photo shown at the top of the card.</div>
                     </div>
                   </div>
                 )}
@@ -971,7 +971,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                         maxLength={TYPE_MAX}
                         style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
                       />
-                      <div style={{ fontSize: 11, color: "#8B8479", marginTop: 4 }}>
+                      <div style={{ fontSize: 11, color: "#6E685F", marginTop: 4 }}>
                         {isPhotoCard
                           ? <>Short label shown on the card, e.g. &ldquo;Coworking space.&rdquo;</>
                           : <>Short badge shown on the card, e.g. &ldquo;DICT-CAR.&rdquo; Leave blank to auto-generate one from the name.</>}
@@ -982,7 +982,7 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
                 <div>
                   <label style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>
                     <span>Description</span>
-                    <span style={{ color: "#8B8479", fontWeight: 500 }}>{orgForm.description.length}/{BIO_MAX}</span>
+                    <span style={{ color: "#6E685F", fontWeight: 500 }}>{orgForm.description.length}/{BIO_MAX}</span>
                   </label>
                   <textarea
                     value={orgForm.description}

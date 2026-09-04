@@ -116,7 +116,7 @@ export default function AiInsightsPanel({ ready }: { ready: boolean }) {
           {loading ? "Generating…" : "Regenerate"}
         </button>
       </div>
-      <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.4)", marginBottom: 16 }}>
+      <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.55)", marginBottom: 16 }}>
         {generatedAt
           ? `${source === "manual" ? "Regenerated" : "Auto-updated"} ${formatTime(generatedAt)}`
           : "Auto-updates daily at 7:30am — click Regenerate for a real-time summary"}
@@ -144,7 +144,7 @@ export default function AiInsightsPanel({ ready }: { ready: boolean }) {
       )}
 
       {!loading && !error && insights.length === 0 && (
-        <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>
+        <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
           No insights yet — click Regenerate to generate the first one, or wait for the 7:30am auto-update.
         </div>
       )}

@@ -1,6 +1,6 @@
 const DARK = "#1A1714";
 const BODY = "#44444C";
-const MUTED = "#8B8479";
+const MUTED = "#6E685F";
 
 interface GlossaryTerm {
   term: string;

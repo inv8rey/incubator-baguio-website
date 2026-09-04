@@ -60,7 +60,7 @@ export default function CommunityChallenges({ bp }: { bp: string }) {
                 <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: ORANGE, background: "rgba(242,101,34,0.12)", padding: "5px 11px", borderRadius: 9999 }}>
                   {c.sector || "General"}
                 </span>
-                {c.deadline && <span style={{ fontSize: 11.5, color: "#8B8479" }}>Due {c.deadline}</span>}
+                {c.deadline && <span style={{ fontSize: 11.5, color: "#6E685F" }}>Due {c.deadline}</span>}
               </div>
               <h3 style={{ margin: "0 0 6px", fontSize: 16.5, fontWeight: 600, color: DARK }}>{c.title}</h3>
               <p style={{ margin: "0 0 12px", fontSize: 13, lineHeight: 1.55, color: "#5A544B", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{c.problem}</p>

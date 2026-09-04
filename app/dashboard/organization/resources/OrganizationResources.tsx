@@ -5,7 +5,7 @@ import ResourceSubmissionForm from "../../ResourceSubmissionForm";
 
 export default function OrganizationResources() {
   const { selectedOrg, loaded } = useRequiredOrg();
-  if (!loaded) return <div style={{ padding: "40px 0", textAlign: "center", color: "#8B8479", fontSize: 14 }}>Loading&hellip;</div>;
+  if (!loaded) return <div style={{ padding: "40px 0", textAlign: "center", color: "#6E685F", fontSize: 14 }}>Loading&hellip;</div>;
   if (!selectedOrg) return <OrgRequiredNotice />;
   return (
     <ResourceSubmissionForm

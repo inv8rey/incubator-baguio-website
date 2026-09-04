@@ -1,7 +1,7 @@
 const DARK = "#1A1714";
 const ORANGE = "#F26522";
 const BODY = "#44444C";
-const MUTED = "#8B8479";
+const MUTED = "#6E685F";
 
 type Block =
   | { type: "p"; text: React.ReactNode }

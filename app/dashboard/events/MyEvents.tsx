@@ -59,16 +59,16 @@ export default function MyEvents() {
         <h2 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600, color: DARK }}>Saved events</h2>
         <p style={{ margin: "0 0 18px", fontSize: 13, color: "#5A544B" }}>Bookmarked from Recommended for you on your Overview.</p>
         {!loaded ? (
-          <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>Loading…</p>
+          <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>Loading…</p>
         ) : saved.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>Nothing saved yet — the bookmark icon on an event card saves it here.</p>
+          <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>Nothing saved yet — the bookmark icon on an event card saves it here.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {saved.map((s) => (
               <div key={s.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.1)", borderRadius: 10, padding: "12px 16px" }}>
                 <a href={s.href} style={{ minWidth: 0, textDecoration: "none" }}>
                   <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.title}</div>
-                  <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 1 }}>{s.subtitle}</div>
+                  <div style={{ fontSize: 11.5, color: "#6E685F", marginTop: 1 }}>{s.subtitle}</div>
                 </a>
                 <button onClick={() => unsave(s)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", flexShrink: 0 }}>Remove</button>
               </div>
@@ -83,16 +83,16 @@ export default function MyEvents() {
           <a href={`${BP}/calendar/?submit=1`} style={{ ...primaryButtonStyle, textDecoration: "none", padding: "9px 18px", fontSize: 13 }}>+ Submit an event</a>
         </div>
         {!loaded ? (
-          <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>Loading…</p>
+          <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>Loading…</p>
         ) : submitted.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>You haven&rsquo;t submitted an event yet.</p>
+          <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>You haven&rsquo;t submitted an event yet.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {submitted.map((r) => (
               <div key={r.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.1)", borderRadius: 10, padding: "12px 16px" }}>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.title}</div>
-                  <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 1 }}>{r.event_date}{r.venue ? ` · ${r.venue}` : ""}</div>
+                  <div style={{ fontSize: 11.5, color: "#6E685F", marginTop: 1 }}>{r.event_date}{r.venue ? ` · ${r.venue}` : ""}</div>
                 </div>
                 <span style={{ fontSize: 11, fontWeight: 600, color: STATUS_BADGE[r.status].color, background: STATUS_BADGE[r.status].bg, padding: "4px 10px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{STATUS_BADGE[r.status].label}</span>
               </div>

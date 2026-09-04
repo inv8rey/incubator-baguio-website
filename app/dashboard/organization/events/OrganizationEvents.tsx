@@ -46,16 +46,16 @@ function List({ orgId }: { orgId: string }) {
       </div>
       <p style={{ margin: "0 0 20px", fontSize: 13, color: "#5A544B" }}>Events submitted with this organization selected under &ldquo;Post as&rdquo;. Reviewed by Incubator Baguio before appearing on the calendar.</p>
       {!loaded ? (
-        <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>Loading…</p>
+        <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>Loading…</p>
       ) : rows.length === 0 ? (
-        <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>No events submitted yet.</p>
+        <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>No events submitted yet.</p>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {rows.map((r) => (
             <div key={r.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.1)", borderRadius: 10, padding: "12px 16px" }}>
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.title}</div>
-                <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 1 }}>{r.event_date}{r.venue ? ` · ${r.venue}` : ""}</div>
+                <div style={{ fontSize: 11.5, color: "#6E685F", marginTop: 1 }}>{r.event_date}{r.venue ? ` · ${r.venue}` : ""}</div>
               </div>
               <span style={{ fontSize: 11, fontWeight: 600, color: STATUS_BADGE[r.status].color, background: STATUS_BADGE[r.status].bg, padding: "4px 10px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{STATUS_BADGE[r.status].label}</span>
             </div>
@@ -68,7 +68,7 @@ function List({ orgId }: { orgId: string }) {
 
 export default function OrganizationEvents() {
   const { selectedOrg, loaded } = useRequiredOrg();
-  if (!loaded) return <div style={{ padding: "40px 0", textAlign: "center", color: "#8B8479", fontSize: 14 }}>Loading&hellip;</div>;
+  if (!loaded) return <div style={{ padding: "40px 0", textAlign: "center", color: "#6E685F", fontSize: 14 }}>Loading&hellip;</div>;
   if (!selectedOrg) return <OrgRequiredNotice />;
   return <List orgId={selectedOrg.id} />;
 }

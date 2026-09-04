@@ -54,16 +54,16 @@ export default function MyChallenges() {
         </div>
         <p style={{ margin: "0 0 18px", fontSize: 13, color: "#5A544B" }}>Bookmarked from Recommended for you on your Overview.</p>
         {!loaded ? (
-          <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>Loading…</p>
+          <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>Loading…</p>
         ) : saved.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>Nothing saved yet — the bookmark icon on a challenge card saves it here.</p>
+          <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>Nothing saved yet — the bookmark icon on a challenge card saves it here.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {saved.map((s) => (
               <div key={s.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.1)", borderRadius: 10, padding: "12px 16px" }}>
                 <a href={s.href} style={{ minWidth: 0, textDecoration: "none" }}>
                   <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.title}</div>
-                  <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 1 }}>{s.subtitle}</div>
+                  <div style={{ fontSize: 11.5, color: "#6E685F", marginTop: 1 }}>{s.subtitle}</div>
                 </a>
                 <button onClick={() => unsave(s)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", flexShrink: 0 }}>Remove</button>
               </div>
@@ -78,16 +78,16 @@ export default function MyChallenges() {
           <a href={`${BP}/challenges/post/`} style={{ ...primaryButtonStyle, textDecoration: "none", padding: "9px 18px", fontSize: 13 }}>+ Post a challenge</a>
         </div>
         {!loaded ? (
-          <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>Loading…</p>
+          <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>Loading…</p>
         ) : posted.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>You haven&rsquo;t posted a challenge yet.</p>
+          <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>You haven&rsquo;t posted a challenge yet.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {posted.map((r) => (
               <a key={r.id} href={`${BP}/challenges/community/?id=${r.id}`} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.1)", borderRadius: 10, padding: "12px 16px", textDecoration: "none" }}>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.title}</div>
-                  <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 1 }}>{r.sector}</div>
+                  <div style={{ fontSize: 11.5, color: "#6E685F", marginTop: 1 }}>{r.sector}</div>
                 </div>
                 {r.deadline && <span style={{ fontSize: 11.5, color: ORANGE, fontWeight: 600, flexShrink: 0 }}>Due {r.deadline}</span>}
               </a>

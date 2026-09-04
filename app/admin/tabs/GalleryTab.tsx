@@ -110,7 +110,7 @@ function PhotoCard({
           value={eventDate}
           onChange={(e) => setEventDate(e.target.value)}
           aria-label="Event date"
-          style={{ fontSize: 13, padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${HAIR}`, outline: "none", color: eventDate ? DARK : "#8B8479" }}
+          style={{ fontSize: 13, padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${HAIR}`, outline: "none", color: eventDate ? DARK : "#6E685F" }}
         />
         <input
           value={credit}
@@ -259,7 +259,7 @@ export default function GalleryTab() {
         </div>
       ) : rows.length === 0 ? (
         <div style={{ border: `1.5px dashed ${HAIR}`, borderRadius: 16, padding: "40px 24px", textAlign: "center" }}>
-          <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>
+          <p style={{ margin: 0, fontSize: 13.5, color: "#6E685F" }}>
             No photos yet. The homepage gallery section stays hidden until you add at least one.
           </p>
         </div>

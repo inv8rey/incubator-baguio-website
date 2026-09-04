@@ -120,7 +120,7 @@ export default function MentorManager() {
           {form.photo_url ? (
             <img src={form.photo_url} alt="" style={{ width: 56, height: 56, borderRadius: 9999, objectFit: "cover" }} />
           ) : (
-            <div style={{ width: 56, height: 56, borderRadius: 9999, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10.5, textAlign: "center" }}>
+            <div style={{ width: 56, height: 56, borderRadius: 9999, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10.5, textAlign: "center" }}>
               No photo
             </div>
           )}
@@ -129,7 +129,7 @@ export default function MentorManager() {
               {uploading ? "Uploading…" : "Upload photo"}
               <input type="file" accept="image/*" onChange={handlePhotoChange} disabled={uploading} style={{ display: "none" }} />
             </label>
-            <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 2 }}>Shown as your card background on the Ecosystem directory.</div>
+            <div style={{ fontSize: 11.5, color: "#6E685F", marginTop: 2 }}>Shown as your card background on the Ecosystem directory.</div>
           </div>
         </div>
         <div>
@@ -149,7 +149,7 @@ export default function MentorManager() {
         <div>
           <label style={{ ...labelStyle, display: "flex", justifyContent: "space-between" }}>
             <span>Specialization</span>
-            <span style={{ fontWeight: 500, color: "#8B8479" }}>{form.specializations.length}/{MAX_SPECIALIZATIONS}</span>
+            <span style={{ fontWeight: 500, color: "#6E685F" }}>{form.specializations.length}/{MAX_SPECIALIZATIONS}</span>
           </label>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {MENTOR_SPECIALIZATIONS.map((s) => {
@@ -186,7 +186,7 @@ export default function MentorManager() {
                 <option key={s.label} value={s.label}>{s.label}</option>
               ))}
             </select>
-            <div style={{ fontSize: 11, color: "#8B8479", marginTop: 4 }}>Which sector is your expertise in?</div>
+            <div style={{ fontSize: 11, color: "#6E685F", marginTop: 4 }}>Which sector is your expertise in?</div>
           </div>
         )}
         <div>
@@ -199,7 +199,7 @@ export default function MentorManager() {
         </div>
         <div>
           <label style={labelStyle}>Where you're based (optional)</label>
-          <p style={{ margin: "0 0 8px", fontSize: 12.5, color: "#8B8479" }}>
+          <p style={{ margin: "0 0 8px", fontSize: 12.5, color: "#6E685F" }}>
             Helps founders find mentors near them. Search for a place or drag the marker.
           </p>
           <LocationPicker
@@ -224,7 +224,7 @@ export default function MentorManager() {
         </div>
       </form>
       {mentor && (
-        <p style={{ marginTop: 18, fontSize: 12.5, color: "#8B8479" }}>
+        <p style={{ marginTop: 18, fontSize: 12.5, color: "#6E685F" }}>
           Requests from founders show up under <a href={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/dashboard/connections/`} style={{ color: ORANGE, fontWeight: 600, textDecoration: "none" }}>Connections</a>.
         </p>
       )}

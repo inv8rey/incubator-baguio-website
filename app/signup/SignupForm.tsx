@@ -33,7 +33,7 @@ const fieldIconStyle: React.CSSProperties = {
   left: 13,
   top: "50%",
   transform: "translateY(-50%)",
-  color: "#8B8479",
+  color: "#6E685F",
   pointerEvents: "none",
 };
 
@@ -150,7 +150,7 @@ export default function SignupForm({ bp }: { bp: string }) {
 
   return (
     <div>
-      <h2 style={{ margin: "0 0 6px", fontSize: 30, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Create your account</h2>
+      <h1 style={{ margin: "0 0 6px", fontSize: 30, fontWeight: 700, color: DARK, letterSpacing: "-0.02em" }}>Create your account</h1>
       <p style={{ margin: "0 0 26px", fontSize: 13.5, color: "#5A544B" }}>
         Already have an account?{" "}
         <a href={`${bp}/login/${redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ""}`} style={{ color: ORANGE, fontWeight: 600, textDecoration: "none" }}>Log in</a>
@@ -186,8 +186,8 @@ export default function SignupForm({ bp }: { bp: string }) {
             <label style={labelStyle}>Password</label>
             <div style={{ position: "relative" }}>
               <span style={fieldIconStyle}><LockIcon /></span>
-              <input style={inputStyle} type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Create a password" />
-              <button type="button" onClick={() => setShowPassword((s) => !s)} aria-label={showPassword ? "Hide password" : "Show password"} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#8B8479", cursor: "pointer", display: "flex" }}>
+              <input style={{ ...inputStyle, paddingRight: 48 }} type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Create a password" />
+              <button type="button" onClick={() => setShowPassword((s) => !s)} aria-label={showPassword ? "Hide password" : "Show password"} style={{ position: "absolute", right: 2, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, background: "none", border: "none", color: "#6E685F", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <EyeIcon off={showPassword} />
               </button>
             </div>
@@ -196,14 +196,14 @@ export default function SignupForm({ bp }: { bp: string }) {
             <label style={labelStyle}>Confirm password</label>
             <div style={{ position: "relative" }}>
               <span style={fieldIconStyle}><LockIcon /></span>
-              <input style={inputStyle} type={showConfirm ? "text" : "password"} required value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Confirm your password" />
-              <button type="button" onClick={() => setShowConfirm((s) => !s)} aria-label={showConfirm ? "Hide password" : "Show password"} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#8B8479", cursor: "pointer", display: "flex" }}>
+              <input style={{ ...inputStyle, paddingRight: 48 }} type={showConfirm ? "text" : "password"} required value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Confirm your password" />
+              <button type="button" onClick={() => setShowConfirm((s) => !s)} aria-label={showConfirm ? "Hide password" : "Show password"} style={{ position: "absolute", right: 2, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, background: "none", border: "none", color: "#6E685F", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <EyeIcon off={showConfirm} />
               </button>
             </div>
           </div>
         </div>
-        <p style={{ margin: "-10px 0 0", fontSize: 12, color: "#8B8479" }}>Use 8 or more characters with a mix of letters, numbers, and symbols.</p>
+        <p style={{ margin: "-10px 0 0", fontSize: 12, color: "#6E685F" }}>Use 8 or more characters with a mix of letters, numbers, and symbols.</p>
 
         <div>
           <label style={{ ...labelStyle, marginBottom: 10 }}>I am signing up as</label>
@@ -228,11 +228,11 @@ export default function SignupForm({ bp }: { bp: string }) {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span style={{ width: 34, height: 34, borderRadius: 9999, background: active ? ORANGE : "#F6F2EA", color: active ? "#fff" : "#8B8479", display: "flex", alignItems: "center", justifyContent: "center" }}>{o.icon}</span>
+                    <span style={{ width: 34, height: 34, borderRadius: 9999, background: active ? ORANGE : "#F6F2EA", color: active ? "#fff" : "#6E685F", display: "flex", alignItems: "center", justifyContent: "center" }}>{o.icon}</span>
                     <span style={{ width: 16, height: 16, borderRadius: 9999, border: active ? `5px solid ${ORANGE}` : "1.5px solid rgba(64,50,34,0.22)", background: "#fff", flexShrink: 0 }} />
                   </div>
                   <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK }}>{o.label}</div>
-                  <div style={{ fontSize: 11.5, lineHeight: 1.45, color: "#8B8479" }}>{o.desc}</div>
+                  <div style={{ fontSize: 11.5, lineHeight: 1.45, color: "#6E685F" }}>{o.desc}</div>
                 </button>
               );
             })}
@@ -241,7 +241,7 @@ export default function SignupForm({ bp }: { bp: string }) {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <label style={{ display: "flex", alignItems: "flex-start", gap: 9, fontSize: 13, color: "#44444C", cursor: "pointer" }}>
-            <input type="checkbox" required checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} style={{ marginTop: 2 }} />
+            <input type="checkbox" required checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} style={{ marginTop: 1, width: 18, height: 18, flexShrink: 0, accentColor: ORANGE }} />
             <span>
               I agree to the{" "}
               <a href={`${bp}/terms/`} target="_blank" rel="noopener noreferrer" style={{ color: ORANGE, fontWeight: 600 }}>Terms of Service</a>{" "}
@@ -249,7 +249,7 @@ export default function SignupForm({ bp }: { bp: string }) {
             </span>
           </label>
           <label style={{ display: "flex", alignItems: "flex-start", gap: 9, fontSize: 13, color: "#44444C", cursor: "pointer" }}>
-            <input type="checkbox" checked={wantsUpdates} onChange={(e) => setWantsUpdates(e.target.checked)} style={{ marginTop: 2 }} />
+            <input type="checkbox" checked={wantsUpdates} onChange={(e) => setWantsUpdates(e.target.checked)} style={{ marginTop: 1, width: 18, height: 18, flexShrink: 0, accentColor: ORANGE }} />
             <span>I would like to receive updates, news, and opportunities from Incubator Baguio.</span>
           </label>
         </div>
@@ -265,7 +265,7 @@ export default function SignupForm({ bp }: { bp: string }) {
         </button>
       </form>
 
-      <p style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, margin: "22px 0 0", fontSize: 11.5, color: "#8B8479" }}>
+      <p style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, margin: "22px 0 0", fontSize: 11.5, color: "#6E685F" }}>
         <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><rect x={4} y={11} width={16} height={10} rx={2} /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
         Your information is secure and will never be shared.
       </p>

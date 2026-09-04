@@ -257,7 +257,7 @@ export default function CofounderFinder() {
 
           {filteredDirectory.length === 0 ? (
             <div style={cardStyle}>
-              <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>No one matches those filters yet. Check back soon, or create your own listing so others can find you.</p>
+              <p style={{ margin: 0, fontSize: 13.5, color: "#6E685F" }}>No one matches those filters yet. Check back soon, or create your own listing so others can find you.</p>
             </div>
           ) : (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 16 }}>
@@ -266,7 +266,7 @@ export default function CofounderFinder() {
                   <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
                     <div>
                       <div style={{ fontSize: 15, fontWeight: 600, color: DARK }}>{d.name}</div>
-                      {d.sector && <div style={{ fontSize: 12, color: "#8B8479" }}>{d.sector}</div>}
+                      {d.sector && <div style={{ fontSize: 12, color: "#6E685F" }}>{d.sector}</div>}
                     </div>
                     <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: ORANGE, background: "rgba(242,101,34,0.10)", padding: "4px 9px", borderRadius: 9999, flexShrink: 0 }}>
                       {d.commitment}
@@ -290,7 +290,7 @@ export default function CofounderFinder() {
       {view === "profile" && (
         <div style={cardStyle}>
           <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600, color: DARK }}>{myProfile ? "Your listing" : "Create your listing"}</h3>
-          <p style={{ margin: "0 0 20px", fontSize: 13, color: "#8B8479" }}>Shown to other members browsing the Co-Founder Finder.</p>
+          <p style={{ margin: "0 0 20px", fontSize: 13, color: "#6E685F" }}>Shown to other members browsing the Co-Founder Finder.</p>
           <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
               <label style={labelStyle}>Your name</label>
@@ -357,9 +357,9 @@ export default function CofounderFinder() {
           {myProfile && (
             <div style={cardStyle}>
               <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600, color: DARK }}>Requests received</h3>
-              <p style={{ margin: "0 0 18px", fontSize: 13, color: "#8B8479" }}>People who want to team up with you.</p>
+              <p style={{ margin: "0 0 18px", fontSize: 13, color: "#6E685F" }}>People who want to team up with you.</p>
               {received.length === 0 ? (
-                <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>No requests yet.</p>
+                <p style={{ margin: 0, fontSize: 13.5, color: "#6E685F" }}>No requests yet.</p>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {received.map((r) => (
@@ -367,7 +367,7 @@ export default function CofounderFinder() {
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
                         <div>
                           <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{r.profiles?.full_name || "Unknown"}</div>
-                          <div style={{ fontSize: 12.5, color: "#8B8479" }}>{r.profiles?.email}</div>
+                          <div style={{ fontSize: 12.5, color: "#6E685F" }}>{r.profiles?.email}</div>
                         </div>
                         <StatusBadge status={r.status} />
                       </div>
@@ -391,16 +391,16 @@ export default function CofounderFinder() {
 
           <div style={cardStyle}>
             <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600, color: DARK }}>Requests you've sent</h3>
-            <p style={{ margin: "0 0 18px", fontSize: 13, color: "#8B8479" }}>Founders you've reached out to from the directory.</p>
+            <p style={{ margin: "0 0 18px", fontSize: 13, color: "#6E685F" }}>Founders you've reached out to from the directory.</p>
             {sent.length === 0 ? (
-              <p style={{ margin: 0, fontSize: 13.5, color: "#8B8479" }}>You haven't reached out to anyone yet.</p>
+              <p style={{ margin: 0, fontSize: 13.5, color: "#6E685F" }}>You haven't reached out to anyone yet.</p>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {sent.map((s) => (
                   <div key={s.id} style={rowItemStyle}>
                     <div>
                       <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{s.cofounder_profiles?.name || "Founder"}</div>
-                      {s.message && <div style={{ fontSize: 12.5, color: "#8B8479" }}>{s.message}</div>}
+                      {s.message && <div style={{ fontSize: 12.5, color: "#6E685F" }}>{s.message}</div>}
                     </div>
                     <StatusBadge status={s.status} />
                   </div>

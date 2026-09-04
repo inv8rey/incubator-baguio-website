@@ -217,7 +217,7 @@ export default function ResourceSubmissionForm({
                 {fileUploading ? "Uploading…" : fileUrl ? "Replace file" : "Upload file"}
                 <input type="file" onChange={handleFileChange} disabled={fileUploading} style={{ display: "none" }} />
               </label>
-              {fileUrl && <span style={{ fontSize: 12, color: "#8B8479" }}>File attached</span>}
+              {fileUrl && <span style={{ fontSize: 12, color: "#6E685F" }}>File attached</span>}
             </div>
           </div>
           <div>
@@ -238,16 +238,16 @@ export default function ResourceSubmissionForm({
       <div style={cardStyle}>
         <h2 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 600, color: DARK }}>Your submissions</h2>
         {!loaded ? (
-          <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>Loading…</p>
+          <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>Loading…</p>
         ) : submissions.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>Nothing submitted yet.</p>
+          <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>Nothing submitted yet.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {submissions.map((s) => (
               <div key={s.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.1)", borderRadius: 10, padding: "10px 14px" }}>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: DARK, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.title}</div>
-                  <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 1 }}>{s.category}</div>
+                  <div style={{ fontSize: 11.5, color: "#6E685F", marginTop: 1 }}>{s.category}</div>
                 </div>
                 <span style={{ fontSize: 11, fontWeight: 600, color: STATUS_BADGE[s.status].color, background: STATUS_BADGE[s.status].bg, padding: "4px 10px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0 }}>{STATUS_BADGE[s.status].label}</span>
               </div>

@@ -34,7 +34,7 @@ ${navBarHtml()}
     ].map((c) => `
     <div style="background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:18px;padding:24px;display:flex;align-items:center;gap:14px;">
       <div style="width:46px;height:46px;border-radius:12px;background:${c[1]};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${c[2]}</div>
-      <div style="min-width:0;overflow-wrap:anywhere;"><div style="font-size:11.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#8B8479;margin-bottom:4px;">${c[3]}</div>${c[4]}</div>
+      <div style="min-width:0;overflow-wrap:anywhere;"><div style="font-size:11.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#6E685F;margin-bottom:4px;">${c[3]}</div>${c[4]}</div>
     </div>`).join("")}
   </div>
 </div>

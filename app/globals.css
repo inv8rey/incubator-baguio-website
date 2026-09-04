@@ -4,7 +4,10 @@
   /* Ink ramp — warm-shifted: a brown-black reads softer than a blue-black */
   --ib-ink: #1a1714;
   --ib-ink-2: #5a544b;
-  --ib-ink-3: #8b8479;
+  /* Was #8b8479 — only ~3.3:1 against the cream/sand surfaces it's used on,
+     under WCAG AA's 4.5:1 for normal text. Darkened to keep the same warm
+     "third ink" role while passing (~4.9–5.5:1 across ib-cream/sand/paper). */
+  --ib-ink-3: #6e685f;
   /* Brand */
   --ib-orange: #f26522;
   --ib-orange-deep: #d9531e;
@@ -83,6 +86,13 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
 /* Newsletter email field sits on a solid orange background; the browser's
    default placeholder grey has almost no contrast there. */
 .ib-newsletter-input::placeholder { color: rgba(255,255,255,0.75); }
+
+/* Every other search/filter input on the site sits on the cream surface
+   (--ib-sand / #F6F2EA) and left its placeholder unset, which some browsers
+   render at ~40% opacity of the input text color — under 2.5:1 against
+   cream, well short of WCAG AA's 4.5:1 (reported: Knowledge Hub search bar
+   was unreadable). --ib-ink-2 against --ib-sand is ~6.7:1. */
+input::placeholder, textarea::placeholder { color: var(--ib-ink-2); opacity: 1; }
 
 .ib-line-clamp-3 {
   overflow: hidden;
@@ -216,6 +226,20 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
   .ib-path-card > div:last-child { max-width: 100% !important; padding-top: 130px !important; }
   .ib-terms-toc { display: none !important; }
 }
+
+/* Header search (HeaderSearch.tsx) — inline expanding type-ahead panel */
+@keyframes ibsearchdrop {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: none; }
+}
+.ib-headersearch-hit { transition: background .12s ease; }
+.ib-headersearch-hit:hover { background: rgba(242,101,34,0.07); }
+.ib-search-trigger:hover { background: rgba(255,255,255,0.08); }
+
+/* Homepage stat tiles (HomeStats.tsx) — each links to the section it
+   counts, so it needs to read as clickable rather than as plain numbers. */
+.ib-homestat-cell { cursor: pointer; transition: background .18s ease; }
+.ib-homestat-cell:hover { background: rgba(255,255,255,0.03); }
 
 /* Footer social icon badges */
 .ib-social-icon {
@@ -413,7 +437,7 @@ textarea:focus-visible, select:focus-visible, summary:focus-visible {
      only ~1px of horizontal clearance from the reserved button corner --
      too fragile to rely on across devices/font rendering. Reserve real
      horizontal space too, so the line wraps before it ever gets close. */
-  [style*="padding-top:24px;font-size:12.5px;color:rgba(255,255,255,0.4);flex-wrap:wrap"] {
+  .ib-footer-legal {
     padding-bottom: 70px !important;
     padding-right: 90px !important;
   }
@@ -643,9 +667,10 @@ img { max-width: 100%; height: auto; }
   display: none;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 5px;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   background: transparent;
   border: 0;
@@ -707,6 +732,13 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Phone (<= 600px) ---- */
 @media (max-width: 600px) {
+  /* Footer link columns: each .ib-footlink was just its 14px text with no
+     padding, so the tappable area was ~20px tall on a touchscreen. Give
+     each row a real 44px target spanning the full row width instead of
+     just the text (fit-content), rather than relying on the 11px gap
+     between rows to catch mis-taps. */
+  .ib-footlink { width: auto !important; display: flex !important; align-items: center; min-height: 44px; box-sizing: border-box; }
+
   /* Everything goes single column */
   [style*="grid-template-columns:repeat(3,1fr)"],
   [style*="grid-template-columns:repeat(2,1fr)"],

@@ -100,7 +100,7 @@ export default function FeaturedStartups({ bp }: { bp: string }) {
                   )}
                   <div style={{ minWidth: 0 }}>
                     <div style={{ fontSize: 16.5, fontWeight: 600, letterSpacing: "-0.015em", color: DARK, lineHeight: 1.3 }}>{s.name}</div>
-                    <div style={{ fontSize: 12.5, color: "#8B8479", marginTop: 2 }}>{s.sector}</div>
+                    <div style={{ fontSize: 12.5, color: "#6E685F", marginTop: 2 }}>{s.sector}</div>
                   </div>
                 </div>
 

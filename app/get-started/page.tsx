@@ -23,7 +23,7 @@ const CARDS: {
     icon: `<path d="M14.5 2.5c2.5 0 4.5 2 4.5 4.5 0 4.5-3 8-7 10-4-2-7-5.5-7-10 0-2.5 2-4.5 4.5-4.5 1 0 2 .4 2.5 1 .5-.6 1.5-1 2.5-1Z"></path><path d="M9 14l-3 3 1 3 3-1"></path>`,
     title: "I have an innovation",
     desc: "I'm building an innovation and looking for support to grow.",
-    href: `${BP}/programs`,
+    href: `${BP}/dashboard/innovator`,
   },
   {
     color: "#D88A0A",
@@ -168,7 +168,7 @@ ${navBarHtml()}
     <!-- PRIVACY NOTE -->
     <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:24px;padding:14px;">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
-      <span style="font-size:12.5px;color:rgba(255,255,255,0.4);">Your information is safe and will only be used to connect you with relevant support.</span>
+      <span style="font-size:12.5px;color:rgba(255,255,255,0.55);">Your information is safe and will only be used to connect you with relevant support.</span>
     </div>
   </div>
 </div>

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 const SLAT_COUNT = 9;
 const BG = "#100D0B";
+const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 function Blinds({ visible, delayBase = 0 }: { visible: boolean; delayBase?: number }) {
   return (
@@ -70,7 +71,7 @@ export default function WhoWeAre() {
         <div style={{ position: "relative" }}>
           <h2
             style={{
-              margin: "0 0 22px",
+              margin: "0 0 18px",
               fontSize: 32,
               fontWeight: 400,
               letterSpacing: "-0.01em",
@@ -78,24 +79,27 @@ export default function WhoWeAre() {
               color: "#fff",
             }}
           >
-            Incubator Baguio is the City Government of Baguio&rsquo;s platform for innovation ecosystem
-            development under the City Planning, Development, and Sustainability Office (CPDSO).
+            The City Government of Baguio&rsquo;s platform for innovation ecosystem development.
           </h2>
           <p
             style={{
-              margin: 0,
+              margin: "0 0 20px",
               fontSize: 17,
               lineHeight: 1.65,
               color: "rgba(255,255,255,0.62)",
-              maxWidth: 640,
+              maxWidth: 560,
               marginLeft: "auto",
               marginRight: "auto",
             }}
           >
-            Guided by the City Research and Innovation Agenda and the Quadruple Helix model, we bring together
-            government, academia, industry, and society to address city priorities, support research and
-            innovation, and move promising ideas toward solutions that create meaningful impact for Baguio City.
+            We bring government, academia, industry, and communities together to move Baguio&rsquo;s best ideas forward.
           </p>
+          <a
+            href={`${BP}/about`}
+            style={{ fontSize: 14, fontWeight: 600, color: "#F26522", textDecoration: "none", borderBottom: "2px solid rgba(242,101,34,0.4)", paddingBottom: 2 }}
+          >
+            Learn about our mandate &rarr;
+          </a>
           <Blinds visible={visible} />
         </div>
       </div>

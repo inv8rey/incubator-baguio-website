@@ -68,7 +68,7 @@ export const SECTOR_FILTERS = [
   { label: "Transportation & Logistics", color: "#0E5C44" },
   { label: "Environment & Sustainability", color: "#2A8A52" },
   { label: "Government & Public Services", color: "#009B8D" },
-  { label: "Real Estate & Construction", color: "#8B8479" },
+  { label: "Real Estate & Construction", color: "#6E685F" },
   { label: "Artificial Intelligence & Emerging Technologies", color: "#3A5FA0" },
   { label: "Others", color: "#5A544B" },
 ];

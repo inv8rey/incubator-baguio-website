@@ -103,7 +103,7 @@ function Select({ value, onChange, options, allLabel }: { value: string | null; 
           <option key={o} value={o}>{o}</option>
         ))}
       </select>
-      <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2.4} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
+      <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2.4} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
         <path d="m6 9 6 6 6-6" />
       </svg>
     </div>
@@ -195,13 +195,13 @@ function EventRow({ e }: { e: CityEvent }) {
         {!hovered && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
             <span style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 7px", borderRadius: 9999, flexShrink: 0 }}>{e.category}</span>
-            <span style={{ fontSize: 11, color: "#8B8479" }}>{timeLabel}</span>
+            <span style={{ fontSize: 11, color: "#6E685F" }}>{timeLabel}</span>
             <span style={{ fontSize: 11, color: "#C9C5BB", marginLeft: "auto", flexShrink: 0 }}>{dateLabel}</span>
           </div>
         )}
         {hovered && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-            <span style={{ fontSize: 11, color: "#8B8479" }}>{timeLabel}</span>
+            <span style={{ fontSize: 11, color: "#6E685F" }}>{timeLabel}</span>
           </div>
         )}
         <div style={{ fontSize: 14, fontWeight: 600, color: DARK, lineHeight: 1.3, marginBottom: 3 }}>{e.title}</div>
@@ -209,7 +209,7 @@ function EventRow({ e }: { e: CityEvent }) {
           <div style={{ fontSize: 11.5, color: "#B8A78C", fontWeight: 500, marginBottom: 5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Hosted by {e.org}</div>
         )}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-          <span style={{ fontSize: 11.5, color: "#8B8479", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{e.venue}</span>
+          <span style={{ fontSize: 11.5, color: "#6E685F", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{e.venue}</span>
           {/* No bookmark button here: it had no handler wired up, so it looked
               actionable and did nothing. Better absent than fake. */}
           {e.registrationLink ? (
@@ -225,7 +225,7 @@ function EventRow({ e }: { e: CityEvent }) {
               </svg>
             </a>
           ) : (
-            <span style={{ flexShrink: 0, fontSize: 11.5, color: "#8B8479", whiteSpace: "nowrap" }}>Details to follow</span>
+            <span style={{ flexShrink: 0, fontSize: 11.5, color: "#6E685F", whiteSpace: "nowrap" }}>Details to follow</span>
           )}
         </div>
       </div>
@@ -241,12 +241,12 @@ function MentorRow({ s, booked, onBook }: { s: MentorSlot; booked: boolean; onBo
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
           <span style={{ fontSize: 9.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: cc.color, background: cc.bg, padding: "2px 7px", borderRadius: 9999, flexShrink: 0 }}>{s.expertise}</span>
-          <span style={{ fontSize: 11, color: "#8B8479" }}>{s.time} &middot; {s.duration}</span>
+          <span style={{ fontSize: 11, color: "#6E685F" }}>{s.time} &middot; {s.duration}</span>
           <span style={{ fontSize: 11, color: "#C9C5BB", marginLeft: "auto", flexShrink: 0 }}>{shortDate(s.date)}</span>
         </div>
         <div style={{ fontSize: 14, fontWeight: 600, color: DARK, lineHeight: 1.3, marginBottom: 5 }}>{s.mentorName}</div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-          <span style={{ fontSize: 11.5, color: "#8B8479", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{s.venue}</span>
+          <span style={{ fontSize: 11.5, color: "#6E685F", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{s.venue}</span>
           {booked ? (
             <span style={{ fontSize: 11.5, fontWeight: 600, color: "#1A6B3C", background: "rgba(26,107,60,0.10)", padding: "7px 13px", borderRadius: 9999, whiteSpace: "nowrap" }}>Booked &#10003;</span>
           ) : (
@@ -289,7 +289,7 @@ function BookingModal({ availableSlots, preselected, onClose, onConfirm }: { ava
               <div style={{ width: 38, height: 38, borderRadius: 9999, background: preselected.color, color: "#fff", fontSize: 12, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{preselected.initials}</div>
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK }}>{preselected.mentorName}</div>
-                <div style={{ fontSize: 12, color: "#8B8479" }}>{preselected.expertise} &middot; {formatLong(preselected.date)}, {preselected.time}</div>
+                <div style={{ fontSize: 12, color: "#6E685F" }}>{preselected.expertise} &middot; {formatLong(preselected.date)}, {preselected.time}</div>
               </div>
             </div>
           ) : (
@@ -447,7 +447,7 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <div style={{ fontSize: 20, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>Submit an event</div>
-            <div style={{ fontSize: 12.5, color: "#8B8479", marginTop: 3 }}>Reviewed by an admin before it goes live on the calendar.</div>
+            <div style={{ fontSize: 12.5, color: "#6E685F", marginTop: 3 }}>Reviewed by an admin before it goes live on the calendar.</div>
           </div>
           <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 18, color: "#5A544B", flexShrink: 0 }}>&times;</button>
         </div>
@@ -470,10 +470,10 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
                 <input type="file" accept="image/*" onChange={handlePosterChange} disabled={posterUploading} style={{ display: "none" }} />
               </label>
               {posterUrl && (
-                <button type="button" onClick={() => setPosterUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#8B8479", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
+                <button type="button" onClick={() => setPosterUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#6E685F", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
               )}
             </div>
-            <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#8B8479" }}>Shown as the event&rsquo;s cover on the calendar. Landscape works best.</p>
+            <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#6E685F" }}>Shown as the event&rsquo;s cover on the calendar. Landscape works best.</p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div>
@@ -918,7 +918,7 @@ export default function CalendarClient() {
         <div className="ib-events-filterbar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, marginBottom: 20, flexWrap: "wrap" }}>
           <div className="ib-events-filters" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", flex: 1, minWidth: 0 }}>
             <div style={{ position: "relative", minWidth: 220 }}>
-              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#8B8479" strokeWidth={2} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }}>
+              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }}>
                 <circle cx={11} cy={11} r={7} />
                 <path d="m20 20-3.5-3.5" />
               </svg>
@@ -1014,7 +1014,7 @@ export default function CalendarClient() {
               <div style={{ border: `1px solid ${HAIRLINE}`, borderRadius: 14, overflow: "hidden" }}>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))", background: "#FBF9F5", borderBottom: `1px solid ${HAIRLINE}` }}>
                   {WEEKDAYS.map((w, i) => (
-                    <div key={w} style={{ textAlign: "center", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: "#8B8479", padding: "10px 0", borderRight: i < 6 ? `1px solid ${HAIRLINE}` : "none" }}>
+                    <div key={w} style={{ textAlign: "center", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: "#6E685F", padding: "10px 0", borderRight: i < 6 ? `1px solid ${HAIRLINE}` : "none" }}>
                       {w}
                     </div>
                   ))}
@@ -1074,7 +1074,7 @@ export default function CalendarClient() {
                         </span>
                         <div style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 0 }}>
                           {visible.map((c) => <DayChip key={c.key} data={c} compact={view !== "Week"} />)}
-                          {extra > 0 && <span style={{ fontSize: 10, fontWeight: 500, color: "#8B8479", padding: "1px 6px" }}>+{extra} more</span>}
+                          {extra > 0 && <span style={{ fontSize: 10, fontWeight: 500, color: "#6E685F", padding: "1px 6px" }}>+{extra} more</span>}
                         </div>
                       </button>
                     );
@@ -1099,7 +1099,7 @@ export default function CalendarClient() {
                       </div>
                     ))}
                 {visibleCategories.size === 0 && (
-                  <span style={{ fontSize: 11.5, color: "#8B8479" }}>Nothing scheduled in this {view === "Week" ? "week" : "month"} yet.</span>
+                  <span style={{ fontSize: 11.5, color: "#6E685F" }}>Nothing scheduled in this {view === "Week" ? "week" : "month"} yet.</span>
                 )}
               </div>
             </div>
@@ -1109,12 +1109,12 @@ export default function CalendarClient() {
               {mode === "events" ? (
                 <>
                   {filteredEvents.filter((e) => (e.endDate ? e.endDate >= todayIso : e.date >= todayIso)).sort((a, b) => a.date.localeCompare(b.date)).map((e) => <EventRow key={e.id} e={e} />)}
-                  {filteredEvents.length === 0 && <p style={{ fontSize: 13.5, color: "#8B8479", padding: "12px 0" }}>{emptyMessage("events")}</p>}
+                  {filteredEvents.length === 0 && <p style={{ fontSize: 13.5, color: "#6E685F", padding: "12px 0" }}>{emptyMessage("events")}</p>}
                 </>
               ) : (
                 <>
                   {filteredSlots.filter((s) => s.date >= todayIso).sort((a, b) => a.date.localeCompare(b.date)).map((s) => <MentorRow key={s.id} s={s} booked={bookedIds.has(s.id)} onBook={openBooking} />)}
-                  {filteredSlots.length === 0 && <p style={{ fontSize: 13.5, color: "#8B8479", padding: "12px 0" }}>{emptyMessage("sessions")}</p>}
+                  {filteredSlots.length === 0 && <p style={{ fontSize: 13.5, color: "#6E685F", padding: "12px 0" }}>{emptyMessage("sessions")}</p>}
                 </>
               )}
             </div>
@@ -1129,7 +1129,7 @@ export default function CalendarClient() {
                     <div style={{ fontSize: 14.5, fontWeight: 600, color: DARK, textTransform: "uppercase", letterSpacing: "0.04em" }}>{formatLong(selectedIso!)}</div>
                     <button onClick={() => setSelectedIso(null)} style={{ fontSize: 12, fontWeight: 600, color: ORANGE, background: "none", border: "none", cursor: "pointer" }}>Clear ✕</button>
                   </div>
-                  {daySelection.length === 0 && <p style={{ fontSize: 13, color: "#8B8479" }}>No events on this date.</p>}
+                  {daySelection.length === 0 && <p style={{ fontSize: 13, color: "#6E685F" }}>No events on this date.</p>}
                   {daySelection.map((e) => <EventRow key={e.id} e={e} />)}
                 </>
               ) : (
@@ -1140,24 +1140,24 @@ export default function CalendarClient() {
                   </div>
 
                   {grouped.today.length === 0 && grouped.thisWeek.length === 0 && grouped.thisMonth.length === 0 && grouped.later.length === 0 && (
-                    <p style={{ fontSize: 13, color: "#8B8479", padding: "12px 0" }}>{emptyMessage("events")}</p>
+                    <p style={{ fontSize: 13, color: "#6E685F", padding: "12px 0" }}>{emptyMessage("events")}</p>
                   )}
 
                   {grouped.today.length > 0 && (
                     <div>
-                      <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>Today &middot; {formatLong(todayIso).split(",")[0]}</div>
+                      <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>Today &middot; {formatLong(todayIso).split(",")[0]}</div>
                       {grouped.today.map((e) => <EventRow key={e.id} e={e} />)}
                     </div>
                   )}
                   {grouped.thisWeek.length > 0 && (
                     <div style={{ marginTop: 18 }}>
-                      <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>This week</div>
+                      <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>This week</div>
                       {grouped.thisWeek.map((e) => <EventRow key={e.id} e={e} />)}
                     </div>
                   )}
                   {grouped.thisMonth.length > 0 && (
                     <div style={{ marginTop: 18 }}>
-                      <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>This month</div>
+                      <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>This month</div>
                       {grouped.thisMonth.map((e) => <EventRow key={e.id} e={e} />)}
                     </div>
                   )}
@@ -1169,7 +1169,7 @@ export default function CalendarClient() {
                         </button>
                       ) : (
                         <>
-                          <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>Later</div>
+                          <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>Later</div>
                           {grouped.later.map((e) => <EventRow key={e.id} e={e} />)}
                         </>
                       )}
@@ -1183,7 +1183,7 @@ export default function CalendarClient() {
                   <div style={{ fontSize: 14.5, fontWeight: 600, color: DARK, textTransform: "uppercase", letterSpacing: "0.04em" }}>{formatLong(selectedIso!)}</div>
                   <button onClick={() => setSelectedIso(null)} style={{ fontSize: 12, fontWeight: 600, color: ORANGE, background: "none", border: "none", cursor: "pointer" }}>Clear ✕</button>
                 </div>
-                {daySlotSelection.length === 0 && <p style={{ fontSize: 13, color: "#8B8479" }}>No mentoring sessions on this date.</p>}
+                {daySlotSelection.length === 0 && <p style={{ fontSize: 13, color: "#6E685F" }}>No mentoring sessions on this date.</p>}
                 {daySlotSelection.map((s) => <MentorRow key={s.id} s={s} booked={bookedIds.has(s.id)} onBook={openBooking} />)}
               </>
             ) : (
@@ -1194,24 +1194,24 @@ export default function CalendarClient() {
                 </div>
 
                 {groupedSlots.today.length === 0 && groupedSlots.thisWeek.length === 0 && groupedSlots.thisMonth.length === 0 && groupedSlots.later.length === 0 && (
-                  <p style={{ fontSize: 13, color: "#8B8479", padding: "12px 0" }}>{emptyMessage("sessions")}</p>
+                  <p style={{ fontSize: 13, color: "#6E685F", padding: "12px 0" }}>{emptyMessage("sessions")}</p>
                 )}
 
                 {groupedSlots.today.length > 0 && (
                   <div>
-                    <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>Today &middot; {formatLong(todayIso).split(",")[0]}</div>
+                    <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>Today &middot; {formatLong(todayIso).split(",")[0]}</div>
                     {groupedSlots.today.map((s) => <MentorRow key={s.id} s={s} booked={bookedIds.has(s.id)} onBook={openBooking} />)}
                   </div>
                 )}
                 {groupedSlots.thisWeek.length > 0 && (
                   <div style={{ marginTop: 18 }}>
-                    <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>This week</div>
+                    <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>This week</div>
                     {groupedSlots.thisWeek.map((s) => <MentorRow key={s.id} s={s} booked={bookedIds.has(s.id)} onBook={openBooking} />)}
                   </div>
                 )}
                 {groupedSlots.thisMonth.length > 0 && (
                   <div style={{ marginTop: 18 }}>
-                    <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>This month</div>
+                    <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>This month</div>
                     {groupedSlots.thisMonth.map((s) => <MentorRow key={s.id} s={s} booked={bookedIds.has(s.id)} onBook={openBooking} />)}
                   </div>
                 )}
@@ -1223,7 +1223,7 @@ export default function CalendarClient() {
                       </button>
                     ) : (
                       <>
-                        <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B8479", marginBottom: 6 }}>Later</div>
+                        <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>Later</div>
                         {groupedSlots.later.map((s) => <MentorRow key={s.id} s={s} booked={bookedIds.has(s.id)} onBook={openBooking} />)}
                       </>
                     )}

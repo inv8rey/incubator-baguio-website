@@ -57,14 +57,14 @@ function StepCard({ step, title, theme, color, imageUrl, onSaved }: { step: stri
         <span style={{ width: 34, height: 34, borderRadius: 9999, background: color, flexShrink: 0 }} />
         <div>
           <div style={{ fontSize: 15.5, fontWeight: 600, color: DARK }}>{title}</div>
-          <div style={{ fontSize: 12, color: "#8B8479", marginTop: 1 }}>{theme}</div>
+          <div style={{ fontSize: 12, color: "#6E685F", marginTop: 1 }}>{theme}</div>
         </div>
       </div>
 
       {imageUrl ? (
         <img src={imageUrl} alt="" style={{ width: "100%", height: 160, borderRadius: 12, objectFit: "cover", border: "1px solid rgba(64,50,34,0.13)" }} />
       ) : (
-        <div style={{ width: "100%", height: 160, borderRadius: 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12.5, color: "#8B8479" }}>
+        <div style={{ width: "100%", height: 160, borderRadius: 12, background: "#F5F4F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12.5, color: "#6E685F" }}>
           No photo uploaded — the scroll section falls back to the default illustration
         </div>
       )}

@@ -10,7 +10,7 @@ import { CATEGORY_COLORS, type EventCategory } from "./calendar/data";
 
 const DARK = "#1A1714";
 const ORANGE = "#F26522";
-const FAINT = "#8B8479";
+const FAINT = "#6E685F";
 
 export const CARD_W = 268;
 export const CARD_GAP = 18;

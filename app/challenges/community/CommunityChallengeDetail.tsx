@@ -55,7 +55,7 @@ export default function CommunityChallengeDetail({ bp }: { bp: string }) {
   }
 
   if (!item) {
-    return <div style={{ background: "#F6F2EA", padding: "64px 40px", textAlign: "center", color: "#8B8479", fontSize: 14 }}>Loading&hellip;</div>;
+    return <div style={{ background: "#F6F2EA", padding: "64px 40px", textAlign: "center", color: "#6E685F", fontSize: 14 }}>Loading&hellip;</div>;
   }
 
   return (

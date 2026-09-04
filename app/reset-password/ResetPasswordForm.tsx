@@ -32,7 +32,7 @@ const fieldIconStyle: React.CSSProperties = {
   left: 13,
   top: "50%",
   transform: "translateY(-50%)",
-  color: "#8B8479",
+  color: "#6E685F",
   pointerEvents: "none",
 };
 
@@ -134,8 +134,8 @@ export default function ResetPasswordForm({ bp }: { bp: string }) {
           <label style={labelStyle}>New password</label>
           <div style={{ position: "relative" }}>
             <span style={fieldIconStyle}><LockIcon /></span>
-            <input style={inputStyle} type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Create a password" />
-            <button type="button" onClick={() => setShowPassword((s) => !s)} aria-label={showPassword ? "Hide password" : "Show password"} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#8B8479", cursor: "pointer", display: "flex" }}>
+            <input style={{ ...inputStyle, paddingRight: 48 }} type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Create a password" />
+            <button type="button" onClick={() => setShowPassword((s) => !s)} aria-label={showPassword ? "Hide password" : "Show password"} style={{ position: "absolute", right: 2, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, background: "none", border: "none", color: "#6E685F", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <EyeIcon off={showPassword} />
             </button>
           </div>
@@ -144,13 +144,13 @@ export default function ResetPasswordForm({ bp }: { bp: string }) {
           <label style={labelStyle}>Confirm password</label>
           <div style={{ position: "relative" }}>
             <span style={fieldIconStyle}><LockIcon /></span>
-            <input style={inputStyle} type={showConfirm ? "text" : "password"} required value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Confirm your password" />
-            <button type="button" onClick={() => setShowConfirm((s) => !s)} aria-label={showConfirm ? "Hide password" : "Show password"} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#8B8479", cursor: "pointer", display: "flex" }}>
+            <input style={{ ...inputStyle, paddingRight: 48 }} type={showConfirm ? "text" : "password"} required value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Confirm your password" />
+            <button type="button" onClick={() => setShowConfirm((s) => !s)} aria-label={showConfirm ? "Hide password" : "Show password"} style={{ position: "absolute", right: 2, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, background: "none", border: "none", color: "#6E685F", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <EyeIcon off={showConfirm} />
             </button>
           </div>
         </div>
-        <p style={{ margin: "-10px 0 0", fontSize: 12, color: "#8B8479" }}>Use 8 or more characters with a mix of letters, numbers, and symbols.</p>
+        <p style={{ margin: "-10px 0 0", fontSize: 12, color: "#6E685F" }}>Use 8 or more characters with a mix of letters, numbers, and symbols.</p>
         {error && <p style={{ color: "#E23A2E", fontSize: 13, margin: 0 }}>{error}</p>}
         <button
           type="submit"

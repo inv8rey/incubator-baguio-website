@@ -95,7 +95,7 @@ function Manager({ orgId, isAcademe }: { orgId: string; isAcademe: boolean }) {
             {form.logo_url ? (
               <img src={form.logo_url} alt="" style={{ width: 48, height: 48, borderRadius: 11, objectFit: "cover" }} />
             ) : (
-              <div style={{ width: 48, height: 48, borderRadius: 11, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#8B8479", fontSize: 10, textAlign: "center" }}>No logo</div>
+              <div style={{ width: 48, height: 48, borderRadius: 11, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center", color: "#6E685F", fontSize: 10, textAlign: "center" }}>No logo</div>
             )}
             <label style={{ fontSize: 12.5, fontWeight: 600, color: ORANGE, cursor: "pointer" }}>
               {uploading ? "Uploading…" : "Upload logo"}
@@ -157,16 +157,16 @@ function Manager({ orgId, isAcademe }: { orgId: string; isAcademe: boolean }) {
         <h2 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600, color: DARK }}>{isAcademe ? "Research & Innovations" : "Startups you're incubating"}</h2>
         <p style={{ margin: "0 0 20px", fontSize: 13, color: "#5A544B" }}>{isAcademe ? "Research projects and innovations associated with your organization." : "Startups hosted under this organization."}</p>
         {!loaded ? (
-          <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>Loading…</p>
+          <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>Loading…</p>
         ) : rows.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 13, color: "#8B8479" }}>None added yet.</p>
+          <p style={{ margin: 0, fontSize: 13, color: "#6E685F" }}>None added yet.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {rows.map((r) => (
               <div key={r.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.1)", borderRadius: 10, padding: "12px 16px" }}>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontSize: 13.5, fontWeight: 600, color: DARK, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.name}</div>
-                  <div style={{ fontSize: 11.5, color: "#8B8479", marginTop: 1 }}>{r.sector}{r.lifecycle_stage ? ` · ${r.lifecycle_stage}` : ""}</div>
+                  <div style={{ fontSize: 11.5, color: "#6E685F", marginTop: 1 }}>{r.sector}{r.lifecycle_stage ? ` · ${r.lifecycle_stage}` : ""}</div>
                 </div>
                 <button onClick={() => remove(r.id)} style={{ fontSize: 11.5, fontWeight: 600, color: "#E23A2E", background: "none", border: "none", cursor: "pointer", flexShrink: 0 }}>Remove</button>
               </div>
@@ -180,7 +180,7 @@ function Manager({ orgId, isAcademe }: { orgId: string; isAcademe: boolean }) {
 
 export default function OrganizationStartups() {
   const { selectedOrg, loaded } = useRequiredOrg();
-  if (!loaded) return <div style={{ padding: "40px 0", textAlign: "center", color: "#8B8479", fontSize: 14 }}>Loading&hellip;</div>;
+  if (!loaded) return <div style={{ padding: "40px 0", textAlign: "center", color: "#6E685F", fontSize: 14 }}>Loading&hellip;</div>;
   if (!selectedOrg) return <OrgRequiredNotice />;
   return <Manager orgId={selectedOrg.id} isAcademe={selectedOrg.org_type === "Academe"} />;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useAuth } from "./AuthProvider";
 
@@ -37,8 +37,11 @@ function AuthWidget({ mobile }: { mobile: boolean }) {
           fontWeight: 600,
           fontSize: 14,
           padding: mobile ? "12px 0" : "10px 16px",
+          minHeight: mobile ? 44 : undefined,
+          boxSizing: "border-box",
           textDecoration: "none",
-          display: mobile ? "block" : "inline-block",
+          display: mobile ? "flex" : "inline-block",
+          alignItems: mobile ? "center" : undefined,
         }}
       >
         Log In
@@ -51,12 +54,15 @@ function AuthWidget({ mobile }: { mobile: boolean }) {
   if (mobile) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-        <a href={`${BP}/dashboard/`} style={{ color: "#fff", fontWeight: 600, fontSize: 14, padding: "12px 0", textDecoration: "none" }}>
+        <a
+          href={`${BP}/dashboard/`}
+          style={{ display: "flex", alignItems: "center", minHeight: 44, boxSizing: "border-box", color: "#fff", fontWeight: 600, fontSize: 14, padding: "12px 0", textDecoration: "none" }}
+        >
           Dashboard ({name.split(" ")[0]})
         </a>
         <button
           onClick={() => signOut().then(() => (window.location.href = `${BP}/`))}
-          style={{ color: "rgba(255,255,255,0.65)", fontWeight: 600, fontSize: 14, padding: "8px 0", background: "none", border: "none", textAlign: "left", cursor: "pointer" }}
+          style={{ display: "flex", alignItems: "center", minHeight: 44, boxSizing: "border-box", color: "rgba(255,255,255,0.65)", fontWeight: 600, fontSize: 14, padding: "8px 0", background: "none", border: "none", textAlign: "left", cursor: "pointer" }}
         >
           Sign out
         </button>
@@ -69,8 +75,8 @@ function AuthWidget({ mobile }: { mobile: boolean }) {
       <button
         onClick={() => setOpen((o) => !o)}
         style={{
-          width: 38,
-          height: 38,
+          width: 44,
+          height: 44,
           borderRadius: 9999,
           background: ORANGE,
           color: "#fff",
@@ -133,8 +139,20 @@ function AuthWidget({ mobile }: { mobile: boolean }) {
 }
 
 export default function AuthNav() {
+  const { user, loading } = useAuth();
   const [desktopSlot, setDesktopSlot] = useState<Element | null>(null);
   const [mobileSlot, setMobileSlot] = useState<Element | null>(null);
+
+  // The "Join the Ecosystem" CTA is static markup baked into every page's
+  // nav (and its mobile-menu clone), so it can't just render conditionally
+  // like AuthWidget below — toggle it directly once we know if there's a
+  // session.
+  useLayoutEffect(() => {
+    if (loading) return;
+    document.querySelectorAll<HTMLElement>(".ib-join-cta").forEach((el) => {
+      el.style.display = user ? "none" : "";
+    });
+  }, [user, loading]);
 
   useEffect(() => {
     setDesktopSlot(document.querySelector(".ib-auth-slot"));

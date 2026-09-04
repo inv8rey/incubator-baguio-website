@@ -18,13 +18,13 @@ function formatDate(iso: string | null) {
 }
 
 function deadlineInfo(iso: string | null): { label: string; color: string; daysLeft: number | null } {
-  if (!iso) return { label: "No deadline set", color: "#8B8479", daysLeft: null };
+  if (!iso) return { label: "No deadline set", color: "#6E685F", daysLeft: null };
   const [y, m, d] = iso.split("-").map(Number);
   const target = new Date(y, m - 1, d);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const daysLeft = Math.round((target.getTime() - today.getTime()) / 86400000);
-  if (daysLeft < 0) return { label: "Deadline passed", color: "#8B8479", daysLeft };
+  if (daysLeft < 0) return { label: "Deadline passed", color: "#6E685F", daysLeft };
   if (daysLeft === 0) return { label: "Due today", color: "#E23A2E", daysLeft };
   const color = daysLeft <= 10 ? "#E23A2E" : daysLeft <= 25 ? "#D88A0A" : "#3F9E4D";
   return { label: `${daysLeft} day${daysLeft === 1 ? "" : "s"} left`, color, daysLeft };
