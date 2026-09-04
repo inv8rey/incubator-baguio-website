@@ -63,10 +63,20 @@ function mapChallengeRow(r: any): Challenge {
   };
 }
 
+// Retries on a transient error (a flaky mobile connection dropping a request
+// mid-flight is the common case) instead of silently resolving with `[]` --
+// the caller has no way to tell "genuinely zero challenges" apart from
+// "the request failed," and previously it always rendered the former,
+// showing an empty "no challenges match your filters" state on what was
+// really just a network hiccup.
 export async function fetchDynamicChallenges(): Promise<Challenge[]> {
   if (!supabase) return [];
-  const { data } = await supabase.from("challenges").select("*").order("created_at", { ascending: false });
-  return (data ?? []).map(mapChallengeRow);
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const { data, error } = await supabase.from("challenges").select("*").order("created_at", { ascending: false });
+    if (!error) return (data ?? []).map(mapChallengeRow);
+    if (attempt < 2) await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
+  }
+  return [];
 }
 
 export async function fetchChallengeBySlug(slug: string): Promise<Challenge | null> {

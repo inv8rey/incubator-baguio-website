@@ -34,12 +34,22 @@ export default function KnowledgeDirectory() {
       });
     }
     load();
-    if (!supabase) return;
+    // Mobile browsers freely suspend an in-flight fetch (and the realtime
+    // websocket) when the tab is backgrounded -- locking the phone or
+    // switching apps mid-load, then coming back, previously left the grid
+    // stuck on whatever it had (often nothing) with no further trigger to
+    // retry. Refetch whenever the tab becomes visible again.
+    function onVisible() {
+      if (document.visibilityState === "visible") load();
+    }
+    document.addEventListener("visibilitychange", onVisible);
+    if (!supabase) return () => document.removeEventListener("visibilitychange", onVisible);
     const channel = supabase
       .channel("public-knowledge-resources")
       .on("postgres_changes", { event: "*", schema: "public", table: "knowledge_resources" }, load)
       .subscribe();
     return () => {
+      document.removeEventListener("visibilitychange", onVisible);
       supabase!.removeChannel(channel);
     };
   }, []);
