@@ -2482,3 +2482,105 @@ create index if not exists challenge_applications_challenge_idx
 drop policy if exists "admins manage challenge applications" on public.challenge_applications;
 create policy "admins manage challenge applications" on public.challenge_applications
   for all using (public.is_site_admin()) with check (public.is_site_admin());
+
+-- ---------------------------------------------------------------------------
+-- 2026-09-04: Community forum. Open posting (visible immediately, no admin
+-- pre-approval queue like every other UGC on this site) so discussion
+-- actually feels open, moderated instead through member reports that land
+-- in an admin queue. See 2026-09-04-community-forum.sql for the incident
+-- this migration's is_site_admin() usage is deliberately avoiding.
+--
+-- Author name/photo are denormalized onto each thread/reply at write time
+-- (captured from the poster's own profile, which they always have full read
+-- access to) because `profiles` itself is NOT publicly readable -- a public
+-- forum reader could never join against it to show another member's name.
+-- Same pattern `saved_items` already uses for exactly this reason.
+-- ---------------------------------------------------------------------------
+
+create table if not exists public.forum_threads (
+  id uuid primary key default gen_random_uuid(),
+  author_id uuid not null references public.profiles (id) on delete cascade,
+  author_name text not null default '',
+  author_photo_url text not null default '',
+  title text not null,
+  body text not null,
+  created_at timestamptz not null default now()
+);
+
+alter table public.forum_threads enable row level security;
+
+drop policy if exists "forum threads are publicly readable" on public.forum_threads;
+create policy "forum threads are publicly readable" on public.forum_threads
+  for select using (true);
+
+drop policy if exists "members can start a thread" on public.forum_threads;
+create policy "members can start a thread" on public.forum_threads
+  for insert with check (auth.uid() = author_id);
+
+drop policy if exists "authors delete their own thread" on public.forum_threads;
+create policy "authors delete their own thread" on public.forum_threads
+  for delete using (auth.uid() = author_id);
+
+drop policy if exists "admins manage all forum threads" on public.forum_threads;
+create policy "admins manage all forum threads" on public.forum_threads
+  for all using (public.is_site_admin()) with check (public.is_site_admin());
+
+
+create table if not exists public.forum_replies (
+  id uuid primary key default gen_random_uuid(),
+  thread_id uuid not null references public.forum_threads (id) on delete cascade,
+  author_id uuid not null references public.profiles (id) on delete cascade,
+  author_name text not null default '',
+  author_photo_url text not null default '',
+  body text not null,
+  created_at timestamptz not null default now()
+);
+
+alter table public.forum_replies enable row level security;
+
+drop policy if exists "forum replies are publicly readable" on public.forum_replies;
+create policy "forum replies are publicly readable" on public.forum_replies
+  for select using (true);
+
+drop policy if exists "members can reply" on public.forum_replies;
+create policy "members can reply" on public.forum_replies
+  for insert with check (auth.uid() = author_id);
+
+drop policy if exists "authors delete their own reply" on public.forum_replies;
+create policy "authors delete their own reply" on public.forum_replies
+  for delete using (auth.uid() = author_id);
+
+drop policy if exists "admins manage all forum replies" on public.forum_replies;
+create policy "admins manage all forum replies" on public.forum_replies
+  for all using (public.is_site_admin()) with check (public.is_site_admin());
+
+create index if not exists forum_replies_thread_id_idx on public.forum_replies (thread_id);
+
+
+-- Reports land in an admin-only queue. target_preview is a snapshot of the
+-- reported content's title/body at report time, so the queue stays readable
+-- even if the post is deleted before review, with no join needed back to
+-- forum_threads/forum_replies.
+create table if not exists public.forum_reports (
+  id uuid primary key default gen_random_uuid(),
+  target_type text not null check (target_type in ('thread', 'reply')),
+  target_id uuid not null,
+  thread_id uuid not null references public.forum_threads (id) on delete cascade,
+  target_preview text not null default '',
+  reporter_id uuid not null references public.profiles (id) on delete cascade,
+  reason text not null default '',
+  status text not null default 'open' check (status in ('open', 'resolved')),
+  created_at timestamptz not null default now()
+);
+
+alter table public.forum_reports enable row level security;
+
+drop policy if exists "members can report forum content" on public.forum_reports;
+create policy "members can report forum content" on public.forum_reports
+  for insert with check (auth.uid() = reporter_id);
+
+drop policy if exists "admins manage forum reports" on public.forum_reports;
+create policy "admins manage forum reports" on public.forum_reports
+  for all using (public.is_site_admin()) with check (public.is_site_admin());
+
+create index if not exists forum_reports_status_idx on public.forum_reports (status);

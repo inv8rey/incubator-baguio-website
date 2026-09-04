@@ -106,3 +106,29 @@ export async function checkFormGuard(
 
   return { ok: true };
 }
+
+/**
+ * Same rate limiter, for actions gated behind login (e.g. forum posting)
+ * rather than a public anonymous form. No honeypot — the auth requirement
+ * already screens out naive bots — and keyed by account id instead of a
+ * per-browser id, so it can't be reset by clearing localStorage the way the
+ * public-form cap could be.
+ */
+export async function checkAccountRateLimit(userId: string, formId: string, maxPerHour = 10): Promise<GuardResult> {
+  if (!supabase) return { ok: true };
+
+  try {
+    const { data, error } = await supabase.rpc("bump_form_usage", {
+      p_client_key: `account:${formId}:${userId}`,
+      p_window_start: hourWindow(),
+    });
+    if (error || typeof data !== "number") return { ok: true };
+    if (data > maxPerHour) {
+      return { ok: false, error: "You're posting quite a bit — please slow down and try again in a bit." };
+    }
+  } catch {
+    return { ok: true };
+  }
+
+  return { ok: true };
+}

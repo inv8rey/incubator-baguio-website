@@ -11,6 +11,7 @@ const NAV_LINKS: { href: string; label: string }[] = [
   { href: "/challenges", label: "Challenges" },
   { href: "/knowledge", label: "Knowledge Hub" },
   { href: "/ecosystem", label: "Ecosystem" },
+  { href: "/community", label: "Community" },
   { href: "/calendar", label: "Calendar" },
 ];
 
@@ -79,6 +80,7 @@ export function footerHtml() {
           <a class="ib-footlink" href="${BP}/challenges">Challenges</a>
           <a class="ib-footlink" href="${BP}/knowledge">Knowledge Hub</a>
           <a class="ib-footlink" href="${BP}/ecosystem">Ecosystem</a>
+          <a class="ib-footlink" href="${BP}/community">Community</a>
           <a class="ib-footlink" href="${BP}/search">Search</a>
           <a class="ib-footlink" href="${BP}/gallery">Gallery</a>
           <a class="ib-footlink" href="${BP}/calendar">Calendar</a>

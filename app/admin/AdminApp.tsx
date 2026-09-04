@@ -13,6 +13,7 @@ import EcosystemSignupsTab from "./tabs/EcosystemSignupsTab";
 import MembersTab from "./tabs/MembersTab";
 import ContactMessagesTab from "./tabs/ContactMessagesTab";
 import NewsletterTab from "./tabs/NewsletterTab";
+import ForumTab from "./tabs/ForumTab";
 import PartnersTab from "./tabs/PartnersTab";
 import ChatbotKnowledgeTab from "./tabs/ChatbotKnowledgeTab";
 import SettingsTab from "./tabs/SettingsTab";
@@ -78,6 +79,11 @@ const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
       <path d="M8 8h8M8 12h8M8 16h5" />
     </>
   ),
+  forum: (
+    <>
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </>
+  ),
   partners: (
     <>
       <circle cx={7} cy={7} r={3} />
@@ -121,12 +127,13 @@ export default function AdminApp() {
     events: number | null;
     knowledge: number | null;
     signups: number | null;
-  }>({ startups: null, challenges: null, partners: null, messages: null, solutions: null, events: null, knowledge: null, signups: null });
+    forum: number | null;
+  }>({ startups: null, challenges: null, partners: null, messages: null, solutions: null, events: null, knowledge: null, signups: null, forum: null });
 
   useEffect(() => {
     if (!supabase) return;
     async function loadCounts() {
-      const [s, c, o, m, e, k, sg, sol] = await Promise.all([
+      const [s, c, o, m, e, k, sg, sol, f] = await Promise.all([
         supabase!.from("startups").select("id", { count: "exact", head: true }),
         supabase!.from("challenges").select("id", { count: "exact", head: true }),
         supabase!.from("organizations").select("id", { count: "exact", head: true }),
@@ -135,6 +142,7 @@ export default function AdminApp() {
         supabase!.from("knowledge_resources").select("id", { count: "exact", head: true }).eq("status", "pending"),
         supabase!.from("ecosystem_signups").select("id", { count: "exact", head: true }).eq("status", "pending"),
         supabase!.from("challenge_applications").select("id", { count: "exact", head: true }).eq("status", "new"),
+        supabase!.from("forum_reports").select("id", { count: "exact", head: true }).eq("status", "open"),
       ]);
       setLiveCounts({
         startups: s.count ?? 0,
@@ -145,6 +153,7 @@ export default function AdminApp() {
         knowledge: k.count ?? 0,
         signups: sg.count ?? 0,
         solutions: sol.count ?? 0,
+        forum: f.count ?? 0,
       });
     }
     loadCounts();
@@ -158,6 +167,7 @@ export default function AdminApp() {
       .on("postgres_changes", { event: "*", schema: "public", table: "knowledge_resources" }, loadCounts)
       .on("postgres_changes", { event: "*", schema: "public", table: "ecosystem_signups" }, loadCounts)
       .on("postgres_changes", { event: "*", schema: "public", table: "challenge_applications" }, loadCounts)
+      .on("postgres_changes", { event: "*", schema: "public", table: "forum_reports" }, loadCounts)
       .subscribe();
     return () => {
       supabase!.removeChannel(channel);
@@ -201,6 +211,7 @@ export default function AdminApp() {
             : n.id === "knowledge" ? liveCounts.knowledge
             : n.id === "signups" ? liveCounts.signups
             : n.id === "solutions" ? liveCounts.solutions
+            : n.id === "forum" ? liveCounts.forum
             : n.cnt;
           return (
             <button
@@ -318,6 +329,7 @@ export default function AdminApp() {
         {page === "members" && <MembersTab searchQuery={searchQuery} />}
         {page === "messages" && <ContactMessagesTab searchQuery={searchQuery} />}
         {page === "newsletter" && <NewsletterTab searchQuery={searchQuery} />}
+        {page === "forum" && <ForumTab searchQuery={searchQuery} />}
         {page === "partners" && <PartnersTab searchQuery={searchQuery} />}
         {page === "chatbot-kb" && <ChatbotKnowledgeTab searchQuery={searchQuery} />}
         {page === "settings" && <SettingsTab searchQuery={searchQuery} />}
