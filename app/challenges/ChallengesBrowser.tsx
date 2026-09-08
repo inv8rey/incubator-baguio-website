@@ -57,6 +57,18 @@ export default function ChallengesBrowser({ bp }: { bp: string }) {
   const [query, setQuery] = useState("");
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
 
+  // Deep-link support for "/challenges?category=<id>" (from the nav's hover
+  // mega-menu) — mirrors the same "?tab=" pattern already used by
+  // app/ecosystem/EcosystemDirectory.tsx. Matched case-insensitively.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const categoryParam = params.get("category");
+    if (categoryParam) {
+      const match = CHALLENGE_CATEGORIES.map((c) => c.id).find((id) => id.toLowerCase() === categoryParam.toLowerCase());
+      if (match) setCategory(match);
+    }
+  }, []);
+
   useEffect(() => {
     if (!user) {
       setSavedIds(new Set());

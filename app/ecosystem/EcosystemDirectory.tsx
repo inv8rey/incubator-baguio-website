@@ -9,7 +9,9 @@ const DARK = "#1A1714";
 const ORANGE = "#F26522";
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
-const ALL_CATEGORIES: EcosystemCategory[] = ["Startups", "Mentors", "TBIs", "Academe", "Companies", "Service Providers", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs", "Funded Projects"];
+// Exported so the nav's hover mega-menu (NavMegaMenu.tsx) can list the same
+// tabs without hardcoding a second copy of this list.
+export const ALL_CATEGORIES: EcosystemCategory[] = ["Startups", "Mentors", "TBIs", "Academe", "Companies", "Service Providers", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs", "Funded Projects"];
 
 // Shared by every filter/sort <select> in the directory's toolbar.
 // minWidth/maxWidth are load-bearing: a <select> is intrinsically as wide as

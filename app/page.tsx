@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import EcosystemModel from "./programs/EcosystemModel";
 import HomeStats from "./HomeStats";
+import FindYourPath from "./FindYourPath";
 import WhoWeAre from "./WhoWeAre";
 import FeaturedStartups from "./FeaturedStartups";
 import HomeOpenChallenges from "./HomeOpenChallenges";
@@ -163,6 +164,7 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }} />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_TOP }} />
       <HomeStats />
+      <FindYourPath />
       <EcosystemModel />
       <WhoWeAre />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_A }} />

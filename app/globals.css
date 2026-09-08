@@ -227,6 +227,235 @@ input::placeholder, textarea::placeholder { color: var(--ib-ink-2); opacity: 1; 
   .ib-terms-toc { display: none !important; }
 }
 
+/* "Find your path" audience cards (FindYourPath.tsx). Prefixed `ib-findpath-`
+   rather than `ib-path-` — the latter is already the About page's "Two paths"
+   section, whose mobile rules force a 150px photo band and 130px content
+   padding that wrecked these cards. */
+.ib-findpath-card { transition: transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease, border-color .22s ease; }
+.ib-findpath-card:hover { transform: translateY(-4px); box-shadow: var(--ib-shadow-md); border-color: rgba(242,101,34,0.3); }
+.ib-findpath-arrow { transition: background .22s ease, transform .22s ease; }
+.ib-findpath-card:hover .ib-findpath-arrow { background: rgba(242,101,34,0.2); transform: translateX(3px); }
+
+@media (max-width: 1100px) {
+  .ib-findpath-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  /* The handwritten note sits beside a now-narrower heading — drop it rather
+     than let it collide with the centered text. */
+  .ib-findpath-note { display: none !important; }
+  .ib-findpath-ridge { display: none !important; }
+}
+
+@media (max-width: 600px) {
+  .ib-findpath-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Programs page audience panels (AudiencePaths.tsx)
+   Four panels — students / startups / researchers / organizations — that
+   the homepage's Find Your Path cards deep-link into. Each pairs an
+   illustration with a 2x2 grid of next steps.
+   ───────────────────────────────────────────────────────────────────── */
+.ib-apath-panel {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 52px;
+  align-items: center;
+}
+/* Alternating panels put the illustration on the left. Purely visual
+   rhythm, so it's an order swap rather than a DOM reorder — copy stays
+   ahead of the decorative image for screen readers and tab order. */
+.ib-apath-panel--flip .ib-apath-media { order: -1; }
+
+.ib-apath-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.ib-apath-eyebrow--centered { justify-content: center; margin-bottom: 14px; }
+.ib-apath-rule { width: 24px; height: 2px; border-radius: 2px; flex-shrink: 0; }
+.ib-apath-eyebrow--centered .ib-apath-rule { display: none; }
+
+.ib-apath-heading {
+  margin: 0 0 16px;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.16;
+  color: var(--ib-ink);
+}
+.ib-apath-intro {
+  margin: 0 0 28px;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--ib-ink-2);
+  max-width: 46ch;
+}
+
+.ib-apath-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+/* Card grid: chip and title share the top row with the arrow pinned right;
+   the description spans the full width beneath so every card's second line
+   starts at the same x, whether the title wraps or not. */
+.ib-apath-action {
+  display: grid;
+  grid-template-columns: 34px 1fr 16px;
+  grid-template-areas:
+    "chip title arrow"
+    "desc desc  desc";
+  align-items: center;
+  /* Cards stretch to the tallest in their row; without this the spare
+     height is shared out between the two rows and each card's description
+     starts at a different offset. */
+  align-content: start;
+  gap: 0 11px;
+  padding: 16px;
+  border: 1px solid rgba(64,50,34,0.1);
+  border-radius: 14px;
+  background: #FBF9F5;
+  text-decoration: none;
+  transition: border-color .18s ease, background .18s ease, transform .18s cubic-bezier(.22,.61,.36,1);
+}
+.ib-apath-action:hover {
+  background: #fff;
+  border-color: color-mix(in srgb, var(--tone-fg) 38%, transparent);
+  transform: translateY(-2px);
+}
+.ib-apath-action-chip {
+  grid-area: chip;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--tone-bg);
+  color: var(--tone-fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ib-apath-action-chip svg { width: 17px; height: 17px; }
+.ib-apath-action-title {
+  grid-area: title;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.25;
+  color: var(--ib-ink);
+  /* Two lines' worth, so single- and double-line titles keep their
+     descriptions on a shared baseline across the 2x2. */
+  min-height: 2.5em;
+  display: flex;
+  align-items: center;
+}
+.ib-apath-action-arrow {
+  grid-area: arrow;
+  width: 15px;
+  height: 15px;
+  color: var(--tone-fg);
+  transition: transform .18s ease;
+}
+.ib-apath-action:hover .ib-apath-action-arrow { transform: translateX(3px); }
+.ib-apath-action-desc {
+  grid-area: desc;
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ib-ink-2);
+}
+
+.ib-apath-frame {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  box-shadow: inset 0 0 0 1px rgba(64,50,34,0.08);
+}
+.ib-apath-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ib-apath-frame-fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0.2; }
+.ib-apath-frame-fallback svg { width: 84px; height: 84px; }
+
+.ib-apath-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+  padding: 20px 24px;
+  border: 1px solid rgba(64,50,34,0.1);
+  border-radius: 16px;
+  background: #F6F2EA;
+}
+.ib-apath-footer-note { margin: 0; font-size: 14px; line-height: 1.55; color: var(--ib-ink-2); }
+.ib-apath-footer-tag {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ib-ink-3);
+  margin-bottom: 4px;
+}
+.ib-apath-footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 9999px;
+  background: #1A6B3C;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .18s ease;
+}
+.ib-apath-footer-link:hover { background: #14562F; }
+.ib-apath-footer-link svg { width: 14px; height: 14px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ib-apath-action,
+  .ib-apath-action-arrow { transition: none; }
+  .ib-apath-action:hover { transform: none; }
+  .ib-apath-action:hover .ib-apath-action-arrow { transform: none; }
+}
+
+@media (max-width: 900px) {
+  /* Stack the panel. The illustration is decorative, so it moves above the
+     copy visually while staying after it in the DOM. */
+  .ib-apath-panel { grid-template-columns: 1fr; gap: 28px; }
+  .ib-apath-panel .ib-apath-media,
+  .ib-apath-panel--flip .ib-apath-media { order: -1; }
+  .ib-apath-intro { max-width: none; }
+  /* This heading is a class, so the inline-style type scale further down
+     this file doesn't reach it — step it down explicitly. */
+  .ib-apath-heading { font-size: 28px; }
+}
+
+@media (max-width: 600px) {
+  .ib-apath-heading { font-size: 24px; }
+  .ib-apath-intro { font-size: 15px; margin-bottom: 22px; }
+  .ib-apath-actions { grid-template-columns: 1fr; }
+  /* Titles no longer share a row, so the reserved second line is dead space. */
+  .ib-apath-action-title { min-height: 0; }
+  .ib-apath-footer { padding: 18px; }
+  .ib-apath-footer-link { width: 100%; justify-content: center; }
+}
+
+/* Nav hover mega-menu (NavMegaMenu.tsx) */
+.ib-megamenu-item {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background .12s ease;
+}
+.ib-megamenu-item:hover, .ib-megamenu-item:focus-visible { background: rgba(255,255,255,0.07); }
+.ib-megamenu-item-title { display: block; font-size: 14px; font-weight: 600; color: #fff; }
+.ib-megamenu-item-theme { display: block; font-size: 12.5px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+
 /* Header search (HeaderSearch.tsx) — inline expanding type-ahead panel */
 @keyframes ibsearchdrop {
   from { opacity: 0; transform: translateY(-8px); }
@@ -623,12 +852,11 @@ img { max-width: 100%; height: auto; }
   }
 
 
-  /* Programs four-pillar section: drop the sticky rail nav, header goes
-     single-column, each row card stacks image under text. */
-  .ib-programs-header { grid-template-columns: 1fr !important; align-items: start !important; gap: 16px !important; }
-  .ib-programs-rail { display: none !important; }
-  .ib-programs-grid { grid-template-columns: 1fr !important; }
-  .ib-program-row { grid-template-columns: 1fr !important; }
+  /* Programs four-pillar section: cards stack to one column, and the
+     absolutely-positioned "IDEAS/PEOPLE/IMPACT" corner label is dropped
+     rather than crowding the now-narrower centered header text. */
+  .ib-programs-cardgrid { grid-template-columns: 1fr !important; }
+  .ib-programs-quicklabels { display: none !important; }
 
   /* User dashboard overview: sidebar drops below the main column and the
      stat row goes 3-up. */

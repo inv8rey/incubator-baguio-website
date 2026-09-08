@@ -26,6 +26,18 @@ export default function KnowledgeDirectory() {
   const [tab, setTab] = useState<KnowledgeCategory | "All">("All");
   const [query, setQuery] = useState("");
 
+  // Deep-link support for "/knowledge?category=<id>" (from the nav's hover
+  // mega-menu) — mirrors the same "?tab=" pattern already used by
+  // app/ecosystem/EcosystemDirectory.tsx. Matched case-insensitively.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const categoryParam = params.get("category");
+    if (categoryParam) {
+      const match = KNOWLEDGE_CATEGORIES.map((c) => c.id).find((id) => id.toLowerCase() === categoryParam.toLowerCase());
+      if (match) setTab(match);
+    }
+  }, []);
+
   useEffect(() => {
     function load() {
       fetchDynamicKnowledgeResources().then((r) => {

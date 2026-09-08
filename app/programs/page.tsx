@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import EcosystemModel from "./EcosystemModel";
+import AudiencePaths from "./AudiencePaths";
 import { navBarHtml, footerHtml } from "../chrome";
 
 export const metadata: Metadata = {
@@ -30,68 +31,6 @@ const FAQS: { q: string; a: string }[] = [
   {
     q: "How do I get started?",
     a: "Choose the pathway that best describes your current stage, submit an inquiry, and our team will connect you with the most appropriate programs, partners, or support services within the ecosystem.",
-  },
-];
-
-const PATHS: {
-  color: string;
-  bg: string;
-  icon: string;
-  title: string;
-  desc: string;
-  items: string[];
-  cta: string;
-  href: string;
-}[] = [
-  {
-    color: "#F26522",
-    bg: "rgba(242,101,34,0.12)",
-    icon: `<path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2.3h6c0-1.1.4-1.8 1-2.3A7 7 0 0 0 12 2Z"></path>`,
-    title: "I Have an Idea",
-    desc: "I want to turn my idea into something real.",
-    items: ["Founder Discovery Session", "Idea Validation", "Customer Discovery", "Business Model Design"],
-    cta: "Start Here",
-    href: `${BP}/get-started`,
-  },
-  {
-    color: "#E23A2E",
-    bg: "rgba(226,58,46,0.12)",
-    icon: `<path d="M5 13.5L3 21l7.5-2M14.5 5.5C17 3 21 3 21 3s0 4-2.5 6.5L11 17l-4-4z"></path><circle cx="15" cy="9" r="1.2" fill="currentColor" stroke="none"></circle>`,
-    title: "I'm Building an Innovation",
-    desc: "I'm ready to grow my innovation.",
-    items: ["Innovator Incubation", "Mentorship", "Investor Readiness", "Demo Day", "Product Validation"],
-    cta: "Grow My Innovation",
-    href: `${BP}/get-started`,
-  },
-  {
-    color: "#285E7A",
-    bg: "rgba(40,94,122,0.12)",
-    icon: `<path d="M9 2v6l-5 9.5A2 2 0 0 0 5.7 21h12.6a2 2 0 0 0 1.7-3.5L15 8V2"></path><path d="M7.5 14.5h9"></path><path d="M8 2h8"></path>`,
-    title: "I'm a Researcher",
-    desc: "I want my research to create real-world impact.",
-    items: ["Research Commercialization", "Industry Matching", "IP Support", "Innovation Formation"],
-    cta: "Commercialize Research",
-    href: `${BP}/knowledge`,
-  },
-  {
-    color: "#7C5CD6",
-    bg: "rgba(124,92,214,0.14)",
-    icon: `<path d="M3 21h18M3 7v1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7H3l2-4h14l2 4M5 21V10.85M19 21V10.85M9 21v-4a3 3 0 0 1 6 0v4"></path>`,
-    title: "I'm an Organization",
-    desc: "I have a problem that needs innovative solutions.",
-    items: ["Open Innovation Challenges", "Corporate Innovation", "Government Innovation", "Innovation Consulting"],
-    cta: "Submit a Challenge",
-    href: `${BP}/challenges/post`,
-  },
-  {
-    color: "#1A6B3C",
-    bg: "rgba(26,107,60,0.12)",
-    icon: `<circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><circle cx="17" cy="7" r="2.5"></circle><path d="M21 19c0-2.4-1.8-4.5-4-5"></path>`,
-    title: "I Want to Help",
-    desc: "I want to contribute to the ecosystem.",
-    items: ["Become a Mentor", "Become a Partner", "Sponsor Programs", "Volunteer"],
-    cta: "Get Involved",
-    href: `${BP}/ecosystem`,
   },
 ];
 
@@ -147,35 +86,7 @@ ${navBarHtml("/programs")}
 </div>
 `;
 
-const PROGRAMS_HTML_BOTTOM = `
-<!-- WHAT BRINGS YOU HERE (bento) -->
-<div id="program-grid" style="background:#F6F2EA;padding:64px 40px;border-bottom:1px solid rgba(64,50,34,0.09);">
-  <div style="max-width:1180px;margin:0 auto;">
-    <div style="text-align:center;margin-bottom:40px;">
-      <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:12px;">Get Started</div>
-      <h2 style="margin:0;font-size:38px;font-weight:500;letter-spacing:-0.025em;color:#1A1714;">What brings <span style="color:#F26522;">you</span> here?</h2>
-      <p style="margin:14px auto 0;font-size:15px;line-height:1.6;color:#5A544B;max-width:520px;">Choose the path that fits you best. We&rsquo;ll help you take the next step.</p>
-    </div>
-    <div class="ib-brings-grid" style="display:grid;grid-template-columns:repeat(12,1fr);gap:18px;">
-      ${PATHS.map((p, i) => {
-        const span = i < 3 ? 4 : 6;
-        const wide = span === 6;
-        return `
-      <div class="ib-challenge-hover" style="grid-column:span ${span};background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:20px;padding:30px 28px;display:flex;flex-direction:column;">
-        <div style="width:56px;height:56px;border-radius:9999px;background:${p.bg};display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p.icon}</svg>
-        </div>
-        <h3 style="margin:0 0 18px;font-size:19px;font-weight:600;color:#1A1714;letter-spacing:-0.01em;">${p.title}</h3>
-        <div style="display:grid;grid-template-columns:${wide ? "repeat(2,1fr)" : "1fr"};gap:9px 18px;padding-top:16px;border-top:1px solid rgba(64,50,34,0.10);margin-bottom:24px;flex:1;">
-          ${p.items.map((it) => `<div style="display:flex;align-items:center;gap:9px;font-size:13.5px;color:#44444C;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M20 6 9 17l-5-5"></path></svg>${it}</div>`).join("")}
-        </div>
-        <a href="${p.href}" style="margin-top:auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid ${p.color};color:${p.color};font-weight:600;font-size:14px;padding:12px 20px;border-radius:9999px;text-decoration:none;">${p.cta} <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-      </div>`;
-      }).join("")}
-    </div>
-  </div>
-</div>
-
+const PROGRAMS_HTML_FAQ_FOOTER = `
 <!-- FAQ -->
 <div style="background:#fff;padding:88px 40px;">
   <div style="max-width:860px;margin:0 auto;">
@@ -206,7 +117,8 @@ export default function Programs() {
     <main>
       <div dangerouslySetInnerHTML={{ __html: PROGRAMS_HTML_TOP }} />
       <EcosystemModel />
-      <div dangerouslySetInnerHTML={{ __html: PROGRAMS_HTML_BOTTOM }} />
+      <AudiencePaths />
+      <div dangerouslySetInnerHTML={{ __html: PROGRAMS_HTML_FAQ_FOOTER }} />
     </main>
   );
 }

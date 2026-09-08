@@ -152,7 +152,13 @@ export default function Interactive() {
           }
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
+      // Threshold stays at 0 and the trigger point comes from rootMargin
+      // instead. A ratio-based threshold is unreachable once a section is
+      // taller than ~8x the viewport (intersectionRatio caps at
+      // viewportHeight / sectionHeight), which would leave that section
+      // stuck at opacity 0 forever — the failure mode is invisible content,
+      // so it isn't worth risking for a slightly later fade-in.
+      { threshold: 0, rootMargin: "0px 0px -12% 0px" }
     );
 
     // Card grids inside a revealed section cascade in one-by-one. The class

@@ -4,6 +4,7 @@ import Interactive from "./Interactive";
 import AuthProvider from "./AuthProvider";
 import AuthNav from "./AuthNav";
 import HeaderSearch from "./HeaderSearch";
+import NavMegaMenu from "./NavMegaMenu";
 import PageLoader from "./PageLoader";
 import PostHogProvider from "./PostHogProvider";
 import ChatWidget from "./ChatWidget/ChatWidget";
@@ -82,6 +83,7 @@ export default function RootLayout({
             <Interactive />
             <AuthNav />
             <HeaderSearch />
+            <NavMegaMenu />
             <ChatWidget />
           </AuthProvider>
         </PostHogProvider>
