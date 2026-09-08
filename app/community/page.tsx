@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../seo";
 import ForumBrowser from "./ForumBrowser";
 import { navBarHtml, footerHtml } from "../chrome";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Community — Incubator Baguio",
-  description: "Open discussion for Baguio's innovators — ask questions, share what you're building, and connect with the ecosystem.",
-};
+  description:
+    "Open discussion for Baguio's innovators — ask questions, share what you're building, and connect with the ecosystem.",
+  path: "/community/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

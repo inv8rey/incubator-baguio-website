@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../seo";
 import { Suspense } from "react";
 import SearchClient from "./SearchClient";
 import { navBarHtml, footerHtml } from "../chrome";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Search — Incubator Baguio",
   description:
     "Search across every startup, mentor, organization, innovation challenge, Knowledge Hub resource, and event in the Baguio innovation ecosystem.",
-};
+  path: "/search/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

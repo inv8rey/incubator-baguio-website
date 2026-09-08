@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../seo";
 import { navBarHtml, footerHtml } from "../chrome";
 import PrivacyContent from "./PrivacyContent";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Privacy Policy — Incubator Baguio",
-  description: "How Incubator Baguio collects, uses, stores, shares, and protects personal information.",
-};
+  description:
+    "How Incubator Baguio collects, uses, stores, shares, and protects personal information.",
+  path: "/privacy/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

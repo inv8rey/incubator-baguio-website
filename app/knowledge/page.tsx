@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../seo";
 import KnowledgeDirectory from "./KnowledgeDirectory";
 import { navBarHtml, footerHtml } from "../chrome";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Knowledge Hub — Incubator Baguio",
   description:
     "Baguio's searchable home for startup resources, research and innovation outputs, funding opportunities, and policy reports.",
-};
+  path: "/knowledge/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

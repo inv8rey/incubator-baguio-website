@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../../seo";
 import { Suspense } from "react";
 import CommunityChallengeDetail from "./CommunityChallengeDetail";
 import { navBarHtml, footerHtml } from "../../chrome";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Community Challenge — Incubator Baguio",
-  description: "A challenge posted by a member of the Incubator Baguio ecosystem.",
-};
+  description:
+    "A challenge posted by a member of the Incubator Baguio ecosystem.",
+  path: "/challenges/community/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

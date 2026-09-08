@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../seo";
 import EcosystemDirectory from "./EcosystemDirectory";
 import EcosystemStats from "./EcosystemStats";
 import { navBarHtml, footerHtml } from "../chrome";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Ecosystem — Incubator Baguio",
   description:
     "Explore Baguio's growing ecosystem of startups, researchers, mentors, universities, incubators, government agencies, industry partners, and innovation organizations.",
-};
+  path: "/ecosystem/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

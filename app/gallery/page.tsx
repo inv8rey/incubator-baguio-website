@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../seo";
 import GalleryClient from "./GalleryClient";
 import { navBarHtml, footerHtml } from "../chrome";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Gallery — Incubator Baguio",
   description:
     "Snapshots of workshops, trainings, demo nights, and community gatherings that drive innovation in Baguio.",
-};
+  path: "/gallery/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

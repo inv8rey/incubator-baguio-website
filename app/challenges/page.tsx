@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../seo";
 import ChallengesBrowser from "./ChallengesBrowser";
 import ChallengesStats from "./ChallengesStats";
 import CommunityChallenges from "./CommunityChallenges";
 import { navBarHtml, footerHtml } from "../chrome";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Innovation Challenges — Incubator Baguio",
   description:
     "Real problems posted by LGUs, MSMEs, universities, and NGOs across Baguio. Founders, innovators, researchers, and students build the solutions.",
-};
+  path: "/challenges/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../seo";
 import EcosystemModel from "./EcosystemModel";
 import AudiencePaths from "./AudiencePaths";
 import { navBarHtml, footerHtml } from "../chrome";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Programs — Incubator Baguio",
   description:
     "Pathways for founders, youth, researchers, and partners — mapped to the functions of the Alliance under Ordinance No. 63.",
-};
+  path: "/programs/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

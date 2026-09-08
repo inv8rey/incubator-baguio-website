@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../seo";
 import { Suspense } from "react";
 import CalendarClient from "./CalendarClient";
 import { navBarHtml, footerHtml } from "../chrome";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Calendar — Incubator Baguio",
   description:
     "The shared calendar for Baguio's research and innovation ecosystem — browse events or book a mentoring session with an expert mentor.",
-};
+  path: "/calendar/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

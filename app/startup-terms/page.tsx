@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../seo";
 import { navBarHtml, footerHtml } from "../chrome";
 import GlossaryContent from "./GlossaryContent";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Startup Terms Glossary — Incubator Baguio",
-  description: "Plain-language definitions of startup, funding, and innovation-ecosystem terms for anyone new to Baguio's innovation ecosystem.",
-};
+  description:
+    "Plain-language definitions of startup, funding, and innovation-ecosystem terms for anyone new to Baguio's innovation ecosystem.",
+  path: "/startup-terms/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

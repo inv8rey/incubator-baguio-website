@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { fetchOrganizationBySlug } from "../dynamicData";
 import { navBarHtml, footerHtml } from "../../chrome";
+import { pageMeta } from "../../seo";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -11,10 +12,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const o = await fetchOrganizationBySlug(slug);
   if (!o) return { title: "Organization not found — Incubator Baguio" };
-  return {
+  return pageMeta({
     title: `${o.name} — Incubator Baguio Ecosystem`,
-    description: o.short_description || o.description || undefined,
-  };
+    description: o.short_description || o.description || "",
+    path: `/organizations/${slug}/`,
+  });
 }
 
 function initialsOf(name: string): string {

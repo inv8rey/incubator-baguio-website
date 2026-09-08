@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../seo";
 import { navBarHtml, footerHtml } from "../chrome";
 import TermsContent from "./TermsContent";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Terms of Service — Incubator Baguio",
-  description: "The Terms of Service governing access to and use of the Incubator Baguio platform.",
-};
+  description:
+    "The Terms of Service governing access to and use of the Incubator Baguio platform.",
+  path: "/terms/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

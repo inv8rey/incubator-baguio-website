@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { fetchChallengeApplications, fetchChallengeBySlug } from "../dynamicData";
 import { categoryInfo } from "../data";
 import { navBarHtml, footerHtml } from "../../chrome";
+import { pageMeta } from "../../seo";
+import { slugify } from "../../../lib/slug";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -12,10 +14,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const c = await fetchChallengeBySlug(id);
   if (!c) return { title: "Challenge not found — Incubator Baguio" };
-  return {
+  // Canonicalise to the slug form the sitemap emits: this route also resolves
+  // a raw id, so the same challenge is reachable at two URLs.
+  return pageMeta({
     title: `${c.title} — Incubator Baguio Challenges`,
     description: c.summary,
-  };
+    path: `/challenges/${slugify(c.title || c.id)}/`,
+  });
 }
 
 export default async function ChallengeDetail({ params }: { params: Promise<{ id: string }> }) {

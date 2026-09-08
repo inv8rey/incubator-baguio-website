@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../seo";
 import ContactForm from "./ContactForm";
 import { navBarHtml, footerHtml } from "../chrome";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Contact — Incubator Baguio",
   description:
     "Get in touch with Incubator Baguio — innovator incubation, research submission, mentor registration, partner inquiries, and general questions.",
-};
+  path: "/contact/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

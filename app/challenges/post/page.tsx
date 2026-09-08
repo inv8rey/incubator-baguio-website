@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../../seo";
 import PostChallengeForm from "./PostChallengeForm";
 import RequireAuth from "../../RequireAuth";
 import { navBarHtml, footerHtml } from "../../chrome";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Post a Challenge — Incubator Baguio",
-  description: "Post a real-world problem to Baguio's innovation marketplace and tap into founders, innovators, researchers, and students ready to build the solution.",
-};
+  description:
+    "Post a real-world problem to Baguio's innovation marketplace and tap into founders, innovators, researchers, and students ready to build the solution.",
+  path: "/challenges/post/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

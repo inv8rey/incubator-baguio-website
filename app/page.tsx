@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "./seo";
 import EcosystemModel from "./programs/EcosystemModel";
 import HomeStats from "./HomeStats";
 import FindYourPath from "./FindYourPath";
@@ -15,13 +16,11 @@ const HOME_TITLE = "Incubator Baguio — Building Baguio's Innovation Ecosystem"
 const HOME_DESCRIPTION =
   "Incubator Baguio connects government, academia, industry, researchers, startups, and innovators around the Baguio City Research and Innovation Agenda to develop solutions, create opportunities, and strengthen the City's innovation ecosystem.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: HOME_TITLE,
   description: HOME_DESCRIPTION,
-  alternates: { canonical: "/" },
-  openGraph: { title: HOME_TITLE, description: HOME_DESCRIPTION },
-  twitter: { title: HOME_TITLE, description: HOME_DESCRIPTION },
-};
+  path: "/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 

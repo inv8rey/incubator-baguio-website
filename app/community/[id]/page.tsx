@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ThreadDetail from "./ThreadDetail";
 import { fetchThreadById } from "../dynamicData";
 import { navBarHtml, footerHtml } from "../../chrome";
+import { pageMeta } from "../../seo";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -10,10 +11,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const t = await fetchThreadById(id);
   if (!t) return { title: "Discussion not found — Incubator Baguio" };
-  return {
+  return pageMeta({
     title: `${t.title} — Incubator Baguio Community`,
     description: t.body.slice(0, 160),
-  };
+    path: `/community/${id}/`,
+  });
 }
 
 // Everything user-submitted (title, body, author name) is rendered as real

@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { pageMeta } from "../seo";
 import EcosystemPartnersMarquee from "../EcosystemPartnersMarquee";
 import { navBarHtml, footerHtml } from "../chrome";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "About — Incubator Baguio",
   description:
     "Incubator Baguio strengthens Baguio's innovation ecosystem by connecting government, academia, industry, researchers, entrepreneurs, and communities around the Baguio City Research and Innovation Agenda.",
-};
+  path: "/about/",
+});
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
