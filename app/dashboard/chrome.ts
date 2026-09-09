@@ -6,7 +6,7 @@ export function navBarHtml() {
 <div class="ib-topbar" style="display:flex;align-items:center;justify-content:space-between;">
   <a href="${BP}/" style="display:flex;align-items:center;gap:11px;text-decoration:none;"><img src="${BP}/assets/city-of-baguio-seal.png" alt="City of Baguio" style="height:46px;width:auto;"><img src="${BP}/assets/cpdso-logo.png" alt="CPDSO" style="height:46px;width:auto;"><img src="${BP}/assets/ib-icon.png" alt="Incubator Baguio" style="height:32px;width:auto;"><div style="font-size:16px;font-weight:600;color:#fff;">Incubator Baguio</div></a>
   <div style="display:flex;align-items:center;gap:28px;">
-    <div style="display:flex;gap:22px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.72);">
+    <div class="ib-navlinks" style="display:flex;gap:22px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.72);">
       <a href="${BP}/about" class="ib-navlink">About</a>
       <a href="${BP}/programs" class="ib-navlink">Programs</a>
       <a href="${BP}/challenges" class="ib-navlink">Challenges</a>
@@ -14,7 +14,7 @@ export function navBarHtml() {
       <a href="${BP}/ecosystem" class="ib-navlink">Ecosystem</a>
       <a href="${BP}/calendar" class="ib-navlink">Calendar</a>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;">
+    <div class="ib-desktop-cta" style="display:flex;align-items:center;gap:10px;">
       <a href="${BP}/signup" class="ib-cta-orange ib-join-cta" style="display:inline-flex;align-items:center;gap:8px;background:#F26522;color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9999px;text-decoration:none;">Sign up <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
       <span class="ib-auth-slot"></span>
     </div>

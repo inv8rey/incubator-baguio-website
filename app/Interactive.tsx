@@ -28,25 +28,24 @@ export default function Interactive() {
     // assuming the nav is main's first child — some pages (e.g. the
     // homepage, which injects a JSON-LD <script> before it) don't have the
     // nav as the very first element.
+    //
+    // .ib-navlinks and .ib-desktop-cta are written directly into the static
+    // markup by chrome.ts / dashboard/chrome.ts (not added here) so the
+    // CSS media query hiding them on narrow viewports applies from the very
+    // first paint — before this effect has even run, let alone finished.
+    // They used to be added here instead, matched by a `style*="..."`
+    // attribute selector as a stand-in for "the un-collapsed nav row";
+    // until this effect ran, nothing was hidden, so a phone briefly (or,
+    // on a slow connection, not so briefly) rendered the full desktop nav —
+    // seven links, search, and a CTA — in one un-wrapping row.
     const nav = main.querySelector<HTMLElement>(".ib-topbar");
     if (nav && !nav.querySelector(".ib-burger")) {
-      const links = nav.querySelector<HTMLElement>(
-        'div[style*="font-weight:500"]'
-      );
-      const cta = nav.querySelector<HTMLAnchorElement>("a.ib-cta-orange");
-      // If the CTA sits in a small button group (e.g. alongside a
-      // "Contact Us" link, or the account-menu slot AuthNav.tsx portals
-      // into), hide/clone the whole group, not just the orange button, so
-      // the secondary link/slot isn't stranded on mobile.
-      const ctaGroup = cta?.parentElement;
-      const hasSiblingLink =
-        !!ctaGroup &&
-        ctaGroup !== nav &&
-        (ctaGroup.querySelectorAll("a").length > 1 || !!ctaGroup.querySelector(".ib-auth-slot"));
+      const links = nav.querySelector<HTMLElement>(".ib-navlinks");
+      // The CTA is always wrapped in .ib-desktop-cta alongside the
+      // account-menu slot AuthNav.tsx portals into, so cloning/hiding the
+      // group (not just the button) is the only case that markup produces.
+      const ctaGroup = nav.querySelector<HTMLElement>(".ib-desktop-cta");
       if (links) {
-        links.classList.add("ib-navlinks");
-        (hasSiblingLink ? ctaGroup : cta)?.classList.add("ib-desktop-cta");
-
         const burger = document.createElement("button");
         burger.className = "ib-burger";
         burger.setAttribute("aria-label", "Toggle menu");
@@ -65,20 +64,14 @@ export default function Interactive() {
         );
         panel.appendChild(linksClone);
 
-        if (cta) {
-          const source = hasSiblingLink ? ctaGroup! : cta;
-          const clone = source.cloneNode(true) as HTMLElement;
+        if (ctaGroup) {
+          const clone = ctaGroup.cloneNode(true) as HTMLElement;
           clone.classList.remove("ib-desktop-cta");
           clone.classList.add("ib-mobile-cta");
           // AuthNav.tsx portals its own mobile-styled auth widget directly
           // into the mobile panel, so drop the cloned (inert) slot here.
           clone.querySelectorAll(".ib-auth-slot").forEach((n) => n.remove());
-          clone.setAttribute(
-            "style",
-            hasSiblingLink
-              ? "display:flex;flex-direction:column;gap:10px;margin-top:16px;"
-              : ""
-          );
+          clone.setAttribute("style", "display:flex;flex-direction:column;gap:10px;margin-top:16px;");
           panel.appendChild(clone);
         }
 
