@@ -576,6 +576,60 @@ input::placeholder, textarea::placeholder { color: var(--ib-ink-2); opacity: 1; 
   .ib-knowledge-filtermeta { margin-left: 0; width: 100%; justify-content: space-between; }
 }
 
+/* ─────────────────────────────────────────────────────────────────────
+   Sticky top bar (chrome.ts + dashboard/chrome.ts)
+
+   The bar is emitted inside the dangerouslySetInnerHTML wrapper that also
+   carries the hero, and a sticky element can never leave its parent's box —
+   so on a 14,000px page it used to stick for the wrapper's ~425px and then
+   scroll away for good. `display: contents` drops that wrapper's box so the
+   bar's containing block becomes <main> and it stays for the whole page.
+   The wrapper only ever holds chrome, so it has no styling of its own to
+   lose. Browsers without :has() simply keep the old behaviour.
+   ───────────────────────────────────────────────────────────────────── */
+main > div:has(> .ib-topbar) { display: contents; }
+
+.ib-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding: 16px 40px;
+  background: #131110;
+  transition: padding .22s ease, background-color .22s ease, box-shadow .22s ease;
+}
+.ib-topbar > a img { transition: height .22s ease; }
+
+/* Past the fold the bar goes translucent over the page rather than sitting
+   as a solid slab: 0.82 alpha keeps the links at ~6.5:1 even over the
+   lightest section, so it reads as glass without costing legibility. */
+.ib-topbar.is-scrolled {
+  background: rgba(19, 17, 16, 0.82);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.8);
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+/* Condense the logo lockup so the bar gives ~16px of reading height back. */
+.ib-topbar.is-scrolled > a img[alt="City of Baguio"],
+.ib-topbar.is-scrolled > a img[alt="CPDSO"] { height: 36px; }
+.ib-topbar.is-scrolled > a img[alt="Incubator Baguio"] { height: 26px; }
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  /* No blur to sit behind the translucency, so keep it nearly opaque. */
+  .ib-topbar.is-scrolled { background: rgba(19, 17, 16, 0.95); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ib-topbar, .ib-topbar > a img { transition: none; }
+}
+
+@media (max-width: 600px) {
+  .ib-topbar { padding: 12px 18px; }
+  .ib-topbar.is-scrolled { padding-top: 8px; padding-bottom: 8px; }
+}
+
 /* Nav hover mega-menu (NavMegaMenu.tsx) */
 .ib-megamenu-item {
   display: block;

@@ -5,13 +5,17 @@ import { useEffect } from "react";
 /**
  * Branded page-load curtain: a dark overlay with the chevron mark drawing
  * itself in, faded out once the page is ready. It also fades back IN when
- * the visitor clicks an internal link, so full-page navigations read as one
- * seamless dark transition instead of a white flash.
+ * the visitor clicks an internal link, so a full-page navigation that's
+ * actually slow enough to show a white gap gets covered by the same dark
+ * transition instead.
  *
  * - Server-rendered visible so it paints before anything else (no flash of
  *   unstyled content); a <noscript> rule hides it entirely without JS.
  * - First visit in a session holds ~700ms for the full draw; subsequent
  *   pages hide almost immediately so navigation never feels slowed down.
+ * - The re-show on click is delayed (not immediate) — a fast navigation
+ *   finishes before the delay elapses, so the curtain never appears for it
+ *   at all, rather than flashing on and off for every single link click.
  * - bfcache restores (back/forward) hide it instantly.
  */
 export default function PageLoader() {
@@ -55,7 +59,21 @@ export default function PageLoader() {
     window.addEventListener("pageshow", onPageShow);
 
     // Exit transition: fade the curtain back in when an internal link is
-    // followed, covering the white gap while the next page loads.
+    // followed, covering the white gap while the next page loads. Every nav
+    // link on the site is a plain <a> (the chrome is raw HTML, not
+    // next/link), so this fires on a real full-document navigation, not a
+    // client-side route change.
+    //
+    // Delayed rather than immediate: showing it the instant the mouse is
+    // clicked meant it played in full on every navigation, including ones
+    // fast enough that the browser had already swapped documents before the
+    // curtain finished fading in — the exact case that made clicking
+    // through several pages back to back feel like a strobing loading
+    // screen instead of a clean transition. Waiting first means a snappy
+    // navigation ends before the timeout even fires, so nothing is ever
+    // shown for it; a genuinely slow one still gets covered.
+    const SHOW_DELAY = 180;
+    let showTimer: number | null = null;
     const onClick = (e: MouseEvent) => {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const a = (e.target as Element | null)?.closest?.("a");
@@ -70,12 +88,14 @@ export default function PageLoader() {
       }
       if (url.origin !== window.location.origin) return;
       if (url.pathname === window.location.pathname && url.hash) return;
-      el.classList.remove("ib-pageloader-hide");
+      if (showTimer) window.clearTimeout(showTimer);
+      showTimer = window.setTimeout(() => el.classList.remove("ib-pageloader-hide"), SHOW_DELAY);
     };
     document.addEventListener("click", onClick);
 
     return () => {
       window.clearTimeout(failsafe);
+      if (showTimer) window.clearTimeout(showTimer);
       window.removeEventListener("pageshow", onPageShow);
       document.removeEventListener("click", onClick);
     };

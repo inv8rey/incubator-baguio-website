@@ -24,11 +24,11 @@ export default function Interactive() {
 
     // --- Mobile hamburger menu ------------------------------------------
     // Built from the existing nav so no per-page markup is needed. Every
-    // page's nav bar uses `position:sticky;top:0`, so match on that instead
-    // of assuming the nav is main's first child — some pages (e.g. the
+    // page's nav bar carries .ib-topbar, so match on that instead of
+    // assuming the nav is main's first child — some pages (e.g. the
     // homepage, which injects a JSON-LD <script> before it) don't have the
     // nav as the very first element.
-    const nav = main.querySelector<HTMLElement>('div[style*="position:sticky"]');
+    const nav = main.querySelector<HTMLElement>(".ib-topbar");
     if (nav && !nav.querySelector(".ib-burger")) {
       const links = nav.querySelector<HTMLElement>(
         'div[style*="font-weight:500"]'
@@ -123,9 +123,20 @@ export default function Interactive() {
       cleanups.push(() => progress?.remove());
     }
 
+    // Sits above the reduced-motion return below on purpose: the translucent
+    // condensed bar is a state change, not decoration, and its transition is
+    // already disabled in CSS for those users.
+    const topbar = document.querySelector<HTMLElement>(".ib-topbar");
+
     const onScroll = () => {
       const sc = window.scrollY;
       backTop?.classList.toggle("ib-show", sc > 600);
+      // Hysteresis: toggling on a single threshold makes the bar flicker
+      // between states when a trackpad hovers right on the boundary.
+      if (topbar) {
+        if (sc > 32) topbar.classList.add("is-scrolled");
+        else if (sc < 12) topbar.classList.remove("is-scrolled");
+      }
       if (progress) {
         const max = document.documentElement.scrollHeight - window.innerHeight;
         progress.style.transform = `scaleX(${max > 0 ? Math.min(sc / max, 1) : 0})`;
