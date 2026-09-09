@@ -11,6 +11,41 @@ function matches(haystacks: string[], query: string) {
   return haystacks.some((h) => h.toLowerCase().includes(q));
 }
 
+// Matches the toolbar treatment in app/ecosystem/EcosystemDirectory.tsx so the
+// two directories' filter rows read as the same control set. appearance:none
+// plus a background chevron rather than the native arrow, which sits flush
+// against a pill's curved edge.
+const CHEVRON_SVG =
+  "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236E685F' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E";
+
+const filterSelectStyle: React.CSSProperties = {
+  height: 44,
+  fontSize: 13.5,
+  fontWeight: 600,
+  color: DARK,
+  background: `#fff url("${CHEVRON_SVG}") no-repeat right 14px center`,
+  backgroundSize: "12px",
+  border: "1px solid rgba(64,50,34,0.16)",
+  borderRadius: 9999,
+  padding: "0 36px 0 15px",
+  outline: "none",
+  appearance: "none",
+  WebkitAppearance: "none",
+  cursor: "pointer",
+  minWidth: 0,
+  maxWidth: "100%",
+};
+
+type SortKey = "featured" | "newest" | "az" | "deadline";
+type TypeKey = "all" | "file" | "link";
+
+const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: "featured", label: "Sort: Featured first" },
+  { value: "newest", label: "Sort: Newest" },
+  { value: "az", label: "Sort: A – Z" },
+  { value: "deadline", label: "Sort: Closing soonest" },
+];
+
 function shuffle<T>(items: T[]): T[] {
   const arr = [...items];
   for (let i = arr.length - 1; i > 0; i--) {
@@ -25,6 +60,9 @@ export default function KnowledgeDirectory() {
   const [loaded, setLoaded] = useState(false);
   const [tab, setTab] = useState<KnowledgeCategory | "All">("All");
   const [query, setQuery] = useState("");
+  const [type, setType] = useState<TypeKey>("all");
+  const [openOnly, setOpenOnly] = useState(false);
+  const [sort, setSort] = useState<SortKey>("featured");
 
   // Deep-link support for "/knowledge?category=<id>" (from the nav's hover
   // mega-menu) — mirrors the same "?tab=" pattern already used by
@@ -69,26 +107,114 @@ export default function KnowledgeDirectory() {
   const filtered = useMemo(() => {
     const list = resources.filter((r) => {
       if (tab !== "All" && r.category !== tab) return false;
+      if (type === "file" && !r.fileUrl) return false;
+      if (type === "link" && !r.linkUrl) return false;
+      if (openOnly && fundingDeadlineInfo(r.deadlineDate)?.closed) return false;
       return matches([r.title, r.description, r.source ?? ""], query);
     });
-    // Closed funding calls sink to the bottom regardless of featured status --
+
+    // Closed funding calls sink to the bottom regardless of the chosen sort --
     // a "Featured" grant nobody can apply to anymore is worse than useless at
     // the top of the grid, since it's the first thing a founder would click.
+    const closed = (r: KnowledgeResource) => Number(!!fundingDeadlineInfo(r.deadlineDate)?.closed);
+
     return [...list].sort((a, b) => {
-      const aClosed = Number(!!fundingDeadlineInfo(a.deadlineDate)?.closed);
-      const bClosed = Number(!!fundingDeadlineInfo(b.deadlineDate)?.closed);
-      if (aClosed !== bClosed) return aClosed - bClosed;
-      return Number(!!b.featured) - Number(!!a.featured);
+      if (closed(a) !== closed(b)) return closed(a) - closed(b);
+      switch (sort) {
+        case "newest":
+          return (b.createdAt ?? "").localeCompare(a.createdAt ?? "");
+        case "az":
+          return a.title.localeCompare(b.title);
+        case "deadline": {
+          // Undated resources have no deadline to be "soonest", so they trail
+          // the dated ones rather than sorting as the year 0.
+          const ad = a.deadlineDate || "9999-12-31";
+          const bd = b.deadlineDate || "9999-12-31";
+          return ad.localeCompare(bd);
+        }
+        default:
+          return Number(!!b.featured) - Number(!!a.featured);
+      }
     });
-  }, [resources, tab, query]);
+  }, [resources, tab, query, type, openOnly, sort]);
 
   const activeInfo = tab !== "All" ? KNOWLEDGE_CATEGORIES.find((c) => c.id === tab) : null;
+  const filtersActive = tab !== "All" || type !== "all" || openOnly || !!query.trim();
+
+  function clearAll() {
+    setTab("All");
+    setType("all");
+    setOpenOnly(false);
+    setQuery("");
+  }
 
   return (
     <div style={{ maxWidth: 1080, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: 40 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F26522", marginBottom: 12 }}>Resource library</div>
-        <h2 style={{ margin: 0, fontSize: 32, fontWeight: 600, letterSpacing: "-0.025em", color: DARK }}>Browse by category</h2>
+      {/* Docked search panel. Pulled up over the hero's lower edge so the
+          first thing on the page after the headline is the thing most people
+          came to do -- searching -- rather than four category cards with the
+          search tucked in a 360px field underneath them. */}
+      <div className="ib-knowledge-searchdock">
+        <label htmlFor="ib-knowledge-search" className="ib-knowledge-searchlabel">
+          Search the library
+        </label>
+        <div className="ib-knowledge-searchfield">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2} strokeLinecap="round" aria-hidden>
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+          <input
+            id="ib-knowledge-search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search guides, research, grants, and reports…"
+            autoComplete="off"
+          />
+          {query && (
+            <button type="button" onClick={() => setQuery("")} aria-label="Clear search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" aria-hidden>
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+        </div>
+
+        <div className="ib-knowledge-filters">
+          <select value={type} onChange={(e) => setType(e.target.value as TypeKey)} style={filterSelectStyle} aria-label="Filter by resource type">
+            <option value="all">All formats</option>
+            <option value="file">Downloadable file</option>
+            <option value="link">External link</option>
+          </select>
+          <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)} style={filterSelectStyle} aria-label="Sort resources">
+            {SORT_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={() => setOpenOnly((v) => !v)}
+            aria-pressed={openOnly}
+            className={`ib-knowledge-toggle${openOnly ? " is-on" : ""}`}
+          >
+            Open opportunities only
+          </button>
+
+          <div className="ib-knowledge-filtermeta">
+            <span>
+              <strong>{filtered.length}</strong> resource{filtered.length === 1 ? "" : "s"}
+            </span>
+            {filtersActive && (
+              <button type="button" onClick={clearAll} className="ib-knowledge-clear">
+                Clear all
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#A8400F", marginBottom: 8 }}>Resource library</div>
+        <h2 style={{ margin: 0, fontSize: 26, fontWeight: 600, letterSpacing: "-0.02em", color: DARK }}>Browse by category</h2>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 32 }} className="ib-knowledge-cat-grid">
@@ -119,27 +245,6 @@ export default function KnowledgeDirectory() {
             </button>
           );
         })}
-      </div>
-
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap", marginBottom: 24 }}>
-        <div style={{ position: "relative", flex: 1, minWidth: 220, maxWidth: 360 }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search resources..."
-            style={{ width: "100%", boxSizing: "border-box", fontSize: 13.5, color: DARK, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.14)", borderRadius: 9999, padding: "11px 16px 11px 36px", outline: "none" }}
-          />
-        </div>
-        {tab !== "All" ? (
-          <button onClick={() => setTab("All")} style={{ fontSize: 12.5, fontWeight: 600, color: "#5A544B", background: "#F5F4F0", border: "none", borderRadius: 999, padding: "9px 16px", cursor: "pointer" }}>
-            Clear filter &times;
-          </button>
-        ) : (
-          <span style={{ fontSize: 12.5, color: "#6E685F" }}>
-            {filtered.length} resource{filtered.length === 1 ? "" : "s"}
-          </span>
-        )}
       </div>
 
       {activeInfo && (
@@ -251,8 +356,15 @@ export default function KnowledgeDirectory() {
         </div>
       ) : (
         loaded && (
-          <div style={{ padding: "40px 20px", textAlign: "center", color: "#6E685F", fontSize: 14, background: "#F6F2EA", borderRadius: 18, border: "1px dashed rgba(64,50,34,0.14)" }}>
-            No resources {tab !== "All" ? `in ${tab} ` : ""}yet{query ? " matching your search" : ""}.
+          <div style={{ padding: "40px 20px", textAlign: "center", color: "#6E685F", fontSize: 14, background: "#fff", borderRadius: 18, border: "1px dashed rgba(64,50,34,0.16)" }}>
+            <p style={{ margin: 0 }}>
+              No resources {tab !== "All" ? `in ${tab} ` : ""}match{filtersActive ? " these filters" : " yet"}.
+            </p>
+            {filtersActive && (
+              <button type="button" onClick={clearAll} className="ib-knowledge-clear" style={{ marginTop: 12 }}>
+                Clear all filters
+              </button>
+            )}
           </div>
         )
       )}

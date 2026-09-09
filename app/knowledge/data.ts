@@ -57,6 +57,8 @@ export interface KnowledgeResource {
   targetParticipants?: string;
   /** ISO yyyy-mm-dd, or null/undefined when the call has no fixed deadline. */
   deadlineDate?: string | null;
+  /** Row insert timestamp, carried through so the toolbar can sort by newest. */
+  createdAt?: string;
 }
 
 export interface DeadlineInfo {

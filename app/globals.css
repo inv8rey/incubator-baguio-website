@@ -444,6 +444,138 @@ input::placeholder, textarea::placeholder { color: var(--ib-ink-2); opacity: 1; 
   .ib-apath-footer-link { width: 100%; justify-content: center; }
 }
 
+/* ─────────────────────────────────────────────────────────────────────
+   Knowledge Hub search + filter toolbar (KnowledgeDirectory.tsx)
+   The panel is pulled up over the hero's lower edge, so searching is the
+   first thing on the page rather than a 360px field below four cards.
+   ───────────────────────────────────────────────────────────────────── */
+.ib-knowledge-searchdock {
+  position: relative;
+  z-index: 1;
+  margin-top: -104px;
+  margin-bottom: 36px;
+  padding: 22px;
+  background: #fff;
+  border: 1px solid rgba(64, 50, 34, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 18px 40px -26px rgba(17, 17, 20, 0.45), var(--ib-shadow-sm);
+}
+.ib-knowledge-searchlabel {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ib-ink-3);
+  margin-bottom: 10px;
+}
+
+.ib-knowledge-searchfield { position: relative; display: flex; align-items: center; }
+.ib-knowledge-searchfield > svg {
+  position: absolute;
+  left: 18px;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+.ib-knowledge-searchfield input {
+  width: 100%;
+  box-sizing: border-box;
+  /* 16px minimum: iOS Safari zooms the viewport on focus below that. */
+  font-size: 16px;
+  color: var(--ib-ink);
+  background: #fbf9f5;
+  border: 1.5px solid rgba(64, 50, 34, 0.16);
+  border-radius: 9999px;
+  padding: 15px 48px 15px 46px;
+  outline: none;
+  transition: border-color .16s ease, background .16s ease, box-shadow .16s ease;
+}
+.ib-knowledge-searchfield input:hover { border-color: rgba(64, 50, 34, 0.26); }
+.ib-knowledge-searchfield input:focus {
+  background: #fff;
+  border-color: var(--ib-orange);
+  box-shadow: 0 0 0 3px rgba(242, 101, 34, 0.16);
+}
+.ib-knowledge-searchfield button {
+  position: absolute;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 9999px;
+  background: rgba(64, 50, 34, 0.08);
+  color: #5a544b;
+  cursor: pointer;
+}
+.ib-knowledge-searchfield button:hover { background: rgba(64, 50, 34, 0.14); }
+.ib-knowledge-searchfield button svg { width: 14px; height: 14px; }
+
+.ib-knowledge-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+.ib-knowledge-toggle {
+  height: 44px;
+  padding: 0 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ib-ink-2);
+  background: #fff;
+  border: 1px solid rgba(64, 50, 34, 0.16);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background .16s ease, border-color .16s ease, color .16s ease;
+}
+.ib-knowledge-toggle:hover { border-color: rgba(64, 50, 34, 0.3); }
+.ib-knowledge-toggle.is-on {
+  color: #14562f;
+  background: rgba(26, 107, 60, 0.1);
+  border-color: rgba(26, 107, 60, 0.45);
+}
+
+.ib-knowledge-filtermeta {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--ib-ink-2);
+}
+.ib-knowledge-filtermeta strong { color: var(--ib-ink); }
+.ib-knowledge-clear {
+  font-size: 13px;
+  font-weight: 600;
+  color: #a8400f;
+  background: none;
+  border: none;
+  padding: 6px 4px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ib-knowledge-clear:hover { color: #8a340c; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ib-knowledge-searchfield input,
+  .ib-knowledge-toggle { transition: none; }
+}
+
+@media (max-width: 700px) {
+  .ib-knowledge-searchdock { margin-top: -76px; padding: 18px; }
+  /* Controls go full-width and stack: three pills wrapping mid-row read as
+     debris, and a native select is easier to hit at full width. */
+  .ib-knowledge-filters > select,
+  .ib-knowledge-toggle { width: 100%; }
+  .ib-knowledge-filtermeta { margin-left: 0; width: 100%; justify-content: space-between; }
+}
+
 /* Nav hover mega-menu (NavMegaMenu.tsx) */
 .ib-megamenu-item {
   display: block;
