@@ -5,6 +5,7 @@ import { useAuth } from "../../AuthProvider";
 import { supabase } from "../../../lib/supabaseClient";
 import { cardStyle, primaryButtonStyle, DARK, ORANGE } from "../styles";
 import { fetchSavedItems, toggleSavedItem, type SavedItemRow } from "../savedItems";
+import CollaborationRequests from "./CollaborationRequests";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -48,6 +49,8 @@ export default function MyChallenges() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <CollaborationRequests />
+
       <div style={cardStyle}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
           <h2 style={{ margin: 0, fontSize: 18, fontWeight: 600, color: DARK }}>Saved challenges</h2>

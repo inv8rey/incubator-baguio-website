@@ -5,6 +5,7 @@ import { categoryInfo } from "../data";
 import { navBarHtml, footerHtml } from "../../chrome";
 import { pageMeta } from "../../seo";
 import { slugify } from "../../../lib/slug";
+import CollaborateButton from "../CollaborateButton";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -32,7 +33,7 @@ export default async function ChallengeDetail({ params }: { params: Promise<{ id
   const totalSolvers = solvers.length;
   const visibleSolvers = solvers.slice(0, 5);
 
-  const HTML = `
+  const TOP_HTML = `
 ${navBarHtml("/challenges")}
 
 <!-- HERO -->
@@ -117,54 +118,92 @@ ${navBarHtml("/challenges")}
     </div>
   </div>
 </div>
-
-<!-- REGISTERED SOLVERS -->
-<div style="background:#F6F2EA;padding:0 40px 64px;border-top:1px solid rgba(64,50,34,0.09);">
-  <div style="max-width:1180px;margin:0 auto;padding-top:56px;">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;">
-      <div>
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F26522;margin-bottom:10px;">Registered solvers</div>
-        <h2 style="margin:0;font-size:30px;font-weight:600;letter-spacing:-0.02em;color:#1A1714;">Teams currently working on this</h2>
-      </div>
-      <span style="font-size:14px;color:#6E685F;">${totalSolvers} group${totalSolvers === 1 ? "" : "s"} registered</span>
-    </div>
-
-    ${totalSolvers === 0 ? `
-    <div style="border:1.5px dashed rgba(64,50,34,0.18);border-radius:18px;padding:40px 26px;text-align:center;">
-      <p style="margin:0;font-size:14px;color:#6E685F;">No teams have registered yet. Be the first to apply.</p>
-    </div>` : `
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
-      ${visibleSolvers.map((s) => `
-      <div class="ib-challenge-hover" style="background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:18px;padding:26px;display:flex;flex-direction:column;">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:44px;height:44px;border-radius:11px;background:${s.color};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;flex-shrink:0;">${s.initials}</div>
-            <div><div style="font-size:16px;font-weight:600;color:#1A1714;">${s.name}</div><div style="font-size:12.5px;color:#6E685F;margin-top:2px;">Team &middot; ${s.members} members</div></div>
-          </div>
-        </div>
-        ${s.description ? `<p style="margin:0 0 18px;font-size:13.5px;line-height:1.6;color:#5A544B;flex:1;">${s.description}</p>` : ""}
-        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;margin-bottom:18px;">
-          ${s.affiliation ? `<div style="display:flex;gap:6px;"><span style="color:#6E685F;min-width:74px;">Affiliation</span><span style="font-weight:600;color:#1A1714;">${s.affiliation}</span></div>` : ""}
-          ${s.track ? `<div style="display:flex;gap:6px;"><span style="color:#6E685F;min-width:74px;">Track</span><span style="font-weight:600;color:#1A1714;">${s.track}</span></div>` : ""}
-          <div style="display:flex;gap:6px;"><span style="color:#6E685F;min-width:74px;">Registered</span><span style="font-weight:600;color:#1A1714;">${s.registered}</span></div>
-        </div>
-        <a href="${BP}/challenges/${c.slug}/apply/" style="display:flex;align-items:center;justify-content:center;gap:7px;font-size:13.5px;font-weight:600;color:#fff;background:#1A1714;padding:11px 16px;border-radius:9999px;text-decoration:none;">Collaborate
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-      </div>`).join("")}
-      ${totalSolvers > visibleSolvers.length ? `
-      <div style="border:1.5px dashed rgba(64,50,34,0.18);border-radius:18px;padding:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;">
-        <div style="width:48px;height:48px;border-radius:9999px;background:#F6F2EA;display:flex;align-items:center;justify-content:center;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6E685F" stroke-width="2.4"><path d="M12 5v14M5 12h14"></path></svg>
-        </div>
-        <div><div style="font-size:15px;font-weight:600;color:#1A1714;margin-bottom:6px;">${totalSolvers - visibleSolvers.length} more teams registered</div><p style="margin:0;font-size:13px;line-height:1.55;color:#6E685F;">Full solver list visible to challenge poster and Incubator Baguio staff.</p></div>
-        <a href="${BP}/challenges/${c.slug}/apply/" style="font-size:13.5px;font-weight:600;color:#F26522;text-decoration:none;">Join as a solver &rarr;</a>
-      </div>` : ""}
-    </div>`}
-  </div>
-</div>
-
-${footerHtml()}
 `;
 
-  return <main dangerouslySetInnerHTML={{ __html: HTML }} />;
+  const BOTTOM_HTML = footerHtml();
+
+  return (
+    <main>
+      <div dangerouslySetInnerHTML={{ __html: TOP_HTML }} />
+
+      {/* REGISTERED SOLVERS -- real JSX (not the HTML-string pattern used
+          above) so each card's "Collaborate" action can be a client
+          component (CollaborateButton) instead of a dead link. It used to
+          route to the Apply form, which doesn't contact the team at all. */}
+      <div style={{ background: "#F6F2EA", padding: "0 40px 64px", borderTop: "1px solid rgba(64,50,34,0.09)" }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", paddingTop: 56 }}>
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 28, flexWrap: "wrap", gap: 12 }}>
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F26522", marginBottom: 10 }}>Registered solvers</div>
+              <h2 style={{ margin: 0, fontSize: 30, fontWeight: 600, letterSpacing: "-0.02em", color: "#1A1714" }}>Teams currently working on this</h2>
+            </div>
+            <span style={{ fontSize: 14, color: "#6E685F" }}>
+              {totalSolvers} group{totalSolvers === 1 ? "" : "s"} registered
+            </span>
+          </div>
+
+          {totalSolvers === 0 ? (
+            <div style={{ border: "1.5px dashed rgba(64,50,34,0.18)", borderRadius: 18, padding: "40px 26px", textAlign: "center" }}>
+              <p style={{ margin: 0, fontSize: 14, color: "#6E685F" }}>No teams have registered yet. Be the first to apply.</p>
+            </div>
+          ) : (
+            <div className="ib-challenge-solvers-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }}>
+              {visibleSolvers.map((s) => (
+                <div key={s.id} className="ib-challenge-hover" style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 18, padding: 26, display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 18 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                      <div style={{ width: 44, height: 44, borderRadius: 11, background: s.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 600, color: "#fff", flexShrink: 0 }}>{s.initials}</div>
+                      <div>
+                        <div style={{ fontSize: 16, fontWeight: 600, color: "#1A1714" }}>{s.name}</div>
+                        <div style={{ fontSize: 12.5, color: "#6E685F", marginTop: 2 }}>Team &middot; {s.members} members</div>
+                      </div>
+                    </div>
+                  </div>
+                  {s.description && <p style={{ margin: "0 0 18px", fontSize: 13.5, lineHeight: 1.6, color: "#5A544B", flex: 1 }}>{s.description}</p>}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: 13, marginBottom: 18 }}>
+                    {s.affiliation && (
+                      <div style={{ display: "flex", gap: 6 }}>
+                        <span style={{ color: "#6E685F", minWidth: 74 }}>Affiliation</span>
+                        <span style={{ fontWeight: 600, color: "#1A1714" }}>{s.affiliation}</span>
+                      </div>
+                    )}
+                    {s.track && (
+                      <div style={{ display: "flex", gap: 6 }}>
+                        <span style={{ color: "#6E685F", minWidth: 74 }}>Track</span>
+                        <span style={{ fontWeight: 600, color: "#1A1714" }}>{s.track}</span>
+                      </div>
+                    )}
+                    <div style={{ display: "flex", gap: 6 }}>
+                      <span style={{ color: "#6E685F", minWidth: 74 }}>Registered</span>
+                      <span style={{ fontWeight: 600, color: "#1A1714" }}>{s.registered}</span>
+                    </div>
+                  </div>
+                  <CollaborateButton applicationId={s.id} teamName={s.name} />
+                </div>
+              ))}
+
+              {totalSolvers > visibleSolvers.length && (
+                <div style={{ border: "1.5px dashed rgba(64,50,34,0.18)", borderRadius: 18, padding: 26, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", gap: 14 }}>
+                  <div style={{ width: 48, height: 48, borderRadius: 9999, background: "#F6F2EA", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2.4}>
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: "#1A1714", marginBottom: 6 }}>{totalSolvers - visibleSolvers.length} more teams registered</div>
+                    <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: "#6E685F" }}>Full solver list visible to challenge poster and Incubator Baguio staff.</p>
+                  </div>
+                  <a href={`${BP}/challenges/${c.slug}/apply/`} style={{ fontSize: 13.5, fontWeight: 600, color: "#F26522", textDecoration: "none" }}>
+                    Join as a solver &rarr;
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div dangerouslySetInnerHTML={{ __html: BOTTOM_HTML }} />
+    </main>
+  );
 }

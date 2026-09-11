@@ -120,6 +120,19 @@ input::placeholder, textarea::placeholder { color: var(--ib-ink-2); opacity: 1; 
 .ib-challenge-hover { transition: box-shadow .28s cubic-bezier(.22,.61,.36,1), transform .28s cubic-bezier(.22,.61,.36,1), border-color .28s ease; }
 .ib-challenge-hover:hover { box-shadow: var(--ib-shadow-lg); transform: translateY(-4px); }
 
+/* Registered-solvers grid on the challenge detail page. This one carries an
+   explicit class (unlike most of this file's [style*="..."] attribute
+   selectors) because its container is real JSX with a React style *object*,
+   not an inline style string -- React serializes that as
+   "repeat(3, 1fr)" (space after the comma), which wouldn't match the
+   attribute selectors' "repeat(3,1fr)" substring below. */
+@media (max-width: 900px) {
+  .ib-challenge-solvers-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 600px) {
+  .ib-challenge-solvers-grid { grid-template-columns: 1fr !important; }
+}
+
 /* Mentor card flip: front (photo) rotates away to reveal the bio on hover.
    Falls back to a plain non-flipping card under reduced motion. */
 .ib-mentor-flip { perspective: 1400px; }
