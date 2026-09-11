@@ -2,6 +2,7 @@ import { supabase } from "../../lib/supabaseClient";
 import { acronymOf, initialsOf, paletteFor, truncate } from "../../lib/visualIdentity";
 import type {
   AcademeEntry,
+  CofounderEntry,
   CommunityEntry,
   CompanyEntry,
   CoworkingEntry,
@@ -38,6 +39,33 @@ export async function fetchDynamicStartups(): Promise<StartupEntry[]> {
       bg: p.bg,
     };
   });
+}
+
+// Explicit column list rather than select("*") -- unlike every other
+// fetcher in this file, cofounder_profiles carries a raw contact_email that
+// must never reach a public page's client bundle. RLS already scopes this
+// to is_active rows for an anonymous caller (auth.uid() is null, so the
+// policy's "or auth.uid() = owner_id" half can't match), but naming the
+// columns here means even a logged-in visitor's own inactive listing can't
+// leak in through the "or" clause, and it's the same belt-and-suspenders
+// reasoning as the eq("is_active", true) below.
+export async function fetchDynamicCofounders(): Promise<CofounderEntry[]> {
+  if (!supabase) return [];
+  const { data } = await supabase
+    .from("cofounder_profiles")
+    .select("id,owner_id,name,building,role_needed,sector,commitment,looking_for")
+    .eq("is_active", true)
+    .order("created_at", { ascending: false });
+  return (data ?? []).map((c: any) => ({
+    id: c.id,
+    ownerId: c.owner_id,
+    name: c.name,
+    building: c.building || "",
+    roleNeeded: c.role_needed || "Any",
+    sector: c.sector || "",
+    commitment: c.commitment || "Full-time",
+    lookingFor: c.looking_for || "",
+  }));
 }
 
 export async function fetchDynamicMentors(): Promise<DynamicMentorEntry[]> {

@@ -5,8 +5,7 @@ import { useAuth } from "../../AuthProvider";
 import { supabase } from "../../../lib/supabaseClient";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, rowItemStyle, DARK, ORANGE } from "../styles";
 import { SECTOR_FILTERS } from "../../admin/data";
-
-const ROLE_OPTIONS = ["Any", "Technical", "Business/Marketing", "Design"] as const;
+import { ROLE_OPTIONS } from "./data";
 const COMMITMENT_OPTIONS = ["Full-time", "Part-time", "Advisor"] as const;
 
 interface CofounderProfile {
@@ -336,10 +335,19 @@ export default function CofounderFinder() {
               <input style={inputStyle} type="email" value={form.contact_email} onChange={(e) => update("contact_email", e.target.value)} placeholder="you@example.com" />
             </div>
             {myProfile && (
-              <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#44444C", cursor: "pointer" }}>
-                <input type="checkbox" checked={form.is_active} onChange={(e) => update("is_active", e.target.checked)} />
-                Visible in the directory
-              </label>
+              <div>
+                <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#44444C", cursor: "pointer" }}>
+                  <input type="checkbox" checked={form.is_active} onChange={(e) => update("is_active", e.target.checked)} />
+                  Public in the Ecosystem directory
+                </label>
+                {/* Listings show up on the public /ecosystem page's
+                    Co-Founders tab, not just to other logged-in members --
+                    worth being explicit about, since "the directory" used to
+                    mean exactly the opposite of that. */}
+                <p style={{ margin: "6px 0 0 26px", fontSize: 12, color: "#6E685F" }}>
+                  Anyone visiting the site can see this listing and send you a connect request. Your contact email is never shown publicly.
+                </p>
+              </div>
             )}
             {error && <p style={{ color: "#E23A2E", fontSize: 13, margin: 0 }}>{error}</p>}
             {saved && <p style={{ color: "#1A6B3C", fontSize: 13, margin: 0 }}>Saved.</p>}
