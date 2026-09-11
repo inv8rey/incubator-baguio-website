@@ -123,6 +123,14 @@ ${navBarHtml("/about")}
       <div style="width:120px;height:2px;background:#F26522;margin:12px auto 24px;"></div>
       <h2 style="margin:0;font-size:46px;font-weight:600;letter-spacing:-0.03em;color:#fff;line-height:1.08;">Two paths to move<br><span style="color:#F26522;">your idea forward.</span></h2>
       <p style="margin:20px auto 0;font-size:16.5px;line-height:1.6;color:rgba(255,255,255,0.62);max-width:520px;">Not every project needs the same kind of support. We help you find the path that fits your idea.</p>
+
+      <!-- Entry point to the Path Finder. The two cards below cover the two
+           paths we run projects through; the questionnaire also covers MSMEs
+           and existing businesses, which is why it's a separate page rather
+           than a third card here. -->
+      <div style="margin-top:24px;font-size:14px;color:rgba(255,255,255,0.5);">Not sure which one fits what you&rsquo;re working on?</div>
+      <a href="${BP}/path-finder" class="ib-cta-orange" style="margin-top:12px;display:inline-flex;align-items:center;gap:9px;background:#F26522;color:#fff;font-weight:600;font-size:14.5px;padding:13px 28px;border-radius:9999px;text-decoration:none;">Find your path <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <div style="margin-top:11px;font-size:12.5px;color:rgba(255,255,255,0.4);">Takes about a minute &middot; no account needed</div>
     </div>
 
     <div class="ib-paths-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:26px;">

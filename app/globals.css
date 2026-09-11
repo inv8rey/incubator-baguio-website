@@ -1905,3 +1905,52 @@ img { max-width: 100%; height: auto; }
 @media (max-width: 680px) {
   .ib-contact-grid { grid-template-columns: minmax(0, 1fr) !important; }
 }
+
+/* ---------------------------------------------------------------------------
+   Path Finder (app/path-finder/). Everything visual lives in inline styles on
+   the component, as elsewhere in this codebase -- these rules only cover what
+   inline styles can't express: hover, focus-visible, and breakpoints.
+   --------------------------------------------------------------------------- */
+.ib-pf-option { transition: background .15s ease, border-color .15s ease, transform .12s ease; }
+.ib-pf-option:hover { background: #fff !important; border-color: rgba(242,101,34,0.5) !important; }
+.ib-pf-option:hover .ib-pf-key { border-color: rgba(242,101,34,0.5); color: #F26522; }
+.ib-pf-option:active { transform: scale(0.995); }
+.ib-pf-option:focus-visible,
+.ib-pf-action:focus-visible,
+.ib-pf-chip:focus-visible {
+  outline: 2px solid #F26522;
+  outline-offset: 2px;
+}
+
+.ib-pf-action { transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
+.ib-pf-action:hover { transform: translateY(-2px); border-color: rgba(64,50,34,0.24) !important; box-shadow: 0 14px 30px -20px rgba(26,23,20,0.5); }
+
+.ib-pf-chip { transition: border-color .15s ease, background .15s ease; }
+.ib-pf-chip:hover { border-color: rgba(242,101,34,0.5) !important; background: #FFF8F1 !important; }
+
+.ib-pf-bar { transition: width .35s cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* The 1-9 shortcut hint is meaningless without a keyboard, and the pointer
+   query is a better proxy for that than width alone (tablets with keyboards
+   still get it). */
+@media (hover: none), (pointer: coarse) {
+  .ib-pf-hint { display: none !important; }
+}
+
+@media (max-width: 720px) {
+  .ib-pf-wrap { padding-left: 20px !important; padding-right: 20px !important; }
+  .ib-pf-card { padding: 24px 20px 22px !important; border-radius: 16px !important; }
+  .ib-pf-question { font-size: 21px !important; }
+  .ib-pf-result-title { font-size: 27px !important; }
+  .ib-pf-paths { grid-template-columns: minmax(0, 1fr) !important; }
+  .ib-pf-actions { grid-template-columns: minmax(0, 1fr) !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ib-pf-option,
+  .ib-pf-action,
+  .ib-pf-chip,
+  .ib-pf-bar { transition: none !important; }
+  .ib-pf-action:hover { transform: none; }
+  .ib-pf-option:active { transform: none; }
+}

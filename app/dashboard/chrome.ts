@@ -59,6 +59,7 @@ export function footerHtml() {
           <a class="ib-footlink" href="${BP}/ecosystem">Ecosystem</a>
           <a class="ib-footlink" href="${BP}/calendar">Calendar</a>
           <a class="ib-footlink" href="${BP}/get-started">Get Started</a>
+          <a class="ib-footlink" href="${BP}/path-finder">Path Finder</a>
           <a class="ib-footlink" href="${BP}/contact">Contact</a>
         </div>
       </div>
