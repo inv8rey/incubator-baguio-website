@@ -172,7 +172,7 @@ export default function CollaborateButton({ applicationId, teamName }: { applica
                 <div>
                   <div style={{ fontSize: 18, fontWeight: 600, color: DARK, marginBottom: 6 }}>Message sent</div>
                   <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#5A544B" }}>
-                    Incubator Baguio will pass this along to <strong>{teamName}</strong> and help you connect.
+                    <strong>{teamName}</strong> will see this in their dashboard and can reply by email.
                   </p>
                 </div>
                 <button
@@ -189,7 +189,7 @@ export default function CollaborateButton({ applicationId, teamName }: { applica
                   <div>
                     <div style={{ fontSize: 18, fontWeight: 600, color: DARK, letterSpacing: "-0.02em" }}>Connect with {teamName}</div>
                     <p style={{ margin: "4px 0 0", fontSize: 12.5, lineHeight: 1.5, color: "#6E685F" }}>
-                      Sent to the Incubator Baguio team, who&rsquo;ll introduce you &mdash; teams&rsquo; contact details aren&rsquo;t published directly.
+                      Sent straight to their dashboard &mdash; their contact details aren&rsquo;t published directly, but they&rsquo;ll see your name, email, and message.
                     </p>
                   </div>
                   <button type="button" onClick={close} style={{ width: 28, height: 28, borderRadius: 8, border: "none", background: "#F5F4F0", cursor: "pointer", fontSize: 17, color: "#5A544B", flexShrink: 0 }}>
