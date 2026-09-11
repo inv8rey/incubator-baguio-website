@@ -88,13 +88,17 @@ export async function fetchChallengeBySlug(slug: string): Promise<Challenge | nu
 
 export async function fetchChallengeApplications(challengeId: string): Promise<Solver[]> {
   if (!supabase) return [];
-  const { data } = await supabase
-    .from("challenge_applications")
-    .select("*")
-    .eq("challenge_id", challengeId)
-    .order("created_at", { ascending: false });
+  // challenge_applications' RLS only grants SELECT to admins (it holds
+  // contact_name/contact_email/phone alongside the team info) -- a direct
+  // .from("challenge_applications").select() here always came back empty
+  // for the public/anon client, silently, with no error, so this page
+  // showed "No teams have registered yet" even for challenges with accepted
+  // teams. public_challenge_solvers() is a SECURITY DEFINER function that
+  // exposes only the non-sensitive columns for 'accepted' applications --
+  // see supabase/migrations/2026-09-11b-public-challenge-solvers.sql.
+  const { data } = await supabase.rpc("public_challenge_solvers", { p_challenge_id: challengeId });
   return (data ?? []).map((a: any) => {
-    const name = a.team_name || a.contact_name || "Applicant";
+    const name = a.team_name || "Applicant";
     const p = paletteFor(name);
     return {
       id: a.id,
