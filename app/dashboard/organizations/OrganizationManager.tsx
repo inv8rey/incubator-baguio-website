@@ -244,7 +244,7 @@ export default function OrganizationManager() {
   async function checkDuplicate(name: string) {
     if (!supabase || !name.trim()) return;
     const { data } = await supabase.from("organizations").select("name").ilike("name", `%${name.trim()}%`).limit(1);
-    setDuplicateWarning(data && data.length > 0 ? `An organization with a similar name already exists: "${data[0].name}". You can still submit — Incubator Baguio will review it.` : "");
+    setDuplicateWarning(data && data.length > 0 ? `An organization with a similar name already exists: "${data[0].name}". You can still continue — it publishes immediately, but Incubator Baguio may follow up if this turns out to be a duplicate.` : "");
   }
 
   async function handleCreateLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -303,8 +303,13 @@ export default function OrganizationManager() {
         slug,
         owner_id: user.id,
         contact_email: user.email || "",
-        approval_status: "pending",
-        is_public: false,
+        // Organizations publish immediately instead of waiting on admin
+        // review -- flagged_duplicate still gets computed and surfaced in
+        // the admin panel, so a likely duplicate is caught and merged/
+        // suspended after the fact rather than held back before anyone
+        // sees it.
+        approval_status: "approved",
+        is_public: true,
         flagged_duplicate: flaggedDuplicate,
       })
       .select("*")
@@ -436,7 +441,7 @@ export default function OrganizationManager() {
           )}
         </div>
         <p style={{ margin: "0 0 22px", fontSize: 13.5, color: "#5A544B" }}>
-          Reviewed by Incubator Baguio before it appears in the Ecosystem directory. Once approved, you can keep it up to date yourself &mdash; no need to ask staff to edit it for you.
+          Publishes to the Ecosystem directory right away, and you can keep it up to date yourself &mdash; no need to ask staff to edit it for you.
         </p>
         <form onSubmit={submitCreate} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div>
@@ -553,7 +558,7 @@ export default function OrganizationManager() {
           {error && <p style={{ color: "#E23A2E", fontSize: 13, margin: 0 }}>{error}</p>}
           <div>
             <button type="submit" disabled={busy || uploading || uploadingCover} style={{ ...primaryButtonStyle, opacity: busy ? 0.7 : 1 }}>
-              {busy ? "Submitting…" : "Submit for review"}
+              {busy ? "Publishing…" : "Publish organization"}
             </button>
           </div>
         </form>
