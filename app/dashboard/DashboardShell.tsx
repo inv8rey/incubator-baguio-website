@@ -8,14 +8,25 @@ import NotificationBell from "./NotificationBell";
 import { BASE_PATH } from "./chrome";
 import "./dashboard.css";
 
-export default function DashboardShell({ active, children }: { active: string; children: React.ReactNode }) {
+export default function DashboardShell({
+  active,
+  children,
+  allowPublic,
+}: {
+  active: string;
+  children: React.ReactNode;
+  // Escape hatch for the rare dashboard page (Co-Founder Finder's Browse
+  // tab, so far) that has a real public-facing view -- everything else on
+  // /dashboard/* stays exactly as before, since this defaults to false.
+  allowPublic?: boolean;
+}) {
   const { user, loading } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Signed out (or still resolving the session): fall back to a plain,
-  // centered card — the sidebar layout below only makes sense once we
-  // actually have a logged-in member to show it to.
-  if (loading || !user) {
+  // Still resolving the session, or signed out with no public view to fall
+  // back to: the sidebar layout below only makes sense once we actually
+  // have a logged-in member to show it to.
+  if (loading || (!user && !allowPublic)) {
     return (
       <div style={{ background: "#F6F2EA", padding: "48px 40px 64px" }}>
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
@@ -23,6 +34,14 @@ export default function DashboardShell({ active, children }: { active: string; c
         </div>
       </div>
     );
+  }
+
+  // Signed-out visitor on a page that opted into a public view: render the
+  // page's own content directly, with none of the sidebar/notification-bell
+  // chrome that assumes a logged-in member (an anonymous visitor has no org
+  // to switch into, no notifications, nothing else in that sidebar to use).
+  if (!user) {
+    return <div style={{ background: "#F6F2EA", padding: "16px 40px 64px" }}>{children}</div>;
   }
 
   return (

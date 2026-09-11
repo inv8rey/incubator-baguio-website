@@ -6,6 +6,8 @@ import { supabase } from "../../../lib/supabaseClient";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, rowItemStyle, DARK, ORANGE } from "../styles";
 import { SECTOR_FILTERS } from "../../admin/data";
 import { ROLE_OPTIONS } from "./data";
+
+const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const COMMITMENT_OPTIONS = ["Full-time", "Part-time", "Advisor"] as const;
 
 interface CofounderProfile {
@@ -19,6 +21,24 @@ interface CofounderProfile {
   contact_email: string;
   is_active: boolean;
   created_at: string;
+}
+
+// What the Browse tab actually needs to render a card, for anyone viewing
+// it -- logged in or not. Deliberately narrower than CofounderProfile: no
+// contact_email (reaching a listed person goes through ConnectButton's
+// mediated request, same as the site's public Ecosystem directory does for
+// Mentors, never a raw address in a fetch response an anonymous visitor's
+// browser can see), and no owner_id (the "not my own listing" exclusion
+// happens in the query's `.neq()` for a logged-in viewer, so the client
+// never needs that id at all).
+interface DirectoryEntry {
+  id: string;
+  name: string;
+  building: string;
+  role_needed: string;
+  sector: string;
+  commitment: string;
+  looking_for: string;
 }
 
 interface SentConnection {
@@ -54,14 +74,27 @@ function StatusBadge({ status }: { status: string }) {
 
 const EMPTY_FORM = { name: "", building: "", role_needed: "Any", sector: "", commitment: "Full-time", looking_for: "", contact_email: "", is_active: true };
 
-function ConnectButton({ target, onSent }: { target: CofounderProfile; onSent: () => void }) {
+function ConnectButton({ target, onSent }: { target: DirectoryEntry; onSent: () => void }) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
 
-  if (!user) return null;
+  // The Browse tab is now visible without an account, so this can no
+  // longer just disappear for an anonymous visitor the way it used to --
+  // that left no way to act on a listing at all. Sends them to log in and
+  // back, same pattern as every other Connect button on the site.
+  if (!user) {
+    return (
+      <a
+        href={`${BP}/login/?redirect=${encodeURIComponent(`${BP}/dashboard/cofounder/`)}`}
+        style={{ fontSize: 12, fontWeight: 600, color: ORANGE, textDecoration: "none", border: `1.5px solid ${ORANGE}`, padding: "7px 14px", borderRadius: 9999, display: "inline-block" }}
+      >
+        Connect
+      </a>
+    );
+  }
   if (sent) return <span style={{ fontSize: 12, fontWeight: 600, color: "#1A6B3C" }}>Request sent</span>;
 
   if (!open) {
@@ -108,7 +141,7 @@ export default function CofounderFinder() {
   const [view, setView] = useState<"browse" | "profile" | "requests">("browse");
   const [myProfile, setMyProfile] = useState<CofounderProfile | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
-  const [directory, setDirectory] = useState<CofounderProfile[]>([]);
+  const [directory, setDirectory] = useState<DirectoryEntry[]>([]);
   const [sent, setSent] = useState<SentConnection[]>([]);
   const [received, setReceived] = useState<ReceivedConnection[]>([]);
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
@@ -118,8 +151,33 @@ export default function CofounderFinder() {
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
 
-  async function loadAll() {
-    if (!supabase || !user) return;
+  // Runs for every visitor, logged in or not -- this is the Browse tab's
+  // actual public data. Excludes the viewer's own listing when there is a
+  // viewer; there's nothing to exclude for an anonymous one.
+  async function loadDirectory() {
+    if (!supabase) return;
+    let q = supabase
+      .from("cofounder_profiles")
+      .select("id,name,building,role_needed,sector,commitment,looking_for")
+      .eq("is_active", true)
+      .order("created_at", { ascending: false });
+    if (user) q = q.neq("owner_id", user.id);
+    const { data } = await q;
+    setDirectory((data as DirectoryEntry[]) ?? []);
+  }
+
+  // Everything that only makes sense for a signed-in member: their own
+  // listing (with contact_email, which only its owner ever needs to see or
+  // edit) and both directions of connection requests. No-ops to an empty
+  // state when there's no session, rather than returning early and leaving
+  // stale data from a previous logged-in visit on screen.
+  async function loadMine() {
+    if (!supabase || !user) {
+      setMyProfile(null);
+      setSent([]);
+      setReceived([]);
+      return;
+    }
     const { data: mine } = await supabase.from("cofounder_profiles").select("*").eq("owner_id", user.id).maybeSingle();
     if (mine) {
       setMyProfile(mine as CofounderProfile);
@@ -134,16 +192,9 @@ export default function CofounderFinder() {
         is_active: mine.is_active,
       });
     } else {
+      setMyProfile(null);
       setForm((f) => ({ ...f, name: profile?.full_name || "", contact_email: profile?.email || "" }));
     }
-
-    const { data: dirRows } = await supabase
-      .from("cofounder_profiles")
-      .select("*")
-      .eq("is_active", true)
-      .neq("owner_id", user.id)
-      .order("created_at", { ascending: false });
-    setDirectory((dirRows as CofounderProfile[]) ?? []);
 
     const { data: sentRows } = await supabase
       .from("cofounder_connections")
@@ -162,7 +213,10 @@ export default function CofounderFinder() {
     } else {
       setReceived([]);
     }
+  }
 
+  async function loadAll() {
+    await Promise.all([loadDirectory(), loadMine()]);
     setLoaded(true);
   }
 
@@ -286,10 +340,25 @@ export default function CofounderFinder() {
         </div>
       )}
 
-      {view === "profile" && (
+      {view === "profile" && !user && (
+        <div style={cardStyle}>
+          <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 600, color: DARK }}>Create your listing</h3>
+          <p style={{ margin: "0 0 18px", fontSize: 13.5, lineHeight: 1.6, color: "#6E685F" }}>
+            Log in or create a free account to list yourself in the Co-Founder Finder and start receiving requests.
+          </p>
+          <a
+            href={`${BP}/login/?redirect=${encodeURIComponent(`${BP}/dashboard/cofounder/`)}`}
+            style={{ ...primaryButtonStyle, textDecoration: "none", display: "inline-block" }}
+          >
+            Log in
+          </a>
+        </div>
+      )}
+
+      {view === "profile" && user && (
         <div style={cardStyle}>
           <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600, color: DARK }}>{myProfile ? "Your listing" : "Create your listing"}</h3>
-          <p style={{ margin: "0 0 20px", fontSize: 13, color: "#6E685F" }}>Shown to other members browsing the Co-Founder Finder.</p>
+          <p style={{ margin: "0 0 20px", fontSize: 13, color: "#6E685F" }}>Shown to anyone browsing the Co-Founder Finder.</p>
           <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
               <label style={labelStyle}>Your name</label>
@@ -338,14 +407,14 @@ export default function CofounderFinder() {
               <div>
                 <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#44444C", cursor: "pointer" }}>
                   <input type="checkbox" checked={form.is_active} onChange={(e) => update("is_active", e.target.checked)} />
-                  Public in the Ecosystem directory
+                  Public listing
                 </label>
-                {/* Listings show up on the public /ecosystem page's
-                    Co-Founders tab, not just to other logged-in members --
-                    worth being explicit about, since "the directory" used to
-                    mean exactly the opposite of that. */}
+                {/* The Browse tab this feeds is visible to anyone who opens
+                    /dashboard/cofounder/, logged in or not -- worth being
+                    explicit about, since "visible in the directory" used to
+                    mean "other members only." */}
                 <p style={{ margin: "6px 0 0 26px", fontSize: 12, color: "#6E685F" }}>
-                  Anyone visiting the site can see this listing and send you a connect request. Your contact email is never shown publicly.
+                  Anyone who opens the Co-Founder Finder can see this listing and send you a connect request — no account required to browse. Your contact email is never shown publicly.
                 </p>
               </div>
             )}
@@ -360,7 +429,22 @@ export default function CofounderFinder() {
         </div>
       )}
 
-      {view === "requests" && (
+      {view === "requests" && !user && (
+        <div style={cardStyle}>
+          <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 600, color: DARK }}>Requests</h3>
+          <p style={{ margin: "0 0 18px", fontSize: 13.5, lineHeight: 1.6, color: "#6E685F" }}>
+            Log in to see requests you've sent or received.
+          </p>
+          <a
+            href={`${BP}/login/?redirect=${encodeURIComponent(`${BP}/dashboard/cofounder/`)}`}
+            style={{ ...primaryButtonStyle, textDecoration: "none", display: "inline-block" }}
+          >
+            Log in
+          </a>
+        </div>
+      )}
+
+      {view === "requests" && user && (
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           {myProfile && (
             <div style={cardStyle}>

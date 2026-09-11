@@ -1,23 +1,4 @@
-export type EcosystemCategory = "Startups" | "Mentors" | "Co-Founders" | "TBIs" | "Academe" | "Companies" | "Service Providers" | "Government" | "Community" | "Coworking Spaces" | "Makerspaces & Labs" | "Funded Projects";
-
-// A co-founder listing has no logo/photo of its own (it's a person, not an
-// org), so it renders as a plain text card like the dashboard's own Browse
-// tab — no color/bg/initials fields needed the way every other entry here
-// has. contact_email is deliberately NOT carried onto this type: unlike
-// Startups (which do surface an ObfuscatedEmail), a co-founder listing is an
-// individual, and reaching them goes through ConnectCofounderButton's
-// mediated request (cofounder_connections) the same way Mentors already
-// work — never a raw address shipped into a public page's data.
-export interface CofounderEntry {
-  id: string;
-  ownerId: string;
-  name: string;
-  building: string;
-  roleNeeded: string;
-  sector: string;
-  commitment: string;
-  lookingFor: string;
-}
+export type EcosystemCategory = "Startups" | "Mentors" | "TBIs" | "Academe" | "Companies" | "Service Providers" | "Government" | "Community" | "Coworking Spaces" | "Makerspaces & Labs" | "Funded Projects";
 
 export interface StartupEntry {
   id?: string;

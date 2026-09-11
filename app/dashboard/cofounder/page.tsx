@@ -13,7 +13,7 @@ export default function CofounderDashboardPage() {
   return (
     <main>
       <div dangerouslySetInnerHTML={{ __html: navBarHtml() }} />
-      <DashboardShell active="/dashboard/cofounder/">
+      <DashboardShell active="/dashboard/cofounder/" allowPublic>
         <CofounderFinder />
       </DashboardShell>
       <div dangerouslySetInnerHTML={{ __html: footerHtml() }} />

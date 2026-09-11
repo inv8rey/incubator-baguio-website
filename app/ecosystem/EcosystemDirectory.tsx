@@ -1,12 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MENTOR_SPECIALIZATIONS, type EcosystemCategory, type StartupEntry, type CofounderEntry, type TbiEntry, type AcademeEntry, type CompanyEntry, type ServiceProviderEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry, type FundedProjectEntry } from "./data";
-import { fetchDynamicStartups, fetchDynamicMentors, fetchDynamicCofounders, fetchDynamicOrganizations, fetchDynamicFundedProjects, type DynamicMentorEntry } from "./dynamicData";
+import { MENTOR_SPECIALIZATIONS, type EcosystemCategory, type StartupEntry, type TbiEntry, type AcademeEntry, type CompanyEntry, type ServiceProviderEntry, type GovernmentEntry, type CommunityEntry, type CoworkingEntry, type MakerspaceEntry, type FundedProjectEntry } from "./data";
+import { fetchDynamicStartups, fetchDynamicMentors, fetchDynamicOrganizations, fetchDynamicFundedProjects, type DynamicMentorEntry } from "./dynamicData";
 import ConnectMentorButton from "./ConnectMentorButton";
-import ConnectCofounderButton from "./ConnectCofounderButton";
-import { ROLE_OPTIONS } from "../dashboard/cofounder/data";
-import { useAuth } from "../AuthProvider";
 
 const DARK = "#1A1714";
 const ORANGE = "#F26522";
@@ -14,7 +11,7 @@ const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 // Exported so the nav's hover mega-menu (NavMegaMenu.tsx) can list the same
 // tabs without hardcoding a second copy of this list.
-export const ALL_CATEGORIES: EcosystemCategory[] = ["Startups", "Mentors", "Co-Founders", "TBIs", "Academe", "Companies", "Service Providers", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs", "Funded Projects"];
+export const ALL_CATEGORIES: EcosystemCategory[] = ["Startups", "Mentors", "TBIs", "Academe", "Companies", "Service Providers", "Government", "Community", "Coworking Spaces", "Makerspaces & Labs", "Funded Projects"];
 
 // Shared by every filter/sort <select> in the directory's toolbar.
 // minWidth/maxWidth are load-bearing: a <select> is intrinsically as wide as
@@ -375,14 +372,12 @@ type ViewMode = "list" | "map";
 type SortOrder = "random" | "az" | "za";
 
 export default function EcosystemDirectory() {
-  const { user } = useAuth();
   const [tab, setTab] = useState<EcosystemCategory>("Startups");
   const [query, setQuery] = useState("");
   const [view, setView] = useState<ViewMode>("list");
   const [sort, setSort] = useState<SortOrder>("random");
   const [sectorFilter, setSectorFilter] = useState<string | null>(null);
   const [specializationFilter, setSpecializationFilter] = useState<string | null>(null);
-  const [roleFilter, setRoleFilter] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [institutionFilter, setInstitutionFilter] = useState<string | null>(null);
   const [highlightId, setHighlightId] = useState<string | null>(null);
@@ -393,7 +388,6 @@ export default function EcosystemDirectory() {
     setQuery("");
     setSectorFilter(null);
     setSpecializationFilter(null);
-    setRoleFilter(null);
     setStatusFilter(null);
     setInstitutionFilter(null);
     setHighlightId(null);
@@ -418,7 +412,6 @@ export default function EcosystemDirectory() {
 
   const [dynStartups, setDynStartups] = useState<StartupEntry[]>([]);
   const [dynMentors, setDynMentors] = useState<DynamicMentorEntry[]>([]);
-  const [dynCofounders, setDynCofounders] = useState<CofounderEntry[]>([]);
   const [dynOrgs, setDynOrgs] = useState<{
     TBIs: TbiEntry[];
     Academe: AcademeEntry[];
@@ -434,7 +427,6 @@ export default function EcosystemDirectory() {
   useEffect(() => {
     fetchDynamicStartups().then((r) => setDynStartups(shuffle(r)));
     fetchDynamicMentors().then((r) => setDynMentors(shuffle(r)));
-    fetchDynamicCofounders().then((r) => setDynCofounders(shuffle(r)));
     fetchDynamicOrganizations().then((r) =>
       setDynOrgs({
         TBIs: shuffle(r.TBIs),
@@ -460,11 +452,6 @@ export default function EcosystemDirectory() {
 
   const allStartups = dynStartups;
   const allMentors = dynMentors;
-  // The fetch itself can't filter this out (it has no notion of "the
-  // current viewer" — it's the same public query for everyone), so a
-  // logged-in visitor who's also listed themselves would otherwise see
-  // their own card with a "Connect" button that makes no sense to click.
-  const allCofounders = user ? dynCofounders.filter((c) => c.ownerId !== user.id) : dynCofounders;
   const allTbis = dynOrgs.TBIs;
   const allAcademe = dynOrgs.Academe;
   const allCompanies = dynOrgs.Companies;
@@ -478,7 +465,6 @@ export default function EcosystemDirectory() {
   const TABS: { id: EcosystemCategory; label: string; count: number }[] = [
     { id: "Startups", label: "Startups", count: allStartups.length },
     { id: "Mentors", label: "Mentors", count: allMentors.length },
-    { id: "Co-Founders", label: "Co-Founders", count: allCofounders.length },
     { id: "TBIs", label: "TBIs", count: allTbis.length },
     { id: "Academe", label: "Academe", count: allAcademe.length },
     // Companies hidden from the directory for now — data stays intact
@@ -514,9 +500,6 @@ export default function EcosystemDirectory() {
     } else if (tab === "Mentors") {
       list = allMentors.filter((m) => matches([m.name, m.position, m.company, m.bio, ...(m.specializations ?? [])], query));
       if (specializationFilter) list = list.filter((m) => (m.specializations ?? []).includes(specializationFilter));
-    } else if (tab === "Co-Founders") {
-      list = allCofounders.filter((c) => matches([c.name, c.building, c.sector, c.lookingFor], query));
-      if (roleFilter) list = list.filter((c) => c.roleNeeded === roleFilter);
     } else if (tab === "TBIs") {
       list = allTbis.filter((t) => matches([t.name, t.host, t.focus], query));
     } else if (tab === "Academe") {
@@ -544,7 +527,7 @@ export default function EcosystemDirectory() {
       const bn = b.name ?? b.title ?? "";
       return sort === "az" ? an.localeCompare(bn) : bn.localeCompare(an);
     });
-  }, [tab, query, sort, sectorFilter, specializationFilter, roleFilter, statusFilter, institutionFilter, allStartups, allMentors, allCofounders, allTbis, allAcademe, allCompanies, allServiceProviders, allGovernment, allCoworking, allMakerspaces, allCommunity, allFundedProjects]);
+  }, [tab, query, sort, sectorFilter, specializationFilter, statusFilter, institutionFilter, allStartups, allMentors, allTbis, allAcademe, allCompanies, allServiceProviders, allGovernment, allCoworking, allMakerspaces, allCommunity, allFundedProjects]);
 
   return (
     <div style={{ background: "#fff", padding: "72px 40px", borderTop: "1px solid rgba(64,50,34,0.09)" }}>
@@ -553,7 +536,7 @@ export default function EcosystemDirectory() {
           <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: ORANGE, marginBottom: 12 }}>Ecosystem database</div>
           <h2 style={{ margin: 0, fontSize: 38, fontWeight: 500, letterSpacing: "-0.025em", color: DARK }}>Browse the people and places building Baguio</h2>
           <p style={{ margin: "14px auto 0", fontSize: 15, lineHeight: 1.6, color: "#5A544B", maxWidth: 560 }}>
-            Search across registered startups, mentors, co-founders, TBIs, service providers, government, community partners, coworking spaces, and makerspaces.
+            Search across registered startups, mentors, TBIs, service providers, government, community partners, coworking spaces, and makerspaces.
           </p>
         </div>
 
@@ -622,18 +605,6 @@ export default function EcosystemDirectory() {
                 <option value="">All specializations</option>
                 {MENTOR_SPECIALIZATIONS.map((sp) => (
                   <option key={sp} value={sp}>{sp}</option>
-                ))}
-              </select>
-            )}
-            {tab === "Co-Founders" && (
-              <select
-                value={roleFilter ?? ""}
-                onChange={(e) => setRoleFilter(e.target.value || null)}
-                style={filterSelectStyle}
-              >
-                <option value="">All roles needed</option>
-                {ROLE_OPTIONS.map((r) => (
-                  <option key={r} value={r}>{r}</option>
                 ))}
               </select>
             )}
@@ -800,50 +771,6 @@ export default function EcosystemDirectory() {
                   cardRefs.current[m.id] = el;
                 }}
               />
-            ))}
-          </div>
-        )}
-
-        {view === "list" && tab === "Co-Founders" && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 18 }} className="ib-ecosystem-grid">
-            {(filtered as CofounderEntry[]).map((c) => (
-              <div
-                key={c.id}
-                ref={(el) => {
-                  cardRefs.current[c.id] = el;
-                }}
-                className="ib-challenge-hover"
-                style={{
-                  background: "#fff",
-                  border: highlightId === c.id ? `2px solid ${ORANGE}` : "1px solid rgba(64,50,34,0.13)",
-                  boxShadow: highlightId === c.id ? "0 0 0 4px rgba(242,101,34,0.16)" : undefined,
-                  borderRadius: 20,
-                  padding: 24,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-                  <div style={{ minWidth: 0 }}>
-                    <h3 style={{ margin: 0, fontSize: 16.5, fontWeight: 600, color: DARK, lineHeight: 1.3 }}>{c.name}</h3>
-                    {c.sector && <div style={{ fontSize: 12, color: "#6E685F", marginTop: 2 }}>{c.sector}</div>}
-                  </div>
-                  <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: ORANGE, background: "rgba(242,101,34,0.10)", padding: "4px 10px", borderRadius: 9999, whiteSpace: "nowrap", flexShrink: 0 }}>
-                    {c.commitment}
-                  </span>
-                </div>
-                {c.building && (
-                  <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#5A544B", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{c.building}</p>
-                )}
-                <div style={{ fontSize: 12.5, color: "#5A544B", borderTop: "1px solid rgba(64,50,34,0.11)", paddingTop: 12 }}>
-                  Looking for a <strong style={{ color: DARK }}>{c.roleNeeded}</strong> co-founder
-                  {c.lookingFor && <span> — {c.lookingFor}</span>}
-                </div>
-                <div style={{ marginTop: "auto", paddingTop: 4 }}>
-                  <ConnectCofounderButton cofounderId={c.id} cofounderName={c.name} />
-                </div>
-              </div>
             ))}
           </div>
         )}
