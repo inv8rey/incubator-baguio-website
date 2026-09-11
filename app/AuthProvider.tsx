@@ -21,6 +21,7 @@ export interface Profile {
   skills?: string[];
   looking_for?: string[];
   can_offer?: string[];
+  is_discoverable?: boolean;
 }
 
 interface AuthContextValue {
