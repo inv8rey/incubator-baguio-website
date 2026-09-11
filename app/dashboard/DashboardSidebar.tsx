@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "../AuthProvider";
 import { useOrgContext } from "./orgContext";
 
@@ -164,7 +166,18 @@ function NavList({ items, active, onNavigate }: { items: typeof INDIVIDUAL_NAV; 
       {items.map((n) => {
         const isActive = active === n.href;
         return (
-          <a
+          // Every other nav on this site is a plain <a> because it's built
+          // from a raw HTML string (dangerouslySetInnerHTML) that JSX can't
+          // reach — but this sidebar is real JSX. It used to use <a> anyway,
+          // out of consistency, which meant every click between dashboard
+          // sections was a full page reload: the entire app shell (auth
+          // check, nav-building JS, this sidebar's own org-membership fetch)
+          // re-ran from scratch, so a user moving through Overview -> My
+          // Innovations -> Settings saw "Loading..." stack on "Loading..."
+          // every single time. Link keeps the root layout (AuthProvider
+          // included) mounted across the navigation and prefetches the
+          // destination, so only that page's own real data fetch remains.
+          <Link
             key={n.href}
             href={`${BP}${n.href}`}
             onClick={onNavigate}
@@ -190,7 +203,7 @@ function NavList({ items, active, onNavigate }: { items: typeof INDIVIDUAL_NAV; 
               </svg>
             </span>
             <span style={{ flex: 1 }}>{n.label}</span>
-          </a>
+          </Link>
         );
       })}
     </>
@@ -200,6 +213,7 @@ function NavList({ items, active, onNavigate }: { items: typeof INDIVIDUAL_NAV; 
 export default function DashboardSidebar({ active, onNavigate }: { active: string; onNavigate?: () => void }) {
   const { profile } = useAuth();
   const { orgs, selectedOrgId, setSelectedOrgId, loaded } = useOrgContext();
+  const router = useRouter();
   const initials = profile?.full_name
     ? profile.full_name
         .trim()
@@ -217,10 +231,10 @@ export default function DashboardSidebar({ active, onNavigate }: { active: strin
     const value = e.target.value;
     if (value === "individual") {
       setSelectedOrgId(null);
-      window.location.href = `${BP}/dashboard/`;
+      router.push(`${BP}/dashboard/`);
     } else {
       setSelectedOrgId(value);
-      window.location.href = `${BP}/dashboard/organization/`;
+      router.push(`${BP}/dashboard/organization/`);
     }
   }
 
