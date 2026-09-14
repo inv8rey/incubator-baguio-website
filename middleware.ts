@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 // The beta domain is a temporary pre-launch alias: its homepage should show
 // the coming-soon landing page instead of the real site homepage, without
-// affecting incubator-baguio.vercel.app or any other host.
+// affecting incubatorbaguio.online (or any other host, e.g. Vercel preview
+// deployments) -- the real live site.
 const BETA_HOST = "beta-incubator-baguio.vercel.app";
 
 export function middleware(request: NextRequest) {

@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { SITE_URL } from "../../seo";
 
 // A plain Route Handler (not the app/opengraph-image.tsx file convention)
 // so we can reference its exact trailing-slash URL in layout.tsx metadata
@@ -69,7 +70,7 @@ export async function GET() {
             letterSpacing: "0.02em",
           }}
         >
-          incubator-baguio.vercel.app
+          {SITE_URL.replace(/^https?:\/\//, "")}
         </div>
       </div>
     ),

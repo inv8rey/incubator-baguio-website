@@ -2,7 +2,7 @@
 
 The public website and internal operations dashboard for **Incubator Baguio** — the Baguio City Research and Innovation Alliance, operationalized under Ordinance No. 063, s. 2023, City Government of Baguio.
 
-Live: https://incubator-baguio.vercel.app
+Live: https://incubatorbaguio.online
 
 ## Tech stack
 
@@ -58,12 +58,15 @@ A few worth calling out:
 
 **Security model.** Every table has RLS enabled; almost nothing is gated by application code alone. A handful of shared Postgres helper functions do the heavy lifting so policies don't recurse into themselves or duplicate logic — notably `is_org_member()`, `is_site_admin()`, `shares_organization_with()`, and `has_pending_request_from()` (all defined in `schema.sql`, all `security definer`). If you add a new RLS policy that needs to check something about the *current row's own table* (e.g. a policy on `profiles` that checks `profiles.is_admin`), route it through a `security definer` function instead of an inline subquery on the same table — an inline self-referencing subquery causes Postgres to recurse into the same policy and fail with `42P17 infinite recursion detected`. This has actually happened in this codebase once; see the `2026-08-28b-fix-profiles-recursion.sql` migration for the incident and the fix.
 
+A related but distinct pattern shows up wherever a public/anon reader needs *some* columns of an otherwise-restricted row — RLS is row-level, not column-level, so a policy that lets anon `SELECT` a row exposes every column on it, including ones that were never meant to be public (an applicant's phone number sitting next to their public project pitch, say). The fix each time has been a `security definer` function that returns only the safe columns, with no RLS policy granting the underlying table any broader access: `discoverable_members()`, `public_challenge_solvers()`, and `my_collaboration_requests()` are three examples (see the dated migrations under `supabase/migrations/` from 2026-09-11 — not yet folded into `schema.sql`, so `grep` the migrations directory, not just `schema.sql`, if you're hunting for how a table's read access actually works).
+
 **Shared components worth knowing about before adding a new page:**
 - `app/chrome.ts` / `app/dashboard/chrome.ts` — nav bar + footer HTML, shared across ~30 pages.
 - `app/EventsCarousel.tsx` — the image-free event card carousel used on both the homepage and `/calendar`. Every card's artwork is generated from its category (a tinted gradient + an outline glyph), not a photo — there is no poster-upload requirement for an event to look finished.
 - `app/galleryShared.tsx` — photo shape, date parsing, and the lightbox, shared by the homepage gallery strip and the full `/gallery` page.
 - `lib/formGuard.ts` — honeypot + per-IP throttle for the public unauthenticated forms (contact, event submission, ecosystem signup, newsletter, consultation feedback), backed by the same rate-limit table the chat assistant uses.
 - `lib/uploadLogo.ts` / `lib/uploadFile.ts` — thin wrappers around Supabase Storage uploads (2MB image cap / 15MB document cap respectively), used by every admin/dashboard form that accepts a file.
+- `app/api/link-preview/` — given `?url=`, fetches that page's `og:image`/`twitter:image` and redirects to it; used as a free fallback thumbnail (no third-party screenshot API) wherever a card links out to an external site but has no manually-uploaded cover image, e.g. the Knowledge Hub (`app/knowledge/KnowledgeDirectory.tsx`'s `ResourceThumbnail`).
 
 **The AI chat assistant** (`app/api/chat/`, `lib/chatContext.ts`, `lib/chatCompletion.ts`) runs on Cloudflare Workers AI's free tier, which has a real daily budget (`CHAT_DAILY_BUDGET`, default 60 answers/day across every visitor). `lib/chatRateLimit.ts` enforces three tiers — per-IP burst, per-IP hourly, and the shared daily budget — via an atomic Postgres RPC (`bump_chat_usage`) so a burst of concurrent requests can't undercount. The admin can also privately upload reference documents (`app/admin/tabs/ChatbotKnowledgeTab.tsx`) that get chunked and embedded for the assistant to search — that table (`chatbot_documents`) has no public read policy at all, only a `security definer` search RPC, so it can never be listed or browsed directly by a visitor.
 

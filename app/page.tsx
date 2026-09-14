@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { pageMeta } from "./seo";
+import { pageMeta, SITE_URL } from "./seo";
 import EcosystemModel from "./programs/EcosystemModel";
 import HomeStats from "./HomeStats";
 import FindYourPath from "./FindYourPath";
@@ -134,7 +134,7 @@ const WEBSITE_JSON_LD = {
   "@type": "WebSite",
   name: "Incubator Baguio",
   alternateName: "Baguio City Research and Innovation Alliance",
-  url: "https://incubator-baguio.vercel.app/",
+  url: `${SITE_URL}/`,
 };
 
 const ORG_JSON_LD = {
@@ -142,8 +142,8 @@ const ORG_JSON_LD = {
   "@type": "Organization",
   name: "Incubator Baguio",
   alternateName: "Baguio City Research and Innovation Alliance",
-  url: "https://incubator-baguio.vercel.app/",
-  logo: "https://incubator-baguio.vercel.app/assets/ib-icon.png",
+  url: `${SITE_URL}/`,
+  logo: `${SITE_URL}/assets/ib-icon.png`,
   description: HOME_DESCRIPTION,
   email: "incubatorbaguio63@gmail.com",
   sameAs: ["https://www.facebook.com/incubatorbaguio"],

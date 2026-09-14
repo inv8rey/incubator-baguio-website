@@ -9,7 +9,7 @@ const VERCEL_PROD_URL = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL;
 
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
-  (VERCEL_PROD_URL ? `https://${VERCEL_PROD_URL}` : "https://incubator-baguio.vercel.app");
+  (VERCEL_PROD_URL ? `https://${VERCEL_PROD_URL}` : "https://incubatorbaguio.online");
 
 /**
  * Per-page metadata: a canonical URL plus social tags that actually name the

@@ -1,3 +1,5 @@
+import { SITE_URL } from "../app/seo";
+
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 // Resend's shared sandbox sender works with no domain setup on their end;
 // override with a verified domain address once one exists.
@@ -49,7 +51,7 @@ export async function sendEventApprovalEmail(event: ApprovedEvent): Promise<{ se
         <tr><td style="color: #6E685F; padding-right: 12px;">Venue</td><td>${event.venue || "—"}</td></tr>
         <tr><td style="color: #6E685F; padding-right: 12px;">Organizer</td><td>${event.org}</td></tr>
       </table>
-      <a href="https://incubator-baguio.vercel.app/calendar/" style="display: inline-block; background: #F26522; color: #fff; font-weight: 600; font-size: 14px; padding: 12px 22px; border-radius: 9999px; text-decoration: none;">View the calendar</a>
+      <a href="${SITE_URL}/calendar/" style="display: inline-block; background: #F26522; color: #fff; font-weight: 600; font-size: 14px; padding: 12px 22px; border-radius: 9999px; text-decoration: none;">View the calendar</a>
       <p style="font-size: 13px; color: #6E685F; margin: 24px 0 0;">Questions? Reply to this email or reach us at ${REPLY_TO}.</p>
     </div>
   `;
