@@ -110,10 +110,13 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
       link_url: linkUrl.trim(),
       source: source.trim(),
       featured,
-      // Cleared when the category is switched away from Funding &
-      // Opportunities, so a leftover cover/amount/audience can't linger on a
-      // resource re-filed under a different category.
-      cover_image_url: isFunding ? coverImageUrl : "",
+      // Cover image applies to every category now (auto-fallback to the
+      // linked site's own preview image otherwise -- see
+      // app/knowledge/KnowledgeDirectory.tsx's ResourceThumbnail). The
+      // funding-specific fields still get cleared on a category switch so a
+      // leftover amount/audience/deadline can't linger on a resource
+      // re-filed away from Funding & Opportunities.
+      cover_image_url: coverImageUrl.trim(),
       funding_amount: isFunding ? fundingAmount.trim() : "",
       target_participants: isFunding ? targetParticipants.trim() : "",
       deadline_date: isFunding ? deadlineDate || null : null,
@@ -167,27 +170,42 @@ function ResourceFormModal({ resource, onClose, onSaved }: { resource: ResourceR
             <input value={source} onChange={(e) => setSource(e.target.value)} placeholder="e.g. DTI Region CAR" style={modalInputStyle} />
           </div>
 
+          <div>
+            <label style={modalLabelStyle}>Cover image (optional)</label>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              {coverImageUrl ? (
+                <img src={coverImageUrl} alt="" style={{ width: 84, height: 52, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
+              ) : linkUrl.trim() ? (
+                // No upload yet, but there's a link to preview -- show
+                // exactly what the public card will auto-fetch, so the
+                // admin can see whether it's worth uploading their own
+                // instead of trusting the site's own preview image.
+                <img
+                  key={linkUrl}
+                  src={`/api/link-preview?url=${encodeURIComponent(linkUrl.trim())}`}
+                  alt=""
+                  onError={(e) => (e.currentTarget.style.display = "none")}
+                  style={{ width: 84, height: 52, borderRadius: 8, objectFit: "cover", flexShrink: 0, border: "1px dashed rgba(64,50,34,0.2)" }}
+                />
+              ) : (
+                <div style={{ width: 84, height: 52, borderRadius: 8, background: "#fff", border: "1px dashed rgba(64,50,34,0.2)", flexShrink: 0 }} />
+              )}
+              <label style={{ fontSize: 12.5, fontWeight: 600, color: "#285E7A", border: "1.5px solid rgba(40,94,122,0.3)", borderRadius: 999, padding: "8px 14px", cursor: "pointer", background: "#fff" }}>
+                {coverUploading ? "Uploading…" : coverImageUrl ? "Replace image" : "Upload image"}
+                <input type="file" accept="image/*" onChange={handleCoverChange} disabled={coverUploading} style={{ display: "none" }} />
+              </label>
+              {coverImageUrl && (
+                <button type="button" onClick={() => setCoverImageUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#6E685F", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
+              )}
+            </div>
+            <div style={{ fontSize: 11, color: "#6E685F", marginTop: 6 }}>
+              Shown as a banner on the card. {linkUrl.trim() && !coverImageUrl ? "Leave blank to use the linked site's own preview image, shown above." : "Landscape works best."}
+            </div>
+          </div>
+
           {isFunding && (
             <div style={{ display: "flex", flexDirection: "column", gap: 14, background: "#F6F2EA", border: "1px solid rgba(64,50,34,0.11)", borderRadius: 12, padding: 16 }}>
               <div style={{ fontSize: 12.5, fontWeight: 600, color: DARK }}>Funding details</div>
-              <div>
-                <label style={modalLabelStyle}>Cover image (optional)</label>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  {coverImageUrl ? (
-                    <img src={coverImageUrl} alt="" style={{ width: 84, height: 52, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
-                  ) : (
-                    <div style={{ width: 84, height: 52, borderRadius: 8, background: "#fff", border: "1px dashed rgba(64,50,34,0.2)", flexShrink: 0 }} />
-                  )}
-                  <label style={{ fontSize: 12.5, fontWeight: 600, color: "#285E7A", border: "1.5px solid rgba(40,94,122,0.3)", borderRadius: 999, padding: "8px 14px", cursor: "pointer", background: "#fff" }}>
-                    {coverUploading ? "Uploading…" : coverImageUrl ? "Replace image" : "Upload image"}
-                    <input type="file" accept="image/*" onChange={handleCoverChange} disabled={coverUploading} style={{ display: "none" }} />
-                  </label>
-                  {coverImageUrl && (
-                    <button type="button" onClick={() => setCoverImageUrl("")} style={{ fontSize: 12.5, fontWeight: 600, color: "#6E685F", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
-                  )}
-                </div>
-                <div style={{ fontSize: 11, color: "#6E685F", marginTop: 6 }}>Shown as a banner on the card. Landscape works best.</div>
-              </div>
               <div>
                 <label style={modalLabelStyle}>Funding amount (optional)</label>
                 <input value={fundingAmount} onChange={(e) => setFundingAmount(e.target.value)} placeholder="e.g. Up to ₱500,000 per project" style={modalInputStyle} />
@@ -349,7 +367,7 @@ export default function KnowledgeTab({ searchQuery = "" }: { searchQuery?: strin
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {filtered.map((r) => (
           <div key={r.id} style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", padding: 18, display: "flex", gap: 16, alignItems: "flex-start" }}>
-            {r.category === FUNDING_CATEGORY && r.cover_image_url ? (
+            {r.cover_image_url ? (
               <img src={r.cover_image_url} alt="" style={{ width: 56, height: 56, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
             ) : null}
             <div style={{ minWidth: 0, flex: 1 }}>

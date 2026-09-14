@@ -5,6 +5,28 @@ import { supabase } from "../../lib/supabaseClient";
 import { DARK, KNOWLEDGE_CATEGORIES, fundingDeadlineInfo, type KnowledgeCategory, type KnowledgeResource } from "./data";
 import { fetchDynamicKnowledgeResources } from "./dynamicData";
 
+/**
+ * A card's cover banner. An admin-uploaded coverImageUrl always wins; with
+ * none, a resource that links out to a reference site gets an auto-pulled
+ * thumbnail (that site's own og:image, via /api/link-preview -- see that
+ * route for why this is a preview-image pull rather than a real
+ * screenshot). A file-only resource with no link, or a link whose site
+ * doesn't publish a preview image, just shows no banner at all -- same as
+ * every card did before this existed.
+ */
+function ResourceThumbnail({ coverImageUrl, linkUrl, grayscale }: { coverImageUrl?: string; linkUrl?: string; grayscale?: boolean }) {
+  const auto = !coverImageUrl && !!linkUrl;
+  const src = coverImageUrl || (auto ? `/api/link-preview?url=${encodeURIComponent(linkUrl!)}` : "");
+  const [failed, setFailed] = useState(false);
+  if (!src || failed) return null;
+  return (
+    <div style={{ height: 140, background: "#F6F2EA", overflow: "hidden", position: "relative" }}>
+      <img src={src} alt="" onError={() => setFailed(true)} style={{ width: "100%", height: "100%", objectFit: "cover", filter: grayscale ? "grayscale(1)" : undefined }} />
+      {grayscale && <div style={{ position: "absolute", inset: 0, background: "rgba(249,248,245,0.35)" }} />}
+    </div>
+  );
+}
+
 function matches(haystacks: string[], query: string) {
   const q = query.trim().toLowerCase();
   if (!q) return true;
@@ -283,12 +305,7 @@ export default function KnowledgeDirectory() {
                   filter: isClosed ? "grayscale(0.5)" : undefined,
                 }}
               >
-                {isFunding && r.coverImageUrl && (
-                  <div style={{ height: 140, background: "#F6F2EA", overflow: "hidden", position: "relative" }}>
-                    <img src={r.coverImageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", filter: isClosed ? "grayscale(1)" : undefined }} />
-                    {isClosed && <div style={{ position: "absolute", inset: 0, background: "rgba(249,248,245,0.35)" }} />}
-                  </div>
-                )}
+                <ResourceThumbnail coverImageUrl={r.coverImageUrl} linkUrl={r.linkUrl} grayscale={isClosed} />
                 <div style={{ position: "relative", padding: 24, display: "flex", flexDirection: "column", flex: 1 }}>
                   {r.featured && !isClosed && (
                     <span style={{ position: "absolute", top: 14, right: 14, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: "#F26522", background: "rgba(242,101,34,0.12)", padding: "4px 10px", borderRadius: 9999, whiteSpace: "nowrap" }}>★ Featured</span>
