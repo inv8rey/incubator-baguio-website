@@ -1,120 +1,35 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useAuth } from "../AuthProvider";
 import { supabase } from "../../lib/supabaseClient";
-import { slugify } from "../../lib/slug";
 import { DARK } from "./styles";
-
-const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
-const LAST_SEEN_KEY = "ib-dashboard-last-seen";
-
-type Kind = "Challenge" | "Resource" | "Event";
-
-const KIND_STYLE: Record<Kind, { color: string; bg: string }> = {
-  Challenge: { color: "#D9531E", bg: "rgba(217,83,30,0.12)" },
-  Resource: { color: "#285E7A", bg: "rgba(40,94,122,0.12)" },
-  Event: { color: "#6B5BD6", bg: "rgba(107,91,214,0.12)" },
-};
-
-interface NotificationItem {
-  key: string;
-  kind: Kind;
-  title: string;
-  tag: string;
-  href: string;
-  createdAt: string;
-}
-
-function timeAgo(iso: string): string {
-  const ms = Date.now() - new Date(iso).getTime();
-  const mins = Math.round(ms / 60000);
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.round(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  const days = Math.round(hrs / 24);
-  if (days < 7) return `${days}d ago`;
-  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
-}
-
-function readLastSeen(): string {
-  try {
-    const stored = localStorage.getItem(LAST_SEEN_KEY);
-    if (stored) return stored;
-  } catch {
-    // localStorage unavailable — fall through to "seen everything up to now"
-    // below, same as a genuine first visit.
-  }
-  // First-ever visit (or storage blocked): nothing has been "seen" yet, but
-  // showing every challenge/resource/event ever posted as a wall of
-  // notifications would be a bad first impression. Baseline to now instead —
-  // only content posted *after* this visit will ever show up as new.
-  const now = new Date().toISOString();
-  try {
-    localStorage.setItem(LAST_SEEN_KEY, now);
-  } catch {}
-  return now;
-}
-
-function markSeen() {
-  try {
-    localStorage.setItem(LAST_SEEN_KEY, new Date().toISOString());
-  } catch {}
-}
+import { ACTIVITY_KIND_STYLE, fetchActivity, timeAgo, type ActivityItem } from "./notificationFeed";
 
 export default function NotificationBell() {
-  const [items, setItems] = useState<NotificationItem[]>([]);
+  const { user, profile, refreshProfile } = useAuth();
+  const [items, setItems] = useState<ActivityItem[]>([]);
   const [unread, setUnread] = useState(0);
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!supabase) return;
+    if (!user) return;
     let cancelled = false;
-
-    async function load() {
-      const lastSeen = readLastSeen();
-      const [{ data: challengeRows }, { data: resourceRows }, { data: eventRows }] = await Promise.all([
-        supabase!.from("challenges").select("id,title,category,created_at").gte("created_at", lastSeen).order("created_at", { ascending: false }).limit(20),
-        supabase!.from("knowledge_resources").select("id,title,category,created_at").gte("created_at", lastSeen).order("created_at", { ascending: false }).limit(20),
-        supabase!.from("public_events").select("id,title,category,created_at").gte("created_at", lastSeen).order("created_at", { ascending: false }).limit(20),
-      ]);
+    // notifications_seen_at always has a value (defaults to now() at
+    // signup/migration -- see 2026-09-16-dashboard-notifications.sql), so
+    // there's no "never seen anything" case to special-case here.
+    const since = profile?.notifications_seen_at;
+    if (!since) return;
+    fetchActivity(since, 20).then((all) => {
       if (cancelled) return;
-
-      const challengeItems: NotificationItem[] = (challengeRows ?? []).map((c: any) => ({
-        key: `challenge-${c.id}`,
-        kind: "Challenge",
-        title: c.title,
-        tag: c.category || "Challenge",
-        href: `${BP}/challenges/${slugify(c.title || c.id)}/`,
-        createdAt: c.created_at,
-      }));
-      const resourceItems: NotificationItem[] = (resourceRows ?? []).map((r: any) => ({
-        key: `resource-${r.id}`,
-        kind: "Resource",
-        title: r.title,
-        tag: r.category || "Knowledge Hub",
-        href: `${BP}/knowledge/`,
-        createdAt: r.created_at,
-      }));
-      const eventItems: NotificationItem[] = (eventRows ?? []).map((e: any) => ({
-        key: `event-${e.id}`,
-        kind: "Event",
-        title: e.title,
-        tag: e.category || "Event",
-        href: `${BP}/calendar/`,
-        createdAt: e.created_at,
-      }));
-
-      const all = [...challengeItems, ...resourceItems, ...eventItems].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
       setItems(all);
       setUnread(all.length);
-    }
-
-    load();
-  }, []);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, profile?.notifications_seen_at]);
 
   useEffect(() => {
     if (!open) return;
@@ -125,15 +40,19 @@ export default function NotificationBell() {
     return () => document.removeEventListener("mousedown", onOutside);
   }, [open]);
 
-  function toggle() {
-    setOpen((v) => {
-      const next = !v;
-      if (next) {
-        markSeen();
-        setUnread(0);
+  async function toggle() {
+    const next = !open;
+    setOpen(next);
+    if (next && unread > 0) {
+      setUnread(0);
+      // Persisted server-side (not localStorage) so "caught up" survives a
+      // different browser or device instead of resetting to "nothing seen
+      // yet" -- see the migration comment for why that mattered.
+      if (supabase && user) {
+        await supabase.from("profiles").update({ notifications_seen_at: new Date().toISOString() }).eq("id", user.id);
+        refreshProfile();
       }
-      return next;
-    });
+    }
   }
 
   if (!supabase) return null;
@@ -212,7 +131,7 @@ export default function NotificationBell() {
           ) : (
             <div style={{ display: "flex", flexDirection: "column" }}>
               {items.map((it) => {
-                const s = KIND_STYLE[it.kind];
+                const s = ACTIVITY_KIND_STYLE[it.kind];
                 return (
                   <a
                     key={it.key}

@@ -1,0 +1,16 @@
+-- Durable per-account "what's new since I last checked" tracking, replacing
+-- NotificationBell.tsx's localStorage-only bookmark.
+--
+-- The bell previously kept its "last seen" timestamp in localStorage, which
+-- is why it looked broken in practice: a new browser, a cleared cache, or
+-- just switching devices silently resets it to "now" (see
+-- readLastSeen()'s comment in the old code), so a real user bounced between
+-- their phone and laptop would see "you're all caught up" constantly even
+-- with genuinely new content sitting there. Moving it onto the profile row
+-- makes it survive all of that.
+--
+-- Defaults to now() so this doesn't retroactively flood every existing user
+-- with every challenge/resource/event ever posted the moment they next open
+-- the bell -- same bootstrap behavior the old localStorage version had for
+-- a first-ever visit, just durable instead of per-browser.
+alter table public.profiles add column if not exists notifications_seen_at timestamptz not null default now();
