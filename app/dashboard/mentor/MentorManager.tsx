@@ -111,9 +111,15 @@ export default function MentorManager() {
 
   return (
     <div style={cardStyle}>
-      <h2 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 600, color: DARK }}>{mentor ? "Your mentor profile" : "Become a mentor"}</h2>
+      <h2 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 600, color: DARK }}>
+        {mentor ? "Your mentor profile" : profile?.is_mentor ? "Complete your mentor listing" : "Become a mentor"}
+      </h2>
       <p style={{ margin: "0 0 22px", fontSize: 13.5, color: "#5A544B" }}>
-        {mentor ? "Editing updates what founders see on the Ecosystem directory." : "Share your expertise and appear on the Ecosystem directory so founders can connect with you."}
+        {mentor
+          ? "Editing updates what founders see on the Ecosystem directory."
+          : profile?.is_mentor
+            ? "The Incubator Baguio team has added you as a mentor. Fill this out to actually appear on the Ecosystem directory -- nothing shows publicly until you do."
+            : "Share your expertise and appear on the Ecosystem directory so founders can connect with you."}
       </p>
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>

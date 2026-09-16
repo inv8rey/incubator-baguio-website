@@ -26,7 +26,6 @@ function ProfileSection() {
   const [skills, setSkills] = useState<string[]>(profile?.skills ?? []);
   const [lookingFor, setLookingFor] = useState<string[]>(profile?.looking_for ?? []);
   const [canOffer, setCanOffer] = useState<string[]>(profile?.can_offer ?? []);
-  const [isDiscoverable, setIsDiscoverable] = useState(!!profile?.is_discoverable);
   const [uploading, setUploading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -44,7 +43,6 @@ function ProfileSection() {
     setSkills(profile.skills ?? []);
     setLookingFor(profile.looking_for ?? []);
     setCanOffer(profile.can_offer ?? []);
-    setIsDiscoverable(!!profile.is_discoverable);
   }, [profile]);
 
   async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -81,7 +79,6 @@ function ProfileSection() {
         skills,
         looking_for: lookingFor,
         can_offer: canOffer,
-        is_discoverable: isDiscoverable,
       })
       .eq("id", profile.id);
     setBusy(false);
@@ -174,25 +171,6 @@ function ProfileSection() {
               <TagChips value={canOffer} onChange={setCanOffer} suggestions={PROFILE_CAN_OFFER} />
             </div>
           </div>
-        </div>
-
-        <div>
-          <div style={sectionTitle}>Visibility</div>
-          <label style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13.5, color: "#44444C", cursor: "pointer" }}>
-            <input type="checkbox" checked={isDiscoverable} onChange={(e) => setIsDiscoverable(e.target.checked)} style={{ marginTop: 2 }} />
-            <span>
-              Make my profile discoverable in the Members directory
-              {/* Off by default and not tied to anything else on this form --
-                  the fields above (bio, skills, looking for, can offer) exist
-                  whether or not this is checked; this is only about whether
-                  another signed-in member can find this profile by browsing
-                  /dashboard/members/. Reaching out still goes through a
-                  connect request, never a raw email address. */}
-              <span style={{ display: "block", fontSize: 12, color: "#6E685F", marginTop: 3, fontWeight: 400 }}>
-                Other signed-in members can then find you and send a connect request. Your email is never shown to someone browsing the directory.
-              </span>
-            </span>
-          </label>
         </div>
 
         {error && <p style={{ margin: 0, fontSize: 13, color: "#E23A2E" }}>{error}</p>}

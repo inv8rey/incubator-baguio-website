@@ -69,17 +69,6 @@ const INDIVIDUAL_NAV: { href: string; label: string; icon: React.ReactNode }[] =
       </>
     ),
   },
-  {
-    href: "/dashboard/members/",
-    label: "Members",
-    icon: (
-      <>
-        <circle cx={9} cy={7} r={4} />
-        <path d="M2 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2" />
-        <path d="M16 3.13a4 4 0 0 1 0 7.75M22 21v-2a4 4 0 0 0-3-3.87" />
-      </>
-    ),
-  },
 ];
 
 const ACCOUNT_NAV: { href: string; label: string; icon: React.ReactNode }[] = [

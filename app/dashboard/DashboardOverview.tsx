@@ -7,6 +7,7 @@ import { cardStyle, DARK, ORANGE } from "./styles";
 import { categoryInfo } from "../challenges/data";
 import { fetchDynamicChallenges } from "../challenges/dynamicData";
 import { fetchSavedItems, toggleSavedItem, type SavedItemType } from "./savedItems";
+import WhatsNewCard from "./WhatsNewCard";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -333,6 +334,20 @@ export default function DashboardOverview() {
         </div>
       )}
 
+      {/* profile.is_mentor is set by an admin marking someone a mentor (see
+          app/admin/tabs/MembersTab.tsx) -- that flag alone doesn't put
+          anyone on the public Ecosystem > Mentors tab, which only reads
+          from the separate `mentors` table (counts.isMentor === !!a row
+          there). Surface that gap right on the page most people land on
+          first, rather than leaving a flagged mentor with no signal that
+          there's a form still to fill out. */}
+      {profile?.is_mentor && counts && !counts.isMentor && (
+        <div style={{ marginBottom: 20, background: "rgba(242,101,34,0.06)", border: "1px solid rgba(242,101,34,0.2)", borderRadius: 14, padding: "16px 20px", fontSize: 13.5, color: DARK }}>
+          You&rsquo;ve been added as a mentor by the Incubator Baguio team. Complete your public listing so people can find and connect with you.{" "}
+          <a href={`${BP}/dashboard/mentor/`} style={{ color: ORANGE, fontWeight: 600, textDecoration: "none" }}>Complete your listing →</a>
+        </div>
+      )}
+
       <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 20, alignItems: "start" }} className="ib-dashboard-grid">
         <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
           {/* YOUR NEXT STEP */}
@@ -475,6 +490,8 @@ export default function DashboardOverview() {
 
         {/* SIDEBAR */}
         <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
+          <WhatsNewCard />
+
           <div style={cardStyle}>
             <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 14 }}>Your activity</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

@@ -212,6 +212,11 @@ export default function MembersTab({ searchQuery = "" }: { searchQuery?: string 
               >
                 {viewing.is_mentor ? "Remove mentor status" : "Mark as mentor"}
               </button>
+              {!viewing.is_mentor && (
+                <div style={{ width: "100%", fontSize: 11.5, color: "#6E685F", marginTop: -4 }}>
+                  This is an internal flag, not a public listing — it prompts them in their dashboard to fill out their own mentor profile at /dashboard/mentor/, which is what actually appears on the Ecosystem directory.
+                </div>
+              )}
               <button
                 onClick={() => toggleFlag(viewing, "is_admin")}
                 disabled={busy}
