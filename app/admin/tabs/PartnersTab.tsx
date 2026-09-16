@@ -57,6 +57,22 @@ interface MentorRow {
   socialLink: string;
   initials: string;
   color: string;
+  /** The real account this listing is tied to, if any -- see the "Link to
+   * an existing account" field below. Most admin-added mentors have
+   * neither: this tool predates that link existing at all. */
+  ownerId: string | null;
+  ownerName: string | null;
+  ownerEmail: string | null;
+}
+
+interface ProfileSearchResult {
+  id: string;
+  full_name: string;
+  email: string;
+  role_title: string;
+  org_affiliation: string;
+  bio: string;
+  photo_url: string;
 }
 
 interface OrgRow {
@@ -97,6 +113,7 @@ interface FundedProjectRow {
 
 const TYPE_MAX = 40;
 const EMPTY_MENTOR = { name: "", position: "", company: "", bio: "", specializations: [] as string[], photoUrl: "", sector: SECTOR_FILTERS[0].label, socialLink: "" };
+const OWNER_SEARCH_DEBOUNCE_MS = 300;
 const EMPTY_ORG = { name: "", description: "", website: "", contact_email: "", logoUrl: "", coverUrl: "", type: "" };
 const EMPTY_PARTNER = { name: "", logoUrl: "" };
 const EMPTY_FUNDED_PROJECT = { title: "", fundingAgency: "", leadInstitution: "", duration: "", status: PROJECT_STATUSES[0] as string, partnerId: "" };
@@ -111,6 +128,12 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [mentorForm, setMentorForm] = useState(EMPTY_MENTOR);
+  const [mentorOwnerId, setMentorOwnerId] = useState<string | null>(null);
+  const [mentorOwnerLabel, setMentorOwnerLabel] = useState<string | null>(null);
+  const [ownerQuery, setOwnerQuery] = useState("");
+  const [ownerResults, setOwnerResults] = useState<ProfileSearchResult[]>([]);
+  const [ownerSearching, setOwnerSearching] = useState(false);
+  const [ownerNote, setOwnerNote] = useState("");
   const [orgForm, setOrgForm] = useState(EMPTY_ORG);
   const [partnerForm, setPartnerForm] = useState(EMPTY_PARTNER);
   const [fundedProjectForm, setFundedProjectForm] = useState(EMPTY_FUNDED_PROJECT);
@@ -129,10 +152,22 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
       supabase.from("ecosystem_partners").select("*").order("created_at", { ascending: false }),
       supabase.from("funded_projects").select("*").order("created_at", { ascending: false }),
     ]);
+    const ownerIds = [...new Set((mentorData ?? []).map((m: any) => m.owner_id).filter(Boolean))];
+    const ownerMap = new Map<string, { full_name: string; email: string }>();
+    if (ownerIds.length > 0) {
+      const { data: ownerRows } = await supabase.from("profiles").select("id,full_name,email").in("id", ownerIds);
+      (ownerRows ?? []).forEach((o: any) => ownerMap.set(o.id, { full_name: o.full_name, email: o.email }));
+    }
     setMentors(
       (mentorData ?? []).map((m: any) => {
         const p = paletteFor(m.name);
-        return { id: m.id, name: m.name, position: m.position, company: m.company, bio: m.bio, specializations: m.specializations ?? [], photoUrl: m.photo_url, sector: m.sector || "", socialLink: m.social_link || "", initials: initialsOf(m.name), color: p.color };
+        const owner = m.owner_id ? ownerMap.get(m.owner_id) : undefined;
+        return {
+          id: m.id, name: m.name, position: m.position, company: m.company, bio: m.bio, specializations: m.specializations ?? [], photoUrl: m.photo_url, sector: m.sector || "", socialLink: m.social_link || "", initials: initialsOf(m.name), color: p.color,
+          ownerId: m.owner_id || null,
+          ownerName: owner?.full_name || null,
+          ownerEmail: owner?.email || null,
+        };
       })
     );
     setOrgs(
@@ -194,6 +229,75 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     };
   }, []);
 
+  // Debounced live search for "Link to an existing account" -- fires as the
+  // admin types, same pattern as any other typeahead. Cleared once an owner
+  // is picked (mentorOwnerId set) so it doesn't keep re-searching under a
+  // dropdown that's no longer shown.
+  useEffect(() => {
+    if (!supabase || !ownerQuery.trim() || mentorOwnerId) {
+      setOwnerResults([]);
+      return;
+    }
+    let cancelled = false;
+    setOwnerSearching(true);
+    const timer = setTimeout(async () => {
+      const term = ownerQuery.trim();
+      const { data } = await supabase!
+        .from("profiles")
+        .select("id,full_name,email,role_title,org_affiliation,bio,photo_url")
+        .or(`full_name.ilike.%${term}%,email.ilike.%${term}%`)
+        .limit(6);
+      if (!cancelled) {
+        setOwnerResults((data as ProfileSearchResult[]) ?? []);
+        setOwnerSearching(false);
+      }
+    }, OWNER_SEARCH_DEBOUNCE_MS);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [ownerQuery, mentorOwnerId]);
+
+  async function selectMentorOwner(p: ProfileSearchResult) {
+    setMentorOwnerId(p.id);
+    setMentorOwnerLabel(`${p.full_name} (${p.email})`);
+    setOwnerQuery("");
+    setOwnerResults([]);
+    setOwnerNote("");
+
+    // If this account already has a listing, edit that one instead of
+    // risking a second row -- mentors.owner_id is unique, so inserting a
+    // new row for an already-linked account would just fail anyway.
+    const { data: existing } = await supabase!.from("mentors").select("*").eq("owner_id", p.id).maybeSingle();
+    if (existing) {
+      setEditingId(existing.id);
+      setMentorForm({
+        name: existing.name, position: existing.position, company: existing.company, bio: existing.bio,
+        specializations: existing.specializations ?? [], photoUrl: existing.photo_url,
+        sector: existing.sector || SECTOR_FILTERS[0].label, socialLink: existing.social_link || "",
+      });
+      setOwnerNote(`${p.full_name} already has a listing -- editing it.`);
+      return;
+    }
+
+    // Fresh link: prefill from their profile, but only into fields the
+    // admin hasn't already typed something into.
+    setMentorForm((f) => ({
+      ...f,
+      name: f.name || p.full_name || "",
+      position: f.position || p.role_title || "",
+      company: f.company || p.org_affiliation || "",
+      bio: f.bio || p.bio || "",
+      photoUrl: f.photoUrl || p.photo_url || "",
+    }));
+  }
+
+  function unlinkMentorOwner() {
+    setMentorOwnerId(null);
+    setMentorOwnerLabel(null);
+    setOwnerNote("");
+  }
+
   const q = searchQuery.toLowerCase();
   const isMentors = category === "Mentors";
   const isPartners = category === "Ecosystem Partners";
@@ -228,6 +332,11 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     setOrgForm(EMPTY_ORG);
     setPartnerForm(EMPTY_PARTNER);
     setFundedProjectForm(EMPTY_FUNDED_PROJECT);
+    setMentorOwnerId(null);
+    setMentorOwnerLabel(null);
+    setOwnerQuery("");
+    setOwnerResults([]);
+    setOwnerNote("");
     setError("");
     setModalOpen(true);
   }
@@ -235,6 +344,11 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
   function openEditMentor(m: MentorRow) {
     setEditingId(m.id);
     setMentorForm({ name: m.name, position: m.position, company: m.company, bio: m.bio, specializations: m.specializations, photoUrl: m.photoUrl, sector: m.sector || SECTOR_FILTERS[0].label, socialLink: m.socialLink || "" });
+    setMentorOwnerId(m.ownerId);
+    setMentorOwnerLabel(m.ownerId ? `${m.ownerName} (${m.ownerEmail})` : null);
+    setOwnerQuery("");
+    setOwnerResults([]);
+    setOwnerNote("");
     setError("");
     setModalOpen(true);
   }
@@ -411,11 +525,16 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
     if (isMentors) {
       if (!mentorForm.name.trim()) return setError("Add a name.");
       const isIndustryExpert = mentorForm.specializations.includes("Industry Experts");
-      const payload = { name: mentorForm.name.trim(), position: mentorForm.position.trim(), company: mentorForm.company.trim(), bio: mentorForm.bio.trim(), specializations: mentorForm.specializations, photo_url: mentorForm.photoUrl, sector: isIndustryExpert ? mentorForm.sector : "", social_link: mentorForm.socialLink.trim() };
+      const payload = { name: mentorForm.name.trim(), position: mentorForm.position.trim(), company: mentorForm.company.trim(), bio: mentorForm.bio.trim(), specializations: mentorForm.specializations, photo_url: mentorForm.photoUrl, sector: isIndustryExpert ? mentorForm.sector : "", social_link: mentorForm.socialLink.trim(), owner_id: mentorOwnerId };
       const { error: err } = editingId
         ? await supabase.from("mentors").update(payload).eq("id", editingId)
         : await supabase.from("mentors").insert(payload);
       if (err) return setError(err.message);
+      // Keeps the admin's own "Mark as mentor" flag (profiles.is_mentor,
+      // toggled in MembersTab.tsx) in sync with actually having a public
+      // listing now, rather than leaving the two to drift apart the way
+      // they did before this link existed.
+      if (mentorOwnerId) await supabase.from("profiles").update({ is_mentor: true }).eq("id", mentorOwnerId);
       triggerSheetSync("mentors");
     } else if (isPartners) {
       if (!partnerForm.name.trim()) return setError("Add a name.");
@@ -676,6 +795,46 @@ export default function PartnersTab({ searchQuery = "" }: { searchQuery?: string
 
             {isMentors ? (
               <>
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#44444C", marginBottom: 6 }}>Link to an existing account (optional)</label>
+                  {mentorOwnerLabel ? (
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, background: "#F6F2EA", border: "1.5px solid rgba(64,50,34,0.14)", borderRadius: 9, padding: "9px 12px" }}>
+                      <span style={{ fontSize: 13, color: DARK, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{mentorOwnerLabel}</span>
+                      <button type="button" onClick={unlinkMentorOwner} style={{ fontSize: 12, fontWeight: 600, color: "#6E685F", background: "none", border: "none", cursor: "pointer", flexShrink: 0 }}>Unlink</button>
+                    </div>
+                  ) : (
+                    <div style={{ position: "relative" }}>
+                      <input
+                        value={ownerQuery}
+                        onChange={(e) => setOwnerQuery(e.target.value)}
+                        placeholder="Search by name or email…"
+                        style={{ width: "100%", fontSize: 14, padding: "10px 12px", borderRadius: 9, border: "1.5px solid rgba(64,50,34,0.14)", outline: "none", boxSizing: "border-box" }}
+                      />
+                      {ownerQuery.trim() && (ownerSearching || ownerResults.length > 0) && (
+                        <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#fff", border: "1px solid rgba(64,50,34,0.15)", borderRadius: 10, boxShadow: "0 12px 28px -10px rgba(0,0,0,0.2)", zIndex: 10, maxHeight: 220, overflowY: "auto" }}>
+                          {ownerSearching ? (
+                            <div style={{ padding: "10px 12px", fontSize: 12.5, color: "#6E685F" }}>Searching…</div>
+                          ) : (
+                            ownerResults.map((p) => (
+                              <button
+                                key={p.id}
+                                type="button"
+                                onClick={() => selectMentorOwner(p)}
+                                style={{ display: "block", width: "100%", textAlign: "left", padding: "9px 12px", background: "none", border: "none", borderBottom: "1px solid rgba(64,50,34,0.06)", cursor: "pointer" }}
+                              >
+                                <div style={{ fontSize: 13, fontWeight: 600, color: DARK }}>{p.full_name || "(no name)"}</div>
+                                <div style={{ fontSize: 11.5, color: "#6E685F" }}>{p.email}</div>
+                              </button>
+                            ))
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <div style={{ fontSize: 11, color: "#6E685F", marginTop: 6 }}>
+                    {ownerNote || "Ties this listing to their real account and marks them a mentor — lets them edit it themselves later instead of ending up with a duplicate."}
+                  </div>
+                </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                   {mentorForm.photoUrl ? (
                     <img src={mentorForm.photoUrl} alt="" style={{ width: 52, height: 52, borderRadius: 9999, objectFit: "cover" }} />
