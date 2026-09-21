@@ -28,6 +28,46 @@ const modalLabelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, co
 const STATUSES = ["pending", "approved", "rejected"] as const;
 type Status = (typeof STATUSES)[number];
 
+const SORTS = [
+  { key: "event_date_asc", label: "Upcoming event date" },
+  { key: "event_date_desc", label: "Furthest event date" },
+  { key: "created_desc", label: "Recently added" },
+  { key: "created_asc", label: "Oldest added" },
+] as const;
+type SortKey = (typeof SORTS)[number]["key"];
+
+function eventDateTimeMs(e: EventRow): number {
+  // A blank date shouldn't win "soonest" -- push it to the end regardless
+  // of sort direction, since there's nothing to actually sort it by.
+  if (!e.event_date) return Number.POSITIVE_INFINITY;
+  const t = e.event_time ? e.event_time.split(/[–-]/)[0].trim() : "";
+  const parsed = new Date(`${e.event_date}T${t || "00:00"}`);
+  return Number.isNaN(parsed.getTime()) ? new Date(e.event_date).getTime() : parsed.getTime();
+}
+
+function sortEvents(rows: EventRow[], sortBy: SortKey): EventRow[] {
+  const sorted = [...rows];
+  switch (sortBy) {
+    case "event_date_asc":
+      // Blank dates are Infinity in both directions, so a plain b-a flip
+      // for "desc" would put them first instead of last -- always compare
+      // ascending, then flip only the two real values, not the sentinel.
+      return sorted.sort((a, b) => eventDateTimeMs(a) - eventDateTimeMs(b));
+    case "event_date_desc":
+      return sorted.sort((a, b) => {
+        const am = eventDateTimeMs(a);
+        const bm = eventDateTimeMs(b);
+        if (am === Infinity || bm === Infinity) return am - bm;
+        return bm - am;
+      });
+    case "created_asc":
+      return sorted.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+    case "created_desc":
+    default:
+      return sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  }
+}
+
 const STATUS_LABELS: Record<Status, string> = { pending: "Pending", approved: "Approved", rejected: "Rejected" };
 const STATUS_COLORS: Record<Status, { color: string; bg: string }> = {
   pending: { color: "#D88A0A", bg: "rgba(245,166,35,0.14)" },
@@ -251,6 +291,7 @@ function EventFormModal({ event, onClose, onSaved }: { event: EventRow | null; o
 export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }) {
   const [events, setEvents] = useState<EventRow[]>([]);
   const [status, setStatus] = useState<Status>("pending");
+  const [sortBy, setSortBy] = useState<SortKey>("event_date_asc");
   const [loaded, setLoaded] = useState(false);
   const [viewing, setViewing] = useState<EventRow | null>(null);
   const [editing, setEditing] = useState<EventRow | null>(null);
@@ -261,7 +302,10 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
       setLoaded(true);
       return;
     }
-    const { data } = await supabase.from("event_submissions").select("*").order("created_at", { ascending: false });
+    // Sorted client-side (see sortEvents) so the admin can flip between
+    // "upcoming date" and "recently added" without a re-fetch; ordering here
+    // just keeps the initial paint reasonable before that runs.
+    const { data } = await supabase.from("event_submissions").select("*").order("event_date", { ascending: true });
     setEvents((data as EventRow[]) ?? []);
     setLoaded(true);
   }
@@ -271,7 +315,10 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
   }, []);
 
   const q = searchQuery.toLowerCase();
-  const filtered = events.filter((e) => e.status === status && (!q || e.title.toLowerCase().includes(q) || e.org.toLowerCase().includes(q)));
+  const filtered = sortEvents(
+    events.filter((e) => e.status === status && (!q || e.title.toLowerCase().includes(q) || e.org.toLowerCase().includes(q))),
+    sortBy
+  );
 
   async function setEventStatus(id: string, next: Status) {
     if (!supabase) return;
@@ -342,6 +389,15 @@ export default function EventsTab({ searchQuery = "" }: { searchQuery?: string }
             );
           })}
         </div>
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value as SortKey)}
+          style={{ fontSize: 12.5, fontWeight: 600, color: "#44444C", background: "#F5F4F0", border: "none", borderRadius: 999, padding: "8px 14px", cursor: "pointer", appearance: "none", flexShrink: 0 }}
+        >
+          {SORTS.map((s) => (
+            <option key={s.key} value={s.key}>Sort: {s.label}</option>
+          ))}
+        </select>
         <button onClick={() => setAdding(true)} style={{ fontSize: 12.5, fontWeight: 600, color: "#fff", background: ORANGE, border: "none", borderRadius: 999, padding: "8px 16px", cursor: "pointer", flexShrink: 0 }}>+ Add event</button>
       </div>
 

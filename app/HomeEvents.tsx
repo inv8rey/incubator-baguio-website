@@ -18,6 +18,7 @@ interface HomeEvent {
   time: string;
   venue: string;
   registrationLink?: string;
+  posterUrl?: string;
 }
 
 function todayIso() {
@@ -35,6 +36,7 @@ function mapRow(r: any): HomeEvent {
     time: r.event_time || "",
     venue: r.venue || "",
     registrationLink: r.registration_link || undefined,
+    posterUrl: r.poster_url || undefined,
   };
 }
 
@@ -79,6 +81,7 @@ export default function HomeEvents({ bp }: { bp: string }) {
     venue: e.venue,
     href: e.registrationLink || `${bp}/calendar/`,
     external: !!e.registrationLink,
+    posterUrl: e.posterUrl,
   }));
 
   return (

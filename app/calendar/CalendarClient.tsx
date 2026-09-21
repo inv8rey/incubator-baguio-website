@@ -76,9 +76,30 @@ function startOfWeek(d: Date) {
   return out;
 }
 
+// Shared by the month grid and the "select date" popover, which each need
+// their own independent month/year (the popover browses without moving the
+// grid until a date is actually picked).
+function buildMonthCells(year: number, month: number): DayCell[] {
+  const startOffset = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const out: DayCell[] = [];
+  for (let i = startOffset; i > 0; i--) out.push({ date: new Date(year, month, 1 - i), inMonth: false });
+  for (let d = 1; d <= daysInMonth; d++) out.push({ date: new Date(year, month, d), inMonth: true });
+  let trailing = 1;
+  while (out.length % 7 !== 0) out.push({ date: new Date(year, month, daysInMonth + trailing++), inMonth: false });
+  return out;
+}
+
 function formatLong(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
   return `${MONTH_NAMES[m - 1]} ${d}, ${y}`;
+}
+
+/** "19–23 August 2026", or "30 Aug – 02 Sep 2026" when the week crosses a month. */
+function weekRangeLabel(start: Date, end: Date) {
+  const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+  if (sameMonth) return `${start.getDate()}–${end.getDate()} ${MONTH_NAMES[start.getMonth()]} ${start.getFullYear()}`;
+  return `${start.getDate()} ${MONTH_NAMES[start.getMonth()]} – ${end.getDate()} ${MONTH_NAMES[end.getMonth()]} ${end.getFullYear()}`;
 }
 
 const selectStyle: React.CSSProperties = {
@@ -112,35 +133,6 @@ function Select({ value, onChange, options, allLabel }: { value: string | null; 
 
 interface DayCell { date: Date; inMonth: boolean }
 interface ChipData { key: string; label: string; time: string; color: string; bg: string }
-
-function DayChip({ data, compact }: { data: ChipData; compact?: boolean }) {
-  return (
-    <div className="ib-events-chip" style={{ display: "flex", alignItems: "stretch", gap: 5, minWidth: 0, background: data.bg, borderRadius: 6, padding: "3px 6px 3px 5px", overflow: "hidden" }}>
-      <span className="ib-events-chip-bar" style={{ width: 3, minHeight: 14, flexShrink: 0, borderRadius: 9999, background: data.color }} />
-      {/* Month cells are only ~130px wide, so a single nowrap line truncates
-          after a word or two ("Desig…"). Two clamped lines make the title
-          actually readable, and the time is left to the wider Week view and
-          the day panel rather than eating the chip. */}
-      <span
-        className="ib-events-chip-text"
-        style={{
-          minWidth: 0,
-          overflow: "hidden",
-          display: "-webkit-box",
-          WebkitBoxOrient: "vertical",
-          WebkitLineClamp: 2,
-          fontSize: compact ? 10.5 : 11,
-          fontWeight: 500,
-          lineHeight: 1.35,
-          color: data.color,
-        }}
-      >
-        {!compact && data.time ? <span style={{ opacity: 0.7, marginRight: 5 }}>{data.time}</span> : null}
-        {data.label}
-      </span>
-    </div>
-  );
-}
 
 function shortDate(iso: string) {
   const [, m, d] = iso.split("-").map(Number);
@@ -230,6 +222,46 @@ function EventRow({ e }: { e: CityEvent }) {
         </div>
       </div>
     </div>
+  );
+}
+
+/** A single entry inside a Week-view day column: time, title, venue. Color
+    is kept to a single accent dot rather than tinting the whole line --
+    monochrome black-on-white text with one orange accent (the reference
+    "Repertoire" poster layout) reads calmer than a wall of category colors. */
+function WeekEventItem({ e, onClick }: { e: CityEvent; onClick: () => void }) {
+  const cc = CATEGORY_COLORS[e.category];
+  return (
+    <button
+      onClick={onClick}
+      style={{ textAlign: "left", background: "none", border: "none", padding: "0 0 14px", borderBottom: `1px solid ${HAIRLINE}`, cursor: "pointer", display: "flex", flexDirection: "column", gap: 5, width: "100%" }}
+    >
+      <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.03em", color: "#8A8378" }}>
+        <span style={{ width: 6, height: 6, borderRadius: 9999, background: cc.color, flexShrink: 0 }} />
+        {e.time?.trim() || "Time TBA"}
+      </span>
+      <span style={{ fontSize: 13, fontWeight: 700, color: DARK, lineHeight: 1.3, letterSpacing: "-0.005em" }}>{e.title}</span>
+      {e.venue?.trim() && (
+        <span style={{ fontSize: 11, color: "#9C958A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{e.venue}</span>
+      )}
+    </button>
+  );
+}
+
+function WeekSlotItem({ s, onClick }: { s: MentorSlot; onClick: () => void }) {
+  const cc = MENTOR_EXPERTISE_COLORS[s.expertise];
+  return (
+    <button
+      onClick={onClick}
+      style={{ textAlign: "left", background: "none", border: "none", padding: "0 0 14px", borderBottom: `1px solid ${HAIRLINE}`, cursor: "pointer", display: "flex", flexDirection: "column", gap: 5, width: "100%" }}
+    >
+      <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.03em", color: "#8A8378" }}>
+        <span style={{ width: 6, height: 6, borderRadius: 9999, background: cc.color, flexShrink: 0 }} />
+        {s.time}
+      </span>
+      <span style={{ fontSize: 13, fontWeight: 700, color: DARK, lineHeight: 1.3, letterSpacing: "-0.005em" }}>{s.mentorName}</span>
+      <span style={{ fontSize: 11, color: "#9C958A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.venue}</span>
+    </button>
   );
 }
 
@@ -632,14 +664,20 @@ function SubscribeModal({ onClose }: { onClose: () => void }) {
 
 export default function CalendarClient() {
   const [mode, setMode] = useState<CalMode>("events");
-  const [cursor, setCursor] = useState(new Date(TODAY.getFullYear(), TODAY.getMonth(), 1));
+  // Today itself, not the 1st of the month -- Week view opens on today's own
+  // week, and Month view only reads the year/month part so this doesn't
+  // change what page it lands on there.
+  const [cursor, setCursor] = useState(new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate()));
   const [selectedIso, setSelectedIso] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string | null>(null);
   const [organizerType, setOrganizerType] = useState<string | null>(null);
   const [format, setFormat] = useState<string | null>(null);
-  const [view, setView] = useState<View>("Month");
+  const [view, setView] = useState<View>("Week");
   const [showLater, setShowLater] = useState(false);
+  // Non-null while the "Select date" popover is open. It browses its own
+  // month independently of `cursor`, which only moves once a date is picked.
+  const [pickerDate, setPickerDate] = useState<Date | null>(null);
 
   const [bookedIds, setBookedIds] = useState<Set<string>>(new Set());
   const [bookingOpen, setBookingOpen] = useState(false);
@@ -716,16 +754,7 @@ export default function CalendarClient() {
   // nulls, and the grid is padded to whole weeks -- an unbroken 7-column
   // block reads as a calendar, where blank placeholder tiles read as
   // something that failed to load.
-  const monthCells = useMemo(() => {
-    const startOffset = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const out: DayCell[] = [];
-    for (let i = startOffset; i > 0; i--) out.push({ date: new Date(year, month, 1 - i), inMonth: false });
-    for (let d = 1; d <= daysInMonth; d++) out.push({ date: new Date(year, month, d), inMonth: true });
-    let trailing = 1;
-    while (out.length % 7 !== 0) out.push({ date: new Date(year, month, daysInMonth + trailing++), inMonth: false });
-    return out;
-  }, [year, month]);
+  const monthCells = useMemo(() => buildMonthCells(year, month), [year, month]);
 
   const weekCells = useMemo(() => {
     const start = startOfWeek(cursor);
@@ -737,6 +766,18 @@ export default function CalendarClient() {
   }, [cursor]);
 
   const cells = view === "Week" ? weekCells : monthCells;
+
+  const pickerCells = useMemo(() => (pickerDate ? buildMonthCells(pickerDate.getFullYear(), pickerDate.getMonth()) : []), [pickerDate]);
+
+  function stepPicker(dir: 1 | -1) {
+    setPickerDate((d) => (d ? new Date(d.getFullYear(), d.getMonth() + dir, 1) : d));
+  }
+
+  function pickDate(date: Date) {
+    setCursor(date);
+    setSelectedIso(isoOf(date));
+    setPickerDate(null);
+  }
 
   // Which legend swatches are worth showing: only what's actually on the
   // grid right now, recomputed as the period or filters change.
@@ -843,6 +884,7 @@ export default function CalendarClient() {
           venue: e.venue,
           href: e.registrationLink || "#browse-calendar",
           external: !!e.registrationLink,
+          posterUrl: e.posterUrl,
         })),
     [allEvents, todayIso]
   );
@@ -987,21 +1029,87 @@ export default function CalendarClient() {
               overflow:hidden then clipped the right ~35% of the calendar
               with no way to scroll to it. */}
           {view !== "Agenda" ? (
-            <div style={{ background: "#fff", border: "1px solid rgba(64,50,34,0.13)", borderRadius: 20, padding: "24px 24px 18px", minWidth: 0 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
-                <div style={{ fontSize: 19, fontWeight: 600, color: DARK, letterSpacing: "-0.01em" }}>
-                  {view === "Week" ? `Week of ${formatLong(isoOf(weekCells[0].date))}` : `${MONTH_NAMES[month]} ${year}`}
+            <div style={{ background: "#fff", border: `1px solid ${HAIRLINE}`, borderRadius: 22, boxShadow: "0 1px 2px rgba(23,18,13,0.03), 0 12px 32px rgba(23,18,13,0.05)", padding: "26px 26px 18px", minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 22, flexWrap: "wrap", gap: 12 }}>
+                <div style={{ fontSize: 24, fontWeight: 800, color: DARK, letterSpacing: "-0.03em" }}>
+                  {view === "Week" ? weekRangeLabel(weekCells[0].date, weekCells[6].date) : `${MONTH_NAMES[month]} ${year}`}
                 </div>
-                <div style={{ display: "flex", gap: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <button onClick={() => step(-1)} aria-label="Previous" style={{ width: 32, height: 32, borderRadius: 9999, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#44444C" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                   </button>
-                  <button onClick={() => { setCursor(new Date(TODAY.getFullYear(), TODAY.getMonth(), 1)); setSelectedIso(null); }} style={{ fontSize: 12, fontWeight: 600, color: "#5A544B", border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", borderRadius: 9999, padding: "0 14px", cursor: "pointer" }}>
+                  <button onClick={() => { setCursor(new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate())); setSelectedIso(null); }} style={{ fontSize: 12, fontWeight: 600, color: "#5A544B", border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", borderRadius: 9999, padding: "0 14px", cursor: "pointer" }}>
                     Today
                   </button>
                   <button onClick={() => step(1)} aria-label="Next" style={{ width: 32, height: 32, borderRadius: 9999, border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#44444C" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
                   </button>
+
+                  <div style={{ position: "relative" }}>
+                    <button
+                      onClick={() => setPickerDate((d) => (d ? null : new Date(cursor.getFullYear(), cursor.getMonth(), 1)))}
+                      aria-expanded={pickerDate !== null}
+                      style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 600, color: "#44444C", border: "1.5px solid rgba(64,50,34,0.14)", background: "#fff", borderRadius: 9999, padding: "8px 14px", cursor: "pointer" }}
+                    >
+                      <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth={2} strokeLinecap="round"><rect x={3} y={4} width={18} height={17} rx={2} /><path d="M3 9h18M8 2v4M16 2v4" /></svg>
+                      Select date
+                      <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="#6E685F" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round" style={{ transform: pickerDate ? "rotate(180deg)" : "none", transition: "transform 0.15s ease" }}><path d="m6 9 6 6 6-6" /></svg>
+                    </button>
+
+                    {pickerDate && (
+                      <>
+                        {/* Transparent full-screen catcher, not a dim backdrop --
+                            this is a lightweight jump-to-date popover, not a modal
+                            that should dim the whole calendar behind it. */}
+                        <div onClick={() => setPickerDate(null)} style={{ position: "fixed", inset: 0, zIndex: 60 }} />
+                        <div
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ position: "absolute", top: "calc(100% + 8px)", right: 0, zIndex: 61, width: 268, background: "#fff", border: `1px solid ${HAIRLINE}`, borderRadius: 14, boxShadow: "0 16px 40px rgba(23,18,13,0.16)", padding: 14 }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                            <button onClick={() => stepPicker(-1)} aria-label="Previous month" style={{ width: 26, height: 26, borderRadius: 9999, border: "1px solid rgba(64,50,34,0.14)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#44444C" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                            </button>
+                            <span style={{ fontSize: 13, fontWeight: 700, color: DARK }}>{MONTH_NAMES[pickerDate.getMonth()]} {pickerDate.getFullYear()}</span>
+                            <button onClick={() => stepPicker(1)} aria-label="Next month" style={{ width: 26, height: 26, borderRadius: 9999, border: "1px solid rgba(64,50,34,0.14)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#44444C" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                            </button>
+                          </div>
+                          <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", marginBottom: 4 }}>
+                            {WEEKDAYS.map((w) => (
+                              <span key={w} style={{ textAlign: "center", fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", color: "#9C958A" }}>{w.slice(0, 2).toUpperCase()}</span>
+                            ))}
+                          </div>
+                          <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", rowGap: 2 }}>
+                            {pickerCells.map(({ date, inMonth }, i) => {
+                              const iso = isoOf(date);
+                              const isToday = iso === todayIso;
+                              const isPicked = iso === isoOf(cursor);
+                              return (
+                                <button
+                                  key={i}
+                                  onClick={() => pickDate(date)}
+                                  style={{
+                                    width: "100%",
+                                    aspectRatio: "1",
+                                    border: "none",
+                                    borderRadius: 9999,
+                                    fontSize: 11.5,
+                                    fontWeight: isPicked || isToday ? 700 : 500,
+                                    cursor: "pointer",
+                                    color: isPicked ? "#fff" : isToday ? ORANGE : inMonth ? DARK : "#CFCAC0",
+                                    background: isPicked ? ORANGE : isToday ? "rgba(242,101,34,0.12)" : "transparent",
+                                  }}
+                                >
+                                  {date.getDate()}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -1013,73 +1121,121 @@ export default function CalendarClient() {
                   rest into slivers. */}
               <div style={{ border: `1px solid ${HAIRLINE}`, borderRadius: 14, overflow: "hidden" }}>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))", background: "#FBF9F5", borderBottom: `1px solid ${HAIRLINE}` }}>
-                  {WEEKDAYS.map((w, i) => (
-                    <div key={w} style={{ textAlign: "center", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: "#6E685F", padding: "10px 0", borderRight: i < 6 ? `1px solid ${HAIRLINE}` : "none" }}>
-                      {w}
-                    </div>
-                  ))}
+                  {view === "Week"
+                    ? weekCells.map(({ date }, i) => (
+                        <div key={i} style={{ textAlign: "center", padding: "10px 0", borderRight: i < 6 ? `1px solid ${HAIRLINE}` : "none" }}>
+                          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: isoOf(date) === todayIso ? ORANGE : "#6E685F" }}>{WEEKDAYS[date.getDay()]}</div>
+                          <div style={{ fontSize: 19, fontWeight: 700, color: isoOf(date) === todayIso ? ORANGE : DARK, marginTop: 2 }}>{date.getDate()}</div>
+                        </div>
+                      ))
+                    : WEEKDAYS.map((w, i) => (
+                        <div key={w} style={{ textAlign: "center", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: "#6E685F", padding: "10px 0", borderRight: i < 6 ? `1px solid ${HAIRLINE}` : "none" }}>
+                          {w}
+                        </div>
+                      ))}
                 </div>
 
-                <div className="ib-events-monthgrid" style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))" }}>
-                  {cells.map(({ date, inMonth }, i) => {
-                    const iso = isoOf(date);
-                    const dayItems = mode === "events" ? eventsOnDayFiltered(date) : slotsOnDayFiltered(date);
-                    const dayChips: ChipData[] = mode === "events"
-                      ? (dayItems as CityEvent[]).map((e) => ({ key: e.id, label: e.title, time: e.time, color: CATEGORY_COLORS[e.category].color, bg: CATEGORY_COLORS[e.category].bg }))
-                      : (dayItems as MentorSlot[]).map((s) => ({ key: s.id, label: s.mentorName, time: s.time, color: MENTOR_EXPERTISE_COLORS[s.expertise].color, bg: MENTOR_EXPERTISE_COLORS[s.expertise].bg }));
-                    const isToday = iso === todayIso;
-                    const isSelected = iso === selectedIso;
-                    const visible = dayChips.slice(0, view === "Week" ? 6 : 2);
-                    const extra = dayChips.length - visible.length;
-                    const interactive = dayItems.length > 0;
-                    const lastRow = i >= cells.length - 7;
-                    return (
-                      <button
-                        key={i}
-                        className={`ib-events-daycell${interactive ? " ib-events-daycell-live" : ""}`}
-                        onClick={() => interactive && setSelectedIso(isSelected ? null : iso)}
-                        disabled={!interactive}
-                        aria-pressed={interactive ? isSelected : undefined}
-                        aria-label={`${formatLong(iso)}${interactive ? `, ${dayItems.length} ${dayItems.length === 1 ? itemsLabel.slice(0, -1) : itemsLabel}` : ""}`}
-                        style={{
-                          minHeight: view === "Week" ? 168 : 118,
-                          minWidth: 0,
-                          border: "none",
-                          borderRight: i % 7 < 6 ? `1px solid ${HAIRLINE}` : "none",
-                          borderBottom: lastRow ? "none" : `1px solid ${HAIRLINE}`,
-                          // Inset ring for the selection so it can't shift the
-                          // grid's hairlines the way a real border would.
-                          boxShadow: isSelected ? `inset 0 0 0 2px ${ORANGE}` : "none",
-                          background: isSelected ? "rgba(242,101,34,0.05)" : inMonth ? "#fff" : "#FCFAF6",
-                          cursor: interactive ? "pointer" : "default",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "stretch",
-                          gap: 5,
-                          padding: "8px 7px",
-                          textAlign: "left",
-                          transition: "background 0.15s ease",
-                        }}
-                      >
-                        <span style={{ display: "flex", alignItems: "center", minHeight: 21 }}>
+                {view === "Week" ? (
+                  <div className="ib-events-weekgrid" style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))" }}>
+                    {weekCells.map(({ date }, i) => {
+                      const iso = isoOf(date);
+                      const dayItems = mode === "events" ? eventsOnDayFiltered(date) : slotsOnDayFiltered(date);
+                      const isSelected = iso === selectedIso;
+                      return (
+                        <div
+                          key={i}
+                          style={{
+                            minHeight: 260,
+                            borderRight: i < 6 ? `1px solid ${HAIRLINE}` : "none",
+                            boxShadow: isSelected ? `inset 0 0 0 2px ${ORANGE}` : "none",
+                            background: isSelected ? "rgba(242,101,34,0.05)" : "#fff",
+                            padding: "14px 12px",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 16,
+                          }}
+                        >
+                          {mode === "events"
+                            ? (dayItems as CityEvent[]).map((e) => <WeekEventItem key={e.id} e={e} onClick={() => setSelectedIso(isSelected ? null : iso)} />)
+                            : (dayItems as MentorSlot[]).map((s) => <WeekSlotItem key={s.id} s={s} onClick={() => setSelectedIso(isSelected ? null : iso)} />)}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="ib-events-monthgrid" style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))" }}>
+                    {cells.map(({ date, inMonth }, i) => {
+                      const iso = isoOf(date);
+                      const dayItems = mode === "events" ? eventsOnDayFiltered(date) : slotsOnDayFiltered(date);
+                      const dayChips: ChipData[] = mode === "events"
+                        ? (dayItems as CityEvent[]).map((e) => ({ key: e.id, label: e.title, time: e.time, color: CATEGORY_COLORS[e.category].color, bg: CATEGORY_COLORS[e.category].bg }))
+                        : (dayItems as MentorSlot[]).map((s) => ({ key: s.id, label: s.mentorName, time: s.time, color: MENTOR_EXPERTISE_COLORS[s.expertise].color, bg: MENTOR_EXPERTISE_COLORS[s.expertise].bg }));
+                      const isToday = iso === todayIso;
+                      const isSelected = iso === selectedIso;
+                      const interactive = dayItems.length > 0;
+                      const lastRow = i >= cells.length - 7;
+                      return (
+                        <button
+                          key={i}
+                          className={`ib-events-daycell${interactive ? " ib-events-daycell-live" : ""}`}
+                          onClick={() => interactive && setSelectedIso(isSelected ? null : iso)}
+                          disabled={!interactive}
+                          aria-pressed={interactive ? isSelected : undefined}
+                          aria-label={`${formatLong(iso)}${interactive ? `, ${dayItems.length} ${dayItems.length === 1 ? itemsLabel.slice(0, -1) : itemsLabel}` : ""}`}
+                          style={{
+                            minHeight: 118,
+                            minWidth: 0,
+                            border: "none",
+                            borderRight: i % 7 < 6 ? `1px solid ${HAIRLINE}` : "none",
+                            borderBottom: lastRow ? "none" : `1px solid ${HAIRLINE}`,
+                            // Inset ring for the selection so it can't shift the
+                            // grid's hairlines the way a real border would.
+                            boxShadow: isSelected ? `inset 0 0 0 2px ${ORANGE}` : "none",
+                            background: isSelected ? "rgba(242,101,34,0.05)" : inMonth ? "#fff" : "#FCFAF6",
+                            cursor: interactive ? "pointer" : "default",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "stretch",
+                            gap: 8,
+                            padding: "12px 12px 14px",
+                            textAlign: "left",
+                            transition: "background 0.15s ease",
+                          }}
+                        >
+                          {/* Bold, plain-text day -- muted when nothing's on it,
+                              full weight the moment there's something to show,
+                              so a glance at the numbers alone tells you which
+                              days matter without reading a single title. */}
                           <span
-                            style={
-                              isToday
-                                ? { width: 21, height: 21, borderRadius: 9999, background: ORANGE, color: "#fff", fontSize: 11.5, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center" }
-                                : { fontSize: 12.5, fontWeight: 500, color: !inMonth ? "#CFCAC0" : interactive ? DARK : "#9C958A", padding: "0 2px" }
-                            }
+                            style={{
+                              fontSize: 25,
+                              fontWeight: 700,
+                              letterSpacing: "-0.02em",
+                              lineHeight: 1,
+                              color: !inMonth ? "#DCD7CC" : isToday ? ORANGE : interactive ? DARK : "#B9B2A5",
+                            }}
                           >
                             {date.getDate()}
                           </span>
-                        </span>
-                        <div style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 0 }}>
-                          {visible.map((c) => <DayChip key={c.key} data={c} compact={view !== "Week"} />)}
-                          {extra > 0 && <span style={{ fontSize: 10, fontWeight: 500, color: "#6E685F", padding: "1px 6px" }}>+{extra} more</span>}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
+                          {/* Full titles, stacked as plain black lines rather
+                              than color-pill chips -- the grid row already
+                              grows to fit the busiest day, so nothing needs
+                              truncating or hiding behind a "+N more". Category
+                              is still there, just demoted to a small accent
+                              dot instead of tinting the whole title. */}
+                          <div style={{ display: "flex", flexDirection: "column", gap: 7, minWidth: 0 }}>
+                            {dayChips.map((c) => (
+                              <span key={c.key} style={{ display: "flex", alignItems: "flex-start", gap: 6, fontSize: 12, fontWeight: 600, lineHeight: 1.4, color: DARK }}>
+                                <span style={{ width: 5, height: 5, borderRadius: 9999, background: c.color, flexShrink: 0, marginTop: 5 }} />
+                                {c.label}
+                              </span>
+                            ))}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Only the categories actually on screen -- a fixed list of all

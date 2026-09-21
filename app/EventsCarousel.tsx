@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { CATEGORY_COLORS, type EventCategory } from "./calendar/data";
 
 // Shared by the homepage and the calendar so the two never drift apart.
-// Deliberately image-free: every card's artwork is generated from its own
-// category (tinted gradient + the category glyph), so an event looks
-// finished the moment it's submitted, with no poster upload required.
+// No poster upload is ever required: every card's artwork falls back to one
+// generated from its own category (tinted gradient + the category glyph), so
+// an event looks finished the moment it's submitted. If the organizer did
+// attach a poster, that photo takes over the artwork block instead.
 
 const DARK = "#1A1714";
 const ORANGE = "#F26522";
@@ -41,6 +42,7 @@ export interface CarouselEvent {
   venue?: string;
   href: string;
   external?: boolean;
+  posterUrl?: string;
 }
 
 // Dates are split by hand rather than passed to `new Date(iso)`, which reads a
@@ -96,7 +98,8 @@ export function EventCard({ e }: { e: CarouselEvent }) {
         background: "#fff",
       }}
     >
-      {/* Artwork block — generated from the category, never a photo. */}
+      {/* Artwork block — the event's own poster when there is one, else a
+          generated illustration from its category. */}
       <div
         style={{
           position: "relative",
@@ -104,26 +107,38 @@ export function EventCard({ e }: { e: CarouselEvent }) {
           minHeight: 168,
           display: "flex",
           flexDirection: "column",
-          background: `linear-gradient(158deg, ${cc.color}26 0%, ${cc.color}0D 52%, #FFFFFF 100%)`,
+          overflow: "hidden",
+          background: e.posterUrl ? "#F1EEE7" : `linear-gradient(158deg, ${cc.color}26 0%, ${cc.color}0D 52%, #FFFFFF 100%)`,
         }}
       >
-        <svg
-          aria-hidden="true"
-          width={150}
-          height={150}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={cc.color}
-          strokeWidth={0.9}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{ position: "absolute", right: -26, bottom: -30, opacity: 0.18, pointerEvents: "none" }}
-        >
-          <path d={glyph} />
-        </svg>
+        {e.posterUrl ? (
+          <>
+            <img
+              src={e.posterUrl}
+              alt=""
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+            />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.55) 100%)" }} />
+          </>
+        ) : (
+          <svg
+            aria-hidden="true"
+            width={150}
+            height={150}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={cc.color}
+            strokeWidth={0.9}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ position: "absolute", right: -26, bottom: -30, opacity: 0.18, pointerEvents: "none" }}
+          >
+            <path d={glyph} />
+          </svg>
+        )}
 
         <div style={{ position: "relative", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 14 }}>
-          <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: cc.color, background: "rgba(255,255,255,0.8)", padding: "5px 10px", borderRadius: 9999 }}>
+          <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: e.posterUrl ? "#fff" : cc.color, background: e.posterUrl ? "rgba(0,0,0,0.35)" : "rgba(255,255,255,0.8)", padding: "5px 10px", borderRadius: 9999 }}>
             {e.category}
           </span>
           <span
@@ -136,7 +151,7 @@ export function EventCard({ e }: { e: CarouselEvent }) {
           </span>
         </div>
 
-        <h3 style={{ position: "relative", margin: 0, fontSize: 19, fontWeight: 600, letterSpacing: "-0.02em", color: DARK, lineHeight: 1.24 }}>
+        <h3 style={{ position: "relative", margin: 0, fontSize: 19, fontWeight: 600, letterSpacing: "-0.02em", color: e.posterUrl ? "#fff" : DARK, lineHeight: 1.24 }}>
           {e.title}
         </h3>
       </div>

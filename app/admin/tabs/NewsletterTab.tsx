@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { DARK } from "../data";
 import { supabase } from "../../../lib/supabaseClient";
+import IssuesList from "./newsletter/IssuesList";
+import ComposeIssue from "./newsletter/ComposeIssue";
 
 interface SubscriberRow {
   id: string;
@@ -48,6 +50,10 @@ function downloadCsv(rows: SubscriberRow[]) {
 }
 
 export default function NewsletterTab({ searchQuery = "" }: { searchQuery?: string }) {
+  const [mode, setMode] = useState<"subscribers" | "issues">("subscribers");
+  // null = issues list; "new" = composing a fresh draft; any other string =
+  // editing/viewing that newsletter_issues row.
+  const [openIssueId, setOpenIssueId] = useState<string | "new" | null>(null);
   const [rows, setRows] = useState<SubscriberRow[]>([]);
   const [loaded, setLoaded] = useState(false);
 
@@ -85,8 +91,48 @@ export default function NewsletterTab({ searchQuery = "" }: { searchQuery?: stri
     load();
   }
 
+  const modeToggle = (
+    <div style={{ display: "flex", gap: 6, background: "#F5F4F0", borderRadius: 999, padding: 4, width: "fit-content" }}>
+      {(["subscribers", "issues"] as const).map((m) => (
+        <button
+          key={m}
+          onClick={() => {
+            setMode(m);
+            setOpenIssueId(null);
+          }}
+          style={{
+            fontSize: 12.5,
+            fontWeight: 600,
+            padding: "7px 16px",
+            borderRadius: 999,
+            border: "none",
+            cursor: "pointer",
+            color: mode === m ? "#fff" : "#5A544B",
+            background: mode === m ? "#131110" : "transparent",
+          }}
+        >
+          {m === "subscribers" ? "Subscribers" : "Issues"}
+        </button>
+      ))}
+    </div>
+  );
+
+  if (mode === "issues") {
+    return (
+      <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
+        {modeToggle}
+        {openIssueId === null ? (
+          <IssuesList onOpen={setOpenIssueId} onNew={() => setOpenIssueId("new")} />
+        ) : (
+          <ComposeIssue issueId={openIssueId === "new" ? null : openIssueId} onBack={() => setOpenIssueId(null)} />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="ib-admin-stack" style={{ padding: "24px 28px 36px", display: "flex", flexDirection: "column", gap: 18 }}>
+      {modeToggle}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 }}>
         <div style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", border: "1.5px solid rgba(64,50,34,0.12)" }}>
           <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 6 }}>Total subscribers</div>
