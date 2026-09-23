@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { checkFormGuard, honeypotProps } from "../lib/formGuard";
+import { triggerNewsletterWelcome } from "../lib/triggerNewsletterWelcome";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -47,6 +48,7 @@ export default function NewsletterSignup() {
       setStatus("error");
       return;
     }
+    triggerNewsletterWelcome(email.trim());
     setStatus("done");
   }
 

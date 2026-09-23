@@ -6,6 +6,7 @@ import { useAuth } from "../AuthProvider";
 import { supabase } from "../../lib/supabaseClient";
 import { checkFormGuard, honeypotProps } from "../../lib/formGuard";
 import { uploadEventSubmissionPoster } from "../../lib/uploadLogo";
+import { triggerNewsletterWelcome } from "../../lib/triggerNewsletterWelcome";
 import TimeRangePicker from "./TimeRangePicker";
 import EventsCarousel, { CATEGORY_GLYPHS, type CarouselEvent } from "../EventsCarousel";
 import {
@@ -632,6 +633,7 @@ function SubscribeModal({ onClose }: { onClose: () => void }) {
       setStatus("error");
       return;
     }
+    triggerNewsletterWelcome(email.trim());
     setStatus("done");
   }
 

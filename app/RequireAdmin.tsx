@@ -13,7 +13,7 @@ export default function RequireAdmin({ children, adminBase }: { children: React.
 
   if (loading) {
     return (
-      <div style={{ minHeight: "100vh", background: "#100D0B", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.5)", fontSize: 14 }}>
+      <div data-ib-admin-root style={{ minHeight: "100vh", background: "#100D0B", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.5)", fontSize: 14 }}>
         Loading&hellip;
       </div>
     );
@@ -21,7 +21,7 @@ export default function RequireAdmin({ children, adminBase }: { children: React.
 
   if (!user || !profile?.is_admin) {
     return (
-      <div style={{ minHeight: "100vh", background: "#100D0B", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <div data-ib-admin-root style={{ minHeight: "100vh", background: "#100D0B", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
         <div style={{ background: "#1A1714", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "48px 40px", textAlign: "center", maxWidth: 420 }}>
           <div style={{ width: 52, height: 52, borderRadius: 9999, background: "rgba(242,101,34,0.14)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth={2}><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
@@ -70,5 +70,9 @@ export default function RequireAdmin({ children, adminBase }: { children: React.
     );
   }
 
-  return <>{children}</>;
+  // Marks every render path (loading/denied/authorized) so client-only code
+  // that has no business knowing the secret admin path -- e.g.
+  // NewsletterOverlay -- can still detect "we're on the admin panel" from
+  // the DOM instead of pattern-matching a pathname it's never told.
+  return <div data-ib-admin-root>{children}</div>;
 }

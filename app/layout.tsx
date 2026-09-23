@@ -8,6 +8,7 @@ import NavMegaMenu from "./NavMegaMenu";
 import PageLoader from "./PageLoader";
 import PostHogProvider from "./PostHogProvider";
 import ChatWidget from "./ChatWidget/ChatWidget";
+import NewsletterOverlay from "./NewsletterOverlay";
 import { SITE_URL } from "./seo";
 
 const TITLE = "Incubator Baguio | Baguio’s Innovation Ecosystem Platform";
@@ -85,6 +86,7 @@ export default function RootLayout({
             <HeaderSearch />
             <NavMegaMenu />
             <ChatWidget />
+            <NewsletterOverlay />
           </AuthProvider>
         </PostHogProvider>
       </body>
