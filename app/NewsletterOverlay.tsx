@@ -96,7 +96,8 @@ export default function NewsletterOverlay() {
       setStatus("error");
       return;
     }
-    if (!err) triggerNewsletterWelcome(email.trim());
+    // Also on a duplicate: the claim is idempotent and only sends if never welcomed.
+    triggerNewsletterWelcome(email.trim());
     setStatus("done");
     markSeen();
     setTimeout(dismiss, 2400);

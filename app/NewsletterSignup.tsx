@@ -41,6 +41,10 @@ export default function NewsletterSignup() {
     if (err) {
       // Unique-constraint violation just means they're already on the list.
       if (err.code === "23505") {
+        // Already on the list: the welcome claim is idempotent, so this only
+        // sends if they were never welcomed (signed up before the automation
+        // existed, or an earlier send failed).
+        triggerNewsletterWelcome(email.trim());
         setStatus("done");
         return;
       }

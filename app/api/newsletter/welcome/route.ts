@@ -37,5 +37,13 @@ export async function POST(req: Request) {
   if (error || !data) return Response.json({ ok: true });
 
   const result = await sendWelcomeNewsletterEmail(email, (data as { unsubscribe_token: string }).unsubscribe_token);
-  return Response.json({ ok: true, sent: result.sent });
+  if (result.sent) {
+    await supabase.rpc("confirm_newsletter_welcome", { p_email: email });
+  } else {
+    // Un-claim so a later signup attempt (or a retry) can send it, instead of
+    // the one failed attempt permanently marking them as welcomed.
+    await supabase.rpc("release_newsletter_welcome", { p_email: email });
+    console.error("newsletter welcome not sent for a subscriber:", result.reason);
+  }
+  return Response.json({ ok: true, sent: result.sent, reason: result.sent ? undefined : result.reason });
 }

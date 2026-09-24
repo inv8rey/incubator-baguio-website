@@ -626,6 +626,10 @@ function SubscribeModal({ onClose }: { onClose: () => void }) {
     const { error: err } = await supabase.from("newsletter_subscribers").insert({ email: email.trim(), source: "calendar" });
     if (err) {
       if (err.code === "23505") {
+        // Already on the list: the welcome claim is idempotent, so this only
+        // sends if they were never welcomed (signed up before the automation
+        // existed, or an earlier send failed).
+        triggerNewsletterWelcome(email.trim());
         setStatus("done");
         return;
       }
