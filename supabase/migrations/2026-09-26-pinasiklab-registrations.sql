@@ -49,6 +49,9 @@ create table if not exists public.siklab_registrations (
   heard_from text not null default '' check (char_length(heard_from) <= 160),
   notes text not null default '' check (char_length(notes) <= 1000),
 
+  -- Opt-in to being listed (name, skills, team) on the Team Finder.
+  show_in_finder boolean not null default false,
+
   -- Review (set by PinaSIKLab organizers only)
   status text not null default 'new' check (status in ('new', 'shortlisted', 'accepted', 'waitlisted', 'declined')),
   admin_note text not null default '' check (char_length(admin_note) <= 2000),

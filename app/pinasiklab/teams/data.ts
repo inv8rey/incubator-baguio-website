@@ -70,3 +70,44 @@ export interface Viewer {
   myTeamOpen: boolean;
   loginHref: string;
 }
+
+/** A PinaSIKLab applicant who opted in to the Team Finder but has no account yet. Read-only. */
+export interface Applicant {
+  id: string;
+  participation: "individual" | "team";
+  full_name: string;
+  skills: string[];
+  bio: string;
+  team_name: string;
+  team_size: number | null;
+  member_names: string[];
+  created_at: string;
+}
+
+const SKILL_MAP: [RegExp, string][] = [
+  [/^Programming/, "Developer"],
+  [/^Artificial/, "Data / AI"],
+  [/^IoT/, "Hardware / IoT"],
+  [/^(UI\/UX|Graphic)/, "Designer"],
+  [/^Business/, "Business"],
+  [/^Research/, "Research"],
+  [/^Marketing/, "Communications"],
+  [/^Project/, "Project management"],
+  [/^(Community|Environmental|Agriculture|Education|Public Policy)/, "Domain expert"],
+];
+
+/** Application-form skill labels -> the Team Finder's shorter skill list. */
+export function mapSkills(raw: string[]): string[] {
+  const out = new Set<string>();
+  for (const s of raw) for (const [re, label] of SKILL_MAP) if (re.test(s)) out.add(label);
+  return [...out];
+}
+
+export interface MyRegistration {
+  full_name: string;
+  phone: string;
+  skills: string[];
+  contribution: string;
+  participation: "individual" | "team";
+  team_name: string;
+}

@@ -34,7 +34,7 @@ interface Values {
   contribution: string; teammate_preference: string;
   focus_areas: string[]; solution_types: string[];
   motivation: string; available: string; continue_after: string; heard_from: string; notes: string;
-  consent_privacy: boolean; declaration: boolean;
+  consent_privacy: boolean; declaration: boolean; show_in_finder: boolean;
 }
 
 const EMPTY: Values = {
@@ -44,7 +44,7 @@ const EMPTY: Values = {
   contribution: "", teammate_preference: "",
   focus_areas: [], solution_types: [],
   motivation: "", available: "", continue_after: "", heard_from: "", notes: "",
-  consent_privacy: false, declaration: false,
+  consent_privacy: false, declaration: false, show_in_finder: true,
 };
 
 type Errors = Partial<Record<keyof Values, string>>;
@@ -235,6 +235,7 @@ export default function RegistrationForm() {
       notes: v.notes.trim(),
       consent_privacy: v.consent_privacy,
       declaration: v.declaration,
+      show_in_finder: v.show_in_finder,
     });
     setBusy(false);
     if (error) {
@@ -482,6 +483,12 @@ export default function RegistrationForm() {
                   <label style={{ display: "flex", gap: 12, alignItems: "flex-start", fontSize: 14, lineHeight: 1.55, color: "var(--tf-body2)", cursor: "pointer" }}>
                     <input type="checkbox" checked={v.consent_privacy} onChange={(e) => set("consent_privacy", e.target.checked)} style={{ accentColor: ORANGE, marginTop: 3, width: 16, height: 16, flexShrink: 0 }} />
                     <span>I consent to the collection and processing of my personal information for the screening, communication, documentation, and implementation of PinaSIKLab Baguio 2026, in accordance with applicable data privacy requirements.</span>
+                  </label>
+                </Field>
+                <Field label="Team Finder" hint="Optional. You can change this later by emailing us.">
+                  <label style={{ display: "flex", gap: 12, alignItems: "flex-start", fontSize: 14, lineHeight: 1.55, color: "var(--tf-body2)", cursor: "pointer" }}>
+                    <input type="checkbox" checked={v.show_in_finder} onChange={(e) => set("show_in_finder", e.target.checked)} style={{ accentColor: ORANGE, marginTop: 3, width: 16, height: 16, flexShrink: 0 }} />
+                    <span>Once my application is approved, show me on the Team Finder so other participants can find me{v.participation === "team" ? " and my team" : " and invite me to a team"}. Only my name, skills{v.participation === "team" ? ", team name and member names" : " and what I'd contribute"} are shown. My email and phone are never shown.</span>
                   </label>
                 </Field>
                 <Field label="Application declaration" required error={err("declaration")}>

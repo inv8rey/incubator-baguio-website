@@ -12,7 +12,7 @@ interface Row {
   id: string; created_at: string; full_name: string; email: string; phone: string; age: number; category: string; organization: string; municipality: string;
   expertise: string; skills: string[]; participation: "individual" | "team"; team_name: string; is_team_leader: boolean | null; team_leader_contact: string;
   team_size: number | null; team_members: string; contribution: string; teammate_preference: string; problem: string; solution_types: string[];
-  motivation: string; available_full_duration: string; continue_after: string; heard_from: string; notes: string; status: Status; admin_note: string;
+  motivation: string; available_full_duration: string; continue_after: string; heard_from: string; notes: string; status: Status; admin_note: string; show_in_finder: boolean;
 }
 
 const bg = "#100D0B", panel = "#1A1714", line = "rgba(255,255,255,0.1)", dim = "rgba(255,255,255,0.55)";
@@ -128,7 +128,7 @@ export default function SiklabAdmin() {
   }
 
   const count = (f: (r: Row) => boolean) => rows.filter(f).length;
-  const stats: [string, number][] = [["Applications", rows.length], ["Individuals", count((r) => r.participation === "individual")], ["Teams", count((r) => r.participation === "team")], ["Shortlisted", count((r) => r.status === "shortlisted")], ["Accepted", count((r) => r.status === "accepted")]];
+  const stats: [string, number][] = [["Applications", rows.length], ["Individuals", count((r) => r.participation === "individual")], ["Teams", count((r) => r.participation === "team")], ["Shortlisted", count((r) => r.status === "shortlisted")], ["Approved", count((r) => r.status === "accepted")]];
 
   return shell(
     <div style={{ maxWidth: 1180, margin: "0 auto", padding: "32px 20px 80px" }}>
@@ -158,7 +158,7 @@ export default function SiklabAdmin() {
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
         <input placeholder="Search name, email, school, team, skills…" value={q} onChange={(e) => setQ(e.target.value)} style={{ ...input, flex: "1 1 260px" }} />
         <select value={fPart} onChange={(e) => setFPart(e.target.value)} style={input}><option value="">All types</option><option value="individual">Individual</option><option value="team">Team</option></select>
-        <select value={fStatus} onChange={(e) => setFStatus(e.target.value)} style={input}><option value="">All statuses</option>{STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}</select>
+        <select value={fStatus} onChange={(e) => setFStatus(e.target.value)} style={input}><option value="">All statuses</option>{STATUSES.map((s) => <option key={s} value={s}>{s === "accepted" ? "approved" : s}</option>)}</select>
         <select value={fTown} onChange={(e) => setFTown(e.target.value)} style={input}><option value="">All municipalities</option>{["Baguio City", "La Trinidad", "Itogon", "Sablan", "Tuba", "Tublay"].map((s) => <option key={s}>{s}</option>)}</select>
       </div>
 
@@ -177,7 +177,7 @@ export default function SiklabAdmin() {
                 <td style={{ padding: "12px 16px" }}>{r.organization}</td>
                 <td style={{ padding: "12px 16px" }}>{r.municipality}</td>
                 <td style={{ padding: "12px 16px", color: dim }}>{new Date(r.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric" })}</td>
-                <td style={{ padding: "12px 16px" }}><span style={{ color: STATUS_COLOR[r.status], fontWeight: 600, textTransform: "capitalize" }}>● {r.status}</span></td>
+                <td style={{ padding: "12px 16px" }}><span style={{ color: STATUS_COLOR[r.status], fontWeight: 600, textTransform: "capitalize" }}>● {r.status === "accepted" ? "approved" : r.status}</span></td>
               </tr>
             ))}
             {shown.length === 0 && <tr><td colSpan={6} style={{ padding: 40, textAlign: "center", color: dim }}>{rows.length ? "No applications match these filters." : "No applications yet."}</td></tr>}
@@ -198,9 +198,10 @@ export default function SiklabAdmin() {
 
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", margin: "20px 0" }}>
               {STATUSES.map((s) => (
-                <button key={s} onClick={() => save(open.id, { status: s })} style={{ ...ghost, textTransform: "capitalize", borderColor: open.status === s ? STATUS_COLOR[s] : line, background: open.status === s ? STATUS_COLOR[s] : "none" }}>{s}</button>
+                <button key={s} onClick={() => save(open.id, { status: s })} style={{ ...ghost, textTransform: "capitalize", borderColor: open.status === s ? STATUS_COLOR[s] : line, background: open.status === s ? STATUS_COLOR[s] : "none" }}>{s === "accepted" ? "approved" : s}</button>
               ))}
             </div>
+            <div style={{ fontSize: 12.5, color: dim, margin: "-8px 0 14px", lineHeight: 1.5 }}>{open.show_in_finder ? (open.status === "accepted" ? "Approved: this applicant is now listed on the Team Finder." : "Opted in to the Team Finder. They'll be listed once you approve them.") : "Did not opt in to the Team Finder."}</div>
 
             {([
               ["Age", String(open.age)], ["Describes them", open.category], ["School / organization", open.organization], ["Municipality", open.municipality],

@@ -3,10 +3,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "../../../lib/supabaseClient";
 import { useAuth } from "../../AuthProvider";
-import { MAX_MEMBERS, MAX_TEAMS, SKILLS, type Contact, type MyProfile, type Person, type Req, type Status, type Team, type Viewer } from "./data";
+import { MAX_MEMBERS, MAX_TEAMS, SKILLS, mapSkills, type Applicant, type Contact, type MyRegistration, type MyProfile, type Person, type Req, type Status, type Team, type Viewer } from "./data";
 import { MessageModal, ProfileModal, TeamModal, type ProfileValues, type TeamValues } from "./Forms";
 import { ThemeSwitch, useSiklabTheme } from "../theme";
 import MyPanel from "./MyPanel";
+import ApplicantCard from "./ApplicantCard";
 import PersonCard from "./PersonCard";
 import TeamCard from "./TeamCard";
 import { CARD, TEXT, HAIR, ICONS, Icon, MUTED, ORANGE, inputStyle } from "./ui";
@@ -34,6 +35,8 @@ export default function TeamFinder() {
   const [people, setPeople] = useState<Person[]>([]);
   const [me, setMe] = useState<MyProfile | null>(null);
   const [reqs, setReqs] = useState<Req[]>([]);
+  const [applicants, setApplicants] = useState<Applicant[]>([]);
+  const [myReg, setMyReg] = useState<MyRegistration | null>(null);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [setupNeeded, setSetupNeeded] = useState(false);
@@ -92,12 +95,19 @@ export default function TeamFinder() {
     setSetupNeeded(false);
     setTeams((t.data ?? []) as Team[]);
     setPeople((p.data ?? []) as Person[]);
+    // Optional: only exists once the applicants migration has been run.
+    const ap = await supabase.from("siklab_applicants_public").select("*").order("created_at");
+    setApplicants(ap.error ? [] : ((ap.data ?? []) as Applicant[]));
     if (user) {
       const [m, r] = await Promise.all([
         supabase.from("siklab_participants").select("*").eq("user_id", user.id).maybeSingle(),
         supabase.from("siklab_requests").select("*").eq("status", "pending").order("created_at", { ascending: false }),
       ]);
       setMe((m.data as MyProfile | null) ?? null);
+      if (!m.data) {
+        const reg = await supabase.rpc("siklab_my_registration");
+        setMyReg(((reg.data as MyRegistration[] | null) ?? [])[0] ?? null);
+      } else setMyReg(null);
       setReqs((r.data ?? []) as Req[]);
     } else {
       setMe(null);
@@ -144,6 +154,11 @@ export default function TeamFinder() {
 
   const solos = useMemo(() => people.filter((p) => !p.team_id), [people]);
   const openTeams = teams.filter(isOpen).length;
+  const applicantTeams = useMemo(() => applicants.filter((a) => a.participation === "team"), [applicants]);
+  const applicantSolos = useMemo(() => applicants.filter((a) => a.participation === "individual"), [applicants]);
+  const needle = q.trim().toLowerCase();
+  const visibleApplicantTeams = applicantTeams.filter((a) => !skill && statusFilter === "all" && (!needle || `${a.team_name} ${a.member_names.join(" ")}`.toLowerCase().includes(needle)));
+  const visibleApplicantSolos = applicantSolos.filter((a) => (!skill || mapSkills(a.skills).includes(skill)) && (!needle || `${a.full_name} ${a.bio}`.toLowerCase().includes(needle)));
 
   const visibleTeams = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -270,7 +285,7 @@ export default function TeamFinder() {
             <div style={{ background: CARD, border: `1px solid ${HAIR}`, borderRadius: 20, padding: "22px 26px", display: "flex", flexWrap: "wrap", gap: 20 }}>
               {stat(`${teams.length} / ${MAX_TEAMS}`, "Teams formed")}
               {stat(String(openTeams), "Teams open to new members")}
-              {stat(String(solos.length), "People looking for a team")}
+              {stat(String(solos.length + applicantSolos.length), "People looking for a team")}
             </div>
 
             <MyPanel
@@ -310,8 +325,8 @@ export default function TeamFinder() {
             <div ref={gridRef} style={{ scrollMarginTop: 90 }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, flexWrap: "wrap", marginBottom: 18 }}>
                 <div style={{ display: "flex", background: CARD, border: `1px solid ${HAIR}`, borderRadius: 9999, padding: 4, gap: 2 }}>
-                  {tabBtn("teams", "Find a team", teams.length)}
-                  {tabBtn("members", "Find a member", solos.length)}
+                  {tabBtn("teams", "Find a team", teams.length + applicantTeams.length)}
+                  {tabBtn("members", "Find a member", solos.length + applicantSolos.length)}
                 </div>
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
                   <div style={{ position: "relative" }}>
@@ -349,10 +364,13 @@ export default function TeamFinder() {
                         onNeedProfile={() => setModal({ kind: "profile" })}
                       />
                     ))}
+                    {visibleApplicantTeams.map((a) => <ApplicantCard key={a.id} a={a} loginHref={LOGIN_HREF} />)}
                     {teams.length < MAX_TEAMS && status !== "member" && !q && !skill && statusFilter === "all" && startTile}
                   </>
                 ) : (
-                  visibleSolos.map((p) => (
+                  <>
+                  {visibleApplicantSolos.map((a) => <ApplicantCard key={a.id} a={a} loginHref={LOGIN_HREF} />)}
+                  {visibleSolos.map((p) => (
                     <PersonCard
                       key={p.id}
                       person={p}
@@ -362,14 +380,15 @@ export default function TeamFinder() {
                       onInvite={(person) => setModal({ kind: "invite", person })}
                       onCancel={cancel}
                     />
-                  ))
+                  ))}
+                  </>
                 )}
               </div>
 
-              {loaded && tab === "teams" && visibleTeams.length === 0 && (
+              {loaded && tab === "teams" && visibleTeams.length === 0 && visibleApplicantTeams.length === 0 && (
                 <p style={{ fontSize: 14.5, color: MUTED, margin: "6px 0 0" }}>{teams.length === 0 ? "No teams yet. Be the first to start one." : "No teams match those filters."}</p>
               )}
-              {loaded && tab === "members" && visibleSolos.length === 0 && (
+              {loaded && tab === "members" && visibleSolos.length === 0 && visibleApplicantSolos.length === 0 && (
                 <p style={{ fontSize: 14.5, color: MUTED, margin: "6px 0 0" }}>{solos.length === 0 ? "Nobody is looking for a team right now." : "Nobody matches those filters."}</p>
               )}
               {!loaded && <p style={{ fontSize: 14.5, color: MUTED }}>Loading&hellip;</p>}
@@ -381,7 +400,7 @@ export default function TeamFinder() {
       {modal?.kind === "profile" && (
         <ProfileModal
           editing={!!me}
-          initial={me ?? undefined}
+          initial={me ?? (myReg ? { full_name: myReg.full_name, skills: mapSkills(myReg.skills), bio: myReg.contribution, contact: myReg.phone } : undefined)}
           defaultName={profile?.full_name ?? ""}
           busy={busy}
           onClose={() => setModal(null)}
@@ -391,7 +410,7 @@ export default function TeamFinder() {
       {modal?.kind === "team" && (
         <TeamModal
           mode={modal.mode}
-          initial={modal.mode === "edit" && myTeam ? { name: myTeam.name, looking_for: myTeam.looking_for, note: myTeam.note } : undefined}
+          initial={modal.mode === "edit" && myTeam ? { name: myTeam.name, looking_for: myTeam.looking_for, note: myTeam.note } : modal.mode === "create" && myReg?.participation === "team" ? { name: myReg.team_name, looking_for: [], note: "" } : undefined}
           busy={busy}
           onClose={() => setModal(null)}
           onSave={(v) => saveTeam(modal.mode, v)}
