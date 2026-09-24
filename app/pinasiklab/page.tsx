@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { pageMeta, SITE_URL } from "../seo";
 import { navBarHtml, footerHtml } from "../chrome";
-import { REGISTER_URL } from "./config";
+import { REGISTER_URL, REGISTRATION_DEADLINE } from "./config";
 
 export const metadata: Metadata = pageMeta({
   title: "PinaSIKLab Baguio 2026 — Incubator Baguio",
@@ -18,12 +18,11 @@ const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 //   - no REGISTER_URL      -> "Register now" opens an email to the team
 //   - no REGISTRATION_DEADLINE -> reads "to be announced"
 //   - no CHALLENGE_BRIEFS_URL  -> the "View challenge briefs" button is hidden
-const REGISTRATION_DEADLINE = "";
 const CHALLENGE_BRIEFS_URL = "";
 const CONTACT_EMAIL = "incubatorbaguio63@gmail.com";
 
 const registerHref = REGISTER_URL || `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("PinaSIKLab Baguio 2026 registration")}`;
-const registerAttrs = REGISTER_URL ? ' target="_blank" rel="noopener noreferrer"' : "";
+const registerAttrs = /^https?:/.test(REGISTER_URL) ? ' target="_blank" rel="noopener noreferrer"' : "";
 const deadlineText = REGISTRATION_DEADLINE || "to be announced";
 
 const ORANGE = "#F26522";

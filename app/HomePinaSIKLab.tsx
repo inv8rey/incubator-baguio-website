@@ -57,8 +57,6 @@ export default function HomePinaSIKLab({ bp }: { bp: string }) {
         <div style={{ position: "relative", display: "flex", gap: 12, flexWrap: "wrap" }}>
           <a
             href={REGISTER_URL}
-            target="_blank"
-            rel="noopener noreferrer"
             className="ib-cta-orange"
             style={{ display: "inline-flex", alignItems: "center", gap: 9, background: ORANGE, color: "#fff", fontWeight: 600, fontSize: 15, padding: "14px 28px", borderRadius: 9999, textDecoration: "none" }}
           >

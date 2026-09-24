@@ -13,13 +13,14 @@ const ORANGE = "#F26522";
 const DARK = "#1A1714";
 
 // Skipped on the unsubscribe page (perverse to pitch a resubscribe right
-// there) and auth pages (already mid-flow on something else). The admin
+// there), and on auth pages and the PinaSIKLab application form (already
+// mid-flow on something else). The admin
 // panel lives at a secret, per-deploy slug (ADMIN_ROUTE_SLUG) that's
 // deliberately never sent to the client bundle, so it can't be pattern
 // matched here by path -- instead RequireAdmin.tsx marks its own DOM with
 // [data-ib-admin-root], checked separately at display time below.
 function shouldSkip(pathname: string): boolean {
-  return pathname.startsWith("/unsubscribe") || pathname.startsWith("/login") || pathname.startsWith("/signup");
+  return pathname.startsWith("/unsubscribe") || pathname.startsWith("/login") || pathname.startsWith("/signup") || pathname.startsWith("/pinasiklab/register");
 }
 
 export default function NewsletterOverlay() {
