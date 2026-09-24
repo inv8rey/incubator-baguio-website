@@ -17,6 +17,8 @@ interface Row {
 
 interface LiveTeam { id: string; name: string; leader_id: string; locked: boolean; looking_for: string[]; created_at: string }
 interface LivePerson { id: string; full_name: string; team_id: string | null }
+interface Inquiry { id: string; created_at: string; org_name: string; org_type: string; contact_name: string; email: string; phone: string; ways: string[]; details: string; status: "new" | "contacted" | "confirmed" | "declined"; admin_note: string }
+const INQ_STATUSES = ["new", "contacted", "confirmed", "declined"] as const;
 const MAX_TEAMS = 30, MAX_MEMBERS = 5;
 
 const bg = "#100D0B", panel = "#1A1714", line = "rgba(255,255,255,0.1)", dim = "rgba(255,255,255,0.55)";
@@ -42,7 +44,8 @@ export default function SiklabAdmin() {
   const [open, setOpen] = useState<Row | null>(null);
   const [note, setNote] = useState("");
   const [loadError, setLoadError] = useState("");
-  const [view, setView] = useState<"applications" | "teams">("applications");
+  const [view, setView] = useState<"applications" | "teams" | "partners">("applications");
+  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [liveTeams, setLiveTeams] = useState<LiveTeam[]>([]);
   const [livePeople, setLivePeople] = useState<LivePerson[]>([]);
 
@@ -59,6 +62,8 @@ export default function SiklabAdmin() {
     const [t, p] = await Promise.all([supabase.from("siklab_teams").select("id,name,leader_id,locked,looking_for,created_at").order("created_at"), supabase.from("siklab_participants_public").select("id,full_name,team_id")]);
     setLiveTeams(t.error ? [] : ((t.data ?? []) as LiveTeam[]));
     setLivePeople(p.error ? [] : ((p.data ?? []) as LivePerson[]));
+    const inq = await supabase.from("siklab_partner_inquiries").select("*").order("created_at", { ascending: false });
+    setInquiries(inq.error ? [] : ((inq.data ?? []) as Inquiry[]));
     setLoadError("");
     setPhase("ready");
   }, []);
@@ -184,8 +189,8 @@ export default function SiklabAdmin() {
       </div>
 
       <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
-        {(["applications", "teams"] as const).map((t) => (
-          <button key={t} onClick={() => setView(t)} style={{ ...ghost, background: view === t ? ORANGE : "none", borderColor: view === t ? ORANGE : line, textTransform: "capitalize" }}>{t === "teams" ? `Teams (${teamBoard.finalized}/${MAX_TEAMS} finalized)` : "Applications"}</button>
+        {(["applications", "teams", "partners"] as const).map((t) => (
+          <button key={t} onClick={() => setView(t)} style={{ ...ghost, background: view === t ? ORANGE : "none", borderColor: view === t ? ORANGE : line, textTransform: "capitalize" }}>{t === "teams" ? `Teams (${teamBoard.finalized}/${MAX_TEAMS} finalized)` : t === "partners" ? `Partners (${inquiries.length})` : "Applications"}</button>
         ))}
       </div>
 
@@ -218,6 +223,28 @@ export default function SiklabAdmin() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {view === "partners" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {inquiries.length === 0 && <div style={{ background: panel, border: `1px solid ${line}`, borderRadius: 16, padding: 40, textAlign: "center", color: dim }}>No sponsor or collaborator inquiries yet.</div>}
+          {inquiries.map((i) => (
+            <div key={i.id} style={{ background: panel, border: `1px solid ${line}`, borderRadius: 16, padding: "18px 20px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 16 }}>{i.org_name}{i.org_type ? <span style={{ color: dim, fontWeight: 400, fontSize: 13 }}> · {i.org_type}</span> : null}</div>
+                  <div style={{ color: dim, fontSize: 13.5, marginTop: 2 }}>{i.contact_name} · <a href={`mailto:${i.email}`} style={{ color: ORANGE }}>{i.email}</a>{i.phone ? ` · ${i.phone}` : ""}</div>
+                </div>
+                <select value={i.status} onChange={async (e) => { const status = e.target.value as Inquiry["status"]; const { error } = await supabase!.from("siklab_partner_inquiries").update({ status }).eq("id", i.id); if (!error) setInquiries((r) => r.map((x) => (x.id === i.id ? { ...x, status } : x))); }} style={input}>
+                  {INQ_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "12px 0 0" }}>{i.ways.map((w) => <span key={w} style={{ fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 9999, background: "rgba(242,101,34,0.14)", color: ORANGE }}>{w}</span>)}</div>
+              {i.details && <p style={{ margin: "12px 0 0", fontSize: 14, lineHeight: 1.55, whiteSpace: "pre-wrap" }}>{i.details}</p>}
+              <div style={{ color: dim, fontSize: 12, marginTop: 10 }}>{new Date(i.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}</div>
+            </div>
+          ))}
         </div>
       )}
 

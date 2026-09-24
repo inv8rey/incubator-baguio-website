@@ -42,6 +42,7 @@ const PATHS = {
   mentor: '<path d="M22 10 12 5 2 10l10 5 10-5Z"></path><path d="M6 12v5c3 2 9 2 12 0v-5"></path>',
   tool: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>',
   network: '<circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"></path>',
+  trophy: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"></path><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"></path>',
   stage: '<rect x="2" y="3" width="20" height="14" rx="2"></rect><path d="M8 21h8M12 17v4"></path>',
 };
 
@@ -95,7 +96,7 @@ const FLOW = ["Baguio", "Top 5 Teams", "PinaSIKLab National Challenge", "Further
 
 const FAQS: { q: string; a: string }[] = [
   { q: "Who can participate?", a: "Young people aged 18–30 who reside, study, or work in Baguio City or the BLISTT municipalities." },
-  { q: "Do I need to be a student?", a: "No. The program welcomes students, young professionals, entrepreneurs, researchers, creatives, out-of-school youth, and early-stage innovators." },
+  { q: "Do I need to be a student?", a: "No. The program welcomes students, young professionals, youth entrepreneurs, researchers, faculty, and out-of-school youth." },
   {
     q: "Do I need technical or coding skills?",
     a: "Not every participant needs technical skills. Teams are encouraged to bring together members with complementary skills. However, each team should collectively be capable of developing and presenting a functional prototype or solution.",
@@ -113,12 +114,11 @@ const FAQS: { q: string; a: string }[] = [
   },
 ];
 
-// Only three logo files exist in /public/assets today; the rest render as
-// text wordmarks until a file is added and named here (e.g. logo: "jica.png").
+// Orgs without a logo file render as text wordmarks.
 interface Org { name: string; alt?: string; logo?: string }
 const LOGO_GROUPS: { label: string; orgs: Org[] }[] = [
-  { label: "A UNDP Youth Co:Lab initiative", orgs: [{ name: "UNDP Philippines / Youth Co:Lab" }] },
-  { label: "Locally organized by", orgs: [{ name: "Incubator Baguio", logo: "ib-icon-dark.png" }, { name: "SIGLAT Youth Innovation Hub" }] },
+  { label: "A UNDP Youth Co:Lab initiative", orgs: [{ name: "UNDP Philippines / Youth Co:Lab", logo: "undp.png" }] },
+  { label: "Locally organized by", orgs: [{ name: "Incubator Baguio", logo: "ib-icon-dark.png" }, { name: "SIGLAT Youth Innovation Hub", logo: "siglat.png" }] },
   {
     label: "With the support of",
     orgs: [
@@ -126,7 +126,7 @@ const LOGO_GROUPS: { label: string; orgs: Org[] }[] = [
       { name: "CPDSO", alt: "City Planning, Development and Sustainability Office (CPDSO)", logo: "cpdso-logo.png" },
     ],
   },
-  { label: "Supported by", orgs: [{ name: "Government of Japan" }, { name: "JICA" }] },
+  { label: "Supported by", orgs: [{ name: "Government of Japan", logo: "government-of-japan.png" }, { name: "JICA", alt: "Japan International Cooperation Agency (JICA)", logo: "jica.png" }] },
 ];
 
 function orgTile(o: Org): string {
@@ -181,13 +181,12 @@ ${navBarHtml()}
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:26px 0 0;">
       <span style="display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border-radius:9999px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);font-size:14px;font-weight:600;color:#fff;">${icon(PATHS.calendar, ORANGE, 16)} October 30&ndash;31, 2026</span>
       <span style="display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border-radius:9999px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);font-size:14px;font-weight:600;color:#fff;">${icon(PATHS.pin, ORANGE, 16)} Baguio City</span>
+      <span style="display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border-radius:9999px;background:rgba(242,101,34,0.16);border:1px solid rgba(242,101,34,0.5);font-size:14px;font-weight:600;color:#fff;">${icon(PATHS.trophy, ORANGE, 16)} Up to &#8369;100,000 in prizes</span>
     </div>
-    <p style="margin:28px auto 0;font-size:17.5px;line-height:1.65;color:rgba(255,255,255,0.68);max-width:720px;">PinaSIKLab Baguio 2026 brings together young people from Baguio City and the BLISTT municipalities to develop innovative, AI and digitally enabled solutions to real community and climate-related challenges.</p>
-    <p style="margin:26px 0 0;font-size:22px;font-weight:600;letter-spacing:-0.01em;color:#fff;">30 teams. 2 days. Real problems. <span style="color:${ORANGE};">Working solutions.</span></p>
+    <p style="margin:28px auto 0;font-size:17.5px;line-height:1.65;color:rgba(255,255,255,0.68);max-width:720px;">PinaSIKLab Baguio 2026 brings together young people from Baguio City and the BLISTT area to develop technology-enabled solutions to real community and local development challenges.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px;">
       ${registerButton("Register now")}
       ${teamFinderButton("Find a team")}
-      <a href="#about" style="display:inline-flex;align-items:center;background:rgba(255,255,255,0.08);color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.22);">Learn more</a>
     </div>
   </div>
 </div>
@@ -243,11 +242,19 @@ ${navBarHtml()}
         </div>
       </div>
       <div style="background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:20px;padding:34px;">
-        <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${ORANGE};margin-bottom:18px;">We welcome</div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${ORANGE};margin-bottom:8px;">We welcome</div>
+        <p style="margin:0 0 18px;font-size:14.5px;line-height:1.55;color:#5A544B;">If you&rsquo;re 18&ndash;30 and study, work, or live in the BLISTT area, there&rsquo;s a place for you, whatever your background.</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;">
-          ${["Students", "Young professionals", "Young entrepreneurs", "Researchers", "Creatives", "Out-of-school youth", "Early-stage innovators"].map(checkItem).join("")}
+          ${["Students", "Young professionals", "Youth entrepreneurs", "Researchers", "Faculty", "Out-of-school youth"].map(checkItem).join("")}
         </div>
-        <p style="margin:22px 0 0;padding-top:18px;border-top:1px solid rgba(64,50,34,0.1);font-size:14.5px;line-height:1.55;color:#5A544B;">Participants can apply as an <strong style="color:#1A1714;">existing team</strong> or as an <strong style="color:#1A1714;">individual</strong>.</p>
+        <div style="margin:22px 0 0;padding-top:18px;border-top:1px solid rgba(64,50,34,0.1);">
+          <p style="margin:0 0 14px;font-size:14.5px;line-height:1.55;color:#5A544B;">Apply with a team you&rsquo;ve already formed, or on your own. If you apply solo, you can find teammates in the Team Finder.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;">
+            <a href="${BP}/pinasiklab/register/" class="ib-cta-orange" style="display:inline-flex;align-items:center;background:${ORANGE};color:#fff;font-weight:600;font-size:13.5px;padding:10px 18px;border-radius:9999px;text-decoration:none;">Apply as a team</a>
+            <a href="${BP}/pinasiklab/register/" style="display:inline-flex;align-items:center;background:#fff;color:#1A1714;font-weight:600;font-size:13.5px;padding:10px 18px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(64,50,34,0.2);">Apply as an individual</a>
+            <a href="${BP}/pinasiklab/teams/" style="display:inline-flex;align-items:center;color:${ORANGE};font-weight:600;font-size:13.5px;padding:10px 6px;text-decoration:none;">Find teammates &rarr;</a>
+          </div>
+        </div>
       </div>
     </div>
     <div style="background:#F6F2EA;border-radius:20px;padding:30px 34px;">
@@ -311,14 +318,16 @@ ${navBarHtml()}
   <div style="max-width:1080px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start;margin-bottom:28px;">
       <div>
-        ${sectionHead("What You Can Build", "Prototypes, not just pitches.")}
-        <p style="${PARA}">Solutions may use AI, software, digital technologies, hardware, IoT, or combinations of these approaches, depending on the challenge.</p>
+        ${sectionHead("What Can You Build?", "Prototypes, not just pitches.")}
+        <p style="${PARA}">Your solution can take different forms depending on the problem you are addressing. Examples include:</p>
         <div style="display:flex;flex-wrap:wrap;gap:9px;margin-top:20px;">
-          ${["AI", "Software", "Digital technologies", "Hardware", "IoT"].map((t) => chip(t)).join("")}
+          ${["AI-enabled solutions", "Web or mobile applications", "Digital platforms", "Data-driven solutions", "IoT and hardware solutions", "Community-based innovations", "Technology-enabled products or services"].map((t) => chip(t)).join("")}
         </div>
       </div>
       <div style="background:#F6F2EA;border-radius:20px;padding:34px;">
-        <p style="margin:0 0 18px;font-size:15.5px;line-height:1.55;color:#5A544B;">Teams are encouraged to develop solutions that can demonstrate clear potential for:</p>
+        <p style="margin:0 0 6px;font-size:20px;font-weight:600;letter-spacing:-0.01em;color:#1A1714;">You don&rsquo;t need to be a programmer to participate.</p>
+        <p style="margin:0 0 22px;font-size:15.5px;line-height:1.6;color:#5A544B;">What matters is bringing together the right combination of technical, design, business, research, community, and domain expertise to develop a solution as a team.</p>
+        <p style="margin:0 0 14px;font-size:14px;font-weight:600;color:#1A1714;">Strong solutions show clear potential for:</p>
         <div style="display:flex;flex-direction:column;gap:14px;">
           ${["Community impact", "Technical feasibility", "Social or business viability", "Scalability", "Potential implementation or adoption"].map(checkItem).join("")}
         </div>
@@ -346,6 +355,15 @@ ${navBarHtml()}
         <p style="margin:0;font-size:14px;line-height:1.55;color:#5A544B;">${d}</p>
       </div>`
       ).join("")}
+    </div>
+    <div style="position:relative;overflow:hidden;background:linear-gradient(135deg,#F26522 0%,#E14E12 58%,#C8410C 100%);border-radius:20px;padding:34px 38px;margin-bottom:20px;display:flex;align-items:center;gap:26px;flex-wrap:wrap;box-shadow:0 26px 54px -24px rgba(226,78,18,0.55);">
+      <div style="position:absolute;inset:0;background:radial-gradient(90% 120% at 100% 0%,rgba(255,255,255,0.18),transparent 55%);"></div>
+      <span style="position:relative;width:64px;height:64px;border-radius:9999px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;">${icon(PATHS.trophy, "#fff", 30)}</span>
+      <div style="position:relative;flex:1 1 320px;">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.85);margin-bottom:6px;">Prizes</div>
+        <div style="font-size:34px;font-weight:600;letter-spacing:-0.03em;color:#fff;line-height:1.1;">Up to &#8369;100,000 worth of prizes</div>
+        <p style="margin:10px 0 0;font-size:15.5px;line-height:1.6;color:rgba(255,255,255,0.92);">Two days to build, pitch, and compete. The best teams take home prizes, and the Top 5 move on to the National Challenge.</p>
+      </div>
     </div>
     <div style="position:relative;overflow:hidden;background:#131110;border-radius:20px;padding:32px 36px;display:flex;align-items:center;gap:22px;flex-wrap:wrap;">
       <div style="position:absolute;top:-80px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(242,101,34,0.24),transparent 65%);"></div>
@@ -406,10 +424,10 @@ ${navBarHtml()}
       </div>
       <div style="background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:20px;padding:34px;display:flex;flex-direction:column;">
         <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${ORANGE};margin-bottom:10px;">Team format</div>
-        <div style="font-size:36px;font-weight:600;letter-spacing:-0.03em;color:#1A1714;line-height:1.1;margin-bottom:20px;">5 members per team</div>
-        <p style="margin:0 0 12px;font-size:15px;color:#5A544B;">Participants may register as:</p>
+        <div style="font-size:36px;font-weight:600;letter-spacing:-0.03em;color:#1A1714;line-height:1.1;margin-bottom:20px;">Up to 5 members per team</div>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#5A544B;">Build with a multidisciplinary team of up to five. Bring the team you&rsquo;ve already formed, or apply on your own and we&rsquo;ll help you find teammates whose skills fit yours.</p>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:28px;">
-          ${chip("A complete team")}
+          ${chip("Existing team")}${chip("Individual applicant")}
         </div>
         <div style="margin-top:auto;">
           ${registerButton("Register now")}
@@ -467,9 +485,9 @@ ${navBarHtml()}
       <div style="position:relative;flex:1 1 380px;">
         <div style="font-size:11.5px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:${ORANGE};margin-bottom:10px;">For sponsors and collaborators</div>
         <div style="font-size:24px;font-weight:600;letter-spacing:-0.02em;color:#fff;line-height:1.25;margin-bottom:10px;">Sponsor or collaborate with PinaSIKLab Baguio.</div>
-        <p style="margin:0;font-size:14.5px;line-height:1.65;color:rgba(255,255,255,0.64);max-width:640px;">Government agencies, academic institutions, startups, industry, and other partners can contribute through mentorship, judging, challenge development, and ecosystem support.</p>
+        <p style="margin:0;font-size:14.5px;line-height:1.65;color:rgba(255,255,255,0.64);max-width:640px;">We&rsquo;re looking for mentors, judges, technical infrastructure, participant kits and merchandise, prizes, and more. Government agencies, schools, startups, industry, and individuals are all welcome.</p>
       </div>
-      <a href="mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("PinaSIKLab Baguio 2026: sponsor / collaborator inquiry")}" class="ib-cta-orange" style="position:relative;display:inline-flex;align-items:center;gap:9px;background:${ORANGE};color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;">Get in touch ${icon(PATHS.arrow, "#fff", 15)}</a>
+      <a href="${BP}/pinasiklab/partner/" class="ib-cta-orange" style="position:relative;display:inline-flex;align-items:center;gap:9px;background:${ORANGE};color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;">Become a partner ${icon(PATHS.arrow, "#fff", 15)}</a>
     </div>
   </div>
 </div>
