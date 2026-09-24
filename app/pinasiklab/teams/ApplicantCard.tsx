@@ -12,7 +12,7 @@ export default function ApplicantCard({ a, loginHref, sample }: { a: Applicant; 
   return (
     <article style={{ background: CARD, border: `1px dashed var(--tf-hair2)`, borderRadius: 20, padding: 22, display: "flex", flexDirection: "column", gap: 13 }}>
       {sample && (
-        <span style={{ alignSelf: "flex-start", background: "rgba(242,101,34,0.14)", color: "var(--tf-orange-text)", border: "1px solid rgba(242,101,34,0.35)", borderRadius: 9999, padding: "3px 10px", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em" }}>SAMPLE</span>
+        <span style={{ alignSelf: "flex-start", background: "rgba(var(--tf-accent-rgb),0.14)", color: "var(--tf-orange-text)", border: "1px solid rgba(var(--tf-accent-rgb),0.35)", borderRadius: 9999, padding: "3px 10px", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em" }}>SAMPLE</span>
       )}
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <span style={{ width: 42, height: 42, borderRadius: 9999, background: "var(--tf-fill)", color: "var(--tf-body)", fontSize: 16, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>

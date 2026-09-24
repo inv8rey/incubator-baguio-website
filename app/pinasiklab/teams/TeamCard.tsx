@@ -23,7 +23,7 @@ export default function TeamCard({ team, members, viewer, pending, onRequest, on
 
   let action: React.ReactNode = null;
   if (isMine) {
-    action = <span style={{ ...disabledBtn, color: ORANGE, background: "rgba(242,101,34,0.08)" }}>Your team</span>;
+    action = <span style={{ ...disabledBtn, color: ORANGE, background: "rgba(var(--tf-accent-rgb),0.08)" }}>Your team</span>;
   } else if (!open) {
     action = (
       <span style={disabledBtn}>
@@ -44,7 +44,7 @@ export default function TeamCard({ team, members, viewer, pending, onRequest, on
           <button onClick={() => onCancel(pending.id)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12.5, fontWeight: 600, color: MUTED, textDecoration: "underline" }}>Cancel</button>
         </div>
       ) : (
-        <span style={{ ...disabledBtn, color: ORANGE, background: "rgba(242,101,34,0.08)" }}>Invited you &mdash; see below</span>
+        <span style={{ ...disabledBtn, color: ORANGE, background: "rgba(var(--tf-accent-rgb),0.08)" }}>Invited you &mdash; see below</span>
       );
   } else {
     action = <button onClick={() => onRequest(team)} style={primaryBtn}>Request to join</button>;
@@ -54,8 +54,8 @@ export default function TeamCard({ team, members, viewer, pending, onRequest, on
     <article
       style={{
         background: CARD,
-        border: `1px solid ${isMine ? "rgba(242,101,34,0.5)" : HAIR}`,
-        boxShadow: isMine ? "0 0 0 3px rgba(242,101,34,0.08)" : "none",
+        border: `1px solid ${isMine ? "rgba(var(--tf-accent-rgb),0.5)" : HAIR}`,
+        boxShadow: isMine ? "0 0 0 3px rgba(var(--tf-accent-rgb),0.08)" : "none",
         borderRadius: 20,
         padding: 22,
         display: "flex",

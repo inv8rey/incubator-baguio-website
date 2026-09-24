@@ -17,7 +17,7 @@ export default function PersonCard({ person, viewer, teamName, pending, onInvite
 
   let action: React.ReactNode = null;
   if (isMe) {
-    action = <span style={{ ...disabledBtn, color: ORANGE, background: "rgba(242,101,34,0.08)" }}>This is you</span>;
+    action = <span style={{ ...disabledBtn, color: ORANGE, background: "rgba(var(--tf-accent-rgb),0.08)" }}>This is you</span>;
   } else if (viewer.isLeader && viewer.myTeamOpen) {
     action = pending ? (
       pending.kind === "invite" ? (
@@ -26,7 +26,7 @@ export default function PersonCard({ person, viewer, teamName, pending, onInvite
           <button onClick={() => onCancel(pending.id)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12.5, fontWeight: 600, color: MUTED, textDecoration: "underline" }}>Cancel</button>
         </div>
       ) : (
-        <span style={{ ...disabledBtn, color: ORANGE, background: "rgba(242,101,34,0.08)" }}>Asked to join &mdash; see your team</span>
+        <span style={{ ...disabledBtn, color: ORANGE, background: "rgba(var(--tf-accent-rgb),0.08)" }}>Asked to join &mdash; see your team</span>
       )
     ) : (
       <button onClick={() => onInvite(person)} style={primaryBtn}>Invite to {teamName ?? "your team"}</button>
@@ -36,7 +36,7 @@ export default function PersonCard({ person, viewer, teamName, pending, onInvite
   }
 
   return (
-    <article style={{ background: CARD, border: `1px solid ${isMe ? "rgba(242,101,34,0.5)" : HAIR}`, borderRadius: 20, padding: 22, display: "flex", flexDirection: "column", gap: 13 }}>
+    <article style={{ background: CARD, border: `1px solid ${isMe ? "rgba(var(--tf-accent-rgb),0.5)" : HAIR}`, borderRadius: 20, padding: 22, display: "flex", flexDirection: "column", gap: 13 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <span style={{ width: 42, height: 42, borderRadius: 9999, background: "var(--tf-fill)", color: "var(--tf-body)", fontSize: 16, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           {person.full_name.trim().charAt(0).toUpperCase()}

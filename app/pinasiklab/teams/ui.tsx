@@ -2,7 +2,9 @@
 
 import type { CSSProperties, ReactNode } from "react";
 
-export const ORANGE = "#F26522";
+// Brand accent from the PinaSIKLab poster: blue on the light theme, yellow on
+// the dark theme (see the .ib-siklab-tf tokens in globals.css).
+export const ORANGE = "var(--tf-accent)";
 export const TEXT = "var(--tf-text)";
 export const MUTED = "var(--tf-muted)";
 export const CARD = "var(--tf-card)";
@@ -23,7 +25,7 @@ export const inputStyle: CSSProperties = {
 export const labelStyle: CSSProperties = { fontSize: 12.5, fontWeight: 600, color: "var(--tf-soft)", marginBottom: 6, display: "block" };
 
 export const primaryBtn: CSSProperties = {
-  display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, background: ORANGE, color: "#fff", border: "none",
+  display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, background: ORANGE, color: "var(--tf-on-accent)", border: "none",
   borderRadius: 9999, padding: "11px 20px", fontSize: 13.5, fontWeight: 600, cursor: "pointer", textDecoration: "none", whiteSpace: "nowrap",
 };
 export const ghostBtn: CSSProperties = {
@@ -35,7 +37,7 @@ export const disabledBtn: CSSProperties = { ...ghostBtn, color: "var(--tf-dim)",
 export function Chip({ children, tone = "neutral", small }: { children: ReactNode; tone?: "neutral" | "orange" | "green"; small?: boolean }) {
   const tones = {
     neutral: { bg: "var(--tf-fill)", color: "var(--tf-soft)", border: "transparent" },
-    orange: { bg: "rgba(242,101,34,0.08)", color: "var(--tf-orange-text)", border: "rgba(242,101,34,0.28)" },
+    orange: { bg: "rgba(var(--tf-accent-rgb),0.08)", color: "var(--tf-orange-text)", border: "rgba(var(--tf-accent-rgb),0.28)" },
     green: { bg: "var(--tf-green-bg)", color: "var(--tf-green)", border: "var(--tf-green-line)" },
   }[tone];
   return (

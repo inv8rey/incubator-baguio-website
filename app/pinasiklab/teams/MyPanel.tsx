@@ -76,7 +76,7 @@ export default function MyPanel(p: Props) {
 
   if (p.status === "noProfile") {
     return (
-      <div style={{ ...card, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, flexWrap: "wrap", borderColor: "rgba(242,101,34,0.4)" }}>
+      <div style={{ ...card, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, flexWrap: "wrap", borderColor: "rgba(var(--tf-accent-rgb),0.4)" }}>
         <div style={{ flex: "1 1 360px" }}>
           <div style={eyebrow}>Step 1</div>
           <h2 style={heading}>Create your Team Finder profile</h2>

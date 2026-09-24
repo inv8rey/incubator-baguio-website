@@ -1996,23 +1996,25 @@ img { max-width: 100%; height: auto; }
 /* Team Finder theme tokens: light is the base set, dark overrides it. */
 .ib-siklab-tf {
   color-scheme: light;
-  --tf-page: #F6F2EA; --tf-card: #FFFFFF; --tf-card2: #FBF9F5; --tf-input: #FFFFFF; --tf-ghost: #FFFFFF;
+  --tf-page: #EEF3FA; --tf-card: #FFFFFF; --tf-card2: #F6F9FD; --tf-input: #FFFFFF; --tf-ghost: #FFFFFF;
   --tf-text: #1A1714; --tf-body: #5A544B; --tf-body2: #3A352E; --tf-soft: #44444C; --tf-label: #8A8378; --tf-muted: #6E685F; --tf-dim: #9C958A;
   --tf-fill: #F5F1EA; --tf-track: #E8E3D9; --tf-btnbg: #F5F4F0;
   --tf-hair: rgba(64,50,34,0.13); --tf-hair2: rgba(64,50,34,0.16); --tf-dash: rgba(64,50,34,0.25);
   --tf-green: #1A6B3C; --tf-green-bg: rgba(26,107,60,0.09); --tf-green-line: rgba(26,107,60,0.22);
-  --tf-red: #C1361F; --tf-red-bg: rgba(226,58,46,0.08); --tf-orange-text: #C8410C;
-  --tf-hero-card: #131110; --tf-hero-line: rgba(255,255,255,0.08);
+  --tf-red: #C1361F; --tf-red-bg: rgba(226,58,46,0.08); --tf-orange-text: #2B63AE;
+  --tf-hero-card: #1F4C8C; --tf-hero-line: rgba(255,255,255,0.08);
+  --tf-accent: #2B63AE; --tf-accent-rgb: 43,99,174; --tf-on-accent: #FFFFFF;
 }
 .ib-siklab-tf[data-theme="dark"] {
   color-scheme: dark;
-  --tf-page: #0F0D0C; --tf-card: #1A1714; --tf-card2: #221E1B; --tf-input: #0F0D0C; --tf-ghost: rgba(255,255,255,0.05);
+  --tf-page: #0D2247; --tf-card: #143163; --tf-card2: #193A73; --tf-input: #0D2247; --tf-ghost: rgba(255,255,255,0.05);
   --tf-text: #F5F1EA; --tf-body: rgba(255,255,255,0.7); --tf-body2: rgba(255,255,255,0.86); --tf-soft: rgba(255,255,255,0.82); --tf-label: rgba(255,255,255,0.45); --tf-muted: rgba(255,255,255,0.55); --tf-dim: rgba(255,255,255,0.4);
   --tf-fill: rgba(255,255,255,0.09); --tf-track: rgba(255,255,255,0.15); --tf-btnbg: rgba(255,255,255,0.07);
   --tf-hair: rgba(255,255,255,0.12); --tf-hair2: rgba(255,255,255,0.18); --tf-dash: rgba(255,255,255,0.24);
   --tf-green: #5FD08A; --tf-green-bg: rgba(95,208,138,0.14); --tf-green-line: rgba(95,208,138,0.3);
-  --tf-red: #FF7A66; --tf-red-bg: rgba(255,122,102,0.12); --tf-orange-text: #FF9A62;
-  --tf-hero-card: linear-gradient(135deg,#221812 0%,#1A1714 60%); --tf-hero-line: rgba(242,101,34,0.3);
+  --tf-red: #FF7A66; --tf-red-bg: rgba(255,122,102,0.12); --tf-orange-text: #F2C240;
+  --tf-hero-card: linear-gradient(135deg,#1F4C8C 0%,#143163 60%); --tf-hero-line: rgba(242,194,64,0.3);
+  --tf-accent: #F2C240; --tf-accent-rgb: 242,194,64; --tf-on-accent: #1A1714;
 }
 
 /* PinaSIKLab application form (app/pinasiklab/register) */
@@ -2020,4 +2022,19 @@ img { max-width: 100%; height: auto; }
 @media (max-width: 600px) {
   .ib-siklab-regwrap { padding: 24px 14px 60px; }
   .ib-siklab-regwrap form { padding: 24px 18px !important; }
+}
+
+/* PinaSIKLab brand buttons (poster palette) */
+.ib-siklab-cta { transition: transform .2s ease, box-shadow .2s ease, filter .2s ease; }
+.ib-siklab-cta:hover { transform: translateY(-2px); filter: brightness(1.07); box-shadow: 0 12px 28px -10px rgba(31,76,140,0.5) !important; }
+.ib-siklab-cta:active { transform: translateY(0); }
+.ib-siklab-cta svg { transition: transform .2s ease; }
+.ib-siklab-cta:hover svg { transform: translateX(3px); }
+
+/* PinaSIKLab interactive cards */
+.ib-sk-card { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; will-change: transform; }
+.ib-sk-card:hover { transform: translateY(-6px); box-shadow: 0 22px 40px -22px rgba(20,40,80,0.45); }
+@media (prefers-reduced-motion: reduce) {
+  .ib-sk-card, .ib-siklab-cta { transition: none; }
+  .ib-sk-card:hover, .ib-siklab-cta:hover { transform: none; }
 }

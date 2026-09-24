@@ -18,7 +18,7 @@ function SkillPicker({ value, onChange }: { value: string[]; onChange: (v: strin
             type="button"
             onClick={() => toggle(s)}
             aria-pressed={on}
-            style={{ padding: "7px 14px", borderRadius: 9999, fontSize: 13, fontWeight: 600, cursor: "pointer", border: `1.5px solid ${on ? ORANGE : "var(--tf-hair2)"}`, background: on ? "rgba(242,101,34,0.14)" : "transparent", color: on ? "var(--tf-orange-text)" : "var(--tf-soft)" }}
+            style={{ padding: "7px 14px", borderRadius: 9999, fontSize: 13, fontWeight: 600, cursor: "pointer", border: `1.5px solid ${on ? ORANGE : "var(--tf-hair2)"}`, background: on ? "rgba(var(--tf-accent-rgb),0.14)" : "transparent", color: on ? "var(--tf-orange-text)" : "var(--tf-soft)" }}
           >
             {s}
           </button>

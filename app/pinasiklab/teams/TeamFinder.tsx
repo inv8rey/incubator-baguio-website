@@ -235,7 +235,7 @@ export default function TeamFinder() {
       onClick={() => (status === "solo" ? setModal({ kind: "team", mode: "create" }) : status === "noProfile" ? setModal({ kind: "profile" }) : (window.location.href = LOGIN_HREF))}
       style={{ background: "transparent", border: "2px dashed var(--tf-dash)", borderRadius: 20, padding: 22, minHeight: 200, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, color: "var(--tf-body)", textAlign: "center" }}
     >
-      <span style={{ width: 44, height: 44, borderRadius: 9999, background: "rgba(242,101,34,0.1)", color: ORANGE, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <span style={{ width: 44, height: 44, borderRadius: 9999, background: "rgba(var(--tf-accent-rgb),0.1)", color: ORANGE, display: "flex", alignItems: "center", justifyContent: "center" }}>
         <Icon d={ICONS.plus} size={20} />
       </span>
       <span style={{ fontSize: 16, fontWeight: 700, color: TEXT }}>Start a team</span>
@@ -247,7 +247,7 @@ export default function TeamFinder() {
     <button
       onClick={() => setTab(id)}
       aria-pressed={tab === id}
-      style={{ padding: "10px 20px", borderRadius: 9999, border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer", background: tab === id ? ORANGE : "transparent", color: tab === id ? "#fff" : "var(--tf-body)" }}
+      style={{ padding: "10px 20px", borderRadius: 9999, border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer", background: tab === id ? ORANGE : "transparent", color: tab === id ? "var(--tf-on-accent)" : "var(--tf-body)" }}
     >
       {label} <span style={{ opacity: 0.6, marginLeft: 4 }}>{count}</span>
     </button>

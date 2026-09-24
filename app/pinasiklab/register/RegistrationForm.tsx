@@ -113,7 +113,7 @@ function Field({ label, hint, error, required, htmlFor, children }: { label: str
 
 function OptionTile({ on, type, name, label, onChange }: { on: boolean; type: "radio" | "checkbox"; name: string; label: string; onChange: () => void }) {
   return (
-    <label style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 14px", borderRadius: 12, border: `1.5px solid ${on ? ORANGE : "var(--tf-hair2)"}`, background: on ? "rgba(242,101,34,0.09)" : "transparent", cursor: "pointer", fontSize: 14, lineHeight: 1.35, color: TEXT }}>
+    <label style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 14px", borderRadius: 12, border: `1.5px solid ${on ? ORANGE : "var(--tf-hair2)"}`, background: on ? "rgba(var(--tf-accent-rgb),0.09)" : "transparent", cursor: "pointer", fontSize: 14, lineHeight: 1.35, color: TEXT }}>
       <input type={type} name={name} checked={on} onChange={onChange} style={{ accentColor: ORANGE, flexShrink: 0, width: 16, height: 16 }} />
       {label}
     </label>
@@ -429,7 +429,7 @@ export default function RegistrationForm() {
                     {FOCUS_AREAS.map(([name, desc]) => {
                       const on = v.focus_areas.includes(name);
                       return (
-                        <label key={name} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 14px", borderRadius: 12, border: `1.5px solid ${on ? ORANGE : "var(--tf-hair2)"}`, background: on ? "rgba(242,101,34,0.09)" : "transparent", cursor: "pointer", color: TEXT }}>
+                        <label key={name} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 14px", borderRadius: 12, border: `1.5px solid ${on ? ORANGE : "var(--tf-hair2)"}`, background: on ? "rgba(var(--tf-accent-rgb),0.09)" : "transparent", cursor: "pointer", color: TEXT }}>
                           <input type="checkbox" name="focus" checked={on} onChange={() => toggleIn("focus_areas", name)} style={{ accentColor: ORANGE, flexShrink: 0, width: 16, height: 16, marginTop: 2 }} />
                           <span><span style={{ display: "block", fontSize: 14.5, fontWeight: 600 }}>{name}</span><span style={{ display: "block", fontSize: 13, lineHeight: 1.5, color: MUTED, marginTop: 2 }}>{desc}</span></span>
                         </label>

@@ -8,7 +8,7 @@ import { CARD, HAIR, ICONS, Icon, MUTED, ORANGE, TEXT, inputStyle, labelStyle, p
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CONTACT_EMAIL = "incubatorbaguio63@gmail.com";
 const ORG_TYPES = ["Government agency", "School or university", "Company or startup", "Nonprofit or community organization", "Individual", "Other"];
-const WAYS = ["Mentorship", "Judging", "Technical infrastructure", "Participant kits and merchandise", "Prizes", "Venue and logistics", "Food and refreshments", "Something else"];
+const WAYS = ["Mentorship", "Judging", "Technical infrastructure", "Participant kits and merchandise", "Prizes", "Post-event pathways (incubation, acceleration, adoption)", "Food and refreshments", "Something else"];
 
 function Field({ label, error, required, htmlFor, hint, children }: { label: string; error?: string; required?: boolean; htmlFor?: string; hint?: string; children: React.ReactNode }) {
   return (
@@ -23,7 +23,7 @@ function Field({ label, error, required, htmlFor, hint, children }: { label: str
 
 function Tile({ on, type, label, onChange }: { on: boolean; type: "radio" | "checkbox"; label: string; onChange: () => void }) {
   return (
-    <label style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 14px", borderRadius: 12, border: `1.5px solid ${on ? ORANGE : "var(--tf-hair2)"}`, background: on ? "rgba(242,101,34,0.09)" : "transparent", cursor: "pointer", fontSize: 14, color: TEXT }}>
+    <label style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 14px", borderRadius: 12, border: `1.5px solid ${on ? ORANGE : "var(--tf-hair2)"}`, background: on ? "rgba(var(--tf-accent-rgb),0.09)" : "transparent", cursor: "pointer", fontSize: 14, color: TEXT }}>
       <input type={type} checked={on} onChange={onChange} style={{ accentColor: ORANGE, width: 16, height: 16, flexShrink: 0 }} />
       {label}
     </label>
@@ -121,7 +121,7 @@ export default function PartnerForm() {
             <Field label="How would you like to help?" required error={errors.ways} hint="Pick all that apply.">
               <div style={grid}>{WAYS.map((w) => <Tile key={w} type="checkbox" label={w} on={ways.includes(w)} onChange={() => { setWays((p) => (p.includes(w) ? p.filter((x) => x !== w) : [...p, w])); setErrors((p) => ({ ...p, ways: "" })); }} />)}</div>
             </Field>
-            <Field label="Tell us more" htmlFor="p-details" hint="What can you offer, and roughly how much? For example: two mentors for the full weekend, 30 shirts, a ₱10,000 prize.">
+            <Field label="Tell us more" htmlFor="p-details" hint="What can you contribute to PinaSIKLab Baguio? Please describe the type of support you can provide and any relevant details about your proposed contribution.">
               <textarea id="p-details" value={v.details} onChange={(e) => set("details", e.target.value)} rows={5} maxLength={3000} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.5 }} />
             </Field>
           </div>
