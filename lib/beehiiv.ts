@@ -8,8 +8,11 @@
 
 import { SITE_URL } from "../app/seo";
 
-const API_KEY = process.env.BEEHIIV_API_KEY;
-const PUBLICATION_ID = process.env.BEEHIIV_PUBLICATION_ID;
+// Trimmed (and unquoted): a stray space or quote pasted into the host's env
+// settings ends up inside the request URL and Beehiiv rejects it.
+const clean = (v?: string) => (v || "").trim().replace(/^["']|["']$/g, "").trim();
+const API_KEY = clean(process.env.BEEHIIV_API_KEY);
+const PUBLICATION_ID = clean(process.env.BEEHIIV_PUBLICATION_ID);
 
 export function beehiivConfigured(): boolean {
   return !!API_KEY && !!PUBLICATION_ID;
