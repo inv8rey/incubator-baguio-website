@@ -38,7 +38,9 @@ export async function syncToBeehiiv(email: string, opts: { sendWelcome: boolean;
     if (!res.ok) {
       const body = await res.text().catch(() => "");
       console.error("syncToBeehiiv: Beehiiv returned", res.status, body);
-      return { ok: false, reason: `Beehiiv responded ${res.status}` };
+      // Beehiiv error bodies describe the problem (bad key, wrong publication
+      // ID, plan without API access...) and never echo the key back.
+      return { ok: false, reason: `Beehiiv responded ${res.status}: ${body.slice(0, 200)}` };
     }
     return { ok: true };
   } catch (err) {

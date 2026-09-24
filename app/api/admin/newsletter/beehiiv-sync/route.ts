@@ -24,6 +24,7 @@ export async function POST(req: Request) {
 
   let synced = 0;
   let failed = 0;
+  const reasons = new Set<string>();
   for (const row of data ?? []) {
     const r = await syncToBeehiiv(row.email, { sendWelcome: false, source: row.source || "website" });
     if (r.ok) {
@@ -31,8 +32,9 @@ export async function POST(req: Request) {
       await supabase.from("newsletter_subscribers").update({ beehiiv_claimed_at: new Date().toISOString(), beehiiv_synced_at: new Date().toISOString() }).eq("email", row.email);
     } else {
       failed++;
+      if (r.reason) reasons.add(r.reason);
     }
     await new Promise((res) => setTimeout(res, DELAY_MS));
   }
-  return Response.json({ synced, failed, more: (data ?? []).length === BATCH });
+  return Response.json({ synced, failed, reasons: [...reasons].slice(0, 3), more: (data ?? []).length === BATCH });
 }

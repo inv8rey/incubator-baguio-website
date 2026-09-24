@@ -97,7 +97,7 @@ export default function NewsletterTab({ searchQuery = "" }: { searchQuery?: stri
     const body = await res.json().catch(() => ({}));
     setSyncing(false);
     if (!res.ok) return setSyncMsg(body.error || "Sync failed.");
-    setSyncMsg(`Synced ${body.synced} to Beehiiv${body.failed ? `, ${body.failed} failed` : ""}${body.more ? ". More remain, run it again." : "."}`);
+    setSyncMsg(`Synced ${body.synced} to Beehiiv${body.failed ? `, ${body.failed} failed (${(body.reasons || []).join(" | ") || "no reason given"})` : ""}${body.more ? ". More remain, run it again." : "."}`);
   }
 
   async function remove(id: string, email: string) {
