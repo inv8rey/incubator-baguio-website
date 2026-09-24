@@ -27,6 +27,9 @@ type ModalState =
   | { kind: "invite"; person: Person };
 type RunResult = PromiseLike<{ error: { message: string } | null }>;
 
+const SAMPLE_TEAM: Applicant = { id: "sample-team", participation: "team", full_name: "", team_name: "Sample Team: Baguio Waste Warriors", team_size: 3, member_names: ["Ana Dela Cruz", "Ben Santos", "Carla Lim"], skills: ["Programming / Software Development", "Environmental / Sustainability"], bio: "", created_at: "" };
+const SAMPLE_PERSON: Applicant = { id: "sample-person", participation: "individual", full_name: "Sample Person: Juan Dela Cruz", team_name: "", team_size: null, member_names: [], skills: ["UI/UX / Product Design", "Research / Data Gathering"], bio: "Design student who loves user research and wants to help build something for Baguio.", created_at: "" };
+
 const selectStyle = { ...inputStyle, width: "auto", padding: "9px 14px", borderRadius: 9999, fontSize: 13.5, cursor: "pointer" } as const;
 
 export default function TeamFinder() {
@@ -364,11 +367,13 @@ export default function TeamFinder() {
                         onNeedProfile={() => setModal({ kind: "profile" })}
                       />
                     ))}
+                    {!q && !skill && statusFilter === "all" && <ApplicantCard sample a={SAMPLE_TEAM} loginHref={LOGIN_HREF} />}
                     {visibleApplicantTeams.map((a) => <ApplicantCard key={a.id} a={a} loginHref={LOGIN_HREF} />)}
                     {teams.length < MAX_TEAMS && status !== "member" && !q && !skill && statusFilter === "all" && startTile}
                   </>
                 ) : (
                   <>
+                  {!q && !skill && <ApplicantCard sample a={SAMPLE_PERSON} loginHref={LOGIN_HREF} />}
                   {visibleApplicantSolos.map((a) => <ApplicantCard key={a.id} a={a} loginHref={LOGIN_HREF} />)}
                   {visibleSolos.map((p) => (
                     <PersonCard

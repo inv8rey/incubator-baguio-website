@@ -6,11 +6,14 @@ import { CARD, Chip, HAIR, TEXT, MUTED } from "./ui";
 // Read-only card for someone who applied and opted in but hasn't made a Team
 // Finder account yet. Once they log in with the same email and create their
 // profile (or a team of the same name), the real card replaces this one.
-export default function ApplicantCard({ a, loginHref }: { a: Applicant; loginHref: string }) {
+export default function ApplicantCard({ a, loginHref, sample }: { a: Applicant; loginHref: string; sample?: boolean }) {
   const team = a.participation === "team";
   const skills = mapSkills(a.skills);
   return (
     <article style={{ background: CARD, border: `1px dashed var(--tf-hair2)`, borderRadius: 20, padding: 22, display: "flex", flexDirection: "column", gap: 13 }}>
+      {sample && (
+        <span style={{ alignSelf: "flex-start", background: "rgba(242,101,34,0.14)", color: "var(--tf-orange-text)", border: "1px solid rgba(242,101,34,0.35)", borderRadius: 9999, padding: "3px 10px", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em" }}>SAMPLE</span>
+      )}
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <span style={{ width: 42, height: 42, borderRadius: 9999, background: "var(--tf-fill)", color: "var(--tf-body)", fontSize: 16, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           {(team ? a.team_name : a.full_name).trim().charAt(0).toUpperCase()}
@@ -32,8 +35,8 @@ export default function ApplicantCard({ a, loginHref }: { a: Applicant; loginHre
       {!team && a.bio && <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "var(--tf-body)" }}>{a.bio}</p>}
 
       <div style={{ marginTop: "auto", paddingTop: 4, fontSize: 12.5, lineHeight: 1.5, color: MUTED }}>
-        {team ? "Team leader: log in with your application email and start this team to take requests." : "Applied but not on the Team Finder yet."}{" "}
-        <a href={loginHref} style={{ color: "var(--tf-orange-text)", fontWeight: 600, borderBottom: `1px solid ${HAIR}` }}>Is this you? Log in</a>
+        {sample ? "This is a sample card showing how a listing will look. The people and team here are made up." : team ? "Team leader: log in with your application email and start this team to take requests." : "Applied but not on the Team Finder yet."}{" "}
+        {!sample && <a href={loginHref} style={{ color: "var(--tf-orange-text)", fontWeight: 600, borderBottom: `1px solid ${HAIR}` }}>Is this you? Log in</a>}
       </div>
     </article>
   );
