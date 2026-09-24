@@ -128,6 +128,18 @@ export default function SiklabAdmin() {
     return { all, finalized: all.filter((x) => x.finalized).length, live: live.length };
   }, [liveTeams, livePeople, rows]);
 
+  function downloadCsv(name: string, cols: string[], data: Record<string, unknown>[]) {
+    const body = [cols.join(","), ...data.map((r) => cols.map((c) => csvCell(r[c])).join(","))].join("\n");
+    const url = URL.createObjectURL(new Blob(["\uFEFF" + body], { type: "text/csv;charset=utf-8" }));
+    const a = document.createElement("a");
+    a.href = url; a.download = `${name}-${new Date().toISOString().slice(0, 10)}.csv`; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportPartners() {
+    downloadCsv("pinasiklab-partner-inquiries", ["created_at", "status", "org_name", "org_type", "contact_name", "email", "phone", "ways", "details", "admin_note"], inquiries as unknown as Record<string, unknown>[]);
+  }
+
   function exportCsv() {
     const cols: (keyof Row)[] = ["created_at", "status", "full_name", "email", "phone", "age", "category", "organization", "municipality", "expertise", "skills", "participation", "team_name", "is_team_leader", "team_leader_contact", "team_size", "team_members", "contribution", "teammate_preference", "problem", "solution_types", "motivation", "available_full_duration", "continue_after", "heard_from", "notes", "admin_note"];
     const body = [cols.join(","), ...shown.map((r) => cols.map((c) => csvCell(r[c])).join(","))].join("\n");
@@ -161,7 +173,7 @@ export default function SiklabAdmin() {
   }
 
   const count = (f: (r: Row) => boolean) => rows.filter(f).length;
-  const stats: [string, number][] = [["Applications", rows.length], ["Individuals", count((r) => r.participation === "individual")], ["Teams", count((r) => r.participation === "team")], ["Finalized teams", teamBoard.finalized], ["Approved", count((r) => r.status === "accepted")]];
+  const stats: [string, number][] = [["Applications", rows.length], ["Individuals", count((r) => r.participation === "individual")], ["Teams", count((r) => r.participation === "team")], ["Finalized teams", teamBoard.finalized], ["New partner inquiries", inquiries.filter((i) => i.status === "new").length], ["Approved", count((r) => r.status === "accepted")]];
 
   return shell(
     <div style={{ maxWidth: 1180, margin: "0 auto", padding: "32px 20px 80px" }}>
@@ -172,7 +184,7 @@ export default function SiklabAdmin() {
         </div>
         <div style={{ display: "flex", gap: 10 }}>
           <button onClick={load} style={ghost}>Refresh</button>
-          <button onClick={exportCsv} style={btn}>Export CSV ({shown.length})</button>
+          <button onClick={view === "partners" ? exportPartners : exportCsv} style={btn}>{view === "partners" ? `Export CSV (${inquiries.length})` : `Export CSV (${shown.length})`}</button>
           <button onClick={signOut} style={ghost}>Sign out</button>
         </div>
       </div>
@@ -190,7 +202,7 @@ export default function SiklabAdmin() {
 
       <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
         {(["applications", "teams", "partners"] as const).map((t) => (
-          <button key={t} onClick={() => setView(t)} style={{ ...ghost, background: view === t ? ORANGE : "none", borderColor: view === t ? ORANGE : line, textTransform: "capitalize" }}>{t === "teams" ? `Teams (${teamBoard.finalized}/${MAX_TEAMS} finalized)` : t === "partners" ? `Partners (${inquiries.length})` : "Applications"}</button>
+          <button key={t} onClick={() => setView(t)} style={{ ...ghost, background: view === t ? ORANGE : "none", borderColor: view === t ? ORANGE : line, textTransform: "capitalize" }}>{t === "teams" ? `Teams (${teamBoard.finalized}/${MAX_TEAMS} finalized)` : t === "partners" ? `Partners (${inquiries.length}${inquiries.some((i) => i.status === "new") ? `, ${inquiries.filter((i) => i.status === "new").length} new` : ""})` : "Applications"}</button>
         ))}
       </div>
 
@@ -242,6 +254,7 @@ export default function SiklabAdmin() {
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "12px 0 0" }}>{i.ways.map((w) => <span key={w} style={{ fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 9999, background: "rgba(242,101,34,0.14)", color: ORANGE }}>{w}</span>)}</div>
               {i.details && <p style={{ margin: "12px 0 0", fontSize: 14, lineHeight: 1.55, whiteSpace: "pre-wrap" }}>{i.details}</p>}
+              <input defaultValue={i.admin_note} maxLength={2000} placeholder="Private note (saves when you click away)" onBlur={async (e) => { const admin_note = e.target.value; if (admin_note === i.admin_note) return; const { error } = await supabase!.from("siklab_partner_inquiries").update({ admin_note }).eq("id", i.id); if (!error) setInquiries((r) => r.map((x) => (x.id === i.id ? { ...x, admin_note } : x))); }} style={{ ...input, width: "100%", marginTop: 12 }} />
               <div style={{ color: dim, fontSize: 12, marginTop: 10 }}>{new Date(i.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}</div>
             </div>
           ))}
