@@ -22,6 +22,7 @@ interface MenuItem {
   title: string;
   href: string;
   theme?: string;
+  featured?: boolean;
 }
 
 interface MenuConfig {
@@ -37,7 +38,10 @@ const MENUS: MenuConfig[] = [
   {
     key: "programs",
     match: (href) => href.endsWith("/programs") || href.endsWith("/programs/"),
-    items: NAV_PILLARS,
+    items: [
+      ...NAV_PILLARS,
+      { title: "PinaSIKLab Baguio 2026", href: `${BP}/pinasiklab/`, theme: "Youth innovation sprint · Oct 30–31, 2026", featured: true },
+    ],
   },
   {
     key: "challenges",
@@ -178,8 +182,13 @@ export default function NavMegaMenu() {
     >
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         {menu.items.map((item) => (
-          <a key={item.href + item.title} href={item.href} className="ib-megamenu-item">
-            <span className="ib-megamenu-item-title">{item.title}</span>
+          <a
+            key={item.href + item.title}
+            href={item.href}
+            className="ib-megamenu-item"
+            style={item.featured ? { marginTop: 6, borderTop: "1px solid rgba(255,255,255,0.1)", borderTopLeftRadius: 0, borderTopRightRadius: 0 } : undefined}
+          >
+            <span className="ib-megamenu-item-title" style={item.featured ? { color: "#F26522" } : undefined}>{item.title}</span>
             {item.theme && <span className="ib-megamenu-item-theme">{item.theme}</span>}
           </a>
         ))}
