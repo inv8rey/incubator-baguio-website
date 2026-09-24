@@ -56,6 +56,8 @@ export default function NewsletterTab({ searchQuery = "" }: { searchQuery?: stri
   const [openIssueId, setOpenIssueId] = useState<string | "new" | null>(null);
   const [rows, setRows] = useState<SubscriberRow[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [syncMsg, setSyncMsg] = useState("");
 
   async function load() {
     if (!supabase) {
@@ -82,6 +84,21 @@ export default function NewsletterTab({ searchQuery = "" }: { searchQuery?: stri
     const key = r.source || "Unknown";
     sourceCounts.set(key, (sourceCounts.get(key) ?? 0) + 1);
   });
+
+  // Pushes every subscriber who isn't in Beehiiv yet (no welcome email is sent
+  // for these; new signups are pushed automatically as they happen).
+  async function syncToBeehiivNow() {
+    if (!supabase) return;
+    setSyncing(true);
+    setSyncMsg("");
+    const { data: sess } = await supabase.auth.getSession();
+    const token = sess.session?.access_token;
+    const res = await fetch("/api/admin/newsletter/beehiiv-sync/", { method: "POST", headers: { Authorization: `Bearer ${token}` } });
+    const body = await res.json().catch(() => ({}));
+    setSyncing(false);
+    if (!res.ok) return setSyncMsg(body.error || "Sync failed.");
+    setSyncMsg(`Synced ${body.synced} to Beehiiv${body.failed ? `, ${body.failed} failed` : ""}${body.more ? ". More remain, run it again." : "."}`);
+  }
 
   async function remove(id: string, email: string) {
     if (!supabase) return;
@@ -163,6 +180,15 @@ export default function NewsletterTab({ searchQuery = "" }: { searchQuery?: stri
         <div style={{ fontSize: 12.5, color: "#6E685F" }}>
           Showing <strong style={{ color: DARK }}>{filtered.length}</strong> of {rows.length}
         </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          {syncMsg && <span style={{ fontSize: 12.5, color: "#6E685F" }}>{syncMsg}</span>}
+          <button
+            onClick={syncToBeehiivNow}
+            disabled={syncing}
+            style={{ fontSize: 12.5, fontWeight: 600, color: DARK, background: "#fff", border: "1.5px solid rgba(64,50,34,0.16)", borderRadius: 999, padding: "8px 16px", cursor: syncing ? "default" : "pointer", opacity: syncing ? 0.6 : 1 }}
+          >
+            {syncing ? "Syncing…" : "Sync to Beehiiv"}
+          </button>
         <button
           onClick={() => downloadCsv(filtered)}
           disabled={filtered.length === 0}
@@ -186,6 +212,7 @@ export default function NewsletterTab({ searchQuery = "" }: { searchQuery?: stri
           </svg>
           Export CSV{searchQuery ? " (filtered)" : ""}
         </button>
+        </div>
       </div>
 
       <div style={{ background: "#fff", borderRadius: 14, border: "1.5px solid rgba(64,50,34,0.12)", overflow: "hidden" }}>

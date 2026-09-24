@@ -1,5 +1,6 @@
 import { supabase } from "../../../../lib/supabaseClient";
 import { sendWelcomeNewsletterEmail } from "../../../../lib/sendWelcomeNewsletterEmail";
+import { beehiivConfigured, syncToBeehiiv } from "../../../../lib/beehiiv";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -29,6 +30,19 @@ export async function POST(req: Request) {
 
   const email = (body.email || "").trim().toLowerCase();
   if (!EMAIL_RE.test(email)) return Response.json({ ok: false }, { status: 400 });
+
+  // Beehiiv is the newsletter platform: push every signup there, and let its
+  // own welcome email do the welcoming. Same guard as below: the claim only
+  // matches an address that really is on the list, and only once, so this
+  // can't be used to subscribe arbitrary addresses to Beehiiv.
+  if (beehiivConfigured()) {
+    const claim = await supabase.rpc("claim_newsletter_beehiiv", { p_email: email }).maybeSingle();
+    if (claim.error || !claim.data) return Response.json({ ok: true });
+    const synced = await syncToBeehiiv(email, { sendWelcome: true, source: "website" });
+    if (synced.ok) await supabase.rpc("confirm_newsletter_beehiiv", { p_email: email });
+    else await supabase.rpc("release_newsletter_beehiiv", { p_email: email });
+    return Response.json({ ok: true, synced: synced.ok, reason: synced.ok ? undefined : synced.reason });
+  }
 
   const { data, error } = await supabase.rpc("claim_newsletter_welcome", { p_email: email }).maybeSingle();
   // No claimed row means either this email was already welcomed, or it
