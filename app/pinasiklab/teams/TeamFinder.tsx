@@ -159,6 +159,8 @@ export default function TeamFinder() {
   const openTeams = teams.filter(isOpen).length;
   const applicantTeams = useMemo(() => applicants.filter((a) => a.participation === "team"), [applicants]);
   const applicantSolos = useMemo(() => applicants.filter((a) => a.participation === "individual"), [applicants]);
+  // Finalized = locked in or full, plus approved teams that applied as a complete team.
+  const finalizedCount = teams.filter((t) => !isOpen(t)).length + applicantTeams.length;
   const needle = q.trim().toLowerCase();
   const visibleApplicantTeams = applicantTeams.filter((a) => !skill && statusFilter === "all" && (!needle || `${a.team_name} ${a.member_names.join(" ")}`.toLowerCase().includes(needle)));
   const visibleApplicantSolos = applicantSolos.filter((a) => (!skill || mapSkills(a.skills).includes(skill)) && (!needle || `${a.full_name} ${a.bio}`.toLowerCase().includes(needle)));
@@ -286,6 +288,7 @@ export default function TeamFinder() {
         {!setupNeeded && (
           <>
             <div style={{ background: CARD, border: `1px solid ${HAIR}`, borderRadius: 20, padding: "22px 26px", display: "flex", flexWrap: "wrap", gap: 20 }}>
+              {stat(`${finalizedCount} / ${MAX_TEAMS}`, "Teams finalized")}
               {stat(`${teams.length} / ${MAX_TEAMS}`, "Teams formed")}
               {stat(String(openTeams), "Teams open to new members")}
               {stat(String(solos.length + applicantSolos.length), "People looking for a team")}

@@ -15,6 +15,10 @@ interface Row {
   motivation: string; available_full_duration: string; continue_after: string; heard_from: string; notes: string; status: Status; admin_note: string; show_in_finder: boolean;
 }
 
+interface LiveTeam { id: string; name: string; leader_id: string; locked: boolean; looking_for: string[]; created_at: string }
+interface LivePerson { id: string; full_name: string; team_id: string | null }
+const MAX_TEAMS = 30, MAX_MEMBERS = 5;
+
 const bg = "#100D0B", panel = "#1A1714", line = "rgba(255,255,255,0.1)", dim = "rgba(255,255,255,0.55)";
 const input: React.CSSProperties = { background: "#0F0D0B", border: `1px solid ${line}`, borderRadius: 10, padding: "10px 12px", color: "#fff", fontSize: 14, outline: "none", boxSizing: "border-box" };
 const btn: React.CSSProperties = { background: ORANGE, color: "#fff", border: "none", borderRadius: 9999, padding: "10px 20px", fontSize: 13.5, fontWeight: 600, cursor: "pointer" };
@@ -38,6 +42,9 @@ export default function SiklabAdmin() {
   const [open, setOpen] = useState<Row | null>(null);
   const [note, setNote] = useState("");
   const [loadError, setLoadError] = useState("");
+  const [view, setView] = useState<"applications" | "teams">("applications");
+  const [liveTeams, setLiveTeams] = useState<LiveTeam[]>([]);
+  const [livePeople, setLivePeople] = useState<LivePerson[]>([]);
 
   const load = useCallback(async () => {
     if (!supabase) { setPhase("signin"); return; }
@@ -48,6 +55,10 @@ export default function SiklabAdmin() {
     const { data, error } = await supabase.from("siklab_registrations").select("*").order("created_at", { ascending: false });
     if (error) { setLoadError(error.message); setPhase("ready"); return; }
     setRows((data ?? []) as Row[]);
+    // Team Finder tables exist only after that migration; the tab just shows the applications side without them.
+    const [t, p] = await Promise.all([supabase.from("siklab_teams").select("id,name,leader_id,locked,looking_for,created_at").order("created_at"), supabase.from("siklab_participants_public").select("id,full_name,team_id")]);
+    setLiveTeams(t.error ? [] : ((t.data ?? []) as LiveTeam[]));
+    setLivePeople(p.error ? [] : ((p.data ?? []) as LivePerson[]));
     setLoadError("");
     setPhase("ready");
   }, []);
@@ -95,6 +106,23 @@ export default function SiklabAdmin() {
     );
   }, [rows, q, fPart, fStatus, fTown]);
 
+  // A team is finalized once it's locked in or full. Teams that applied as a
+  // complete team and were approved count too, unless they already have a live
+  // Team Finder team of the same name (so nobody is counted twice).
+  const teamBoard = useMemo(() => {
+    const members = (id: string) => livePeople.filter((x) => x.team_id === id);
+    const live = liveTeams.map((t) => {
+      const m = members(t.id);
+      return { key: t.id, name: t.name, size: m.length, leader: m.find((x) => x.id === t.leader_id)?.full_name ?? "", source: "Team Finder" as const, finalized: t.locked || m.length >= MAX_MEMBERS, names: m.map((x) => x.full_name) };
+    });
+    const liveNames = new Set(liveTeams.map((t) => t.name.toLowerCase()));
+    const applied = rows
+      .filter((r) => r.participation === "team" && r.status === "accepted" && !liveNames.has(r.team_name.toLowerCase()))
+      .map((r) => ({ key: r.id, name: r.team_name, size: r.team_size ?? 0, leader: r.is_team_leader ? r.full_name : r.team_leader_contact, source: "Applied as a team" as const, finalized: true, names: [] as string[] }));
+    const all = [...live, ...applied];
+    return { all, finalized: all.filter((x) => x.finalized).length, live: live.length };
+  }, [liveTeams, livePeople, rows]);
+
   function exportCsv() {
     const cols: (keyof Row)[] = ["created_at", "status", "full_name", "email", "phone", "age", "category", "organization", "municipality", "expertise", "skills", "participation", "team_name", "is_team_leader", "team_leader_contact", "team_size", "team_members", "contribution", "teammate_preference", "problem", "solution_types", "motivation", "available_full_duration", "continue_after", "heard_from", "notes", "admin_note"];
     const body = [cols.join(","), ...shown.map((r) => cols.map((c) => csvCell(r[c])).join(","))].join("\n");
@@ -128,7 +156,7 @@ export default function SiklabAdmin() {
   }
 
   const count = (f: (r: Row) => boolean) => rows.filter(f).length;
-  const stats: [string, number][] = [["Applications", rows.length], ["Individuals", count((r) => r.participation === "individual")], ["Teams", count((r) => r.participation === "team")], ["Shortlisted", count((r) => r.status === "shortlisted")], ["Approved", count((r) => r.status === "accepted")]];
+  const stats: [string, number][] = [["Applications", rows.length], ["Individuals", count((r) => r.participation === "individual")], ["Teams", count((r) => r.participation === "team")], ["Finalized teams", teamBoard.finalized], ["Approved", count((r) => r.status === "accepted")]];
 
   return shell(
     <div style={{ maxWidth: 1180, margin: "0 auto", padding: "32px 20px 80px" }}>
@@ -155,6 +183,45 @@ export default function SiklabAdmin() {
         ))}
       </div>
 
+      <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
+        {(["applications", "teams"] as const).map((t) => (
+          <button key={t} onClick={() => setView(t)} style={{ ...ghost, background: view === t ? ORANGE : "none", borderColor: view === t ? ORANGE : line, textTransform: "capitalize" }}>{t === "teams" ? `Teams (${teamBoard.finalized}/${MAX_TEAMS} finalized)` : "Applications"}</button>
+        ))}
+      </div>
+
+      {view === "teams" && (
+        <div>
+          <div style={{ background: panel, border: `1px solid ${line}`, borderRadius: 16, padding: "22px 24px", marginBottom: 18 }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
+              <span style={{ fontSize: 40, fontWeight: 600, letterSpacing: "-0.03em" }}>{teamBoard.finalized}<span style={{ color: dim }}> / {MAX_TEAMS}</span></span>
+              <span style={{ fontSize: 14, color: dim }}>teams finalized</span>
+            </div>
+            <div style={{ height: 8, borderRadius: 9999, background: "rgba(255,255,255,0.1)", marginTop: 14, overflow: "hidden" }}>
+              <div style={{ width: `${Math.min(100, (teamBoard.finalized / MAX_TEAMS) * 100)}%`, height: "100%", background: ORANGE }} />
+            </div>
+            <div style={{ fontSize: 12.5, color: dim, marginTop: 10, lineHeight: 1.5 }}>Finalized = locked in or full (5 members) on the Team Finder, plus approved teams that applied as a complete team. {teamBoard.all.length - teamBoard.finalized} more still forming.</div>
+          </div>
+          <div style={{ background: panel, border: `1px solid ${line}`, borderRadius: 16, overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13.5, minWidth: 640 }}>
+              <thead><tr style={{ textAlign: "left", color: dim, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.08em" }}>{["Team", "Members", "Leader", "Source", "Status"].map((h) => <th key={h} style={{ padding: "14px 16px", fontWeight: 600 }}>{h}</th>)}</tr></thead>
+              <tbody>
+                {[...teamBoard.all].sort((a, b) => Number(b.finalized) - Number(a.finalized)).map((t) => (
+                  <tr key={t.key} style={{ borderTop: `1px solid ${line}` }}>
+                    <td style={{ padding: "12px 16px", fontWeight: 600 }}>{t.name}</td>
+                    <td style={{ padding: "12px 16px" }} title={t.names.join(", ")}>{t.size} / {MAX_MEMBERS}</td>
+                    <td style={{ padding: "12px 16px" }}>{t.leader}</td>
+                    <td style={{ padding: "12px 16px", color: dim }}>{t.source}</td>
+                    <td style={{ padding: "12px 16px" }}><span style={{ color: t.finalized ? "#1A8F4C" : "#C27A0E", fontWeight: 600 }}>● {t.finalized ? "Finalized" : "Forming"}</span></td>
+                  </tr>
+                ))}
+                {teamBoard.all.length === 0 && <tr><td colSpan={5} style={{ padding: 40, textAlign: "center", color: dim }}>No teams yet.</td></tr>}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {view === "applications" && <>
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
         <input placeholder="Search name, email, school, team, skills…" value={q} onChange={(e) => setQ(e.target.value)} style={{ ...input, flex: "1 1 260px" }} />
         <select value={fPart} onChange={(e) => setFPart(e.target.value)} style={input}><option value="">All types</option><option value="individual">Individual</option><option value="team">Team</option></select>
@@ -184,6 +251,8 @@ export default function SiklabAdmin() {
           </tbody>
         </table>
       </div>
+
+      </>}
 
       {open && (
         <div onClick={() => setOpen(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.65)", zIndex: 100, display: "flex", justifyContent: "flex-end" }}>
