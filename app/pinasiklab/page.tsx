@@ -51,6 +51,12 @@ function registerButton(label: string, variant: "orange" | "dark" = "orange"): s
   return `<a href="${registerHref}"${registerAttrs}${cls} style="display:inline-flex;align-items:center;gap:9px;background:${bg};color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;">${label} ${icon(PATHS.arrow, "#fff", 15)}</a>`;
 }
 
+const teamFinderHref = `${BP}/pinasiklab/teams/`;
+function teamFinderButton(label: string, onOrange = false): string {
+  const c = onOrange ? "background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.5);" : "background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.22);";
+  return `<a href="${teamFinderHref}" style="display:inline-flex;align-items:center;gap:9px;${c}color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;">${icon(PATHS.network, "#fff", 16)} ${label}</a>`;
+}
+
 function sectionHead(eyebrow: string, title: string, dark = false): string {
   return `
     <div style="font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:${ORANGE};margin-bottom:6px;">${eyebrow}</div>
@@ -180,6 +186,7 @@ ${navBarHtml()}
     <p style="margin:26px 0 0;font-size:22px;font-weight:600;letter-spacing:-0.01em;color:#fff;">30 teams. 2 days. Real problems. <span style="color:${ORANGE};">Working solutions.</span></p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px;">
       ${registerButton("Register now")}
+      ${teamFinderButton("Find a team")}
       <a href="#about" style="display:inline-flex;align-items:center;background:rgba(255,255,255,0.08);color:#fff;font-weight:600;font-size:15px;padding:14px 28px;border-radius:9999px;text-decoration:none;border:1px solid rgba(255,255,255,0.22);">Learn more</a>
     </div>
   </div>
@@ -446,7 +453,7 @@ ${navBarHtml()}
       <h2 style="margin:0 0 14px;font-size:38px;font-weight:500;letter-spacing:-0.03em;color:#fff;line-height:1.08;">Ready to Participate?</h2>
       <p style="margin:0 0 10px;font-size:18px;font-weight:600;line-height:1.5;color:#fff;">Applications are now open for PinaSIKLab Baguio 2026.</p>
       <p style="margin:0 0 26px;font-size:16px;line-height:1.6;color:rgba(255,255,255,0.9);">If you are 18&ndash;30 years old and live, study, or work in Baguio or the BLISTT area, you can apply as an individual or with your team. 30 teams maximum.</p>
-      <div>${registerButton("Register for PinaSIKLab Baguio 2026", "dark")}</div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">${registerButton("Register for PinaSIKLab Baguio 2026", "dark")}${teamFinderButton("Find a team or teammate", true)}</div>
       <p style="margin:18px 0 0;font-size:14px;color:rgba(255,255,255,0.88);">Application deadline: <strong>${deadlineText}</strong></p>
     </div>
   </div>
