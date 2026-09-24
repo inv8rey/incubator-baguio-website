@@ -77,6 +77,7 @@ export function footerHtml() {
         <div style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:16px;">Explore</div>
         <div style="display:flex;flex-direction:column;gap:11px;font-size:14px;color:rgba(255,255,255,0.62);">
           <a class="ib-footlink" href="${BP}/programs">Programs</a>
+          <a class="ib-footlink" href="${BP}/research-innovation-agenda">Research &amp; Innovation Agenda</a>
           <a class="ib-footlink" href="${BP}/challenges">Challenges</a>
           <a class="ib-footlink" href="${BP}/knowledge">Knowledge Hub</a>
           <a class="ib-footlink" href="${BP}/ecosystem">Ecosystem</a>

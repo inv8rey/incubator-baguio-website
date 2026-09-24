@@ -299,7 +299,7 @@ ${navBarHtml()}
               ? `<a href="${CHALLENGE_BRIEFS_URL}" target="_blank" rel="noopener noreferrer" class="ib-cta-orange" style="display:inline-flex;align-items:center;gap:9px;background:${ORANGE};color:#fff;font-weight:600;font-size:14.5px;padding:13px 24px;border-radius:9999px;text-decoration:none;">View challenge briefs ${icon(PATHS.arrow, "#fff", 15)}</a>`
               : ""
           }
-          <a href="${BP}/assets/baguio-research-innovation-agenda.pdf" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;font-weight:600;font-size:14.5px;color:#1A1714;padding:13px 24px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(64,50,34,0.2);">Read the Research &amp; Innovation Agenda</a>
+          <a href="${BP}/research-innovation-agenda/" style="display:inline-flex;align-items:center;font-weight:600;font-size:14.5px;color:#1A1714;padding:13px 24px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(64,50,34,0.2);">Read the Research &amp; Innovation Agenda</a>
         </div>
       </div>
     </div>
