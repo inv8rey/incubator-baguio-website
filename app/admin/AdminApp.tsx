@@ -17,6 +17,7 @@ import ForumTab from "./tabs/ForumTab";
 import PartnersTab from "./tabs/PartnersTab";
 import ChatbotKnowledgeTab from "./tabs/ChatbotKnowledgeTab";
 import SettingsTab from "./tabs/SettingsTab";
+import IdeaLabTab from "./tabs/IdeaLabTab";
 
 const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
   dashboard: (
@@ -96,6 +97,12 @@ const NAV_ICON_PATHS: Record<TabId, React.JSX.Element> = {
       <rect x={5} y={11} width={14} height={10} rx={2} />
       <path d="M8 11V7a4 4 0 0 1 8 0v4" />
       <circle cx={12} cy={16} r={1.4} fill="currentColor" stroke="none" />
+    </>
+  ),
+  "idea-lab": (
+    <>
+      <path d="M9 18h6M10 22h4" />
+      <path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z" />
     </>
   ),
   settings: (
@@ -332,6 +339,7 @@ export default function AdminApp() {
         {page === "forum" && <ForumTab searchQuery={searchQuery} />}
         {page === "partners" && <PartnersTab searchQuery={searchQuery} />}
         {page === "chatbot-kb" && <ChatbotKnowledgeTab searchQuery={searchQuery} />}
+        {page === "idea-lab" && <IdeaLabTab />}
         {page === "settings" && <SettingsTab searchQuery={searchQuery} />}
       </main>
     </div>

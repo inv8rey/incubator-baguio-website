@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { pageMeta } from "../seo";
 import EcosystemModel from "./EcosystemModel";
 import AudiencePaths from "./AudiencePaths";
+import IdeaLabPreview from "../idea-lab/IdeaLabPreview";
 import { navBarHtml, footerHtml } from "../chrome";
 
 export const metadata: Metadata = pageMeta({
@@ -120,6 +121,7 @@ export default function Programs() {
       <div dangerouslySetInnerHTML={{ __html: PROGRAMS_HTML_TOP }} />
       <EcosystemModel />
       <AudiencePaths />
+      <IdeaLabPreview bp={BP} background="#F6F2EA" />
       <div dangerouslySetInnerHTML={{ __html: PROGRAMS_HTML_FAQ_FOOTER }} />
     </main>
   );

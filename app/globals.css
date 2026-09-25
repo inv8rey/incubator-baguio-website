@@ -2038,3 +2038,12 @@ img { max-width: 100%; height: auto; }
   .ib-sk-card, .ib-siklab-cta { transition: none; }
   .ib-sk-card:hover, .ib-siklab-cta:hover { transform: none; }
 }
+
+/* R&I Idea Lab */
+.il-card-in { animation: il-card-in .5s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes il-card-in { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
+.il-type { transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+.il-type:hover { transform: translateY(-3px); }
+.il-generate { transition: transform .18s ease, filter .18s ease; }
+.il-generate:not(:disabled):hover { transform: translateY(-2px); filter: brightness(1.06); }
+@media (prefers-reduced-motion: reduce) { .il-card-in { animation: none; } .il-type:hover, .il-generate:hover { transform: none; } }

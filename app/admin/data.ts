@@ -15,6 +15,7 @@ export const NAV = [
   { id: "forum", label: "Community", cnt: null as number | null },
   { id: "partners", label: "Partners", cnt: null as number | null },
   { id: "chatbot-kb", label: "Chatbot KB", cnt: null as number | null },
+  { id: "idea-lab", label: "Idea Lab", cnt: null as number | null },
   { id: "settings", label: "Settings", cnt: null as number | null },
 ] as const;
 
@@ -34,6 +35,7 @@ export const TITLES: Record<TabId, string> = {
   forum: "Community Reports",
   partners: "Ecosystem Partners",
   "chatbot-kb": "Chatbot Knowledge Base",
+  "idea-lab": "R&I Idea Lab",
   settings: "Settings",
 };
 
@@ -51,6 +53,7 @@ export const SUBS: Record<TabId, string> = {
   forum: "Member-flagged posts and replies from the Community forum",
   partners: "Academic, government, corporate, and community partners",
   "chatbot-kb": "Private documents the chat assistant can search — never shown on the public site",
+  "idea-lab": "Shared ideas to review, claims, and what the tool costs to run",
   settings: "Programs, homepage gallery, and consultation evaluations",
 };
 

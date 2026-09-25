@@ -8,6 +8,7 @@ import FeaturedStartups from "./FeaturedStartups";
 import HomeOpenChallenges from "./HomeOpenChallenges";
 import HomeEvents from "./HomeEvents";
 import HomePinaSIKLab from "./HomePinaSIKLab";
+import IdeaLabPreview from "./idea-lab/IdeaLabPreview";
 import HomeGallery from "./HomeGallery";
 import EcosystemPartnersMarquee from "./EcosystemPartnersMarquee";
 import NewsletterSignup from "./NewsletterSignup";
@@ -173,6 +174,7 @@ export default function Home() {
       <HomeGallery bp={BP} />
       <HomeEvents bp={BP} />
       <HomePinaSIKLab bp={BP} />
+      <IdeaLabPreview bp={BP} />
       <NewsletterSignup />
       <EcosystemPartnersMarquee />
       <div dangerouslySetInnerHTML={{ __html: HOME_HTML_BOTTOM_B2 }} />
