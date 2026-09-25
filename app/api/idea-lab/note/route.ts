@@ -1,7 +1,7 @@
 import { requireUser, LOGIN_REQUIRED } from '../../../../lib/idea-lab/auth';
 import { llmConfigured, makeNote, modelName } from '../../../../lib/idea-lab/llm';
 import { bumpLimit, getIdea, getNote, getSession, recordUsage, saveNote, storeConfigured, tokensToday } from '../../../../lib/idea-lab/store';
-import { DAILY_LIMIT, DAILY_TOKEN_BUDGET, LIMIT_MESSAGE, json, sanitizeText } from '../../../../lib/idea-lab/http';
+import { DAILY_LIMIT, DAILY_TOKEN_BUDGET, limitMessage, json, sanitizeText } from '../../../../lib/idea-lab/http';
 import { ideaCoreFrom, publicIdea, sessionInput } from '../../../../lib/idea-lab/service';
 import { noteSchema } from '../../../../lib/idea-lab/schema';
 import { NOTE_DISCLAIMER } from '../../../../lib/idea-lab/programs';
@@ -41,8 +41,10 @@ export async function POST(req: Request) {
   // Past the daily AI budget the template generator serves instead, so Idea Lab stays up.
   const useAi = (await tokensToday()) < DAILY_TOKEN_BUDGET;
   const hash = user.key;
-  const limit = await bumpLimit(hash, 0.5, DAILY_LIMIT);
-  if (!limit.ok) return json({ error: LIMIT_MESSAGE, code: 'limit' }, 429);
+  // Limits are per account and per category: 3 capstone, 3 thesis, 3 startup generations a day.
+  const bucket = `${user.key}|${session.project_type}`;
+  const limit = await bumpLimit(bucket, 0.5, DAILY_LIMIT);
+  if (!limit.ok) return json({ error: limitMessage, code: 'limit' }, 429);
 
   try {
     const { note, usage } = await makeNote({ useAi, input: sessionInput(session as never), idea: ideaCoreFrom(idea as unknown as Record<string, unknown>) as never });
@@ -52,7 +54,7 @@ export async function POST(req: Request) {
     return json({ note: safe });
   } catch (err) {
     console.error('idea-lab note failed:', err instanceof Error ? err.message : err);
-    await bumpLimit(hash, -0.5, DAILY_LIMIT).catch(() => {});
+    await bumpLimit(bucket, -0.5, DAILY_LIMIT).catch(() => {});
     return json({ error: 'We could not write the outline right now. Please try again.' }, 502);
   }
 }

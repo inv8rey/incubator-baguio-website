@@ -157,3 +157,12 @@ test('login required: every tool route checks the signed-in user', () => {
     assert.equal(guards, handlers, `${r}: every handler must call requireUser`);
   }
 });
+
+test('limits are per category: 3 capstone generations do not use up thesis or startup', async () => {
+  const { bumpLimit } = await import('../lib/idea-lab/store');
+  const user = 'acct-hash';
+  for (let i = 0; i < 3; i++) assert.equal((await bumpLimit(`${user}|capstone`, 1, 3)).ok, true);
+  assert.equal((await bumpLimit(`${user}|capstone`, 1, 3)).ok, false);
+  assert.equal((await bumpLimit(`${user}|thesis`, 1, 3)).ok, true);
+  assert.equal((await bumpLimit(`${user}|startup`, 1, 3)).ok, true);
+});

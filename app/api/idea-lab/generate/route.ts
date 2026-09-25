@@ -1,7 +1,7 @@
 import { requireUser, LOGIN_REQUIRED } from '../../../../lib/idea-lab/auth';
 import { generateIdeas, llmConfigured, modelName } from '../../../../lib/idea-lab/llm';
 import { bumpLimit, cachedIdeas, getSession, insertIdea, listIdeas, recordUsage, storeConfigured, tokensToday } from '../../../../lib/idea-lab/store';
-import { DAILY_LIMIT, DAILY_TOKEN_BUDGET, LIMIT_MESSAGE, json } from '../../../../lib/idea-lab/http';
+import { DAILY_LIMIT, DAILY_TOKEN_BUDGET, limitMessage, json } from '../../../../lib/idea-lab/http';
 import { cacheKeyFor, ideaCoreFrom, publicIdea, sessionInput } from '../../../../lib/idea-lab/service';
 
 export const maxDuration = 60;
@@ -27,8 +27,10 @@ export async function POST(req: Request) {
   // Past the daily AI budget the template generator serves instead, so Idea Lab stays up.
   const useAi = (await tokensToday()) < DAILY_TOKEN_BUDGET;
   const hash = user.key;
-  const limit = await bumpLimit(hash, 1, DAILY_LIMIT);
-  if (!limit.ok) return json({ error: LIMIT_MESSAGE, code: 'limit' }, 429);
+  // Limits are per account and per category: 3 capstone, 3 thesis, 3 startup generations a day.
+  const bucket = `${user.key}|${session.project_type}`;
+  const limit = await bumpLimit(bucket, 1, DAILY_LIMIT);
+  if (!limit.ok) return json({ error: limitMessage, code: 'limit' }, 429);
 
   const input = sessionInput(session as never);
   const key = cacheKeyFor(input);
@@ -37,6 +39,7 @@ export async function POST(req: Request) {
   const stream = new ReadableStream({
     async start(controller) {
       const send = (o: unknown) => controller.enqueue(encoder.encode(JSON.stringify(o) + '\n'));
+      send({ type: 'quota', left: Math.max(0, DAILY_LIMIT - limit.used), limit: DAILY_LIMIT });
       let produced = 0;
       try {
         const existing = await listIdeas(session.id);
@@ -66,7 +69,7 @@ export async function POST(req: Request) {
         send({ type: 'done' });
       } catch (err) {
         console.error('idea-lab generate failed:', err instanceof Error ? err.message : err);
-        if (produced === 0) await bumpLimit(hash, -1, DAILY_LIMIT).catch(() => {});
+        if (produced === 0) await bumpLimit(bucket, -1, DAILY_LIMIT).catch(() => {});
         send({ type: 'error', message: produced > 0 ? 'Some ideas could not be generated. Try again for more.' : 'We could not generate ideas right now. Please try again.' });
       } finally {
         controller.close();

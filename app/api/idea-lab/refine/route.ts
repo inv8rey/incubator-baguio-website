@@ -1,7 +1,7 @@
 import { requireUser, LOGIN_REQUIRED } from '../../../../lib/idea-lab/auth';
 import { llmConfigured, modelName, refineIdea } from '../../../../lib/idea-lab/llm';
 import { bumpLimit, getIdea, getSession, insertIdea, recordUsage, storeConfigured, tokensToday } from '../../../../lib/idea-lab/store';
-import { DAILY_LIMIT, DAILY_TOKEN_BUDGET, LIMIT_MESSAGE, json, sanitizeText } from '../../../../lib/idea-lab/http';
+import { DAILY_LIMIT, DAILY_TOKEN_BUDGET, limitMessage, json, sanitizeText } from '../../../../lib/idea-lab/http';
 import { cacheKeyFor, ideaCoreFrom, publicIdea, sessionInput } from '../../../../lib/idea-lab/service';
 import { REFINE_PRESETS } from '../../../../lib/idea-lab/programs';
 
@@ -30,8 +30,10 @@ export async function POST(req: Request) {
   // Past the daily AI budget the template generator serves instead, so Idea Lab stays up.
   const useAi = (await tokensToday()) < DAILY_TOKEN_BUDGET;
   const hash = user.key;
-  const limit = await bumpLimit(hash, 0.5, DAILY_LIMIT);
-  if (!limit.ok) return json({ error: LIMIT_MESSAGE, code: 'limit' }, 429);
+  // Limits are per account and per category: 3 capstone, 3 thesis, 3 startup generations a day.
+  const bucket = `${user.key}|${session.project_type}`;
+  const limit = await bumpLimit(bucket, 0.5, DAILY_LIMIT);
+  if (!limit.ok) return json({ error: limitMessage, code: 'limit' }, 429);
 
   try {
     const input = sessionInput(session as never);
@@ -41,7 +43,7 @@ export async function POST(req: Request) {
     return json({ idea: publicIdea(row as unknown as Record<string, unknown>) });
   } catch (err) {
     console.error('idea-lab refine failed:', err instanceof Error ? err.message : err);
-    await bumpLimit(hash, -0.5, DAILY_LIMIT).catch(() => {});
+    await bumpLimit(bucket, -0.5, DAILY_LIMIT).catch(() => {});
     return json({ error: 'We could not refine that idea right now. Please try again.' }, 502);
   }
 }

@@ -9,7 +9,7 @@ export function deviceHash(req: Request): string {
   return createHash('sha256').update(`${SALT}${ip}${ua}`).digest('hex');
 }
 
-export const DAILY_LIMIT = Number(process.env.DAILY_LIMIT || 5);
+export const DAILY_LIMIT = Number(process.env.DAILY_LIMIT || 3);
 export const DAILY_TOKEN_BUDGET = Number(process.env.DAILY_TOKEN_BUDGET || 100_000);
 
 /** Strips HTML tags and links, collapses whitespace, and caps length. */
@@ -28,4 +28,4 @@ export function json(body: unknown, status = 200) {
 }
 
 export const BUDGET_MESSAGE = 'Idea Lab is resting until tomorrow. You can still browse the Idea Bank.';
-export const LIMIT_MESSAGE = 'You have used today’s free ideas. Come back tomorrow, or browse the Idea Bank.';
+export const limitMessage = (projectType: string) => `You have used today’s ${DAILY_LIMIT} free ${projectType} generations. Try another category, or come back tomorrow.`;

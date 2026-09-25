@@ -27,6 +27,7 @@ export default function ResultsView({ id, onRestart }: { id: string; onRestart?:
   const [pending, setPending] = useState(0);
   const [error, setError] = useState('');
   const [blocked, setBlocked] = useState(false);
+  const [quota, setQuota] = useState<{ left: number; limit: number } | null>(null);
   const [saved, setSaved] = useState<Record<string, boolean>>({});
   const [share, setShare] = useState<string | null>(null);
   const started = useRef(false);
@@ -70,6 +71,10 @@ export default function ResultsView({ id, onRestart }: { id: string; onRestart?:
           if (ev.type === 'idea' && ev.idea) {
             setIdeas((prev) => (prev.some((p) => p.id === ev.idea!.id) ? prev : [...prev, ev.idea!]));
             setPending((p) => Math.max(0, p - 1));
+          } else if (ev.type === 'quota') {
+            const q = ev as unknown as { left: number; limit: number };
+            setQuota({ left: q.left, limit: q.limit });
+            if (q.left <= 0) setBlocked(true);
           } else if (ev.type === 'error') {
             setError(ev.message || 'Something went wrong.');
           }
@@ -163,10 +168,12 @@ export default function ResultsView({ id, onRestart }: { id: string; onRestart?:
       </div>}
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 24 }}>
-        <button style={{ ...primaryBtn, opacity: generating || blocked ? 0.6 : 1 }} disabled={generating || blocked} onClick={generate}>{generating ? 'Generating…' : 'Generate 5 more'}</button>
+        <button style={{ ...primaryBtn, opacity: generating || blocked ? 0.6 : 1 }} disabled={generating || blocked} onClick={generate}>{generating ? 'Generating…' : blocked ? 'Daily limit reached' : 'Generate 5 more'}</button>
         {onRestart ? <button style={ghostBtn} onClick={onRestart}>Start over</button> : <a style={ghostBtn} href={`${BP}/idea-lab/`}>Start over</a>}
         <a style={ghostBtn} href={`${BP}/idea-lab/mine/`}>My ideas</a>
       </div>
+
+      {quota && <p style={{ margin: '12px 0 0', fontSize: 13, color: MUTED }}>{quota.left} of {quota.limit} {session.project_type} generations left today. Other categories have their own allowance.</p>}
 
       <p style={{ margin: '28px 0 0', fontSize: 14.5, color: '#3A352E' }}>
         Want mentoring on the idea you pick? <a href={`${BP}/calendar/`} style={{ color: '#B84A12', fontWeight: 600 }}>Tell us</a>.
