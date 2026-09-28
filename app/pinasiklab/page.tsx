@@ -7,7 +7,7 @@ import SiklabInteractive from "./SiklabInteractive";
 export const metadata: Metadata = pageMeta({
   title: "PinaSIKLab Baguio 2026 — Incubator Baguio",
   description:
-    "PinaSIKLab Baguio 2026: a two-day youth innovation sprint for Baguio and the BLISTT area, October 30–31, 2026. 30 teams, real community and climate challenges, working solutions. A UNDP Youth Co:Lab initiative.",
+    "PinaSIKLab Baguio 2026: a two-day youth innovation sprint for Baguio and the BLISTT area, October 30–31, 2026. 30 teams, real community and climate challenges, working solutions. A UNDP Philippines initiative.",
   path: "/pinasiklab/",
 });
 
@@ -128,16 +128,23 @@ const FAQS: { q: string; a: string }[] = [
 // Orgs without a logo file render as text wordmarks.
 interface Org { name: string; alt?: string; logo?: string }
 const LOGO_GROUPS: { label: string; orgs: Org[] }[] = [
-  { label: "A UNDP Youth Co:Lab initiative", orgs: [{ name: "UNDP Philippines / Youth Co:Lab", logo: "undp.png" }] },
-  { label: "Locally organized by", orgs: [{ name: "Incubator Baguio", logo: "ib-icon-dark.png" }, { name: "SIGLAT Youth Innovation Hub", logo: "siglat.png" }] },
   {
-    label: "With the support of",
+    label: "Locally organized by",
     orgs: [
       { name: "City Government of Baguio", logo: "city-of-baguio-seal.png" },
       { name: "CPDSO", alt: "City Planning, Development and Sustainability Office (CPDSO)", logo: "cpdso-logo.png" },
+      { name: "Incubator Baguio", logo: "ib-icon-dark.png" },
+      { name: "SIGLAT Youth Innovation Hub", logo: "siglat.png" },
     ],
   },
-  { label: "Supported by", orgs: [{ name: "Government of Japan", logo: "government-of-japan.png" }, { name: "JICA", alt: "Japan International Cooperation Agency (JICA)", logo: "jica.png" }] },
+  {
+    label: "In partnership with",
+    orgs: [
+      { name: "UNDP Philippines", logo: "undp.png" },
+      { name: "Government of Japan", logo: "government-of-japan.png" },
+      { name: "JICA", alt: "Japan International Cooperation Agency (JICA)", logo: "jica.png" },
+    ],
+  },
 ];
 
 function orgTile(o: Org): string {
@@ -187,7 +194,7 @@ ${navBarHtml()}
   <svg style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);opacity:0.12;" width="700" height="400" viewBox="0 0 120 104" fill="none" preserveAspectRatio="none"><polyline points="6,40 60,8 114,40" stroke="#F5A623" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,62 60,30 114,62" stroke="#E23A2E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,84 60,52 114,84" stroke="#9E2A52" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline><polyline points="6,106 60,74 114,106" stroke="#285E7A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
   <div style="position:relative;max-width:900px;margin:0 auto;">
     <div style="font-size:12.5px;color:rgba(255,255,255,0.55);margin-bottom:22px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <a href="${BP}/programs/" style="color:inherit;text-decoration:none;">Programs</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.7);">PinaSIKLab Baguio 2026</span></div>
-    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:9999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.03);margin-bottom:26px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,194,64,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:${YELLOW};"></span></span><span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">UNDP Youth Co:Lab &middot; Baguio Leg</span></div>
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:9999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.03);margin-bottom:26px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,194,64,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:${YELLOW};"></span></span><span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">UNDP Philippines &middot; Baguio Leg</span></div>
     <h1 style="margin:0;font-size:60px;line-height:1.05;font-weight:500;letter-spacing:-0.04em;color:#fff;">PinaSIKLab <span style="color:${YELLOW};">Baguio 2026</span></h1>
     <p style="margin:18px auto 0;font-size:24px;line-height:1.35;font-weight:500;color:rgba(255,255,255,0.88);letter-spacing:-0.01em;">Youth Innovation for Baguio and the BLISTT Area</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:26px 0 0;">
@@ -215,7 +222,7 @@ ${navBarHtml()}
     <div style="display:grid;grid-template-columns:1fr 1.1fr;gap:52px;align-items:center;">
       <div>
         ${sectionHead("About", "About PinaSIKLab Baguio")}
-        <p style="${PARA}">PinaSIKLab Baguio 2026 is the Baguio leg of <strong style="color:#1A1714;">PinaSIKLab: Pilipinas Social Innovation for Kabataan Labs 2026</strong>, a UNDP Philippines Youth Co:Lab initiative supporting young innovators in developing solutions and advancing their entrepreneurship journey.</p>
+        <p style="${PARA}">PinaSIKLab Baguio 2026 is the Baguio leg of <strong style="color:#1A1714;">PinaSIKLab: Pilipinas Social Innovation for Kabataan Labs 2026</strong>, a UNDP Philippines initiative supporting young innovators in developing solutions and advancing their entrepreneurship journey.</p>
         <p style="${PARA}">The Baguio leg provides young people with an opportunity to work in multidisciplinary teams, understand local challenges, develop ideas, build prototypes, receive mentorship, and present their solutions.</p>
         <p style="margin:0;font-size:16.5px;line-height:1.7;color:#5A544B;">The program focuses on the use of AI and digital technologies to develop solutions that can address community, climate, business, and other local challenges.</p>
       </div>
@@ -224,7 +231,7 @@ ${navBarHtml()}
         <div style="position:relative;">
           <div style="font-size:11.5px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${YELLOW};margin-bottom:14px;">One program, many local labs</div>
           <div style="font-size:24px;font-weight:600;letter-spacing:-0.02em;color:#fff;line-height:1.25;margin-bottom:14px;">Pilipinas Social Innovation for Kabataan Labs 2026</div>
-          <p style="margin:0 0 22px;font-size:14.5px;line-height:1.6;color:rgba(255,255,255,0.62);">A UNDP Philippines Youth Co:Lab initiative. Baguio is one of the local SIKLabs feeding into the national program.</p>
+          <p style="margin:0 0 22px;font-size:14.5px;line-height:1.6;color:rgba(255,255,255,0.62);">A UNDP Philippines initiative. Baguio is one of the local SIKLabs feeding into the national program.</p>
           <div style="display:flex;flex-direction:column;gap:12px;border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;">
             ${["Multidisciplinary teams", "Real local challenges", "Prototypes, mentorship, and pitching"]
               .map((t) => `<div style="display:flex;align-items:center;gap:11px;font-size:15px;font-weight:500;color:#fff;">${icon(PATHS.check, YELLOW, 18)}<span>${t}</span></div>`)

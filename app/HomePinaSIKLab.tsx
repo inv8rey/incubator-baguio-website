@@ -37,7 +37,7 @@ export default function HomePinaSIKLab({ bp }: { bp: string }) {
             <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 18, height: 18, borderRadius: 9999, background: "rgba(242,101,34,0.18)" }}>
               <span style={{ width: 6, height: 6, borderRadius: 9999, background: ORANGE }} />
             </span>
-            <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.72)" }}>Featured program &middot; UNDP Youth Co:Lab</span>
+            <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.72)" }}>Featured program &middot; UNDP Philippines</span>
           </div>
           <h2 style={{ margin: "0 0 10px", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1.08, color: "#fff" }}>
             PinaSIKLab <span style={{ color: ORANGE }}>Baguio 2026</span>

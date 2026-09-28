@@ -36,7 +36,7 @@ const WHY: [string, string][] = [
   ["Access to young talent", "Meet and work alongside up to 30 teams of skilled young people from Baguio and the BLISTT area. A direct line to future hires, interns, and collaborators."],
   ["Put your tools in builders' hands", "Technology and service providers can have teams build with their products, gathering real feedback and new users."],
   ["A stake in real local challenges", "Sponsor or contribute to a problem statement tied to the Baguio City Research and Innovation Agenda, and see solutions built for it."],
-  ["Community impact you can report", "Support a UNDP Youth Co:Lab initiative aligned with the Sustainable Development Goals. Good for CSR and ESG stories, backed by real outcomes."],
+  ["Community impact you can report", "Support a UNDP Philippines initiative aligned with the Sustainable Development Goals. Good for CSR and ESG stories, backed by real outcomes."],
   ["A seat at the table", "Join mentors, judges, and government, academic, and industry leaders in the ecosystem behind the city's innovation agenda."],
   ["Recognition at the finish line", "Present or hand over awards, join the pitching, and be part of the moment the winning teams are announced."],
 ];
