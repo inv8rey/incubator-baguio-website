@@ -112,7 +112,6 @@ const FAQS: { q: string; a: string }[] = [
     q: "Do I need technical or coding skills?",
     a: "Not every participant needs technical skills. Teams are encouraged to bring together members with complementary skills. However, each team should collectively be capable of developing and presenting a functional prototype or solution.",
   },
-  { q: "Can I apply alone?", a: "Yes. Individual applications are accepted." },
   { q: "Can I apply with my existing team?", a: "Yes. Teams may apply as a pre-formed team." },
   { q: "How many teams will participate?", a: "The Baguio leg will accommodate up to 30 multidisciplinary teams, with five members per team." },
   {
