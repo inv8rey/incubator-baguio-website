@@ -138,12 +138,9 @@ const LOGO_GROUPS: { label: string; orgs: Org[] }[] = [
     ],
   },
   {
+    // Government of Japan and JICA logos removed for now.
     label: "In partnership with",
-    orgs: [
-      { name: "UNDP Philippines", logo: "undp.png" },
-      { name: "Government of Japan", logo: "government-of-japan.png" },
-      { name: "JICA", alt: "Japan International Cooperation Agency (JICA)", logo: "jica.png" },
-    ],
+    orgs: [{ name: "UNDP Philippines", logo: "undp.png" }],
   },
 ];
 
