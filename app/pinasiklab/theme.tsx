@@ -10,13 +10,13 @@ export type Theme = "dark" | "light";
 const THEME_KEY = "ib_teamfinder_theme";
 
 export function useSiklabTheme() {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
     try {
-      if (localStorage.getItem(THEME_KEY) === "light") setTheme("light");
+      if (localStorage.getItem(THEME_KEY) === "dark") setTheme("dark");
     } catch {
-      // Storage blocked: stay on the default (dark) for this visit.
+      // Storage blocked: stay on the default (light) for this visit.
     }
   }, []);
 

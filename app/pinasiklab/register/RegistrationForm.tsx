@@ -21,16 +21,30 @@ import {
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Philippine mobile numbers only: 09XXXXXXXXX (11 digits) or +639XXXXXXXXX / 639XXXXXXXXX.
+const PH_PHONE_RE = /^(09\d{9}|\+?639\d{9})$/;
+// Strips everything but digits and a single leading "+" as the user types, so
+// letters and stray punctuation can never end up in the field.
+function sanitizePhone(raw: string): string {
+  const hasPlus = raw.trim().startsWith("+");
+  const digits = raw.replace(/\D/g, "").slice(0, 12);
+  return (hasPlus ? "+" : "") + digits;
+}
 const DRAFT_KEY = "ib_siklab_reg_draft_v1";
 const CONTACT_EMAIL = "incubatorbaguio63@gmail.com";
 const LAST = STEP_TITLES.length - 1;
+
+interface TeamMember { name: string; email: string }
+// Up to 5 members per team, one of whom is the applicant, so at most 4 others are listed here.
+const MAX_OTHER_MEMBERS = 4;
+const EMPTY_MEMBER: TeamMember = { name: "", email: "" };
 
 interface Values {
   full_name: string; email: string; phone: string; age: string;
   category: string; category_other: string; organization: string; municipality: string;
   expertise: string; skills: string[]; skills_other: string;
   participation: "" | "individual" | "team";
-  team_name: string; is_team_leader: "" | "yes" | "no"; team_leader_contact: string; team_size: string; team_members: string;
+  team_name: string; is_team_leader: "" | "yes" | "no"; team_leader_contact: string; team_size: string; team_members: TeamMember[];
   contribution: string; teammate_preference: string;
   focus_areas: string[]; solution_types: string[];
   motivation: string; available: string; continue_after: string; heard_from: string; notes: string;
@@ -40,7 +54,7 @@ interface Values {
 const EMPTY: Values = {
   full_name: "", email: "", phone: "", age: "", category: "", category_other: "", organization: "", municipality: "",
   expertise: "", skills: [], skills_other: "", participation: "",
-  team_name: "", is_team_leader: "", team_leader_contact: "", team_size: "", team_members: "",
+  team_name: "", is_team_leader: "", team_leader_contact: "", team_size: "", team_members: Array.from({ length: MAX_OTHER_MEMBERS }, () => ({ ...EMPTY_MEMBER })),
   contribution: "", teammate_preference: "",
   focus_areas: [], solution_types: [],
   motivation: "", available: "", continue_after: "", heard_from: "", notes: "",
@@ -61,6 +75,7 @@ function validate(step: number, v: Values): Errors {
     const age = Number(v.age);
     if (!v.age.trim()) e.age = "Please enter your age.";
     else if (!Number.isInteger(age) || age < 18 || age > 30) e.age = "PinaSIKLab Baguio is open to young people aged 18 to 30.";
+    if (v.phone.trim() && !PH_PHONE_RE.test(v.phone.trim())) e.phone = "Enter a valid Philippine mobile number, e.g. 09XX XXX XXXX.";
     need("category", "Pick the option that fits you best.");
     if (v.category === "Other") need("category_other", "Tell us a bit more.");
     need("organization", "Enter your school, organization, or company (or \"None\").");
@@ -78,7 +93,11 @@ function validate(step: number, v: Values): Errors {
       need("is_team_leader", "Tell us if you're the team leader.");
       if (v.is_team_leader === "no") need("team_leader_contact", "Who is your team leader? Add their name and email.");
       need("team_size", "How many members does your team have now?");
-      need("team_members", "List your current team members.");
+      const otherCount = Number(v.team_size) - 1;
+      if (Number.isInteger(otherCount) && otherCount > 0) {
+        const incomplete = v.team_members.slice(0, otherCount).some((m) => !m.name.trim() || !EMAIL_RE.test(m.email.trim()));
+        if (incomplete) e.team_members = "Add a name and a valid email for every teammate.";
+      }
     }
     if (v.participation === "individual") need("contribution", "Tell us what you'd like to contribute to a team.");
   }
@@ -142,6 +161,9 @@ export default function RegistrationForm() {
       const raw = localStorage.getItem(DRAFT_KEY);
       if (raw) {
         const d = JSON.parse(raw) as { v?: Partial<Values>; step?: number };
+        // A draft saved before team members became individual fields had
+        // team_members as a single string; drop it rather than crash on it.
+        if (d.v && !Array.isArray(d.v.team_members)) delete d.v.team_members;
         if (d.v) setV({ ...EMPTY, ...d.v, consent_privacy: false, declaration: false });
         if (typeof d.step === "number" && d.step >= 0 && d.step < LAST) setStep(d.step);
       }
@@ -165,6 +187,10 @@ export default function RegistrationForm() {
     if (errors[k]) setErrors((p) => ({ ...p, [k]: undefined }));
   }
   const toggleIn = (k: "skills" | "solution_types" | "focus_areas", item: string) => set(k, v[k].includes(item) ? v[k].filter((x) => x !== item) : [...v[k], item]);
+  function setMember(i: number, field: keyof TeamMember, val: string) {
+    setV((p) => ({ ...p, team_members: p.team_members.map((m, idx) => (idx === i ? { ...m, [field]: val } : m)) }));
+    if (errors.team_members) setErrors((p) => ({ ...p, team_members: undefined }));
+  }
 
   function goTo(n: number) {
     setStep(n);
@@ -208,6 +234,13 @@ export default function RegistrationForm() {
       return;
     }
     const team = v.participation === "team";
+    // Stored as one "Name, email" line per teammate (excluding the applicant),
+    // matching the format the Team Finder's applicant view already parses.
+    const otherCount = Math.max(0, Number(v.team_size) - 1);
+    const teamMembersText = v.team_members
+      .slice(0, otherCount)
+      .map((m) => `${m.name.trim()}, ${m.email.trim()}`)
+      .join("\n");
     const { error } = await supabase.from("siklab_registrations").insert({
       full_name: v.full_name.trim(),
       email: v.email.trim().toLowerCase(),
@@ -223,7 +256,7 @@ export default function RegistrationForm() {
       is_team_leader: team ? v.is_team_leader === "yes" : null,
       team_leader_contact: team && v.is_team_leader === "no" ? v.team_leader_contact.trim() : "",
       team_size: team ? Number(v.team_size) : null,
-      team_members: team ? v.team_members.trim() : "",
+      team_members: team ? teamMembersText : "",
       contribution: team ? "" : v.contribution.trim(),
       teammate_preference: team ? "" : v.teammate_preference.trim(),
       problem: v.focus_areas.join(", "),
@@ -352,7 +385,20 @@ export default function RegistrationForm() {
                 <Field label="Full name" required htmlFor="f-full_name" error={err("full_name")}>{text("full_name", { autoComplete: "name", placeholder: "First name and last name" })}</Field>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 18 }}>
                   <Field label="Email address" required htmlFor="f-email" error={err("email")}>{text("email", { type: "email", autoComplete: "email", placeholder: "you@example.com" })}</Field>
-                  <Field label="Mobile number" htmlFor="f-phone">{text("phone", { type: "tel", autoComplete: "tel", placeholder: "09XX XXX XXXX" })}</Field>
+                  <Field label="Mobile number" htmlFor="f-phone" error={err("phone")}>
+                    <input
+                      id="f-phone"
+                      value={v.phone}
+                      onChange={(e) => set("phone", sanitizePhone(e.target.value))}
+                      type="tel"
+                      inputMode="numeric"
+                      autoComplete="tel"
+                      placeholder="09XX XXX XXXX"
+                      maxLength={13}
+                      aria-invalid={!!err("phone")}
+                      style={{ ...inputStyle, borderColor: err("phone") ? "var(--tf-red)" : undefined }}
+                    />
+                  </Field>
                 </div>
                 <Field label="Age" required htmlFor="f-age" error={err("age")} hint="Open to ages 18 to 30.">{text("age", { type: "number", inputMode: "numeric", min: 18, max: 30, placeholder: "e.g. 22", style: { ...inputStyle, maxWidth: 140, borderColor: err("age") ? "var(--tf-red)" : undefined } })}</Field>
                 <Field label="Which best describes you?" required error={err("category") || err("category_other")}>
@@ -416,7 +462,39 @@ export default function RegistrationForm() {
                         ))}
                       </div>
                     </Field>
-                    <Field label="List your current team members" required htmlFor="f-team_members" error={err("team_members")} hint="One per line: name and email.">{area("team_members", "Ana Reyes, ana@example.com", 5, 1500)}</Field>
+                    {v.team_size && (
+                      <Field label="List your other team members" required error={err("team_members")} hint="Everyone on the team besides you.">
+                        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                          {Array.from({ length: Math.max(0, Number(v.team_size) - 1) }).map((_, i) => {
+                            const m = v.team_members[i];
+                            const rowInvalid = !!err("team_members") && (!m.name.trim() || !EMAIL_RE.test(m.email.trim()));
+                            return (
+                              <div key={i} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
+                                <input
+                                  aria-label={`Member ${i + 2} name`}
+                                  value={m.name}
+                                  onChange={(e) => setMember(i, "name", e.target.value)}
+                                  placeholder={`Member ${i + 2} name`}
+                                  maxLength={100}
+                                  aria-invalid={rowInvalid && !m.name.trim()}
+                                  style={{ ...inputStyle, borderColor: rowInvalid && !m.name.trim() ? "var(--tf-red)" : undefined }}
+                                />
+                                <input
+                                  aria-label={`Member ${i + 2} email`}
+                                  type="email"
+                                  value={m.email}
+                                  onChange={(e) => setMember(i, "email", e.target.value)}
+                                  placeholder={`Member ${i + 2} email`}
+                                  maxLength={180}
+                                  aria-invalid={rowInvalid && !EMAIL_RE.test(m.email.trim())}
+                                  style={{ ...inputStyle, borderColor: rowInvalid && !EMAIL_RE.test(m.email.trim()) ? "var(--tf-red)" : undefined }}
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </Field>
+                    )}
                   </>
                 )}
               </>
