@@ -15,6 +15,7 @@ import {
   type ForumReply,
   type ForumThread,
 } from "../dynamicData";
+import { friendlyError } from "../../../lib/friendlyError";
 
 const DARK = "#1A1714";
 const ORANGE = "#F26522";
@@ -119,7 +120,7 @@ export default function ThreadDetail({ threadId, bp }: { threadId: string; bp: s
       const r = await fetchReplies(threadId);
       setReplies(r);
     } catch (err: any) {
-      setError(err?.message || "Couldn't post your reply — please try again.");
+      setError(friendlyError(err) || "Couldn't post your reply — please try again.");
     } finally {
       setBusy(false);
     }
@@ -134,7 +135,7 @@ export default function ThreadDetail({ threadId, bp }: { threadId: string; bp: s
       await reportContent(user.id, reportTarget.type, reportTarget.id, threadId, reportTarget.preview, reportReason);
       setReportSent(true);
     } catch (err: any) {
-      setError(err?.message || "Couldn't send the report — please try again.");
+      setError(friendlyError(err) || "Couldn't send the report — please try again.");
     } finally {
       setBusy(false);
     }

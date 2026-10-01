@@ -6,6 +6,7 @@ import { uploadStartupLogo } from "../../../../lib/uploadLogo";
 import { useRequiredOrg, OrgRequiredNotice } from "../OrgRequired";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } from "../../styles";
 import { STAGE_FILTERS } from "../../../admin/data";
+import { friendlyError } from "../../../../lib/friendlyError";
 
 const STAGE_OPTIONS = STAGE_FILTERS.filter((s) => s !== "All");
 
@@ -56,7 +57,7 @@ function Manager({ orgId, isAcademe }: { orgId: string; isAcademe: boolean }) {
     try {
       update("logo_url", await uploadStartupLogo(file));
     } catch (err: any) {
-      setError(err.message || "Logo upload failed.");
+      setError(friendlyError(err) || "Logo upload failed.");
     } finally {
       setUploading(false);
       e.target.value = "";
@@ -72,7 +73,7 @@ function Manager({ orgId, isAcademe }: { orgId: string; isAcademe: boolean }) {
     const { error: err } = await supabase.from("startups").insert({ ...form, owner_id: null, organization_id: orgId });
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return;
     }
     setForm(EMPTY);

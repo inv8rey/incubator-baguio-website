@@ -1,3 +1,4 @@
+import { storageErrorMessage } from "./friendlyError";
 import { supabase } from "./supabaseClient";
 
 const MAX_BYTES = 2 * 1024 * 1024; // 2MB
@@ -9,13 +10,15 @@ const MAX_BYTES = 2 * 1024 * 1024; // 2MB
 async function uploadImage(file: File, bucket: string): Promise<string> {
   if (!supabase) throw new Error("The backend isn't configured yet.");
   if (!file.type.startsWith("image/")) throw new Error("Image must be a photo file.");
+  // SVG files can carry script, so storage only accepts raster images.
+  if (file.type === "image/svg+xml") throw new Error("SVG images aren't supported. Use a PNG, JPG, WebP, or GIF.");
   if (file.size > MAX_BYTES) throw new Error("Image must be under 2MB.");
 
   const ext = file.name.split(".").pop() || "png";
   const path = `${crypto.randomUUID()}.${ext}`;
 
   const { error } = await supabase.storage.from(bucket).upload(path, file, { upsert: false });
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(storageErrorMessage(error.message));
 
   const { data } = supabase.storage.from(bucket).getPublicUrl(path);
   return data.publicUrl;

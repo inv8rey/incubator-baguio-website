@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "../../../lib/supabaseClient";
+import { safeRedirect } from "../../../lib/safeRedirect";
 
 const ORANGE = "#F26522";
 
@@ -33,7 +34,7 @@ const labelStyle: React.CSSProperties = {
 // the current secret slug on its own.
 export default function AdminLoginForm({ adminBase }: { adminBase: string }) {
   const params = useSearchParams();
-  const redirect = params.get("redirect") || `${adminBase}/`;
+  const redirect = safeRedirect(params.get("redirect"), `${adminBase}/`);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { checkFormGuard, honeypotProps } from "../lib/formGuard";
 import { triggerNewsletterWelcome } from "../lib/triggerNewsletterWelcome";
+import { friendlyError } from "../lib/friendlyError";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -48,7 +49,7 @@ export default function NewsletterSignup() {
         setStatus("done");
         return;
       }
-      setError(err.message);
+      setError(friendlyError(err));
       setStatus("error");
       return;
     }

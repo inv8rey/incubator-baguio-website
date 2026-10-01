@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { supabase } from "../lib/supabaseClient";
 import { checkFormGuard, honeypotProps } from "../lib/formGuard";
 import { triggerNewsletterWelcome } from "../lib/triggerNewsletterWelcome";
+import { friendlyError } from "../lib/friendlyError";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SEEN_KEY = "ib_newsletter_overlay_seen";
@@ -92,7 +93,7 @@ export default function NewsletterOverlay() {
 
     const { error: err } = await supabase.from("newsletter_subscribers").insert({ email: email.trim(), source: "overlay" });
     if (err && err.code !== "23505") {
-      setError(err.message);
+      setError(friendlyError(err));
       setStatus("error");
       return;
     }

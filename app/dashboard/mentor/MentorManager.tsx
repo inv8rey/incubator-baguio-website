@@ -8,6 +8,7 @@ import { uploadMentorPhoto } from "../../../lib/uploadLogo";
 import { MENTOR_SPECIALIZATIONS } from "../../ecosystem/data";
 import { SECTOR_FILTERS } from "../../admin/data";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } from "../styles";
+import { friendlyError } from "../../../lib/friendlyError";
 
 const LocationPicker = dynamic(() => import("../../LocationPicker"), { ssr: false });
 
@@ -75,7 +76,7 @@ export default function MentorManager() {
       const url = await uploadMentorPhoto(file);
       update("photo_url", url);
     } catch (err: any) {
-      setError(err.message || "Photo upload failed.");
+      setError(friendlyError(err) || "Photo upload failed.");
     } finally {
       setUploading(false);
       e.target.value = "";
@@ -99,7 +100,7 @@ export default function MentorManager() {
     }
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return;
     }
     setMentor(data as MentorProfile);

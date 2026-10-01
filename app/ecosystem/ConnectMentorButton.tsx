@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "../AuthProvider";
 import { supabase } from "../../lib/supabaseClient";
+import { friendlyError } from "../../lib/friendlyError";
 
 const ORANGE = "#F26522";
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
@@ -86,7 +87,7 @@ export default function ConnectMentorButton({ mentorId, mentorName, variant = "p
     const { error: err } = await supabase.from("mentor_connections").insert({ mentor_id: mentorId, requester_id: user.id, message });
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return;
     }
     setSent(true);

@@ -6,6 +6,7 @@ import { supabase } from "../../../lib/supabaseClient";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, rowItemStyle, DARK, ORANGE } from "../styles";
 import { SECTOR_FILTERS } from "../../admin/data";
 import { ROLE_OPTIONS } from "./data";
+import { friendlyError } from "../../../lib/friendlyError";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const COMMITMENT_OPTIONS = ["Full-time", "Part-time", "Advisor"] as const;
@@ -241,7 +242,7 @@ export default function CofounderFinder() {
       .single();
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return;
     }
     setMyProfile(data as CofounderProfile);

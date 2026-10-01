@@ -10,6 +10,7 @@ import { slugify } from "../../../lib/slug";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } from "../styles";
 import { ORG_TYPES_WITH_ACADEME, ORG_SECTORS, ORG_EXPERTISE_SUGGESTIONS, ORG_CAN_OFFER_SUGGESTIONS, ORG_LOOKING_FOR_SUGGESTIONS, PHILIPPINE_REGIONS } from "../../../lib/organizationOptions";
 import TagChips from "../TagChips";
+import { friendlyError } from "../../../lib/friendlyError";
 
 const LocationPicker = dynamic(() => import("../../LocationPicker"), { ssr: false });
 
@@ -243,7 +244,7 @@ export default function OrganizationManager() {
 
   async function checkDuplicate(name: string) {
     if (!supabase || !name.trim()) return;
-    const { data } = await supabase.from("organizations").select("name").ilike("name", `%${name.trim()}%`).limit(1);
+    const { data } = await supabase.from("public_organizations").select("name").ilike("name", `%${name.trim()}%`).limit(1);
     setDuplicateWarning(data && data.length > 0 ? `An organization with a similar name already exists: "${data[0].name}". You can still continue — it publishes immediately, but Incubator Baguio may follow up if this turns out to be a duplicate.` : "");
   }
 
@@ -256,7 +257,7 @@ export default function OrganizationManager() {
       const url = await uploadOrgLogo(file);
       setCreateForm((f) => ({ ...f, logo_url: url }));
     } catch (err: any) {
-      setError(err.message || "Logo upload failed.");
+      setError(friendlyError(err) || "Logo upload failed.");
     } finally {
       setUploading(false);
       e.target.value = "";
@@ -272,7 +273,7 @@ export default function OrganizationManager() {
       const url = await uploadOrgCoverImage(file);
       setCreateForm((f) => ({ ...f, cover_url: url }));
     } catch (err: any) {
-      setError(err.message || "Cover image upload failed.");
+      setError(friendlyError(err) || "Cover image upload failed.");
     } finally {
       setUploadingCover(false);
       e.target.value = "";
@@ -286,7 +287,7 @@ export default function OrganizationManager() {
     setError("");
     setBusy(true);
 
-    const { data: dupCheck } = await supabase.from("organizations").select("id").ilike("name", `%${createForm.name.trim()}%`).limit(1);
+    const { data: dupCheck } = await supabase.from("public_organizations").select("id").ilike("name", `%${createForm.name.trim()}%`).limit(1);
     const flaggedDuplicate = !!(dupCheck && dupCheck.length > 0);
     const slug = `${slugify(createForm.name.trim())}-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -317,7 +318,7 @@ export default function OrganizationManager() {
 
     if (err || !inserted) {
       setBusy(false);
-      setError(err?.message || "Couldn't create the organization.");
+      setError(friendlyError(err) || "Couldn't create the organization.");
       return;
     }
 
@@ -326,7 +327,7 @@ export default function OrganizationManager() {
     if (memberErr) {
       // The org row exists either way; this just means the membership link
       // didn't get created and would need a manual admin fix.
-      setError(`Organization created, but couldn't link your account: ${memberErr.message}`);
+      setError(`Organization created, but couldn't link your account: ${friendlyError(memberErr)}`);
     }
     const newOrg = mapRow(inserted);
     setOrgs((prev) => [...prev, newOrg]);
@@ -352,7 +353,7 @@ export default function OrganizationManager() {
       const url = await uploadOrgLogo(file);
       setEditForm((f) => (f ? { ...f, logo_url: url } : f));
     } catch (err: any) {
-      setError(err.message || "Logo upload failed.");
+      setError(friendlyError(err) || "Logo upload failed.");
     } finally {
       setUploading(false);
       e.target.value = "";
@@ -368,7 +369,7 @@ export default function OrganizationManager() {
       const url = await uploadOrgCoverImage(file);
       setEditForm((f) => (f ? { ...f, cover_url: url } : f));
     } catch (err: any) {
-      setError(err.message || "Cover image upload failed.");
+      setError(friendlyError(err) || "Cover image upload failed.");
     } finally {
       setUploadingCover(false);
       e.target.value = "";
@@ -418,7 +419,7 @@ export default function OrganizationManager() {
     const { error: err } = await supabase.from("organizations").update(payload).eq("id", org.id);
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return;
     }
     await load();

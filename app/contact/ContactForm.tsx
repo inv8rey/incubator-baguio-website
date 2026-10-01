@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { checkFormGuard, honeypotProps } from "../../lib/formGuard";
+import { friendlyError } from "../../lib/friendlyError";
 
 const ORANGE = "#F26522";
 const DARK = "#1A1714";
@@ -93,7 +94,7 @@ export default function ContactForm() {
     });
     setBusy(false);
     if (err) {
-      setSubmitError(err.message);
+      setSubmitError(friendlyError(err));
       return;
     }
     setSubmitted(true);

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { supabase } from "../../lib/supabaseClient";
 import { checkFormGuard, honeypotProps } from "../../lib/formGuard";
+import { friendlyError } from "../../lib/friendlyError";
 
 const ORANGE = "#F26522";
 const DARK = "#1A1714";
@@ -124,7 +125,7 @@ export default function CollaborateButton({ applicationId, teamName }: { applica
     });
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return;
     }
     setSent(true);

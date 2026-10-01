@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isBlockedHost } from "../../../lib/ssrfGuard";
 
 // Auto-thumbnail for a Knowledge Hub resource's reference link. Rather than
 // screenshotting the page (needs a paid third-party API + a key someone has
@@ -22,18 +23,7 @@ const FETCH_TIMEOUT_MS = 5000;
 // downloading an entire (possibly huge) document body just to read meta tags.
 const MAX_BYTES = 300_000;
 
-const PRIVATE_HOST_RE =
-  /^(localhost|127\.|10\.|192\.168\.|169\.254\.|0\.0\.0\.0|::1$|::$|f[cd][0-9a-f]{2}:)/i;
-/** 172.16.0.0 - 172.31.255.255 */
-function isPrivate172(host: string) {
-  const m = host.match(/^172\.(\d{1,3})\./);
-  return !!m && Number(m[1]) >= 16 && Number(m[1]) <= 31;
-}
-
-function isBlockedHost(hostname: string): boolean {
-  const h = hostname.toLowerCase();
-  return PRIVATE_HOST_RE.test(h) || isPrivate172(h) || h.endsWith(".local");
-}
+const MAX_REDIRECTS = 4;
 
 /** Reads meta tags one at a time so `property`/`content` order doesn't matter. */
 function extractMetaContent(html: string, keys: string[]): string | null {
@@ -50,18 +40,30 @@ function extractMetaContent(html: string, keys: string[]): string | null {
 }
 
 /** Fetches just enough of the page to read its <head>, capped at MAX_BYTES. */
-async function fetchHead(url: string, signal: AbortSignal): Promise<string> {
-  const res = await fetch(url, {
-    signal,
-    redirect: "follow",
-    headers: {
-      // Identifies the fetch as a link-preview bot (same courtesy real
-      // preview services extend) rather than pretending to be a browser.
-      "User-Agent": "Mozilla/5.0 (compatible; IncubatorBaguioLinkPreview/1.0; +https://incubatorbaguio.online)",
-      Accept: "text/html",
-    },
-  });
-  if (!res.ok || !res.body) throw new Error(`Fetch failed: ${res.status}`);
+async function fetchHead(url: string, signal: AbortSignal): Promise<{ html: string; finalUrl: string }> {
+  // Redirects are followed by hand so every hop is re-checked: otherwise a
+  // public URL could 302 to an internal address and slip past isBlockedHost.
+  let current = url;
+  let res: Response | null = null;
+  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+    const u = new URL(current);
+    if ((u.protocol !== "http:" && u.protocol !== "https:") || isBlockedHost(u.hostname)) throw new Error("Host not allowed");
+    res = await fetch(current, {
+      signal,
+      redirect: "manual",
+      headers: {
+        // Identifies the fetch as a link-preview bot (same courtesy real
+        // preview services extend) rather than pretending to be a browser.
+        "User-Agent": "Mozilla/5.0 (compatible; IncubatorBaguioLinkPreview/1.0; +https://incubatorbaguio.online)",
+        Accept: "text/html",
+      },
+    });
+    const loc = res.status >= 300 && res.status < 400 ? res.headers.get("location") : null;
+    if (!loc) break;
+    current = new URL(loc, current).toString();
+    res = null;
+  }
+  if (!res || !res.ok || !res.body) throw new Error(`Fetch failed: ${res?.status ?? "too many redirects"}`);
 
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
@@ -75,7 +77,7 @@ async function fetchHead(url: string, signal: AbortSignal): Promise<string> {
     if (/<\/head>/i.test(html)) break;
   }
   reader.cancel().catch(() => {});
-  return html;
+  return { html, finalUrl: current };
 }
 
 export async function GET(req: NextRequest) {
@@ -98,14 +100,15 @@ export async function GET(req: NextRequest) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
-    const html = await fetchHead(target.toString(), controller.signal);
+    const { html, finalUrl } = await fetchHead(target.toString(), controller.signal);
     const image =
       extractMetaContent(html, ["og:image", "og:image:url", "og:image:secure_url"]) ??
       extractMetaContent(html, ["twitter:image", "twitter:image:src"]);
     if (!image) return new NextResponse("No preview image", { status: 404 });
 
-    const resolved = new URL(image, target).toString();
-    if (isBlockedHost(new URL(resolved).hostname)) {
+    const resolvedUrl = new URL(image, finalUrl);
+    const resolved = resolvedUrl.toString();
+    if ((resolvedUrl.protocol !== "http:" && resolvedUrl.protocol !== "https:") || isBlockedHost(resolvedUrl.hostname)) {
       return new NextResponse("Host not allowed", { status: 400 });
     }
 

@@ -6,6 +6,7 @@ import { useAuth } from "../AuthProvider";
 import { checkAccountRateLimit } from "../../lib/formGuard";
 import { initialsOf, paletteFor } from "../../lib/visualIdentity";
 import { displayNameOf, fetchThreads, postThread, type ForumThread } from "./dynamicData";
+import { friendlyError } from "../../lib/friendlyError";
 
 const DARK = "#1A1714";
 const ORANGE = "#F26522";
@@ -122,7 +123,7 @@ export default function ForumBrowser({ bp }: { bp: string }) {
       setBusy(false);
     } catch (err: any) {
       setBusy(false);
-      setError(err?.message || "Couldn't post — please try again.");
+      setError(friendlyError(err) || "Couldn't post — please try again.");
     }
   }
 

@@ -44,7 +44,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Public organization profiles — approved and public only, matching what
   // app/organizations/[slug] will actually render.
   const { data: orgRows } = supabase
-    ? await supabase.from("organizations").select("slug").eq("approval_status", "approved").eq("is_public", true)
+    ? await supabase.from("public_organizations").select("slug").eq("approval_status", "approved").eq("is_public", true)
     : { data: [] };
   const orgRoutes = (orgRows ?? []).map((o: { slug: string }) => ({
     path: `/organizations/${o.slug}/`,

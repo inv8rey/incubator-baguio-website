@@ -1,6 +1,6 @@
 import { requireUser, LOGIN_REQUIRED } from '../../../../lib/idea-lab/auth';
 import { llmConfigured, makeNote, modelName } from '../../../../lib/idea-lab/llm';
-import { bumpLimit, getIdea, getNote, getSession, recordUsage, saveNote, storeConfigured, tokensToday } from '../../../../lib/idea-lab/store';
+import { bumpLimit, getNote, getOwnedIdea, recordUsage, saveNote, storeConfigured, tokensToday } from '../../../../lib/idea-lab/store';
 import { DAILY_LIMIT, DAILY_TOKEN_BUDGET, limitMessage, json, sanitizeText } from '../../../../lib/idea-lab/http';
 import { ideaCoreFrom, publicIdea, sessionInput } from '../../../../lib/idea-lab/service';
 import { noteSchema } from '../../../../lib/idea-lab/schema';
@@ -16,9 +16,9 @@ export async function GET(req: Request) {
   if (!user) return json({ error: LOGIN_REQUIRED, code: 'login' }, 401);
   const ideaId = new URL(req.url).searchParams.get('ideaId') || '';
   if (!/^[0-9a-f-]{36}$/i.test(ideaId)) return json({ error: 'Not found.' }, 404);
-  const idea = await getIdea(ideaId);
-  if (!idea) return json({ error: 'That idea was not found.' }, 404);
-  return json({ idea: publicIdea(idea as unknown as Record<string, unknown>), note: await getNote(ideaId) });
+  const owned = await getOwnedIdea(ideaId, user.key);
+  if (!owned) return json({ error: 'That idea was not found.' }, 404);
+  return json({ idea: publicIdea(owned.idea as unknown as Record<string, unknown>), note: await getNote(ideaId) });
 }
 
 // POST {ideaId}: creates the note (half a generation), or returns the existing one.
@@ -31,9 +31,9 @@ export async function POST(req: Request) {
   } catch {
     return json({ error: 'Bad request.' }, 400);
   }
-  const idea = body.ideaId ? await getIdea(body.ideaId) : null;
-  const session = idea ? await getSession(idea.session_id) : null;
-  if (!idea || !session) return json({ error: 'That idea was not found.' }, 404);
+  const owned = body.ideaId ? await getOwnedIdea(body.ideaId, user.key) : null;
+  if (!owned) return json({ error: 'That idea was not found.' }, 404);
+  const { idea, session } = owned;
   const existing = await getNote(idea.id);
   if (existing) return json({ note: existing });
 
@@ -69,8 +69,9 @@ export async function PUT(req: Request) {
   } catch {
     return json({ error: 'Bad request.' }, 400);
   }
-  const idea = body.ideaId ? await getIdea(body.ideaId) : null;
-  if (!idea) return json({ error: 'That idea was not found.' }, 404);
+  const owned = body.ideaId ? await getOwnedIdea(body.ideaId, user.key) : null;
+  if (!owned) return json({ error: 'That idea was not found.' }, 404);
+  const { idea } = owned;
   const parsed = noteSchema.safeParse(body.note);
   if (!parsed.success) return json({ error: 'Some fields are empty or too long.' }, 400);
   const note = { ...parsed.data, working_title: sanitizeText(parsed.data.working_title, 200), background: withDisclaimer(parsed.data.background) };

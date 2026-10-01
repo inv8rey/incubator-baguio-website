@@ -35,7 +35,7 @@ export default function CommunityChallengeDetail({ bp }: { bp: string }) {
       return;
     }
     supabase
-      .from("challenge_submissions")
+      .from("public_challenge_submissions")
       .select("*")
       .eq("id", id)
       .maybeSingle()

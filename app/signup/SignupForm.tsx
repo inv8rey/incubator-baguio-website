@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
+import { safeRedirect } from "../../lib/safeRedirect";
 
 const ORANGE = "#F26522";
 const DARK = "#1A1714";
@@ -134,7 +135,7 @@ export default function SignupForm({ bp }: { bp: string }) {
       return;
     }
     const defaultRedirect = signupAs === "organization" ? `${bp}/dashboard/organizations/` : `${bp}/dashboard/`;
-    window.location.href = redirectParam || defaultRedirect;
+    window.location.href = safeRedirect(redirectParam, defaultRedirect);
   }
 
   if (checkEmail) {

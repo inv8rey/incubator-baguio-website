@@ -8,6 +8,7 @@ import { uploadStartupLogo } from "../../../lib/uploadLogo";
 import type { LocationValue } from "../../LocationPicker";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, rowItemStyle, DARK } from "../styles";
 import { STAGE_FILTERS } from "../../admin/data";
+import { friendlyError } from "../../../lib/friendlyError";
 
 const LocationPicker = dynamic(() => import("../../LocationPicker"), { ssr: false });
 
@@ -80,7 +81,7 @@ export default function StartupManager() {
       const url = await uploadStartupLogo(file);
       update("logo_url", url);
     } catch (err: any) {
-      setError(err.message || "Logo upload failed.");
+      setError(friendlyError(err) || "Logo upload failed.");
     } finally {
       setUploading(false);
       e.target.value = "";
@@ -103,7 +104,7 @@ export default function StartupManager() {
     });
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return;
     }
     setForm(EMPTY);

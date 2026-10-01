@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
+import { safeRedirect } from "../../lib/safeRedirect";
 
 const ORANGE = "#F26522";
 const DARK = "#1A1714";
@@ -54,7 +55,7 @@ function EyeIcon({ off }: { off: boolean }) {
 export default function LoginForm({ bp }: { bp: string }) {
   const params = useSearchParams();
   const redirectParam = params.get("redirect");
-  const redirect = redirectParam || `${bp}/dashboard/`;
+  const redirect = safeRedirect(redirectParam, `${bp}/dashboard/`);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);

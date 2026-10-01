@@ -125,7 +125,7 @@ export async function fetchDynamicOrganizations(): Promise<DynamicOrgBuckets> {
   // is_public also covers rejected/suspended/hidden orgs -- an admin turns
   // it off for all of those, so this one filter is enough to keep anything
   // not fully approved out of the public directory.
-  const { data } = await supabase.from("organizations").select("*").eq("is_public", true).order("created_at", { ascending: false });
+  const { data } = await supabase.from("public_organizations").select("*").eq("is_public", true).order("created_at", { ascending: false });
   for (const o of data ?? []) {
     const p = paletteFor(o.name);
     const initials = initialsOf(o.name);

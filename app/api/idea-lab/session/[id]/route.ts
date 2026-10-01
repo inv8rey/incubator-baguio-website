@@ -1,12 +1,16 @@
 import { getSession, listIdeas, getNote } from '../../../../../lib/idea-lab/store';
 import { json } from '../../../../../lib/idea-lab/http';
+import { requireUser, LOGIN_REQUIRED } from '../../../../../lib/idea-lab/auth';
 import { publicIdea } from '../../../../../lib/idea-lab/service';
 
-export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> }) {
+export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }) {
+  const user = await requireUser(req);
+  if (!user) return json({ error: LOGIN_REQUIRED, code: 'login' }, 401);
   const { id } = await ctx.params;
   if (!/^[0-9a-f-]{36}$/i.test(id)) return json({ error: 'Not found.' }, 404);
   const session = await getSession(id);
-  if (!session) return json({ error: 'That session was not found. It may have expired.' }, 404);
+  // Only the account that created a session can open it.
+  if (!session || session.device_hash !== user.key) return json({ error: 'That session was not found. It may have expired.' }, 404);
   const ideas = await listIdeas(id);
   const notes = await Promise.all(ideas.map(async (i) => [i.id, !!(await getNote(i.id))] as const));
   return json({

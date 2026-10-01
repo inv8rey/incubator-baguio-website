@@ -1,4 +1,5 @@
 import { SITE_URL } from "../app/seo";
+import { escapeHtml } from "./html";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 // Resend's shared sandbox sender works with no domain setup on their end;
@@ -45,11 +46,11 @@ export async function sendEventApprovalEmail(event: ApprovedEvent): Promise<{ se
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; color: #1A1714;">
       <p style="font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #F26522; margin: 0 0 16px;">Incubator Baguio</p>
       <h1 style="font-size: 22px; font-weight: 600; margin: 0 0 16px;">Your event is on the calendar</h1>
-      <p style="font-size: 15px; line-height: 1.6; margin: 0 0 20px;">Hi ${event.contactName || "there"}, &ldquo;${event.title}&rdquo; has been approved and is now live on the Incubator Baguio public calendar.</p>
+      <p style="font-size: 15px; line-height: 1.6; margin: 0 0 20px;">Hi ${escapeHtml(event.contactName || "there")}, &ldquo;${escapeHtml(event.title)}&rdquo; has been approved and is now live on the Incubator Baguio public calendar.</p>
       <table style="font-size: 14px; line-height: 1.7; margin: 0 0 24px;">
-        <tr><td style="color: #6E685F; padding-right: 12px;">When</td><td>${when}${event.eventTime ? `, ${event.eventTime}` : ""}</td></tr>
-        <tr><td style="color: #6E685F; padding-right: 12px;">Venue</td><td>${event.venue || "—"}</td></tr>
-        <tr><td style="color: #6E685F; padding-right: 12px;">Organizer</td><td>${event.org}</td></tr>
+        <tr><td style="color: #6E685F; padding-right: 12px;">When</td><td>${escapeHtml(when)}${event.eventTime ? `, ${escapeHtml(event.eventTime)}` : ""}</td></tr>
+        <tr><td style="color: #6E685F; padding-right: 12px;">Venue</td><td>${escapeHtml(event.venue || "—")}</td></tr>
+        <tr><td style="color: #6E685F; padding-right: 12px;">Organizer</td><td>${escapeHtml(event.org)}</td></tr>
       </table>
       <a href="${SITE_URL}/calendar/" style="display: inline-block; background: #F26522; color: #fff; font-weight: 600; font-size: 14px; padding: 12px 22px; border-radius: 9999px; text-decoration: none;">View the calendar</a>
       <p style="font-size: 13px; color: #6E685F; margin: 24px 0 0;">Questions? Reply to this email or reach us at ${REPLY_TO}.</p>

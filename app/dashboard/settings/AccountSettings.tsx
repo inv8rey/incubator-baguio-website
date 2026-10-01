@@ -8,6 +8,7 @@ import { uploadMentorPhoto } from "../../../lib/uploadLogo";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } from "../styles";
 import { PROFILE_AREAS_OF_INTEREST, PROFILE_SKILLS, PROFILE_LOOKING_FOR, PROFILE_CAN_OFFER } from "../../../lib/profileOptions";
 import TagChips from "../TagChips";
+import { friendlyError } from "../../../lib/friendlyError";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const sectionTitle: React.CSSProperties = { fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6E685F", marginBottom: 12 };
@@ -54,7 +55,7 @@ function ProfileSection() {
     try {
       setPhotoUrl(await uploadMentorPhoto(file));
     } catch (err: any) {
-      setError(err.message || "Photo upload failed.");
+      setError(friendlyError(err) || "Photo upload failed.");
     }
     setUploading(false);
   }
@@ -83,7 +84,7 @@ function ProfileSection() {
       .eq("id", profile.id);
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return;
     }
     // Recomputes everywhere that reads profile from AuthProvider's context
@@ -201,7 +202,7 @@ function EmailSection() {
     const { error: err } = await supabase.auth.updateUser({ email: email.trim() });
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return;
     }
     setSent(true);
@@ -240,7 +241,7 @@ function PasswordSection() {
     const { error: err } = await supabase.auth.updateUser({ password });
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return;
     }
     setPassword("");
@@ -333,7 +334,7 @@ function DangerZone() {
     const { error: err } = await supabase.from("account_deletion_requests").insert({ user_id: user.id, email: user.email || "", note: note.trim() });
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return;
     }
     setFiled(true);

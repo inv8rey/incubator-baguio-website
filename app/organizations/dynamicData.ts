@@ -37,7 +37,7 @@ export interface OrganizationProfile {
 export async function fetchOrganizationBySlug(slug: string): Promise<OrganizationProfile | null> {
   if (!supabase) return null;
   const { data } = await supabase
-    .from("organizations")
+    .from("public_organizations")
     .select("*")
     .eq("slug", slug)
     .eq("is_public", true)

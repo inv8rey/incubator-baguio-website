@@ -58,7 +58,7 @@ export async function fetchActivity(since?: string, limit = 8): Promise<Activity
   let resourceQ = supabase.from("knowledge_resources").select("id,title,category,created_at").order("created_at", { ascending: false }).limit(limit);
   let eventQ = supabase.from("public_events").select("id,title,category,created_at").order("created_at", { ascending: false }).limit(limit);
   let orgQ = supabase
-    .from("organizations")
+    .from("public_organizations")
     .select("id,name,org_type,slug,created_at")
     .eq("approval_status", "approved")
     .eq("is_public", true)

@@ -11,6 +11,7 @@ import ApplicantCard from "./ApplicantCard";
 import PersonCard from "./PersonCard";
 import TeamCard from "./TeamCard";
 import { CARD, TEXT, HAIR, ICONS, Icon, MUTED, ORANGE, inputStyle } from "./ui";
+import { friendlyError } from "../../../lib/friendlyError";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const TEAMS_URL = `${BP}/pinasiklab/teams/`;
@@ -199,7 +200,7 @@ export default function TeamFinder() {
     const { error: err } = await fn();
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return false;
     }
     if (ok) setNotice(ok);

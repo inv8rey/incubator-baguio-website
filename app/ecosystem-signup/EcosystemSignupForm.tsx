@@ -8,6 +8,7 @@ import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } f
 import { SECTOR_FILTERS } from "../admin/data";
 import { MENTOR_SPECIALIZATIONS } from "../ecosystem/data";
 import { uploadEcosystemSignupLogo, uploadOrgCoverImage } from "../../lib/uploadLogo";
+import { friendlyError } from "../../lib/friendlyError";
 
 const ENTITY_TYPES = [
   { value: "startup", label: "Innovator" },
@@ -109,7 +110,7 @@ export default function EcosystemSignupForm() {
       const url = await uploadOrgCoverImage(file);
       setCoverUrl(url);
     } catch (err: any) {
-      setError(err.message || "Upload failed.");
+      setError(friendlyError(err) || "Upload failed.");
     } finally {
       setUploadingCover(false);
       e.target.value = "";
@@ -137,7 +138,7 @@ export default function EcosystemSignupForm() {
       const url = await uploadEcosystemSignupLogo(file);
       setLogoUrl(url);
     } catch (err: any) {
-      setError(err.message || "Upload failed.");
+      setError(friendlyError(err) || "Upload failed.");
     } finally {
       setUploading(false);
       e.target.value = "";
@@ -200,7 +201,7 @@ export default function EcosystemSignupForm() {
     });
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return;
     }
     setSubmitted(true);

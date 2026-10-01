@@ -241,3 +241,17 @@ export async function findSharedByIdea(ideaId: string): Promise<SharedRow | null
   const { data } = await db().from('shared_ideas').select('*').eq('idea_id', ideaId).limit(1).maybeSingle();
   return (data as SharedRow) ?? null;
 }
+
+/**
+ * The idea and its session, only if the session belongs to this account.
+ * Sessions are keyed by the account's salted hash (see lib/idea-lab/auth.ts),
+ * so one signed-in user can never read or change another user's ideas by id.
+ */
+export async function getOwnedIdea(ideaId: string, accountKey: string): Promise<{ idea: IdeaRow; session: SessionRow } | null> {
+  if (!/^[0-9a-f-]{36}$/i.test(ideaId)) return null;
+  const idea = await getIdea(ideaId);
+  if (!idea) return null;
+  const session = await getSession(idea.session_id);
+  if (!session || session.device_hash !== accountKey) return null;
+  return { idea, session };
+}

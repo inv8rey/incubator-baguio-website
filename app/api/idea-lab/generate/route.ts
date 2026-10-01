@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   }
   if (!llmConfigured() || !storeConfigured()) return json({ error: 'Idea Lab is not open yet. Please check back soon.', code: 'not_configured' }, 503);
   const session = body.sessionId ? await getSession(body.sessionId) : null;
-  if (!session) return json({ error: 'That session was not found. Please start again.' }, 404);
+  if (!session || session.device_hash !== user.key) return json({ error: 'That session was not found. Please start again.' }, 404);
 
   // Past the daily AI budget the template generator serves instead, so Idea Lab stays up.
   const useAi = (await tokensToday()) < DAILY_TOKEN_BUDGET;

@@ -31,9 +31,9 @@ export default function HomeStats() {
         supabase!.from("startups").select("id", { count: "exact", head: true }),
         // Public directory counts only ever include approved + public orgs —
         // same rule the Ecosystem directory itself uses.
-        supabase!.from("organizations").select("id", { count: "exact", head: true }).in("org_type", ECOSYSTEM_ORG_TYPES).eq("is_public", true),
+        supabase!.from("public_organizations").select("id", { count: "exact", head: true }).in("org_type", ECOSYSTEM_ORG_TYPES).eq("is_public", true),
         supabase!.from("challenges").select("id", { count: "exact", head: true }).eq("status", "Open"),
-        supabase!.from("organizations").select("id", { count: "exact", head: true }).eq("org_type", "TBIs").eq("is_public", true),
+        supabase!.from("public_organizations").select("id", { count: "exact", head: true }).eq("org_type", "TBIs").eq("is_public", true),
       ]).then(([innovators, orgs, challenges, tbis]) => {
         setStats({
           innovators: innovators.count ?? 0,

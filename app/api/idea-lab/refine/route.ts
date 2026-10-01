@@ -1,6 +1,6 @@
 import { requireUser, LOGIN_REQUIRED } from '../../../../lib/idea-lab/auth';
 import { llmConfigured, modelName, refineIdea } from '../../../../lib/idea-lab/llm';
-import { bumpLimit, getIdea, getSession, insertIdea, recordUsage, storeConfigured, tokensToday } from '../../../../lib/idea-lab/store';
+import { bumpLimit, getOwnedIdea, insertIdea, recordUsage, storeConfigured, tokensToday } from '../../../../lib/idea-lab/store';
 import { DAILY_LIMIT, DAILY_TOKEN_BUDGET, limitMessage, json, sanitizeText } from '../../../../lib/idea-lab/http';
 import { cacheKeyFor, ideaCoreFrom, publicIdea, sessionInput } from '../../../../lib/idea-lab/service';
 import { REFINE_PRESETS } from '../../../../lib/idea-lab/programs';
@@ -23,9 +23,9 @@ export async function POST(req: Request) {
   const instruction = [preset, sanitizeText(body.text, 200)].filter(Boolean).join('. ');
   if (!instruction) return json({ error: 'Pick a refinement or write a short note.' }, 400);
 
-  const idea = body.ideaId ? await getIdea(body.ideaId) : null;
-  const session = idea ? await getSession(idea.session_id) : null;
-  if (!idea || !session) return json({ error: 'That idea was not found.' }, 404);
+  const owned = body.ideaId ? await getOwnedIdea(body.ideaId, user.key) : null;
+  if (!owned) return json({ error: 'That idea was not found.' }, 404);
+  const { idea, session } = owned;
 
   // Past the daily AI budget the template generator serves instead, so Idea Lab stays up.
   const useAi = (await tokensToday()) < DAILY_TOKEN_BUDGET;

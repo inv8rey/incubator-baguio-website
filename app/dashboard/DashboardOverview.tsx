@@ -184,9 +184,9 @@ export default function DashboardOverview() {
         supabase!.from("mentors").select("id", { count: "exact", head: true }),
         // is_public also filters out anything pending/hidden/rejected/suspended
         // -- same rule the public Ecosystem directory itself uses.
-        supabase!.from("organizations").select("id", { count: "exact", head: true }).eq("is_public", true),
+        supabase!.from("public_organizations").select("id", { count: "exact", head: true }).eq("is_public", true),
         supabase!.from("startups").select("id", { count: "exact", head: true }),
-        supabase!.from("challenge_submissions").select("id", { count: "exact", head: true }),
+        supabase!.from("public_challenge_submissions").select("id", { count: "exact", head: true }),
         supabase!
           .from("knowledge_resources")
           .select("id", { count: "exact", head: true })
@@ -257,7 +257,7 @@ export default function DashboardOverview() {
       }));
 
       const { data: submissionRows } = await supabase!
-        .from("challenge_submissions")
+        .from("public_challenge_submissions")
         .select("id,title,org_name,sector,deadline")
         .order("created_at", { ascending: false })
         .limit(3);

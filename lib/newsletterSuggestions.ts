@@ -85,7 +85,7 @@ export async function fetchNewsletterSuggestions(since?: string): Promise<Sugges
       .order("event_date", { ascending: true })
       .limit(8),
     supabase
-      .from("organizations")
+      .from("public_organizations")
       .select("id,name,org_type,description,slug,created_at")
       .eq("approval_status", "approved")
       .eq("is_public", true)

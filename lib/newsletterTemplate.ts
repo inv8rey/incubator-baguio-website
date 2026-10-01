@@ -25,7 +25,7 @@ function itemRow(item: SuggestionItem): string {
   return `
   <tr>
     <td style="padding: 0 0 16px;">
-      <a href="${item.href}" style="font-size: 15px; font-weight: 600; color: ${DARK}; text-decoration: none;">${escapeHtml(item.title)}</a>
+      <a href="${escapeHtml(item.href).replace(/"/g, "&quot;")}" style="font-size: 15px; font-weight: 600; color: ${DARK}; text-decoration: none;">${escapeHtml(item.title)}</a>
       ${item.blurb ? `<p style="margin: 4px 0 0; font-size: 13.5px; line-height: 1.55; color: #5A544B;">${escapeHtml(item.blurb)}</p>` : ""}
     </td>
   </tr>`;

@@ -7,6 +7,7 @@ import { MENTOR_SPECIALIZATIONS } from "../../../ecosystem/data";
 import { SECTOR_FILTERS } from "../../../admin/data";
 import { useRequiredOrg, OrgRequiredNotice } from "../OrgRequired";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } from "../../styles";
+import { friendlyError } from "../../../../lib/friendlyError";
 
 const MAX_SPECIALIZATIONS = 3;
 
@@ -61,7 +62,7 @@ function Manager({ orgId }: { orgId: string }) {
     try {
       update("photo_url", await uploadMentorPhoto(file));
     } catch (err: any) {
-      setError(err.message || "Photo upload failed.");
+      setError(friendlyError(err) || "Photo upload failed.");
     } finally {
       setUploading(false);
       e.target.value = "";
@@ -78,7 +79,7 @@ function Manager({ orgId }: { orgId: string }) {
     const { error: err } = await supabase.from("mentors").insert({ ...form, sector: isIndustryExpert ? form.sector : "", owner_id: null, organization_id: orgId });
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return;
     }
     setForm(EMPTY);

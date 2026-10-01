@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../AuthProvider";
 import { supabase } from "../../../lib/supabaseClient";
 import { CHALLENGE_CATEGORIES } from "../data";
+import { friendlyError } from "../../../lib/friendlyError";
 
 const ORANGE = "#F26522";
 const DARK = "#1A1714";
@@ -146,7 +147,7 @@ export default function PostChallengeForm({ bp }: { bp: string }) {
         deadline: form.deadline,
       });
       if (error) {
-        setSubmitError(error.message);
+        setSubmitError(friendlyError(error));
         return;
       }
     }

@@ -7,6 +7,7 @@ import { uploadKnowledgeResourceFile } from "../../lib/uploadFile";
 import { uploadKnowledgeResourceCover } from "../../lib/uploadLogo";
 import { KNOWLEDGE_CATEGORIES, type KnowledgeCategory } from "../knowledge/data";
 import { cardStyle, inputStyle, labelStyle, primaryButtonStyle, DARK, ORANGE } from "./styles";
+import { friendlyError } from "../../lib/friendlyError";
 
 const FUNDING_CATEGORY: KnowledgeCategory = "Funding & Opportunities";
 
@@ -90,7 +91,7 @@ export default function ResourceSubmissionForm({
     try {
       setFileUrl(await uploadKnowledgeResourceFile(file));
     } catch (err: any) {
-      setError(err.message || "File upload failed.");
+      setError(friendlyError(err) || "File upload failed.");
     }
     setFileUploading(false);
   }
@@ -104,7 +105,7 @@ export default function ResourceSubmissionForm({
     try {
       setCoverImageUrl(await uploadKnowledgeResourceCover(file));
     } catch (err: any) {
-      setError(err.message || "Cover image upload failed.");
+      setError(friendlyError(err) || "Cover image upload failed.");
     }
     setCoverUploading(false);
   }
@@ -133,7 +134,7 @@ export default function ResourceSubmissionForm({
     });
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       return;
     }
     setTitle("");

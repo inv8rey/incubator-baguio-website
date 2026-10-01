@@ -1,4 +1,4 @@
-import { findSharedByIdea, getIdea, shareIdea, storeConfigured } from '../../../../lib/idea-lab/store';
+import { findSharedByIdea, getOwnedIdea, shareIdea, storeConfigured } from '../../../../lib/idea-lab/store';
 import { requireUser, LOGIN_REQUIRED } from '../../../../lib/idea-lab/auth';
 import { json, sanitizeText } from '../../../../lib/idea-lab/http';
 
@@ -18,8 +18,9 @@ export async function POST(req: Request) {
   if (body.hp) return json({ error: 'Please try again.' }, 400);
   if (!storeConfigured()) return json({ error: 'Sharing is not open yet.', code: 'not_configured' }, 503);
 
-  const idea = body.ideaId ? await getIdea(body.ideaId) : null;
-  if (!idea) return json({ error: 'That idea was not found.' }, 404);
+  const owned = body.ideaId ? await getOwnedIdea(body.ideaId, user.key) : null;
+  if (!owned) return json({ error: 'That idea was not found.' }, 404);
+  const { idea } = owned;
   if (await findSharedByIdea(idea.id)) return json({ ok: true, already: true });
 
   const email = sanitizeText(body.email, 254).toLowerCase();

@@ -19,7 +19,7 @@ export default function ChallengesStats() {
       Promise.all([
         supabase!.from("challenges").select("category"),
         supabase!.from("challenge_applications").select("id", { count: "exact", head: true }),
-        supabase!.from("challenge_submissions").select("id", { count: "exact", head: true }),
+        supabase!.from("public_challenge_submissions").select("id", { count: "exact", head: true }),
       ]).then(([challenges, applications, submissions]) => {
         const rows = (challenges.data as { category: string }[] | null) ?? [];
         setStats({

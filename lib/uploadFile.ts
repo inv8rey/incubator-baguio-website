@@ -1,3 +1,4 @@
+import { storageErrorMessage } from "./friendlyError";
 import { supabase } from "./supabaseClient";
 
 const MAX_BYTES = 15 * 1024 * 1024; // 15MB
@@ -14,7 +15,7 @@ async function uploadDocument(file: File, bucket: string): Promise<string> {
   const path = `${crypto.randomUUID()}.${ext}`;
 
   const { error } = await supabase.storage.from(bucket).upload(path, file, { upsert: false });
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(storageErrorMessage(error.message));
 
   const { data } = supabase.storage.from(bucket).getPublicUrl(path);
   return data.publicUrl;
@@ -35,7 +36,7 @@ export async function uploadChatbotDocumentFile(file: File): Promise<string> {
 
   const path = `${crypto.randomUUID()}.pdf`;
   const { error } = await supabase.storage.from("chatbot-documents").upload(path, file, { upsert: false });
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(storageErrorMessage(error.message));
 
   return path;
 }

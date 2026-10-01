@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "../../../AuthProvider";
 import { supabase } from "../../../../lib/supabaseClient";
+import { friendlyError } from "../../../../lib/friendlyError";
 
 const ORANGE = "#F26522";
 const DARK = "#1A1714";
@@ -126,7 +127,7 @@ export default function ApplyForm({ challenge, bp }: { challenge: ApplyChallenge
         why_you: form.whyYou,
       });
       if (error) {
-        setSubmitError(error.message);
+        setSubmitError(friendlyError(error));
         return;
       }
     }

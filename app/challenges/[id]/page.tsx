@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { escapeFields } from "../../../lib/html";
 import { fetchChallengeApplications, fetchChallengeBySlug } from "../dynamicData";
 import { categoryInfo } from "../data";
 import { navBarHtml, footerHtml } from "../../chrome";
@@ -26,9 +27,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function ChallengeDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const c = await fetchChallengeBySlug(id);
-  if (!c) return notFound();
-  const cat = categoryInfo(c.category);
+  const raw = await fetchChallengeBySlug(id);
+  if (!raw) return notFound();
+  // Challenge text can originate from outside staff (e.g. a shared Idea Lab
+  // idea sent to the repository), so it is escaped before going into HTML.
+  const c = escapeFields(raw);
+  const cat = categoryInfo(raw.category);
   const solvers = await fetchChallengeApplications(c.id);
   const totalSolvers = solvers.length;
   const visibleSolvers = solvers.slice(0, 5);

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { fetchOrganizationBySlug } from "../dynamicData";
 import { navBarHtml, footerHtml } from "../../chrome";
 import { pageMeta } from "../../seo";
+import { escapeFields, escapeHtml, safeUrl } from "../../../lib/html";
 
 const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -39,10 +40,20 @@ function chipRow(label: string, items: string[], color: string, bg: string): str
 
 export default async function OrganizationProfilePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const o = await fetchOrganizationBySlug(slug);
-  if (!o) return notFound();
+  const raw = await fetchOrganizationBySlug(slug);
+  if (!raw) return notFound();
+  // Organization owners edit these fields themselves, so every one is escaped
+  // (and links limited to http/https) before it goes into the HTML below.
+  const o = {
+    ...escapeFields(raw),
+    logo_url: safeUrl(raw.logo_url),
+    website: safeUrl(raw.website),
+    facebook_url: safeUrl(raw.facebook_url),
+    social_url: safeUrl(raw.social_url),
+  };
 
-  const location = [o.city, o.province].filter(Boolean).join(", ") || o.region || "";
+  const rawLocation = [raw.city, raw.province].filter(Boolean).join(", ") || raw.region || "";
+  const location = escapeHtml(rawLocation);
   const isVerified = o.approval_status === "approved";
 
   const HTML = `
@@ -56,7 +67,7 @@ ${navBarHtml("/ecosystem")}
     <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
       ${o.logo_url
         ? `<img src="${o.logo_url}" alt="${o.name} logo" style="width:76px;height:76px;border-radius:16px;object-fit:contain;background:#fff;padding:8px;box-sizing:border-box;flex-shrink:0;">`
-        : `<div style="width:76px;height:76px;border-radius:16px;background:rgba(242,101,34,0.16);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600;color:#F26522;flex-shrink:0;">${initialsOf(o.name)}</div>`}
+        : `<div style="width:76px;height:76px;border-radius:16px;background:rgba(242,101,34,0.16);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600;color:#F26522;flex-shrink:0;">${escapeHtml(initialsOf(raw.name))}</div>`}
       <div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#F26522;background:rgba(242,101,34,0.14);padding:5px 12px;border-radius:9999px;">${o.org_type}${o.type ? ` &middot; ${o.type}` : ""}</span>
@@ -99,7 +110,7 @@ ${navBarHtml("/ecosystem")}
         <div style="font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#F26522;margin-bottom:16px;">Find them</div>
         ${o.address ? `<p style="margin:0 0 14px;font-size:13.5px;line-height:1.6;color:#44444C;">${o.address}</p>` : ""}
         <a href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(
-          o.latitude != null && o.longitude != null ? `${o.latitude},${o.longitude}` : `${o.address} ${location}`.trim()
+          raw.latitude != null && raw.longitude != null ? `${raw.latitude},${raw.longitude}` : `${raw.address} ${rawLocation}`.trim()
         )}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#285E7A;text-decoration:none;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#285E7A" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
           Open in Google Maps
@@ -112,7 +123,7 @@ ${navBarHtml("/ecosystem")}
           ${o.website ? `<a href="${o.website}" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:9px;color:#1A1714;text-decoration:none;font-weight:600;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6E685F" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"></path></svg>Website</a>` : ""}
           ${o.facebook_url ? `<a href="${o.facebook_url}" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:9px;color:#1A1714;text-decoration:none;font-weight:600;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6E685F" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>Facebook</a>` : ""}
           ${o.social_url ? `<a href="${o.social_url}" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:9px;color:#1A1714;text-decoration:none;font-weight:600;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6E685F" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>More</a>` : ""}
-          ${o.contact_public && o.contact_email ? `<a href="mailto:${o.contact_email}" style="display:flex;align-items:center;gap:9px;color:#1A1714;text-decoration:none;font-weight:600;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6E685F" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-10 6L2 7"></path></svg>${o.contact_email}</a>` : ""}
+          ${o.contact_public && o.contact_email ? `<a href="mailto:${encodeURIComponent(raw.contact_email)}" style="display:flex;align-items:center;gap:9px;color:#1A1714;text-decoration:none;font-weight:600;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6E685F" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-10 6L2 7"></path></svg>${o.contact_email}</a>` : ""}
           ${o.contact_public && o.phone ? `<div style="display:flex;align-items:center;gap:9px;color:#1A1714;font-weight:600;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6E685F" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>${o.phone}</div>` : ""}
           ${!o.website && !o.facebook_url && !o.social_url && !(o.contact_public && (o.contact_email || o.phone)) ? `<p style="margin:0;color:#6E685F;">No public links yet.</p>` : ""}
         </div>

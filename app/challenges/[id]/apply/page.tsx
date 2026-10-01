@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { escapeFields } from "../../../../lib/html";
 import { fetchChallengeBySlug } from "../../dynamicData";
 import ApplyForm from "./ApplyForm";
 import RequireAuth from "../../../RequireAuth";
@@ -18,8 +19,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function ApplyPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const c = await fetchChallengeBySlug(id);
-  if (!c) return notFound();
+  const raw = await fetchChallengeBySlug(id);
+  if (!raw) return notFound();
+  // Challenge text can originate from outside staff (e.g. a shared Idea Lab
+  // idea sent to the repository), so it is escaped before going into HTML.
+  const c = escapeFields(raw);
 
   const TOP_HTML = `
 ${navBarHtml("/challenges")}
@@ -46,7 +50,7 @@ ${footerHtml()}
       <div style={{ background: "#F6F2EA", padding: "48px 40px 64px" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <RequireAuth bp={BP}>
-            <ApplyForm challenge={{ id: c.id, slug: c.slug, title: c.title, orgName: c.orgName, nextDate: c.timeline[1]?.date }} bp={BP} />
+            <ApplyForm challenge={{ id: raw.id, slug: raw.slug, title: raw.title, orgName: raw.orgName, nextDate: raw.timeline[1]?.date }} bp={BP} />
           </RequireAuth>
         </div>
       </div>

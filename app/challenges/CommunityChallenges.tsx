@@ -27,7 +27,7 @@ export default function CommunityChallenges({ bp }: { bp: string }) {
       return;
     }
     supabase
-      .from("challenge_submissions")
+      .from("public_challenge_submissions")
       .select("*")
       .order("created_at", { ascending: false })
       .then(({ data }) => {

@@ -26,6 +26,7 @@ import {
   type MentorSlot,
   type OrganizerType,
 } from "./data";
+import { friendlyError } from "../../lib/friendlyError";
 
 const HAIRLINE = "rgba(64,50,34,0.10)";
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -416,7 +417,7 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
     try {
       setPosterUrl(await uploadEventSubmissionPoster(file));
     } catch (err: any) {
-      setError(err.message || "Cover photo upload failed.");
+      setError(friendlyError(err) || "Cover photo upload failed.");
     }
     setPosterUploading(false);
   }
@@ -452,7 +453,7 @@ function SubmitEventModal({ onClose }: { onClose: () => void }) {
       phone: phone.trim(),
     });
     if (err) {
-      setError(err.message);
+      setError(friendlyError(err));
       setStatus("error");
       return;
     }
@@ -633,7 +634,7 @@ function SubscribeModal({ onClose }: { onClose: () => void }) {
         setStatus("done");
         return;
       }
-      setError(err.message);
+      setError(friendlyError(err));
       setStatus("error");
       return;
     }

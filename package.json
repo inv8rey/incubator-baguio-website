@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start -p 3002",
     "lint": "next lint",
-    "test:idea-lab": "tsx --test scripts/idea-lab.test.ts"
+    "test:idea-lab": "tsx --test scripts/idea-lab.test.ts",
+    "test:security": "tsx --test scripts/security.test.ts",
+    "test": "tsx --test scripts/security.test.ts scripts/idea-lab.test.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",
