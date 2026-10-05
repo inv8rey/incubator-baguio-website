@@ -278,6 +278,13 @@ export default function RegistrationForm() {
       else setSubmitError("We couldn't send your application. Please check your answers and try again.");
       return;
     }
+    // Fire-and-forget "we received your application" email; a failure here
+    // never affects the application itself.
+    fetch(`${BP}/api/pinasiklab/confirmation/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: v.email.trim().toLowerCase() }),
+    }).catch(() => {});
     try {
       localStorage.removeItem(DRAFT_KEY);
     } catch {
