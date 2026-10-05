@@ -3,7 +3,7 @@
 // "Option 1" placeholders (affected group, solution type, availability,
 // continuation) are filled in here.
 export const CATEGORIES = ["Student", "Young Professional", "Youth Entrepreneur", "Researcher", "Faculty", "Out-of-School Youth", "Other"];
-export const MUNICIPALITIES = ["Baguio City", "La Trinidad", "Itogon", "Sablan", "Tuba", "Tublay"];
+export const MUNICIPALITIES = ["Baguio City"];
 export const SKILL_OPTIONS = [
   "Programming / Software Development",
   "Artificial Intelligence / Data",

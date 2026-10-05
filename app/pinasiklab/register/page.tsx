@@ -7,7 +7,7 @@ import RegistrationForm from "./RegistrationForm";
 export const metadata: Metadata = pageMeta({
   title: "Apply — PinaSIKLab Baguio 2026",
   description:
-    "Apply to PinaSIKLab Baguio 2026, the two-day youth innovation sprint for Baguio and nearby municipalities, October 30–31, 2026. Apply as an individual or with your team.",
+    "Apply to PinaSIKLab Baguio 2026, the two-day youth innovation sprint for Baguio City, October 30–31, 2026. Apply as an individual or with your team.",
   path: "/pinasiklab/register/",
 });
 
@@ -35,7 +35,7 @@ ${navBarHtml()}
       <span style="color:#F2C240;">Apply</span>
     </div>
     <h1 style="margin:0;font-size:46px;font-weight:600;letter-spacing:-0.032em;color:#fff;line-height:1.1;">Apply to <span style="color:#F2C240;">PinaSIKLab Baguio 2026</span></h1>
-    <p style="margin:16px 0 0;font-size:16px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:640px;">Young people from Baguio City and nearby municipalities will build practical, AI-enabled and digital solutions to local challenges in a two-day innovation sprint. Apply as an individual or with your team.</p>
+    <p style="margin:16px 0 0;font-size:16px;line-height:1.6;color:rgba(255,255,255,0.66);max-width:640px;">Young people from Baguio City will build practical, AI-enabled and digital solutions to local challenges in a two-day innovation sprint. Apply as an individual or with your team.</p>
     <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;">${PILLS}</div>
     <p style="margin:18px 0 0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,0.55);">Application deadline: <strong style="color:rgba(255,255,255,0.85);">${REGISTRATION_DEADLINE || "to be announced"}</strong>. Please provide accurate information. Submitting this form does not guarantee selection.</p>
   </div>

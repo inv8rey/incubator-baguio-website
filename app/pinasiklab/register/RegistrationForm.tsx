@@ -79,7 +79,7 @@ function validate(step: number, v: Values): Errors {
     need("category", "Pick the option that fits you best.");
     if (v.category === "Other") need("category_other", "Tell us a bit more.");
     need("organization", "Enter your school, organization, or company (or \"None\").");
-    need("municipality", "Pick your current municipality or city.");
+    need("municipality", "Please confirm you live, study, or work in Baguio City.");
   }
   if (step === 1) {
     need("expertise", "Tell us your field, course, or area of expertise.");
@@ -406,7 +406,7 @@ export default function RegistrationForm() {
                   {v.category === "Other" && <div style={{ marginTop: 10 }}>{text("category_other", { placeholder: "Please specify", maxLength: 120 })}</div>}
                 </Field>
                 <Field label="School / university / organization / company" required htmlFor="f-organization" error={err("organization")}>{text("organization", { maxLength: 200, placeholder: "Where you study or work" })}</Field>
-                <Field label="Current municipality / city" required error={err("municipality")} hint="Applicants must live, study, or work in one of these areas.">{radios("municipality", MUNICIPALITIES)}</Field>
+                <Field label="Current city" required error={err("municipality")} hint="Applicants must live, study, or work in Baguio City.">{radios("municipality", MUNICIPALITIES)}</Field>
               </>
             )}
 

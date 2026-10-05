@@ -54,7 +54,7 @@ function Countdown({ closesAt }: { closesAt: number }) {
   );
 }
 
-const AREAS = ["Baguio City", "La Trinidad", "Itogon", "Sablan", "Tuba", "Tublay", "Somewhere else"];
+const AREAS = ["Baguio City", "Somewhere else"];
 
 function EligibilityChecker() {
   const [age, setAge] = useState("");
@@ -90,7 +90,7 @@ function EligibilityChecker() {
           {ready && !eligible && (
             <div style={{ fontSize: 14.5, color: MAROON, lineHeight: 1.6, fontWeight: 500 }}>
               {!ageOk && "PinaSIKLab Baguio is open to ages 18 to 30. "}
-              {!areaOk && "Applicants must live, study, or work in Baguio City or nearby municipalities. "}
+              {!areaOk && "Applicants must live, study, or work in Baguio City. "}
               <span style={{ color: "#5A544B", fontWeight: 400 }}>Questions? Email us and we&rsquo;ll help.</span>
             </div>
           )}

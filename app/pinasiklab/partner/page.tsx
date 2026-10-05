@@ -6,7 +6,7 @@ import PartnerForm from "./PartnerForm";
 export const metadata: Metadata = pageMeta({
   title: "Sponsor or Collaborate — PinaSIKLab Baguio 2026",
   description:
-    "Support PinaSIKLab Baguio 2026, the two-day youth innovation sprint for Baguio and nearby municipalities. We're looking for mentors, judges, technical infrastructure, participant kits and merchandise, prizes, and more.",
+    "Support PinaSIKLab Baguio 2026, the two-day youth innovation sprint for Baguio City. We're looking for mentors, judges, technical infrastructure, participant kits and merchandise, prizes, and more.",
   path: "/pinasiklab/partner/",
 });
 
@@ -33,7 +33,7 @@ const needCards = NEEDS.map(
 const WHY: [string, string][] = [
   ["Visibility with the innovation community", "Be recognized as a PinaSIKLab Baguio partner on the program page and in program materials, in front of participants, mentors, and the wider ecosystem."],
   ["Marketing and brand exposure", "Get your name and logo on event collateral, participant kits, and program communications, plus features on Incubator Baguio's channels before, during, and after the event."],
-  ["Access to young talent", "Meet and work alongside up to 30 teams of skilled young people from Baguio and nearby municipalities. A direct line to future hires, interns, and collaborators."],
+  ["Access to young talent", "Meet and work alongside up to 30 teams of skilled young people from Baguio City. A direct line to future hires, interns, and collaborators."],
   ["Put your tools in builders' hands", "Technology and service providers can have teams build with their products, gathering real feedback and new users."],
   ["A stake in real local challenges", "Sponsor or contribute to a problem statement tied to the Baguio City Research and Innovation Agenda, and see solutions built for it."],
   ["Community impact you can report", "Support a UNDP Philippines initiative aligned with the Sustainable Development Goals. Good for CSR and ESG stories, backed by real outcomes."],
