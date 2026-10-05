@@ -316,14 +316,18 @@ ${navBarHtml()}
       </div>
       <div style="background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:20px;padding:34px;">
         <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${ORANGE};margin-bottom:12px;">Challenge briefs</div>
-        <p style="margin:0 0 20px;font-size:15.5px;line-height:1.6;color:#5A544B;">Challenge briefs will be published and updated here.</p>
+        <p style="margin:0 0 20px;font-size:15.5px;line-height:1.6;color:#5A544B;">The challenge briefs are being finalized. Check back soon to see the problems your team can take on.</p>
         <div style="display:flex;flex-wrap:wrap;gap:12px;">
           ${
             CHALLENGE_BRIEFS_URL
               ? `<a href="${CHALLENGE_BRIEFS_URL}" target="_blank" rel="noopener noreferrer" class="ib-siklab-cta" style="display:inline-flex;align-items:center;gap:9px;background:${ORANGE};color:#fff;font-weight:600;font-size:14.5px;padding:13px 24px;border-radius:9999px;text-decoration:none;">View challenge briefs ${icon(PATHS.arrow, "#fff", 15)}</a>`
               : ""
           }
-          <a href="${BP}/research-innovation-agenda/" style="display:inline-flex;align-items:center;font-weight:600;font-size:14.5px;color:#1A1714;padding:13px 24px;border-radius:9999px;text-decoration:none;border:1.5px solid rgba(64,50,34,0.2);">Read the Research &amp; Innovation Agenda</a>
+          ${
+            CHALLENGE_BRIEFS_URL
+              ? ""
+              : `<span style="display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:14.5px;color:#1A1714;padding:13px 24px;border-radius:9999px;border:1.5px dashed rgba(64,50,34,0.3);">${icon(PATHS.calendar, ORANGE, 15)} Coming soon</span>`
+          }
         </div>
       </div>
     </div>
