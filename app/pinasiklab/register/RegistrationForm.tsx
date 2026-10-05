@@ -573,7 +573,7 @@ export default function RegistrationForm() {
                 <Field label="Team Finder" hint="Optional. You can change this later by emailing us.">
                   <label style={{ display: "flex", gap: 12, alignItems: "flex-start", fontSize: 14, lineHeight: 1.55, color: "var(--tf-body2)", cursor: "pointer" }}>
                     <input type="checkbox" checked={v.show_in_finder} onChange={(e) => set("show_in_finder", e.target.checked)} style={{ accentColor: ORANGE, marginTop: 3, width: 16, height: 16, flexShrink: 0 }} />
-                    <span>Once my application is approved, show me on the Team Finder so other participants can find me{v.participation === "team" ? " and my team" : " and invite me to a team"}. Only my name, skills{v.participation === "team" ? ", team name and member names" : " and what I'd contribute"} are shown. My email and phone are never shown.</span>
+                    <span>{v.participation === "team" ? "Once my application is approved, show my team on the Team Finder so other participants can find us." : "Show me on the Team Finder right after I apply so other participants can find me and invite me to a team."} Only my name, skills{v.participation === "team" ? ", team name and member names" : " and what I'd contribute"} are shown. My email and phone are never shown.</span>
                   </label>
                 </Field>
                 <Field label="Application declaration" required error={err("declaration")}>

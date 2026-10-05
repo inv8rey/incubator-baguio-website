@@ -310,7 +310,7 @@ export default function SiklabAdmin() {
                 <button key={s} onClick={() => save(open.id, { status: s })} style={{ ...ghost, textTransform: "capitalize", borderColor: open.status === s ? STATUS_COLOR[s] : line, background: open.status === s ? STATUS_COLOR[s] : "none" }}>{s === "accepted" ? "approved" : s}</button>
               ))}
             </div>
-            <div style={{ fontSize: 12.5, color: dim, margin: "-8px 0 14px", lineHeight: 1.5 }}>{open.show_in_finder ? (open.status === "accepted" ? "Approved: this applicant is now listed on the Team Finder." : "Opted in to the Team Finder. They'll be listed once you approve them.") : "Did not opt in to the Team Finder."}</div>
+            <div style={{ fontSize: 12.5, color: dim, margin: "-8px 0 14px", lineHeight: 1.5 }}>{open.show_in_finder ? (open.status === "accepted" ? "Approved: this applicant is now listed on the Team Finder." : (open.participation === "team" ? "Opted in to the Team Finder. Their team will be listed once you approve them." : (open.status === "declined" ? "Opted in to the Team Finder, but declined applicants are not listed." : "Opted in to the Team Finder. Listed now; declining removes them."))) : "Did not opt in to the Team Finder."}</div>
 
             {([
               ["Age", String(open.age)], ["Describes them", open.category], ["School / organization", open.organization], ["Municipality", open.municipality],
