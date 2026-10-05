@@ -7,8 +7,8 @@ export const REGISTER_URL = "https://incubatorbaguio.online/pinasiklab/";
 
 // Shown on the page, the homepage banner, and the application form. Empty
 // reads "to be announced" until the real date is set.
-export const REGISTRATION_DEADLINE = "October 13, 2026";
+export const REGISTRATION_DEADLINE = "October 23, 2026";
 
 // Applications stop at the end of this day, Philippine time. The database
 // enforces the same cutoff (see the registrations migration).
-export const REGISTRATION_CLOSES_AT = "2026-10-14T00:00:00+08:00";
+export const REGISTRATION_CLOSES_AT = "2026-10-24T00:00:00+08:00";

@@ -43,7 +43,7 @@ export default function HomePinaSIKLab({ bp }: { bp: string }) {
             PinaSIKLab <span style={{ color: ORANGE }}>Baguio 2026</span>
           </h2>
           <p style={{ margin: "0 0 20px", fontSize: 15.5, lineHeight: 1.6, color: "rgba(255,255,255,0.68)", maxWidth: 560 }}>
-            Youth innovation for Baguio and the BLISTT area. Build AI and digitally enabled solutions to real community and climate challenges in a two-day sprint.
+            Youth innovation for Baguio and nearby municipalities. Build AI and digitally enabled solutions to real community and climate challenges in a two-day sprint.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {META.map((m) => (

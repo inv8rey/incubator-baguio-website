@@ -406,7 +406,7 @@ export default function RegistrationForm() {
                   {v.category === "Other" && <div style={{ marginTop: 10 }}>{text("category_other", { placeholder: "Please specify", maxLength: 120 })}</div>}
                 </Field>
                 <Field label="School / university / organization / company" required htmlFor="f-organization" error={err("organization")}>{text("organization", { maxLength: 200, placeholder: "Where you study or work" })}</Field>
-                <Field label="Current municipality / city" required error={err("municipality")} hint="Applicants must live, study, or work in the BLISTT area.">{radios("municipality", MUNICIPALITIES)}</Field>
+                <Field label="Current municipality / city" required error={err("municipality")} hint="Applicants must live, study, or work in one of these areas.">{radios("municipality", MUNICIPALITIES)}</Field>
               </>
             )}
 

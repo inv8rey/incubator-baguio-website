@@ -7,7 +7,7 @@ import SiklabInteractive from "./SiklabInteractive";
 export const metadata: Metadata = pageMeta({
   title: "PinaSIKLab Baguio 2026 — Incubator Baguio",
   description:
-    "PinaSIKLab Baguio 2026: a two-day youth innovation sprint for Baguio and the BLISTT area, October 30–31, 2026. 30 teams, real community and climate challenges, working solutions. A UNDP Philippines initiative.",
+    "PinaSIKLab Baguio 2026: a two-day youth innovation sprint for Baguio and nearby municipalities, October 30–31, 2026. 30 teams, real community and climate challenges, working solutions. A UNDP Philippines initiative.",
   path: "/pinasiklab/",
 });
 
@@ -106,7 +106,7 @@ const BENEFITS: [string, string, string][] = [
 const FLOW = ["Baguio", "Top 5 Teams", "PinaSIKLab National Challenge", "Further Mentorship &amp; Capacity Building", "National Opportunities"];
 
 const FAQS: { q: string; a: string }[] = [
-  { q: "Who can participate?", a: "Young people aged 18–30 who reside, study, or work in Baguio City or the BLISTT municipalities." },
+  { q: "Who can participate?", a: "Young people aged 18–30 who reside, study, or work in Baguio City or nearby municipalities." },
   { q: "Do I need to be a student?", a: "No. The program welcomes students, young professionals, youth entrepreneurs, researchers, faculty, and out-of-school youth." },
   {
     q: "Do I need technical or coding skills?",
@@ -166,7 +166,7 @@ const EVENT_JSON_LD = {
   "@type": "Event",
   name: "PinaSIKLab Baguio 2026",
   description:
-    "A two-day youth innovation sprint for Baguio and the BLISTT area: multidisciplinary teams develop AI and digitally enabled solutions to real community and climate-related challenges.",
+    "A two-day youth innovation sprint for Baguio and nearby municipalities: multidisciplinary teams develop AI and digitally enabled solutions to real community and climate-related challenges.",
   startDate: "2026-10-30",
   endDate: "2026-10-31",
   eventStatus: "https://schema.org/EventScheduled",
@@ -192,13 +192,13 @@ ${navBarHtml()}
     <div style="font-size:12.5px;color:rgba(255,255,255,0.55);margin-bottom:22px;"><a href="${BP}/" style="color:inherit;text-decoration:none;">Home</a> <span style="margin:0 6px;">/</span> <a href="${BP}/programs/" style="color:inherit;text-decoration:none;">Programs</a> <span style="margin:0 6px;">/</span> <span style="color:rgba(255,255,255,0.7);">PinaSIKLab Baguio 2026</span></div>
     <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:9999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.03);margin-bottom:26px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9999px;background:rgba(242,194,64,0.16);"><span style="width:6px;height:6px;border-radius:9999px;background:${YELLOW};"></span></span><span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.66);">UNDP Philippines &middot; Baguio Leg</span></div>
     <h1 style="margin:0;font-size:60px;line-height:1.05;font-weight:500;letter-spacing:-0.04em;color:#fff;">PinaSIKLab <span style="color:${YELLOW};">Baguio 2026</span></h1>
-    <p style="margin:18px auto 0;font-size:24px;line-height:1.35;font-weight:500;color:rgba(255,255,255,0.88);letter-spacing:-0.01em;">Youth Innovation for Baguio and the BLISTT Area</p>
+    <p style="margin:18px auto 0;font-size:24px;line-height:1.35;font-weight:500;color:rgba(255,255,255,0.88);letter-spacing:-0.01em;">Youth Innovation for Baguio and Nearby Municipalities</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:26px 0 0;">
       <span style="display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border-radius:9999px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);font-size:14px;font-weight:600;color:#fff;">${icon(PATHS.calendar, YELLOW, 16)} October 30&ndash;31, 2026</span>
       <span style="display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border-radius:9999px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);font-size:14px;font-weight:600;color:#fff;">${icon(PATHS.pin, YELLOW, 16)} Baguio City</span>
       <span style="display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border-radius:9999px;background:rgba(242,194,64,0.16);border:1px solid rgba(242,194,64,0.5);font-size:14px;font-weight:600;color:#fff;">${icon(PATHS.trophy, YELLOW, 16)} Up to &#8369;100,000 in prizes</span>
     </div>
-    <p style="margin:28px auto 0;font-size:17.5px;line-height:1.65;color:rgba(255,255,255,0.68);max-width:720px;">PinaSIKLab Baguio 2026 brings together young people from Baguio City and the BLISTT area to develop technology-enabled solutions to real community and local development challenges.</p>
+    <p style="margin:28px auto 0;font-size:17.5px;line-height:1.65;color:rgba(255,255,255,0.68);max-width:720px;">PinaSIKLab Baguio 2026 brings together young people from Baguio City and nearby municipalities to develop technology-enabled solutions to real community and local development challenges.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px;">
       ${registerButton("Register now", "dark")}
       ${teamFinderButton("Find a team")}
@@ -243,8 +243,8 @@ ${navBarHtml()}
 <div id="who" style="background:#fff;padding:76px 40px;scroll-margin-top:80px;">
   <div style="max-width:1080px;margin:0 auto;">
     <div style="max-width:720px;margin-bottom:40px;">
-      ${sectionHead("Who Can Apply?", "Open to young innovators across the BLISTT area.")}
-      <p style="margin:0;font-size:16.5px;line-height:1.7;color:#5A544B;">PinaSIKLab Baguio is open to young people aged 18&ndash;30 who are residents, students, or workers within the BLISTT area.</p>
+      ${sectionHead("Who Can Apply?", "Open to young innovators across Baguio and nearby municipalities.")}
+      <p style="margin:0;font-size:16.5px;line-height:1.7;color:#5A544B;">PinaSIKLab Baguio is open to young people aged 18&ndash;30 who are residents, students, or workers in Baguio City, La Trinidad, Itogon, Sablan, Tuba, or Tublay.</p>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
       <div style="background:#EEF3FA;border-radius:20px;padding:34px;">
@@ -252,14 +252,14 @@ ${navBarHtml()}
           <span style="font-size:56px;font-weight:600;letter-spacing:-0.04em;color:${ORANGE};line-height:1;">18&ndash;30</span>
           <span style="font-size:16px;font-weight:600;color:#1A1714;">years old</span>
         </div>
-        <p style="margin:0 0 20px;font-size:14.5px;line-height:1.55;color:#5A544B;">Residents, students, or workers within the BLISTT area:</p>
+        <p style="margin:0 0 20px;font-size:14.5px;line-height:1.55;color:#5A544B;">Residents, students, or workers in:</p>
         <div style="display:flex;flex-wrap:wrap;gap:9px;">
           ${["Baguio City", "La Trinidad", "Itogon", "Sablan", "Tuba", "Tublay"].map((m) => chip(m)).join("")}
         </div>
       </div>
       <div style="background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:20px;padding:34px;">
         <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${ORANGE};margin-bottom:8px;">We welcome</div>
-        <p style="margin:0 0 18px;font-size:14.5px;line-height:1.55;color:#5A544B;">If you&rsquo;re 18&ndash;30 and study, work, or live in the BLISTT area, there&rsquo;s a place for you, whatever your background.</p>
+        <p style="margin:0 0 18px;font-size:14.5px;line-height:1.55;color:#5A544B;">If you&rsquo;re 18&ndash;30 and study, work, or live in Baguio or nearby municipalities, there&rsquo;s a place for you, whatever your background.</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;">
           ${["Students", "Young professionals", "Youth entrepreneurs", "Researchers", "Faculty", "Out-of-school youth"].map(checkItem).join("")}
         </div>
@@ -310,9 +310,9 @@ ${navBarHtml()}
   <div style="max-width:1080px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center;">
       <div>
-        ${sectionHead("The Challenge", "Real problems from Baguio and the BLISTT area.")}
+        ${sectionHead("The Challenge", "Real problems from Baguio and nearby municipalities.")}
         <p style="${PARA}">Participants will work on problem statements connected to the Baguio City Research and Innovation Agenda 2026 and relevant Sustainable Development Goals.</p>
-        <p style="margin:0;font-size:16.5px;line-height:1.7;color:#5A544B;">The challenges are designed around real opportunities and problems facing Baguio and the wider BLISTT area.</p>
+        <p style="margin:0;font-size:16.5px;line-height:1.7;color:#5A544B;">The challenges are designed around real opportunities and problems facing Baguio and its nearby municipalities.</p>
       </div>
       <div style="background:#fff;border:1px solid rgba(64,50,34,0.13);border-radius:20px;padding:34px;">
         <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${ORANGE};margin-bottom:12px;">Challenge briefs</div>
@@ -428,7 +428,7 @@ ${navBarHtml()}
           [PATHS.pin, "Location", "To be added"],
           [PATHS.users, "Capacity", "30 teams"],
           [PATHS.user, "Eligibility", "Ages 18&ndash;30"],
-          [PATHS.map, "Coverage", "Baguio City + BLISTT"],
+          [PATHS.map, "Coverage", "Baguio City + nearby municipalities"],
         ]
           .map(
             ([path, label, value], i, arr) => `
@@ -490,7 +490,7 @@ ${navBarHtml()}
     <div style="position:relative;max-width:620px;margin:0 auto;">
       <h2 style="margin:0 0 14px;font-size:38px;font-weight:500;letter-spacing:-0.03em;color:#fff;line-height:1.08;">Ready to Participate?</h2>
       <p style="margin:0 0 10px;font-size:18px;font-weight:600;line-height:1.5;color:#fff;">Applications are now open for PinaSIKLab Baguio 2026.</p>
-      <p style="margin:0 0 26px;font-size:16px;line-height:1.6;color:rgba(255,255,255,0.9);">If you are 18&ndash;30 years old and live, study, or work in Baguio or the BLISTT area, you can apply as an individual or with your team. 30 teams maximum.</p>
+      <p style="margin:0 0 26px;font-size:16px;line-height:1.6;color:rgba(255,255,255,0.9);">If you are 18&ndash;30 years old and live, study, or work in Baguio or nearby municipalities, you can apply as an individual or with your team. 30 teams maximum.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">${registerButton("Register for PinaSIKLab Baguio 2026", "dark")}${teamFinderButton("Find a team or teammate", true)}</div>
       <p style="margin:18px 0 0;font-size:14px;color:rgba(255,255,255,0.88);">Application deadline: <strong>${deadlineText}</strong></p>
     </div>

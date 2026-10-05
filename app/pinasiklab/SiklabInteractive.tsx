@@ -90,7 +90,7 @@ function EligibilityChecker() {
           {ready && !eligible && (
             <div style={{ fontSize: 14.5, color: MAROON, lineHeight: 1.6, fontWeight: 500 }}>
               {!ageOk && "PinaSIKLab Baguio is open to ages 18 to 30. "}
-              {!areaOk && "Applicants must live, study, or work in Baguio City or the BLISTT area. "}
+              {!areaOk && "Applicants must live, study, or work in Baguio City or nearby municipalities. "}
               <span style={{ color: "#5A544B", fontWeight: 400 }}>Questions? Email us and we&rsquo;ll help.</span>
             </div>
           )}
