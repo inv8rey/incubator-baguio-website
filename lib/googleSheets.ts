@@ -13,6 +13,11 @@ const SERVICE_ACCOUNT_PRIVATE_KEY = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_K
 
 const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
 
+/** True when the service account is set up (any spreadsheet can then be written). */
+export function sheetsAccountConfigured(): boolean {
+  return !!(SERVICE_ACCOUNT_EMAIL && SERVICE_ACCOUNT_PRIVATE_KEY);
+}
+
 export function sheetsConfigured(): boolean {
   return !!(SPREADSHEET_ID && SERVICE_ACCOUNT_EMAIL && SERVICE_ACCOUNT_PRIVATE_KEY);
 }
@@ -35,16 +40,30 @@ function getClient(): JWT {
  * tables are small and this keeps the sheet always an exact mirror of
  * Supabase (including deletes) with no row-number bookkeeping.
  */
-export async function writeSheetTab(tabName: string, headers: string[], rows: unknown[][]): Promise<void> {
-  if (!SPREADSHEET_ID) {
+export async function writeSheetTab(tabName: string, headers: string[], rows: unknown[][], spreadsheetId: string | undefined = SPREADSHEET_ID): Promise<void> {
+  if (!spreadsheetId) {
     throw new Error("Google Sheets isn't configured (missing GOOGLE_SHEETS_SPREADSHEET_ID).");
   }
   const client = getClient();
   const { token } = await client.getAccessToken();
   if (!token) throw new Error("Couldn't obtain a Google API access token.");
 
+  // Create the tab on first use so a freshly shared spreadsheet works without setup.
+  const metaRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?fields=sheets.properties.title`, { headers: { Authorization: `Bearer ${token}` } });
+  if (metaRes.ok) {
+    const meta = (await metaRes.json().catch(() => null)) as { sheets?: { properties?: { title?: string } }[] } | null;
+    const exists = (meta?.sheets ?? []).some((sh) => sh.properties?.title === tabName);
+    if (!exists) {
+      await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}:batchUpdate`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ requests: [{ addSheet: { properties: { title: tabName } } }] }),
+      });
+    }
+  }
+
   const range = encodeURIComponent(`${tabName}!A1:ZZ`);
-  const base = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}`;
+  const base = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}`;
 
   const clearRes = await fetch(`${base}:clear`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
   if (!clearRes.ok) {
@@ -53,7 +72,7 @@ export async function writeSheetTab(tabName: string, headers: string[], rows: un
   }
 
   const updateRange = encodeURIComponent(`${tabName}!A1`);
-  const updateRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${updateRange}?valueInputOption=RAW`, {
+  const updateRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${updateRange}?valueInputOption=RAW`, {
     method: "PUT",
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     body: JSON.stringify({ range: `${tabName}!A1`, values: [headers, ...rows] }),

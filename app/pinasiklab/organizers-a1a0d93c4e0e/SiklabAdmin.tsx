@@ -93,6 +93,23 @@ export default function SiklabAdmin() {
     if (error) { alert("Couldn't save: " + error.message); return; }
     setRows((r) => r.map((x) => (x.id === id ? { ...x, ...patch } : x)));
     setOpen((o) => (o && o.id === id ? { ...o, ...patch } : o));
+    syncSheet(true);
+  }
+
+  // Refreshes the Google Sheet from the database. `quiet` skips the alert, for
+  // background refreshes after an edit.
+  async function syncSheet(quiet = false) {
+    if (!supabase) return;
+    const { data: sess } = await supabase.auth.getSession();
+    const token = sess.session?.access_token;
+    if (!token) return;
+    try {
+      const res = await fetch("/api/pinasiklab/sync-sheet/", { method: "POST", headers: { Authorization: `Bearer ${token}` } });
+      const out = (await res.json().catch(() => ({}))) as { synced?: boolean; rows?: number; reason?: string; error?: string };
+      if (!quiet) alert(out.synced ? `Google Sheet updated (${out.rows} applications).` : `Sheet not updated: ${out.reason || out.error || "unknown error"}`);
+    } catch {
+      if (!quiet) alert("Sheet not updated: couldn't reach the server.");
+    }
   }
 
   async function remove(id: string) {
@@ -101,6 +118,7 @@ export default function SiklabAdmin() {
     if (error) { alert("Couldn't delete: " + error.message); return; }
     setRows((r) => r.filter((x) => x.id !== id));
     setOpen(null);
+    syncSheet(true);
   }
 
   const shown = useMemo(() => {
@@ -184,6 +202,7 @@ export default function SiklabAdmin() {
         </div>
         <div style={{ display: "flex", gap: 10 }}>
           <button onClick={load} style={ghost}>Refresh</button>
+          {view !== "partners" && <button onClick={() => syncSheet()} style={btn}>Sync to Google Sheet</button>}
           <button onClick={view === "partners" ? exportPartners : exportCsv} style={btn}>{view === "partners" ? `Export CSV (${inquiries.length})` : `Export CSV (${shown.length})`}</button>
           <button onClick={signOut} style={ghost}>Sign out</button>
         </div>
