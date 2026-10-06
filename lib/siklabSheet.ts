@@ -7,7 +7,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { sheetsAccountConfigured, writeSheetTab } from "./googleSheets";
 
-const TAB = "Applications";
+const TAB = "Registration";
 const COLUMNS: [string, string][] = [
   ["created_at", "Applied at"],
   ["status", "Status"],
@@ -39,20 +39,22 @@ const COLUMNS: [string, string][] = [
   ["admin_note", "Organizer note"],
 ];
 
+export const SIKLAB_SHEET_HEADERS = COLUMNS.map(([, label]) => label);
+
 export function siklabSheetConfigured(): boolean {
   return !!(process.env.PINASIKLAB_SHEET_ID && sheetsAccountConfigured());
 }
 
-// A leading = + - @ would be read as a formula by Sheets; neutralize it.
+// Values are written with valueInputOption=RAW, so Sheets stores them as plain
+// text and never evaluates a leading = + - @ as a formula.
 function cell(v: unknown): string | number {
   if (v === null || v === undefined) return "";
   if (typeof v === "boolean") return v ? "Yes" : "No";
   if (typeof v === "number") return v;
-  const str = Array.isArray(v) ? v.join(", ") : String(v);
-  return /^[=+\-@]/.test(str) ? `'${str}` : str;
+  return Array.isArray(v) ? v.join(", ") : String(v);
 }
 
-/** Rewrites the Applications tab from the database. Returns the row count. */
+/** Rewrites the Registration tab from the database. Returns the row count. */
 export async function syncSiklabRegistrationsToSheet(): Promise<number> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = (process.env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
@@ -63,7 +65,7 @@ export async function syncSiklabRegistrationsToSheet(): Promise<number> {
   const rows = (data ?? []) as Record<string, unknown>[];
   await writeSheetTab(
     TAB,
-    COLUMNS.map(([, label]) => label),
+    SIKLAB_SHEET_HEADERS,
     rows.map((r) => COLUMNS.map(([k]) => cell(r[k]))),
     process.env.PINASIKLAB_SHEET_ID
   );
