@@ -11,7 +11,7 @@ const BP = process.env.NEXT_PUBLIC_BASE_PATH || "";
 // panel's `top` below) — a shorter delay let the panel disappear mid-hover
 // while moving the mouse down into it, so items could open but not actually
 // be clicked.
-const CLOSE_DELAY = 300;
+const CLOSE_DELAY = 350;
 
 // Deliberately curated shortlists, not the full category lists — typed
 // against each section's real category union so a future rename there is
@@ -77,6 +77,10 @@ const MENUS: MenuConfig[] = [
 export default function NavMegaMenu() {
   const [openKey, setOpenKey] = useState<string | null>(null);
   const [rect, setRect] = useState<DOMRect | null>(null);
+  // How far the nav bar extends below the hovered link. The panel hangs below
+  // the bar, not the link text, so it never covers the nav row; an invisible
+  // bridge fills this distance so the pointer stays over the panel on its way down.
+  const [barGap, setBarGap] = useState(0);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -104,7 +108,10 @@ export default function NavMegaMenu() {
 
       const onOpen = () => {
         cancelClose();
-        setRect(el.getBoundingClientRect());
+        const r = el.getBoundingClientRect();
+        const bar = el.closest(".ib-topbar");
+        setBarGap(bar ? Math.max(0, bar.getBoundingClientRect().bottom - r.bottom) : 0);
+        setRect(r);
         setOpenKey(menu.key);
         el.setAttribute("aria-expanded", "true");
       };
@@ -127,6 +134,21 @@ export default function NavMegaMenu() {
 
     return () => cleanups.forEach((fn) => fn());
   }, []);
+
+  // Native listeners, not React's onMouseEnter/onMouseLeave: React derives
+  // those from mouseover/mouseout and skips them when the pointer arrives from
+  // the nav, which is plain HTML inside a dangerouslySetInnerHTML node. The
+  // cancel-close then never ran and the panel vanished under the cursor.
+  useEffect(() => {
+    const el = panelRef.current;
+    if (!openKey || !el) return;
+    el.addEventListener("mouseenter", cancelClose);
+    el.addEventListener("mouseleave", scheduleClose);
+    return () => {
+      el.removeEventListener("mouseenter", cancelClose);
+      el.removeEventListener("mouseleave", scheduleClose);
+    };
+  }, [openKey]);
 
   useEffect(() => {
     if (!openKey) return;
@@ -154,32 +176,30 @@ export default function NavMegaMenu() {
   const left = Math.max(12, Math.min(rect.left, window.innerWidth - panelWidth - 12));
 
   return createPortal(
+    // Outer wrapper is transparent and starts right at the link's bottom edge
+    // (1px overlap so there is no sub-pixel dead zone). Its top padding is the
+    // bridge across the bar's lower padding; the visible card sits below it.
     <div
       ref={panelRef}
       className="ib-megamenu-panel"
-      onMouseEnter={cancelClose}
-      onMouseLeave={scheduleClose}
       style={{
         position: "fixed",
-        // No gap to the trigger's bottom edge (was +8) — that dead zone is
-        // exactly where the "can't click, panel already closed" bug came
-        // from: the cursor spends time in a strip neither element owns, and
-        // once it's outside both, only the close timer stands between it
-        // and the panel vanishing. Butting them together plus paddingTop
-        // below keeps the same visual gap without an actual pointer gap.
-        top: rect.bottom,
+        top: rect.bottom - 1,
         left,
         width: panelWidth,
-        background: "#1C1917",
-        border: "1px solid rgba(255,255,255,0.1)",
-        borderRadius: 14,
-        boxShadow: "0 12px 32px rgba(0,0,0,0.4)",
-        padding: 10,
-        paddingTop: 18,
-        marginTop: -8,
+        paddingTop: barGap + 1,
         zIndex: 55,
       }}
     >
+      <div
+        style={{
+          background: "#1C1917",
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: 14,
+          boxShadow: "0 12px 32px rgba(0,0,0,0.4)",
+          padding: 10,
+        }}
+      >
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         {menu.items.map((item) => (
           <a
@@ -192,6 +212,7 @@ export default function NavMegaMenu() {
             {item.theme && <span className="ib-megamenu-item-theme">{item.theme}</span>}
           </a>
         ))}
+      </div>
       </div>
     </div>,
     document.body
