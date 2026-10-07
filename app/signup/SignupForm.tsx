@@ -1,5 +1,6 @@
 "use client";
 
+import { triggerSignupsSheetSync } from "../../lib/triggerSignupsSheetSync";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
@@ -128,6 +129,7 @@ export default function SignupForm({ bp }: { bp: string }) {
     }
     if (data.user) {
       await supabase.from("profiles").upsert({ id: data.user.id, full_name: fullName, email });
+      triggerSignupsSheetSync();
     }
     setBusy(false);
     if (!data.session) {

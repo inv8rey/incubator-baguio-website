@@ -1,3 +1,5 @@
+import { triggerSignupsSheetSync } from "./triggerSignupsSheetSync";
+
 /**
  * Fire-and-forget: asks the server to send the one-time welcome email if
  * this address hasn't been welcomed yet (see
@@ -6,6 +8,8 @@
  * never block or error the subscribe flow that triggered it.
  */
 export function triggerNewsletterWelcome(email: string): void {
+  // Same moment is a new newsletter signup, so refresh the signups sheet too.
+  triggerSignupsSheetSync();
   fetch("/api/newsletter/welcome/", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

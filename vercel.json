@@ -1,5 +1,12 @@
 {
   "crons": [
-    { "path": "/api/ai-insights/cron/", "schedule": "30 23 * * *" }
+    {
+      "path": "/api/ai-insights/cron/",
+      "schedule": "30 23 * * *"
+    },
+    {
+      "path": "/api/signups-sheet/cron/",
+      "schedule": "0 22 * * *"
+    }
   ]
 }
