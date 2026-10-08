@@ -121,10 +121,26 @@ function NavIcon({ id }: { id: TabId }) {
   );
 }
 
+// The shared Incubator Baguio account shows as the organization, not a person.
+const ORG_ADMIN_EMAIL = "incubatorbaguio63@gmail.com";
+const ORG_ADMIN_NAME = "Incubator Baguio";
+
+function adminDisplayName(email: string, fullName: string): string {
+  if (email.trim().toLowerCase() === ORG_ADMIN_EMAIL) return ORG_ADMIN_NAME;
+  return fullName.trim() || email.split("@")[0] || "Admin";
+}
+
+function initialsOf(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return "A";
+  return (parts.length === 1 ? parts[0].slice(0, 2) : parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
 export default function AdminApp() {
   const [page, setPage] = useState<TabId>("dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [adminName, setAdminName] = useState("Admin");
   const [liveCounts, setLiveCounts] = useState<{
     startups: number | null;
     challenges: number | null;
@@ -136,6 +152,23 @@ export default function AdminApp() {
     signups: number | null;
     forum: number | null;
   }>({ startups: null, challenges: null, partners: null, messages: null, solutions: null, events: null, knowledge: null, signups: null, forum: null });
+
+  // Who is signed in, for the sidebar footer and avatar.
+  useEffect(() => {
+    if (!supabase) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase!.auth.getUser();
+      const user = data.user;
+      if (!user || cancelled) return;
+      const email = user.email ?? "";
+      const { data: profile } = await supabase!.from("profiles").select("full_name").eq("id", user.id).maybeSingle();
+      if (!cancelled) setAdminName(adminDisplayName(email, (profile?.full_name as string) || String(user.user_metadata?.full_name ?? "")));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!supabase) return;
@@ -269,11 +302,11 @@ export default function AdminApp() {
       <div style={{ padding: "14px 20px 20px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 34, height: 34, borderRadius: "50%", background: `linear-gradient(135deg,${ORANGE},#FF9A6C)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 600, flexShrink: 0 }}>
-            LG
+            {initialsOf(adminName)}
           </div>
           <div>
-            <div style={{ fontSize: 12.5, fontWeight: 600, color: "#fff" }}>Leandro R. Gepila</div>
-            <div style={{ fontSize: 10.5, color: "rgba(255,255,255,0.38)", marginTop: 1 }}>Innovation Operator</div>
+            <div style={{ fontSize: 12.5, fontWeight: 600, color: "#fff" }}>{adminName}</div>
+            <div style={{ fontSize: 10.5, color: "rgba(255,255,255,0.38)", marginTop: 1 }}>Admin</div>
           </div>
         </div>
       </div>
@@ -321,7 +354,7 @@ export default function AdminApp() {
               <span style={{ fontSize: 10, color: "#6E685F", background: "rgba(64,50,34,0.10)", borderRadius: 4, padding: "1px 5px", fontWeight: 500 }}>⌘K</span>
             </div>
             <div style={{ width: 36, height: 36, borderRadius: "50%", background: `linear-gradient(135deg,${ORANGE},#FF9A6C)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 600, flexShrink: 0 }}>
-              LG
+              {initialsOf(adminName)}
             </div>
           </div>
         </div>
