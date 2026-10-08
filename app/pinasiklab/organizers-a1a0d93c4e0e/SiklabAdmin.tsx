@@ -26,6 +26,10 @@ const input: React.CSSProperties = { background: "#0F0D0B", border: `1px solid $
 const btn: React.CSSProperties = { background: ORANGE, color: "#fff", border: "none", borderRadius: 9999, padding: "10px 20px", fontSize: 13.5, fontWeight: 600, cursor: "pointer" };
 const ghost: React.CSSProperties = { background: "none", color: "#fff", border: `1px solid ${line}`, borderRadius: 9999, padding: "9px 18px", fontSize: 13, fontWeight: 600, cursor: "pointer" };
 
+// Teammates each submit their own application with the same team name; the
+// name (ignoring case and extra spaces) identifies the team, so they count once.
+const teamKey = (name: string) => name.trim().toLowerCase().replace(/\s+/g, " ");
+
 function csvCell(v: unknown) {
   const s = Array.isArray(v) ? v.join("; ") : v == null ? "" : String(v);
   return `"${s.replace(/"/g, '""')}"`;
@@ -138,10 +142,20 @@ export default function SiklabAdmin() {
       const m = members(t.id);
       return { key: t.id, name: t.name, size: m.length, leader: m.find((x) => x.id === t.leader_id)?.full_name ?? "", source: "Team Finder" as const, finalized: t.locked || m.length >= MAX_MEMBERS, names: m.map((x) => x.full_name) };
     });
-    const liveNames = new Set(liveTeams.map((t) => t.name.toLowerCase()));
-    const applied = rows
-      .filter((r) => r.participation === "team" && r.status === "accepted" && !liveNames.has(r.team_name.toLowerCase()))
-      .map((r) => ({ key: r.id, name: r.team_name, size: r.team_size ?? 0, leader: r.is_team_leader ? r.full_name : r.team_leader_contact, source: "Applied as a team" as const, finalized: true, names: [] as string[] }));
+    const liveNames = new Set(liveTeams.map((t) => teamKey(t.name)));
+    // One entry per team: several accepted applications with the same team name
+    // are teammates, not separate teams.
+    const acceptedByTeam = new Map<string, Row[]>();
+    for (const r of rows) {
+      if (r.participation !== "team" || r.status !== "accepted") continue;
+      const k = teamKey(r.team_name);
+      if (liveNames.has(k)) continue;
+      acceptedByTeam.set(k, [...(acceptedByTeam.get(k) ?? []), r]);
+    }
+    const applied = [...acceptedByTeam.values()].map((group) => {
+      const r = group.find((x) => x.is_team_leader) ?? group[0];
+      return { key: r.id, name: r.team_name, size: Math.max(...group.map((x) => x.team_size ?? 0)), leader: r.is_team_leader ? r.full_name : r.team_leader_contact, source: "Applied as a team" as const, finalized: true, names: [] as string[] };
+    });
     const all = [...live, ...applied];
     return { all, finalized: all.filter((x) => x.finalized).length, live: live.length };
   }, [liveTeams, livePeople, rows]);
@@ -191,7 +205,7 @@ export default function SiklabAdmin() {
   }
 
   const count = (f: (r: Row) => boolean) => rows.filter(f).length;
-  const stats: [string, number][] = [["Applications", rows.length], ["Individuals", count((r) => r.participation === "individual")], ["Teams", count((r) => r.participation === "team")], ["Finalized teams", teamBoard.finalized], ["New partner inquiries", inquiries.filter((i) => i.status === "new").length], ["Approved", count((r) => r.status === "accepted")]];
+  const stats: [string, number][] = [["Applications", rows.length], ["Individuals", count((r) => r.participation === "individual")], ["Teams", new Set(rows.filter((r) => r.participation === "team").map((r) => teamKey(r.team_name))).size], ["Finalized teams", teamBoard.finalized], ["New partner inquiries", inquiries.filter((i) => i.status === "new").length], ["Approved", count((r) => r.status === "accepted")]];
 
   return shell(
     <div style={{ maxWidth: 1180, margin: "0 auto", padding: "32px 20px 80px" }}>
