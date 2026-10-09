@@ -1,6 +1,5 @@
 import { supabase } from "../../../../lib/supabaseClient";
 import { sendSiklabConfirmationEmail } from "../../../../lib/sendSiklabConfirmationEmail";
-import { siklabSheetConfigured, syncSiklabRegistrationsToSheet } from "../../../../lib/siklabSheet";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -26,13 +25,6 @@ export async function POST(req: Request) {
 
   const { data, error } = await supabase.rpc("claim_siklab_confirmation", { p_email: email }).maybeSingle();
   if (error || !data) return Response.json({ ok: true });
-
-  // The same one-time claim also gates the Google Sheet sync, so each new
-  // application triggers exactly one refresh and the endpoint can't be used to
-  // hammer the Sheets API. A sync failure never affects the email or the application.
-  if (siklabSheetConfigured()) {
-    await syncSiklabRegistrationsToSheet().catch((err) => console.error("pinasiklab sheet sync failed:", err instanceof Error ? err.message : err));
-  }
 
   const row = data as { full_name: string; participation: string; team_name: string };
   const result = await sendSiklabConfirmationEmail({

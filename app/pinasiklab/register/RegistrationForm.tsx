@@ -278,6 +278,9 @@ export default function RegistrationForm() {
       else setSubmitError("We couldn't send your application. Please check your answers and try again.");
       return;
     }
+    // Fire-and-forget: refresh the organizers' Google Sheet. Independent of the
+    // confirmation email, and a failure never affects the application itself.
+    fetch(`${BP}/api/pinasiklab/sheet/`, { method: "POST" }).catch(() => {});
     // Fire-and-forget "we received your application" email; a failure here
     // never affects the application itself.
     fetch(`${BP}/api/pinasiklab/confirmation/`, {
